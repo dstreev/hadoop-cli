@@ -20,8 +20,8 @@ public class Help extends AbstractCommand {
         this.env = env;
         
         StringsCompleter completer = new StringsCompleter(this.env.commandList());
-        //this.completer = completer;
-        super.getCompleters().add(completer);
+        this.completer = completer;
+//        super.getCompleters().add(completer);
         
     }
     

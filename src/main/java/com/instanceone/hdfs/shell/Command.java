@@ -22,5 +22,5 @@ public interface Command {
     
     Options getOptions();
     
-    List<Completer> getCompleters();
+    Completer getCompleter();
 }

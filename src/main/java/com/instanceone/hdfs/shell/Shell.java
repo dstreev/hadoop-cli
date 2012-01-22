@@ -56,7 +56,7 @@ public class Shell {
             StringsCompleter sc = new StringsCompleter(cmdName);
             ArrayList<Completer> cmdCompleters = new ArrayList<Completer>();
             cmdCompleters.add(sc);
-            cmdCompleters.addAll(env.getCommand(cmdName).getCompleters());
+            cmdCompleters.add(env.getCommand(cmdName).getCompleter());
             
             ArgumentCompleter ac = new ArgumentCompleter(cmdCompleters);
             completers.add(ac);

@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
 public abstract class AbstractCommand implements Command{
     private String name;
-    private ArrayList<Completer> completers = new ArrayList<Completer>();
+    protected Completer completer = new NullCompleter();
     
     
     public AbstractCommand(String name){
@@ -50,8 +51,8 @@ public abstract class AbstractCommand implements Command{
         }
     }
 
-    public List<Completer> getCompleters() {
-        return this.completers;
+    public Completer getCompleter() {
+        return this.completer;
     }
 
 
