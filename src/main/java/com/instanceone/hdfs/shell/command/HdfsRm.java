@@ -23,7 +23,7 @@ public class HdfsRm extends HdfsCommand {
 
         try {
             String cwd = super.cwd(env, reader);
-            //String lcwd = env.getProperty(Environment.CWD);
+
             String hdfsCwd = env.getProperty(HDFS_CWD);
             FileSystem fs = super.getFileSystem(env, reader);
             
@@ -41,7 +41,7 @@ public class HdfsRm extends HdfsCommand {
             fs.delete(hdfsPath, recursive);
 
         }
-        catch (IOException e) {
+        catch (Throwable e) {
             System.out.println("Error: " + e.getMessage());
         }
 

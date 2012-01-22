@@ -53,17 +53,6 @@ public class HdfsLs extends HdfsCommand {
         }
     }
 
-    @Override
-    public String getHelpHeader() {
-        // TODO Auto-generated method stub
-        return super.getHelpHeader();
-    }
-
-    @Override
-    public String gethelpFooter() {
-        // TODO Auto-generated method stub
-        return super.gethelpFooter();
-    }
 
     @Override
     public Options getOptions() {

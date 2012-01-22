@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import jline.console.ConsoleReader;
+import jline.console.completer.Completer;
+import jline.console.completer.FileNameCompleter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.conf.Configuration;
@@ -78,6 +80,17 @@ public class HdfsPut extends HdfsCommand {
         
     }
     
+    
+    
+    
+    @Override
+    public Completer getCompleter() {
+        return new FileNameCompleter();
+    }
+
+
+
+
     public static class RegexFilenameFilter implements FilenameFilter {
         
         private String regex;

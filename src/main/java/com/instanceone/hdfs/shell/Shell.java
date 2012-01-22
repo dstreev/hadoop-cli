@@ -36,8 +36,6 @@ public class Shell {
 
     public static void main(String[] args) throws Exception {
         Environment env = new Environment();
-        // Command echo = new Echo("echo");
-        // env.addCommand(echo);
         env.addCommand(new Exit("exit"));
         env.addCommand(new LocalLs("lls"));
         env.addCommand(new LocalPwd("lpwd"));

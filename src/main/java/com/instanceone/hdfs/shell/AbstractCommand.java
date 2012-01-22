@@ -4,9 +4,6 @@ package com.instanceone.hdfs.shell;
 
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 
@@ -54,9 +51,4 @@ public abstract class AbstractCommand implements Command{
     public Completer getCompleter() {
         return this.completer;
     }
-
-
-    
-    
-
 }
