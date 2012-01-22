@@ -2,7 +2,13 @@
 
 package com.instanceone.hdfs.shell.command;
 
+import java.util.List;
+
 import jline.console.ConsoleReader;
+import jline.console.completer.AggregateCompleter;
+import jline.console.completer.ArgumentCompleter;
+import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
 import jline.console.completer.StringsCompleter;
 
 import org.apache.commons.cli.CommandLine;
@@ -19,9 +25,11 @@ public class Help extends AbstractCommand {
         super(name);
         this.env = env;
         
-        StringsCompleter completer = new StringsCompleter(this.env.commandList());
+        StringsCompleter strCompleter = new StringsCompleter(this.env.commandList());
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(strCompleter, nullCompleter);
+        
         this.completer = completer;
-//        super.getCompleters().add(completer);
         
     }
     

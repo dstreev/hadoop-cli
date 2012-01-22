@@ -20,7 +20,6 @@ public class HdfsConnect extends HdfsCommand {
         super(name);
         Completer completer = new StringsCompleter("hdfs://localhost:9000/", "hdfs://dlcirrus01:9000/");
         this.completer = completer;
-//        super.getCompleters().add(completer);
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
@@ -45,13 +44,5 @@ public class HdfsConnect extends HdfsCommand {
         }
     }
 
-//    @Override
-//    public int complete(String buffer, int cursor, List candidates) {
-//        System.out.println("Attempt to complete: " + buffer);
-//        //candidates.removeAll(candidates);
-//        candidates.add("hdfs://localhost:9000/ ");
-//        candidates.set(0, "hdfs://localhost:9000/ ");
-//        return 0;
-//    }
     
 }

@@ -9,6 +9,7 @@ import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.ArgumentCompleter;
 import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
 import jline.console.completer.StringsCompleter;
 
 import org.apache.commons.cli.CommandLine;
@@ -47,16 +48,24 @@ public class Shell {
         env.addCommand(new HdfsPut("put"));
         env.addCommand(new HdfsRm("rm"));
         env.addCommand(new Env("env"));
-        env.addCommand(new Help("help", env));
         env.addCommand(new HdfsConnect("connect"));
+        env.addCommand(new Help("help", env));
+        
 
         // create completers
         ArrayList<Completer> completers = new ArrayList<Completer>();
         for (String cmdName : env.commandList()) {
+            // command name
             StringsCompleter sc = new StringsCompleter(cmdName);
+            
+            
             ArrayList<Completer> cmdCompleters = new ArrayList<Completer>();
+            // add a completer for the command name
             cmdCompleters.add(sc);
+            // add the completer for the command
             cmdCompleters.add(env.getCommand(cmdName).getCompleter());
+            // add a terminator for the command
+            cmdCompleters.add(new NullCompleter());
             
             ArgumentCompleter ac = new ArgumentCompleter(cmdCompleters);
             completers.add(ac);
