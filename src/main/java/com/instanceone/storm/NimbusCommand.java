@@ -2,18 +2,9 @@
 
 package com.instanceone.storm;
 
-import java.util.List;
-
-import backtype.storm.daemon.common.TaskInfo;
-import backtype.storm.generated.ClusterSummary;
-import backtype.storm.generated.TaskSummary;
-import backtype.storm.generated.TopologyInfo;
-import backtype.storm.generated.TopologySummary;
-import backtype.storm.generated.Nimbus.Client;
-import backtype.storm.utils.NimbusClient;
 
 public class NimbusCommand {
-
+/*
     public static void main(String[] args) throws Exception{
         NimbusClient nimbusClient = new NimbusClient("dlcirrus01");
         Client client =  nimbusClient.getClient();
@@ -37,4 +28,5 @@ public class NimbusCommand {
         
         
     }
+    */
 }

@@ -2,11 +2,20 @@
 
 package com.instanceone.hdfs.shell;
 
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jline.console.completer.Completer;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
-public abstract class AbstractCommand implements Command {
+public abstract class AbstractCommand implements Command{
     private String name;
+    private ArrayList<Completer> completers = new ArrayList<Completer>();
+    
     
     public AbstractCommand(String name){
         this.name = name;
@@ -40,5 +49,13 @@ public abstract class AbstractCommand implements Command {
             System.out.println(log);
         }
     }
+
+    public List<Completer> getCompleters() {
+        return this.completers;
+    }
+
+
+    
+    
 
 }

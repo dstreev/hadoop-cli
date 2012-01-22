@@ -2,7 +2,10 @@
 
 package com.instanceone.hdfs.shell;
 
-import jline.ConsoleReader;
+import java.util.List;
+
+import jline.console.ConsoleReader;
+import jline.console.completer.Completer;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -18,4 +21,6 @@ public interface Command {
     void execute(Environment env, CommandLine cmd, ConsoleReader reader);
     
     Options getOptions();
+    
+    List<Completer> getCompleters();
 }

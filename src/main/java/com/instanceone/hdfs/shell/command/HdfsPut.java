@@ -7,14 +7,13 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.instanceone.hdfs.shell.AbstractCommand;
 import com.instanceone.hdfs.shell.Environment;
 
 public class HdfsPut extends HdfsCommand {

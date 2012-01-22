@@ -2,9 +2,8 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import java.util.List;
-
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
+import jline.console.completer.StringsCompleter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -14,10 +13,18 @@ import com.instanceone.hdfs.shell.Command;
 import com.instanceone.hdfs.shell.Environment;
 
 public class Help extends AbstractCommand {
+    private Environment env;
 
-    public Help(String name) {
+    public Help(String name, Environment env) {
         super(name);
+        this.env = env;
+        
+        StringsCompleter completer = new StringsCompleter(this.env.commandList());
+        //this.completer = completer;
+        super.getCompleters().add(completer);
+        
     }
+    
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         if (cmd.getArgs().length == 0) {
@@ -36,5 +43,4 @@ public class Help extends AbstractCommand {
         HelpFormatter hf = new HelpFormatter();
         hf.printHelp(cmd.getUsage(), cmd.getHelpHeader(), cmd.getOptions(), cmd.gethelpFooter());
     }
-
 }

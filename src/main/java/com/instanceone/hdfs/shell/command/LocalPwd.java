@@ -2,7 +2,7 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
 

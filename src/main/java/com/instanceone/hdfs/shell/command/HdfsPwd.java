@@ -2,15 +2,13 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import java.io.File;
 import java.io.IOException;
 
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
-import com.instanceone.hdfs.shell.AbstractCommand;
 import com.instanceone.hdfs.shell.Environment;
 
 public class HdfsPwd extends HdfsCommand {

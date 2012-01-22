@@ -3,23 +3,24 @@
 package com.instanceone.hdfs.shell.command;
 
 import java.io.IOException;
-import java.net.URI;
+import java.util.List;
 
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
+import jline.console.completer.Completer;
+import jline.console.completer.StringsCompleter;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 
-import com.instanceone.hdfs.shell.AbstractCommand;
 import com.instanceone.hdfs.shell.Environment;
 
 public class HdfsConnect extends HdfsCommand {
 
     public HdfsConnect(String name) {
         super(name);
+        Completer completer = new StringsCompleter("hdfs://localhost:9000/", "hdfs://dlcirrus01:9000/");
+//        this.completer = completer;
+        super.getCompleters().add(completer);
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
@@ -43,5 +44,14 @@ public class HdfsConnect extends HdfsCommand {
             System.out.println(e.getMessage());
         }
     }
+
+//    @Override
+//    public int complete(String buffer, int cursor, List candidates) {
+//        System.out.println("Attempt to complete: " + buffer);
+//        //candidates.removeAll(candidates);
+//        candidates.add("hdfs://localhost:9000/ ");
+//        candidates.set(0, "hdfs://localhost:9000/ ");
+//        return 0;
+//    }
     
 }

@@ -3,17 +3,13 @@
 package com.instanceone.hdfs.shell.command;
 
 import java.io.IOException;
-import java.net.URI;
 
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.instanceone.hdfs.shell.AbstractCommand;
 import com.instanceone.hdfs.shell.Environment;
 
 public class HdfsCd extends HdfsCommand {

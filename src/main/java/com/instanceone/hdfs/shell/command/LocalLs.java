@@ -4,7 +4,7 @@ package com.instanceone.hdfs.shell.command;
 
 import java.io.File;
 
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
 
@@ -36,10 +36,4 @@ public class LocalLs extends AbstractCommand {
         }
 
     }
-    
-    public static void main(String[] args){
-        String name = "foobar.xml";
-        System.out.println(name.matches("foobar.xml"));
-    }
-
 }

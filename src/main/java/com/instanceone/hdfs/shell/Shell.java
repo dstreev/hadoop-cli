@@ -2,12 +2,14 @@
 
 package com.instanceone.hdfs.shell;
 
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 
-import jline.ArgumentCompletor;
-import jline.Completor;
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
+import jline.console.completer.AggregateCompleter;
+import jline.console.completer.ArgumentCompleter;
+import jline.console.completer.Completer;
+import jline.console.completer.StringsCompleter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -33,8 +35,8 @@ public class Shell {
 
     public static void main(String[] args) throws Exception {
         Environment env = new Environment();
-//        Command echo = new Echo("echo");
-//        env.addCommand(echo);
+        // Command echo = new Echo("echo");
+        // env.addCommand(echo);
         env.addCommand(new Exit("exit"));
         env.addCommand(new LocalLs("lls"));
         env.addCommand(new LocalPwd("lpwd"));
@@ -45,22 +47,32 @@ public class Shell {
         env.addCommand(new HdfsPut("put"));
         env.addCommand(new HdfsRm("rm"));
         env.addCommand(new Env("env"));
-        env.addCommand(new Help("help"));
+        env.addCommand(new Help("help", env));
         env.addCommand(new HdfsConnect("connect"));
 
+        // create completers
+        ArrayList<Completer> completers = new ArrayList<Completer>();
+        for (String cmdName : env.commandList()) {
+            StringsCompleter sc = new StringsCompleter(cmdName);
+            ArrayList<Completer> cmdCompleters = new ArrayList<Completer>();
+            cmdCompleters.add(sc);
+            cmdCompleters.addAll(env.getCommand(cmdName).getCompleters());
+            
+            ArgumentCompleter ac = new ArgumentCompleter(cmdCompleters);
+            completers.add(ac);
+        }
+
+        AggregateCompleter aggComp = new AggregateCompleter(completers);
+
         ConsoleReader reader = new ConsoleReader();
-        reader.addCompletor(new ArgumentCompletor(new Completor[] {
-            new ContextCompletor(env),
-            new NoopCompletor()
-        }));
+        reader.addCompleter(aggComp);
 
         String line;
-        PrintWriter out = new PrintWriter(System.out);
 
         while ((line = reader.readLine("hdfs-cli % ")) != null) {
             String[] argv = line.split("\\s");
             String cmdName = argv[0];
-//            System.out.println("Command: " + cmdName);
+
             Command command = env.getCommand(cmdName);
             if (command != null) {
                 System.out.println("Running: " + command.getName() + " ("
@@ -78,7 +90,9 @@ public class Shell {
 
             }
             else {
-                System.out.println(cmdName + ": command not found");
+                if(cmdName != null && cmdName.length() > 0){
+                    System.out.println(cmdName + ": command not found");
+                }
             }
         }
     }
@@ -94,6 +108,5 @@ public class Shell {
         }
         return retval;
     }
-
 
 }

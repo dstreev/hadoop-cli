@@ -4,7 +4,7 @@ package com.instanceone.hdfs.shell.command;
 
 import java.util.Properties;
 
-import jline.ConsoleReader;
+import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -19,7 +19,7 @@ public class Env extends AbstractCommand {
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
-        if (true || cmd.hasOption("l")) {
+        if (cmd.hasOption("l")) {
             Properties props = env.getProperties();
             System.out.println("Local Properties:");
             for (Object key : props.keySet()) {
@@ -37,7 +37,6 @@ public class Env extends AbstractCommand {
 
     @Override
     public Options getOptions() {
-        // TODO Auto-generated method stub
         Options opts = super.getOptions();
         opts.addOption("s", "system", false, "list system properties.");
         opts.addOption("l", "local", false, "list local properties.");
