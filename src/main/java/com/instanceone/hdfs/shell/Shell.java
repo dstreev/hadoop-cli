@@ -1,4 +1,4 @@
-// Copyright (c) 2011 Health Market Science, Inc.
+// Copyright (c) 2012 P. Taylor Goetz (ptgoetz@gmail.com)
 
 package com.instanceone.hdfs.shell;
 
