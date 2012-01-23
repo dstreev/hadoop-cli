@@ -2,11 +2,8 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import java.util.List;
-
 import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
-import jline.console.completer.ArgumentCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 import jline.console.completer.StringsCompleter;

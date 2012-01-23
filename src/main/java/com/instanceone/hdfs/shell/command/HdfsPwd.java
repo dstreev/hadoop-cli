@@ -2,8 +2,6 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import java.io.IOException;
-
 import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
@@ -18,27 +16,21 @@ public class HdfsPwd extends HdfsCommand {
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
-        String cwd;
-        try {
-            cwd = super.cwd(env, reader);
-            if(cmd.hasOption("l")){
-                System.out.println(super.hdfsUrl(env, reader) + cwd.substring(1));
-            } else{
-                System.out.println(cwd);
-            }
+        String wd = hdfs.getWorkingDirectory().toString();
+        if (cmd.hasOption("l")) {
+            System.out.println(wd);
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        else {
+            System.out.println(wd.substring(env.getProperty(HDFS_URL).length()));
         }
+
     }
 
     @Override
     public Options getOptions() {
-        Options opts =  super.getOptions();
+        Options opts = super.getOptions();
         opts.addOption("l", false, "show the full HDFS URL");
         return opts;
     }
-    
-    
 
 }

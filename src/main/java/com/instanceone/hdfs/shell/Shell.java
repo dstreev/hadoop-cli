@@ -76,7 +76,7 @@ public class Shell {
 
         String line;
 
-        while ((line = reader.readLine("hdfs-cli % ")) != null) {
+        while ((line = reader.readLine("hdfs-cli$ ")) != null) {
             String[] argv = line.split("\\s");
             String cmdName = argv[0];
 

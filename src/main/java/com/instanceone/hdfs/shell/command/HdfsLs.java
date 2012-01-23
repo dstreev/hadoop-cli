@@ -2,15 +2,16 @@
 
 package com.instanceone.hdfs.shell.command;
 
+import static com.instanceone.hdfs.shell.command.FSUtil.longFormat;
+import static com.instanceone.hdfs.shell.command.FSUtil.shortFormat;
+
 import java.io.IOException;
-import java.util.Date;
 
 import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.Environment;
@@ -23,33 +24,20 @@ public class HdfsLs extends HdfsCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
-            FileSystem hdfs = super.getFileSystem(env, reader);
-            String cwd = super.cwd(env, reader);
-            
-//            String lsFile = ;
-
-            Path srcPath = cmd.getArgs().length == 0 ? new Path(cwd) : new Path(cwd, cmd.getArgs()[0]);
+            Path srcPath = cmd.getArgs().length == 0 ? hdfs.getWorkingDirectory() : new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
             FileStatus[] files = hdfs.listStatus(srcPath);
             for (FileStatus file : files) {
                 // String fileName = file.getPath().
                 if (cmd.hasOption("l")) {
-                    System.out.println(
-                                    (file.isDir() ? "d" : "-")+
-                                    file.getPermission() + "\t"
-                                    + file.getOwner() + ":" + file.getGroup()
-                                    + "\t" + file.getLen() 
-                                    + "\t" + new Date(file.getModificationTime())
-                    
-                                    + "\t" + file.getPath().getName());
+                    System.out.println(longFormat(file));
                 }
                 else {
-                    System.out.println(file.getPath().getName());
+                    System.out.println(shortFormat(file));
                 }
             }
         }
         catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 

@@ -2,51 +2,18 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import java.io.IOException;
-import java.net.URI;
-
-import jline.console.ConsoleReader;
-
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 
 import com.instanceone.hdfs.shell.AbstractCommand;
-import com.instanceone.hdfs.shell.Environment;
 
 public abstract class HdfsCommand extends AbstractCommand {
     public static final String HDFS_URL = "hdfs.url";
-    public static final String HDFS_CWD = "hdfs.cwd";
+    
+    protected static FileSystem hdfs;
+    protected static FileSystem localfs;
 
     public HdfsCommand(String name) {
         super(name);
-    }
-
-    protected String hdfsUrl(Environment env, ConsoleReader reader)
-                    throws IOException {
-        String hdfsUrl = env.getProperty(HDFS_URL);
-        if (hdfsUrl == null) {
-            hdfsUrl = reader.readLine("Enter HDFS URL: ");
-            env.setProperty(HDFS_URL, hdfsUrl);
-        }
-        return hdfsUrl;
-    }
-
-    protected String cwd(Environment env, ConsoleReader reader) throws IOException {
-        hdfsUrl(env, reader);
-        String cwd = env.getProperty(HDFS_CWD);
-        if (cwd == null) {
-            cwd = "/";
-            env.setProperty(HDFS_CWD, cwd);
-        }
-        return cwd;
-    }
-
-    protected FileSystem getFileSystem(Environment env, ConsoleReader reader)
-                    throws IOException {
-        Configuration config = new Configuration();
-        FileSystem hdfs = FileSystem.get(URI.create(hdfsUrl(env, reader)),
-                        config);
-        return hdfs;
     }
 
 }

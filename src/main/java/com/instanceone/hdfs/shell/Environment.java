@@ -10,6 +10,7 @@ public class Environment {
     public static final String CWD = "local.cwd";
     
     private Properties props = new Properties();
+    private HashMap<String, Object> values = new HashMap<String, Object>();
     
     public Environment(){
         this.props.put(CWD, System.getProperty("user.dir"));
@@ -44,6 +45,14 @@ public class Environment {
     
     public Properties getProperties(){
         return this.props;
+    }
+    
+    public void setValue(String key, Object value){
+        this.values.put(key, value);
+    }
+    
+    public Object getValue(String key){
+        return this.values.get(key);
     }
 
 }

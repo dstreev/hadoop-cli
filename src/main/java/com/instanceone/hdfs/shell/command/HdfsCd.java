@@ -7,7 +7,6 @@ import java.io.IOException;
 import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.Environment;
@@ -20,22 +19,23 @@ public class HdfsCd extends HdfsCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
-            FileSystem hdfs = super.getFileSystem(env, reader);
-            String hdfsUrl = super.hdfsUrl(env, reader);
-            String cwd = super.cwd(env, reader);
             String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
-            log(cmd, "CWD before: " + cwd);
-            log(cmd, "Requested CWD: " + dir);
+            log(cmd, "CWD before: " + hdfs.getWorkingDirectory());
+            log(cmd, "Requested CWD: " + dir);   
             
-            Path path = new Path(cwd, dir);
-            
-            Path qPath = path.makeQualified(hdfs);
-            if(hdfs.getFileStatus(qPath).isDir() && hdfs.exists(qPath)){
-                String qpStr = qPath.toString();
-                String newCwd = qpStr.substring(hdfsUrl.length() -1);
-                log(cmd, "New CWD: " + newCwd);
-                env.setProperty(HDFS_CWD, newCwd);
+            Path newPath = null;
+            if(dir.startsWith("/")){
+                newPath = new Path(env.getProperty(HDFS_URL), dir);
             } else{
+                newPath = new Path(hdfs.getWorkingDirectory(), dir);
+            }
+
+            Path qPath = newPath.makeQualified(hdfs);
+            System.out.println(newPath);
+            if (hdfs.getFileStatus(qPath).isDir() && hdfs.exists(qPath)) {
+                hdfs.setWorkingDirectory(qPath);
+            }
+            else {
                 System.out.println("No such directory: " + dir);
             }
             
