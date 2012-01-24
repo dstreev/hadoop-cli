@@ -1,6 +1,5 @@
 package com.instanceone.hdfs.shell.completers;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -16,14 +15,16 @@ import com.instanceone.hdfs.shell.command.HdfsCommand;
 
 public class FileSystemNameCompleter implements Completer {
     private Environment env;
+    private boolean local = false;
 
 
-
-    public FileSystemNameCompleter(Environment env) {
+    public FileSystemNameCompleter(Environment env, boolean local) {
         // this.includeFiles = includeFiles;
         this.env = env;
+        this.local = local;
     }
 
+    @SuppressWarnings("unused")
     private static String strip(String prefix, String target) {
         return target.substring(prefix.length());
     }
@@ -31,12 +32,21 @@ public class FileSystemNameCompleter implements Completer {
     public int complete(String buffer, final int cursor,
                     final List<CharSequence> candidates) {
 
-        FileSystem fs = (FileSystem) env.getValue(HdfsCommand.HDFS);
-        String prefix = env.getProperty(HdfsCommand.HDFS_URL);
+        FileSystem fs;
+        
+        String prefix;
+        
+        if(!this.local){
+            fs = (FileSystem) env.getValue(HdfsCommand.HDFS);
+            prefix = env.getProperty(HdfsCommand.HDFS_URL);
+        } else{
+            fs = (FileSystem) env.getValue(HdfsCommand.LOCAL_FS);
+            prefix = "file:";
+        }
 //        System.out.println(prefix);
 
         Path basePath = fs.getWorkingDirectory();
-        String curPath = strip(prefix, basePath.toString());
+//        String curPath = strip(prefix, basePath.toString());
 //        System.out.println("curPath: " + curPath);
 
         if (buffer == null) {

@@ -39,7 +39,7 @@ public class Shell {
         env.addCommand(new Exit("exit"));
         env.addCommand(new LocalLs("lls"));
         env.addCommand(new LocalPwd("lpwd"));
-        env.addCommand(new LocalCwd("lcd"));
+        env.addCommand(new LocalCwd("lcd", env));
         env.addCommand(new HdfsLs("ls"));
         env.addCommand(new HdfsCd("cd", env));
         env.addCommand(new HdfsPwd("pwd"));

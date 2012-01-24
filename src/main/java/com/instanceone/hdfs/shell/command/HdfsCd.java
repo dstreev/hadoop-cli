@@ -54,7 +54,7 @@ public class HdfsCd extends HdfsCommand {
 
     @Override
     public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env);
+        return new FileSystemNameCompleter(this.env, false);
     }
     
     

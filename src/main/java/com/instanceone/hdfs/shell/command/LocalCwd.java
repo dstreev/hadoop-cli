@@ -5,17 +5,21 @@ package com.instanceone.hdfs.shell.command;
 import java.io.IOException;
 
 import jline.console.ConsoleReader;
+import jline.console.completer.Completer;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.Environment;
+import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 
 public class LocalCwd extends HdfsCommand {
+    private Environment env;
 
-    public LocalCwd(String name) {
+    public LocalCwd(String name, Environment env) {
         super(name);
+        this.env = env;
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
@@ -47,6 +51,11 @@ public class LocalCwd extends HdfsCommand {
             System.out.println(e.getMessage());
         }
 
+    }
+    
+    @Override
+    public Completer getCompleter() {
+        return new FileSystemNameCompleter(this.env, true);
     }
 
 }
