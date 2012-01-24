@@ -37,7 +37,7 @@ public class Shell {
     public static void main(String[] args) throws Exception {
         Environment env = new Environment();
         env.addCommand(new Exit("exit"));
-        env.addCommand(new LocalLs("lls"));
+        env.addCommand(new LocalLs("lls", env));
         env.addCommand(new LocalPwd("lpwd"));
         env.addCommand(new LocalCwd("lcd", env));
         env.addCommand(new HdfsLs("ls"));

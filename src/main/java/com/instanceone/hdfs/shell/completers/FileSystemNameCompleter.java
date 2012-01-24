@@ -1,5 +1,6 @@
 package com.instanceone.hdfs.shell.completers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.Environment;
 import com.instanceone.hdfs.shell.command.HdfsCommand;
+import com.instanceone.hdfs.shell.format.ANSIStyle;
 
 
 public class FileSystemNameCompleter implements Completer {
@@ -119,5 +121,6 @@ public class FileSystemNameCompleter implements Completer {
 
         return index + separator().length();
     }
+    
 
 }

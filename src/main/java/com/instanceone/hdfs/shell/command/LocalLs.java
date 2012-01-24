@@ -7,6 +7,7 @@ import static com.instanceone.hdfs.shell.command.FSUtil.*;
 import java.io.IOException;
 
 import jline.console.ConsoleReader;
+import jline.console.completer.Completer;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -15,10 +16,12 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.Environment;
+import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 
 public class LocalLs extends HdfsCommand {
+    private Environment env;
 
-    public LocalLs(String name) {
+    public LocalLs(String name, Environment env) {
         super(name);
     }
 
@@ -51,27 +54,10 @@ public class LocalLs extends HdfsCommand {
         return opts;
     }  
     
-    /*
-    public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
-        String cwd = env.getProperty(Environment.CWD);
-        if(cwd == null){
-            cwd = System.getProperty("user.dir");
-            env.setProperty(Environment.CWD, cwd);
-        }
-        if(cmd.getArgs().length > 0){
-            cwd += "/" + cmd.getArgs()[0];
-        }
-        
-        File cwdFile = new File(cwd);
-        System.out.println(cwdFile.getAbsolutePath());
-        File[] files = cwdFile.listFiles();
-        System.out.println(files);
-        for(File file : files){
-            System.out.println(file.getName());
-        }
-
+    @Override
+    public Completer getCompleter() {
+        return new FileSystemNameCompleter(this.env, true);
     }
-    */
     
     
 }
