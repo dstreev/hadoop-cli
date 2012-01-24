@@ -6,6 +6,7 @@ import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.Environment;
@@ -20,6 +21,7 @@ public class HdfsRm extends HdfsCommand {
 
         try {
             String remoteFile = cmd.getArgs()[0];
+            FileSystem hdfs = (FileSystem)env.getValue(HDFS);
 
             log(cmd, "HDFS file: " + remoteFile);
             Path hdfsPath = new Path(hdfs.getWorkingDirectory(), remoteFile);

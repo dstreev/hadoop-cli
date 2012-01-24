@@ -6,6 +6,7 @@ import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
+import org.apache.hadoop.fs.FileSystem;
 
 import com.instanceone.hdfs.shell.Environment;
 
@@ -16,6 +17,7 @@ public class HdfsPwd extends HdfsCommand {
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+        FileSystem hdfs = (FileSystem)env.getValue(HDFS);
         String wd = hdfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {
             System.out.println(wd);

@@ -12,6 +12,7 @@ import jline.console.ConsoleReader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.Environment;
@@ -24,6 +25,7 @@ public class HdfsLs extends HdfsCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
+            FileSystem hdfs = (FileSystem)env.getValue(HDFS);
             Path srcPath = cmd.getArgs().length == 0 ? hdfs.getWorkingDirectory() : new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
             FileStatus[] files = hdfs.listStatus(srcPath);
             for (FileStatus file : files) {

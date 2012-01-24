@@ -36,12 +36,14 @@ public class HdfsConnect extends HdfsCommand {
                 Configuration config = new Configuration();
                 FileSystem hdfs = FileSystem.get(URI.create(cmd.getArgs()[0]),
                                 config);
-                hdfs = hdfs;
+//                HdfsCommand.hdfs = hdfs;
+                env.setValue(HDFS, hdfs);
                 // set working dir to root
                 hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
                 
                 FileSystem local = FileSystem.getLocal(new Configuration());
-                localfs = local;
+//                HdfsCommand.localfs = local;
+                env.setValue(LOCAL_FS, local);
                 env.setProperty(HDFS_URL, hdfs.getUri().toString());
                 
                 

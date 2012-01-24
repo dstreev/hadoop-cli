@@ -7,13 +7,13 @@ import java.util.Properties;
 import java.util.Set;
 
 public class Environment {
-    public static final String CWD = "local.cwd";
+//    public static final String CWD = "local.cwd";
     
     private Properties props = new Properties();
     private HashMap<String, Object> values = new HashMap<String, Object>();
     
     public Environment(){
-        this.props.put(CWD, System.getProperty("user.dir"));
+//        this.props.put(CWD, System.getProperty("user.dir"));
     }
     
     private HashMap<String, Command> commands = new HashMap<String, Command>();

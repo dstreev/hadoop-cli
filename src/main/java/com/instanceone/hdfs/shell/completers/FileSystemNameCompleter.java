@@ -1,89 +1,86 @@
 package com.instanceone.hdfs.shell.completers;
 
-import jline.console.completer.Completer;
-import jline.internal.Configuration;
-
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-/**
- * A file name completer takes the buffer and issues a list of
- * potential completions.
- * <p/>
- * This completer tries to behave as similar as possible to
- * <i>bash</i>'s file name completion (using GNU readline)
- * with the following exceptions:
- * <p/>
- * <ul>
- * <li>Candidates that are directories will end with "/"</li>
- * <li>Wildcard regular expressions are not evaluated or replaced</li>
- * <li>The "~" character can be used to represent the user's home,
- * but it cannot complete to other users' homes, since java does
- * not provide any way of determining that easily</li>
- * </ul>
- *
- * @author <a href="mailto:mwp1@cornell.edu">Marc Prud'hommeaux</a>
- * @author <a href="mailto:jason@planet57.com">Jason Dillon</a>
- * @since 2.3
- */
-public class FileSystemNameCompleter
-    implements Completer
-{
+import jline.console.completer.Completer;
+
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
+import com.instanceone.hdfs.shell.Environment;
+import com.instanceone.hdfs.shell.command.HdfsCommand;
 
 
-    public int complete(String buffer, final int cursor, final List<CharSequence> candidates) {
-        // buffer can be null
-        assert candidates != null;
+public class FileSystemNameCompleter implements Completer {
+    private Environment env;
+
+
+
+    public FileSystemNameCompleter(Environment env) {
+        // this.includeFiles = includeFiles;
+        this.env = env;
+    }
+
+    private static String strip(String prefix, String target) {
+        return target.substring(prefix.length());
+    }
+
+    public int complete(String buffer, final int cursor,
+                    final List<CharSequence> candidates) {
+
+        FileSystem fs = (FileSystem) env.getValue(HdfsCommand.HDFS);
+        String prefix = env.getProperty(HdfsCommand.HDFS_URL);
+//        System.out.println(prefix);
+
+        Path basePath = fs.getWorkingDirectory();
+        String curPath = strip(prefix, basePath.toString());
+//        System.out.println("curPath: " + curPath);
 
         if (buffer == null) {
-            buffer = "";
+//            System.out.println("Buffer was null!");
+            buffer = "./";
         }
 
 
-        String translated = buffer;
+//        System.out.println("Match: '" + buffer + "'");
+//        System.out.println("Base Path: " + basePath);
 
-        File homeDir = getUserHome();
+        Path completionPath = buffer.startsWith("/") ? new Path(prefix, buffer)
+                        : new Path(basePath, buffer);
+//        System.out.println("Comp. Path: " + completionPath);
+//        System.out.println("Comp. Parent: " + completionPath.getParent());
+        Path completionDir = (completionPath.getParent() == null || buffer.endsWith("/")) ? completionPath
+                        : completionPath.getParent();
+//        System.out.println("Comp. Dir: " + completionDir);
+        try {
+            FileStatus[] entries = fs.listStatus(completionDir);
+//            System.out.println("Possible matches:");
+//            for (FileStatus fStat : entries) {
+//                System.out.println(fStat.getPath().getName());
+//                if(fStat.getPath().toString().startsWith(completionPath.toString())){
+//                    System.out.println("^ WOOP!");
+//                }
+//            }
+            
+            return matchFiles(buffer, completionPath.toString(), entries, candidates);
 
-        // Special character: ~ maps to the user's home directory
-        if (translated.startsWith("~" + separator())) {
-            translated = homeDir.getPath() + translated.substring(1);
         }
-        else if (translated.startsWith("~")) {
-            translated = homeDir.getParentFile().getAbsolutePath();
+        catch (IOException e) {
+            e.printStackTrace();
+            return -1;
         }
-        else if (!(translated.startsWith(separator()))) {
-            String cwd = getUserDir().getAbsolutePath();
-            translated = cwd + separator() + translated;
-        }
-
-        File file = new File(translated);
-        final File dir;
-
-        if (translated.endsWith(separator())) {
-            dir = file;
-        }
-        else {
-            dir = file.getParentFile();
-        }
-
-        File[] entries = dir == null ? new File[0] : dir.listFiles();
-
-        return matchFiles(buffer, translated, entries, candidates);
     }
 
     protected String separator() {
-        return File.separator;
+        return "/";
     }
 
-    protected File getUserHome() {
-        return Configuration.getUserHome();
-    }
-
-    protected File getUserDir() {
-        return new File(".");
-    }
-
-    protected int matchFiles(final String buffer, final String translated, final File[] files, final List<CharSequence> candidates) {
+    protected int matchFiles(final String buffer, final String translated,
+                    final FileStatus[] files,
+                    final List<CharSequence> candidates) {
         if (files == null) {
             return -1;
         }
@@ -91,15 +88,20 @@ public class FileSystemNameCompleter
         int matches = 0;
 
         // first pass: just count the matches
-        for (File file : files) {
-            if (file.getAbsolutePath().startsWith(translated)) {
+        for (FileStatus file : files) {
+            // System.out.println("Checking: " + file.getPath());
+            if (file.getPath().toString().startsWith(translated)) {
+                // System.out.println("Found match: " + file.getPath());
                 matches++;
             }
         }
-        for (File file : files) {
-            if (file.getAbsolutePath().startsWith(translated)) {
-                CharSequence name = file.getName() + (matches == 1 && file.isDirectory() ? separator() : " ");
-                candidates.add(render(file, name).toString());
+        for (FileStatus file : files) {
+            if (file.getPath().toString().startsWith(translated)) {
+                String name = file.getPath().getName()
+                                + (matches == 1 && file.isDir() ? separator()
+                                                : " ");
+                // System.out.println("Adding candidate: " + name);
+                candidates.add(name);
             }
         }
 
@@ -108,10 +110,4 @@ public class FileSystemNameCompleter
         return index + separator().length();
     }
 
-    protected CharSequence render(final File file, final CharSequence name) {
-        assert file != null;
-        assert name != null;
-
-        return name;
-    }
 }

@@ -12,6 +12,7 @@ import jline.console.completer.Completer;
 import jline.console.completer.FileNameCompleter;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.Environment;
@@ -25,17 +26,9 @@ public class HdfsPut extends HdfsCommand {
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
 
         try {
-//            String cwd = super.cwd(env, reader);
-//            String lcwd = env.getProperty(Environment.CWD);
-//            String hdfsCwd = env.getProperty(HDFS_CWD);
-//            FileSystem fs = super.getFileSystem(env, reader);
-//            
-//            FileSystem local = FileSystem.getLocal(new Configuration());
-//            local.setWorkingDirectory(new Path("file:" + lcwd));
-//            
-//            log(cmd, "Local Dir: " + lcwd);
-//            log(cmd,"HDFS Dir: " + hdfsCwd);
             
+            FileSystem hdfs = (FileSystem)env.getValue(HDFS);
+            FileSystem localfs = (FileSystem)env.getValue(LOCAL_FS);
             String localFile = cmd.getArgs()[0];
             
             
