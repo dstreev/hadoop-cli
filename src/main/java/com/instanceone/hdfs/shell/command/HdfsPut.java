@@ -5,22 +5,26 @@ package com.instanceone.hdfs.shell.command;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import jline.console.ConsoleReader;
+import jline.console.completer.ArgumentCompleter;
 import jline.console.completer.Completer;
-import jline.console.completer.FileNameCompleter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.Environment;
+import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 
 public class HdfsPut extends HdfsCommand {
+    private Environment env;
 
-    public HdfsPut(String name) {
+    public HdfsPut(String name, Environment env) {
         super(name);
+        this.env = env;
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
@@ -48,10 +52,7 @@ public class HdfsPut extends HdfsCommand {
             log(cmd,"Remote path: " + hdfsPath);
             
             hdfs.copyFromLocalFile(false, false, filesToUpload, hdfsPath);
-            
-            
-            
-            
+
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
@@ -59,51 +60,7 @@ public class HdfsPut extends HdfsCommand {
 
     }
     
-    /*
-    public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
 
-        try {
-            String cwd = super.cwd(env, reader);
-            String lcwd = env.getProperty(Environment.CWD);
-            String hdfsCwd = env.getProperty(HDFS_CWD);
-            FileSystem fs = super.getFileSystem(env, reader);
-            
-            FileSystem local = FileSystem.getLocal(new Configuration());
-            local.setWorkingDirectory(new Path("file:" + lcwd));
-            
-            log(cmd, "Local Dir: " + lcwd);
-            log(cmd,"HDFS Dir: " + hdfsCwd);
-            
-            String localFile = cmd.getArgs()[0];
-            
-            
-            String localFileRegex = localFile.replaceAll("\\*", ".*");
-            FilenameFilter regexFilter = new RegexFilenameFilter(localFileRegex);
-            File cwdFile = new File(lcwd);
-            File[] files = cwdFile.listFiles(regexFilter);
-            Path[] filesToUpload = new Path[files.length];
-            for(int i = 0; i<files.length;i++){
-                File file = files[i];
-                log(cmd,"Matching file: " + file);
-                filesToUpload[i] = new Path(file.getName());
-                
-            }
-
-            Path hdfsPath = cmd.getArgs().length > 1 ? new Path(hdfsCwd, cmd.getArgs()[1]) : new Path(hdfsCwd);
-            log(cmd,"Remote path: " + hdfsPath);
-            
-            fs.copyFromLocalFile(false, false, filesToUpload, hdfsPath);
-            
-            
-            
-            
-        }
-        catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-
-    }
-     */
     
     public static void main(String[] args) throws Exception{
         String file = "*.xml";
@@ -122,7 +79,12 @@ public class HdfsPut extends HdfsCommand {
     
     @Override
     public Completer getCompleter() {
-        return new FileNameCompleter();
+        ArrayList<Completer> completers = new ArrayList<Completer>();
+        completers.add(new FileSystemNameCompleter(env, true));
+        completers.add(new FileSystemNameCompleter(env, false));
+        ArgumentCompleter completer = new ArgumentCompleter(completers);
+        
+        return completer;
     }
 
 

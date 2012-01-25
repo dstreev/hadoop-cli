@@ -9,7 +9,6 @@ import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.ArgumentCompleter;
 import jline.console.completer.Completer;
-import jline.console.completer.NullCompleter;
 import jline.console.completer.StringsCompleter;
 
 import org.apache.commons.cli.CommandLine;
@@ -27,7 +26,7 @@ import com.instanceone.hdfs.shell.command.HdfsPut;
 import com.instanceone.hdfs.shell.command.HdfsPwd;
 import com.instanceone.hdfs.shell.command.HdfsRm;
 import com.instanceone.hdfs.shell.command.Help;
-import com.instanceone.hdfs.shell.command.LocalCwd;
+import com.instanceone.hdfs.shell.command.LocalCd;
 import com.instanceone.hdfs.shell.command.LocalLs;
 import com.instanceone.hdfs.shell.command.LocalPwd;
 
@@ -39,11 +38,11 @@ public class Shell {
         env.addCommand(new Exit("exit"));
         env.addCommand(new LocalLs("lls", env));
         env.addCommand(new LocalPwd("lpwd"));
-        env.addCommand(new LocalCwd("lcd", env));
+        env.addCommand(new LocalCd("lcd", env));
         env.addCommand(new HdfsLs("ls"));
         env.addCommand(new HdfsCd("cd", env));
         env.addCommand(new HdfsPwd("pwd"));
-        env.addCommand(new HdfsPut("put"));
+        env.addCommand(new HdfsPut("put", env));
         env.addCommand(new HdfsRm("rm"));
         env.addCommand(new Env("env"));
         env.addCommand(new HdfsConnect("connect"));
@@ -63,7 +62,7 @@ public class Shell {
             // add the completer for the command
             cmdCompleters.add(env.getCommand(cmdName).getCompleter());
             // add a terminator for the command
-            cmdCompleters.add(new NullCompleter());
+            //cmdCompleters.add(new NullCompleter());
             
             ArgumentCompleter ac = new ArgumentCompleter(cmdCompleters);
             completers.add(ac);

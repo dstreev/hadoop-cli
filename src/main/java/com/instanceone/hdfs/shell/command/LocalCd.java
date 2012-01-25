@@ -14,10 +14,10 @@ import org.apache.hadoop.fs.Path;
 import com.instanceone.hdfs.shell.Environment;
 import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 
-public class LocalCwd extends HdfsCommand {
+public class LocalCd extends HdfsCommand {
     private Environment env;
 
-    public LocalCwd(String name, Environment env) {
+    public LocalCd(String name, Environment env) {
         super(name);
         this.env = env;
     }
