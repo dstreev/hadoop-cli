@@ -21,6 +21,7 @@ import com.instanceone.hdfs.shell.command.Env;
 import com.instanceone.hdfs.shell.command.Exit;
 import com.instanceone.hdfs.shell.command.HdfsCd;
 import com.instanceone.hdfs.shell.command.HdfsConnect;
+import com.instanceone.hdfs.shell.command.HdfsHead;
 import com.instanceone.hdfs.shell.command.HdfsLs;
 import com.instanceone.hdfs.shell.command.HdfsPut;
 import com.instanceone.hdfs.shell.command.HdfsPwd;
@@ -43,6 +44,7 @@ public class Shell {
         env.addCommand(new HdfsCd("cd", env));
         env.addCommand(new HdfsPwd("pwd"));
         env.addCommand(new HdfsPut("put", env));
+        env.addCommand(new HdfsHead("head", env));
         env.addCommand(new HdfsRm("rm"));
         env.addCommand(new Env("env"));
         env.addCommand(new HdfsConnect("connect"));
@@ -90,7 +92,10 @@ public class Shell {
                         command.execute(env, cl, reader);
                     }
                     catch (Throwable e) {
-                        e.printStackTrace();
+                        System.out.println("Command failed with error: " + e.getMessage());
+                        if(cl.hasOption("v")){
+                            e.printStackTrace();
+                        }
                     }
                 }
 
