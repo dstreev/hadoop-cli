@@ -23,14 +23,17 @@ public class HdfsHead extends HdfsCommand {
     public static final int LINE_COUNT = 10;
     
     private Environment env;
+    private boolean local = false;
 
-    public HdfsHead(String name, Environment env) {
+    public HdfsHead(String name, Environment env, boolean local) {
         super(name);
         this.env = env;
+        this.local = local;
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader console) {
-        FileSystem hdfs = (FileSystem)env.getValue(HDFS);
+        FileSystem hdfs = this.local ? (FileSystem)env.getValue(LOCAL_FS) : (FileSystem)env.getValue(HDFS);
+        log(cmd, "CWD: " + hdfs.getWorkingDirectory());
         
         if(cmd.getArgs().length == 1){
             int lineCount = Integer.parseInt(cmd.getOptionValue("n", String.valueOf(LINE_COUNT)));
@@ -74,7 +77,7 @@ public class HdfsHead extends HdfsCommand {
     
     @Override
     public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, false);
+        return new FileSystemNameCompleter(this.env, this.local);
     }
 
 }

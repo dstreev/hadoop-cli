@@ -44,7 +44,8 @@ public class Shell {
         env.addCommand(new HdfsCd("cd", env));
         env.addCommand(new HdfsPwd("pwd"));
         env.addCommand(new HdfsPut("put", env));
-        env.addCommand(new HdfsHead("head", env));
+        env.addCommand(new HdfsHead("head", env, false));
+        env.addCommand(new HdfsHead("lhead", env, true));
         env.addCommand(new HdfsRm("rm"));
         env.addCommand(new Env("env"));
         env.addCommand(new HdfsConnect("connect"));
