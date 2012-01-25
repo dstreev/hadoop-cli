@@ -14,13 +14,6 @@ public abstract class HdfsCommand extends AbstractCommand {
     public HdfsCommand(String name) {
         super(name);
     }
-    
-    
-    @Override
-    public Options getOptions() {
-        Options opts = super.getOptions();
-        opts.addOption("l", false, "show extended file attributes");
-        return opts;
-    }
+
 
 }

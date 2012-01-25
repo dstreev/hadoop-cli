@@ -19,6 +19,7 @@ import org.apache.commons.cli.PosixParser;
 
 import com.instanceone.hdfs.shell.command.Env;
 import com.instanceone.hdfs.shell.command.Exit;
+import com.instanceone.hdfs.shell.command.HdfsCat;
 import com.instanceone.hdfs.shell.command.HdfsCd;
 import com.instanceone.hdfs.shell.command.HdfsConnect;
 import com.instanceone.hdfs.shell.command.HdfsHead;
@@ -46,6 +47,8 @@ public class Shell {
         env.addCommand(new HdfsPut("put", env));
         env.addCommand(new HdfsHead("head", env, false));
         env.addCommand(new HdfsHead("lhead", env, true));
+        env.addCommand(new HdfsCat("cat", env, false));
+        env.addCommand(new HdfsCat("lcat", env, true));
         env.addCommand(new HdfsRm("rm"));
         env.addCommand(new Env("env"));
         env.addCommand(new HdfsConnect("connect"));

@@ -2,8 +2,6 @@
 
 package com.instanceone.hdfs.shell;
 
-
-
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 

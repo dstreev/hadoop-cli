@@ -18,14 +18,14 @@ import org.apache.hadoop.fs.Path;
 import com.instanceone.hdfs.shell.Environment;
 import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 
-public class HdfsHead extends HdfsCommand {
+public class HdfsCat extends HdfsCommand {
     
     public static final int LINE_COUNT = 10;
     
     private Environment env;
     private boolean local = false;
 
-    public HdfsHead(String name, Environment env, boolean local) {
+    public HdfsCat(String name, Environment env, boolean local) {
         super(name);
         this.env = env;
         this.local = local;
@@ -36,7 +36,6 @@ public class HdfsHead extends HdfsCommand {
         log(cmd, "CWD: " + hdfs.getWorkingDirectory());
         
         if(cmd.getArgs().length == 1){
-            int lineCount = Integer.parseInt(cmd.getOptionValue("n", String.valueOf(LINE_COUNT)));
             Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
             BufferedReader reader = null;
             try {
@@ -44,7 +43,7 @@ public class HdfsHead extends HdfsCommand {
                 InputStreamReader isr = new InputStreamReader(is);
                 reader = new BufferedReader(isr);
                 String line = null;
-                for(int i = 0; ((i <= lineCount) && (line = reader.readLine()) != null);i++ ){
+                for(int i = 0; (line = reader.readLine()) != null;i++ ){
                     System.out.println(line);
                 }
             }
@@ -70,7 +69,6 @@ public class HdfsHead extends HdfsCommand {
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();
-        opts.addOption("n", "linecount", true, "number of lines to display (defaults to 10)");
         return opts;
     }
     
