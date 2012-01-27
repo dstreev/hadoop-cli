@@ -24,12 +24,12 @@ public class LocalCd extends HdfsCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
-            
-            FileSystem localfs = (FileSystem)env.getValue(LOCAL_FS);
+
+            FileSystem localfs = (FileSystem) env.getValue(LOCAL_FS);
             String dir = cmd.getArgs().length == 0 ? System
                             .getProperty("user.home") : cmd.getArgs()[0];
-            System.out.println("Change Dir to: " + dir);
-            System.out.println("CWD: " + localfs.getWorkingDirectory());
+            log(cmd, "Change Dir to: " + dir);
+            log(cmd, "CWD: " + localfs.getWorkingDirectory());
             Path newPath = null;
             if (dir.startsWith("~/")) {
                 dir = System.getProperty("user.home") + dir.substring(1);
@@ -38,21 +38,21 @@ public class LocalCd extends HdfsCommand {
             newPath = new Path(dir);
 
             Path qPath = localfs.makeQualified(newPath);
-            System.out.println("Qual Path: " + qPath);
+            log(cmd, "Qual Path: " + qPath);
 
             if (localfs.getFileStatus(qPath).isDir() && localfs.exists(qPath)) {
                 localfs.setWorkingDirectory(qPath);
             }
             else {
-                System.out.println("No such directory: " + dir);
+                log(cmd, "No such directory: " + dir);
             }
         }
         catch (IOException e) {
-            System.out.println(e.getMessage());
+            log(cmd, e.getMessage());
         }
 
     }
-    
+
     @Override
     public Completer getCompleter() {
         return new FileSystemNameCompleter(this.env, true);

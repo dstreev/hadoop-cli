@@ -17,13 +17,13 @@ public class HdfsPwd extends HdfsCommand {
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
-        FileSystem hdfs = (FileSystem)env.getValue(HDFS);
+        FileSystem hdfs = (FileSystem) env.getValue(HDFS);
         String wd = hdfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {
-            System.out.println(wd);
+            log(cmd, wd);
         }
         else {
-            System.out.println(wd.substring(env.getProperty(HDFS_URL).length()));
+            log(cmd, wd.substring(env.getProperty(HDFS_URL).length()));
         }
 
     }

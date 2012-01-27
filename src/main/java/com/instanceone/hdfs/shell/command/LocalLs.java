@@ -31,17 +31,16 @@ public class LocalLs extends HdfsCommand {
             Path srcPath = cmd.getArgs().length == 0 ? localfs.getWorkingDirectory() : new Path(localfs.getWorkingDirectory(), cmd.getArgs()[0]);
             FileStatus[] files = localfs.listStatus(srcPath);
             for (FileStatus file : files) {
-                // String fileName = file.getPath().
                 if (cmd.hasOption("l")) {
-                    System.out.println(longFormat(file));
+                    log(cmd, longFormat(file));
                 }
                 else {
-                    System.out.println(shortFormat(file));
+                    log(cmd, shortFormat(file));
                 }
             }
         }
         catch (IOException e) {
-            System.out.println(e.getMessage());
+            log(cmd, e.getMessage());
         }
     }
 

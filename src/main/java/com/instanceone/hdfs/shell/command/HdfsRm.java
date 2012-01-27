@@ -12,27 +12,29 @@ import org.apache.hadoop.fs.Path;
 import com.instanceone.hdfs.shell.Environment;
 
 public class HdfsRm extends HdfsCommand {
+    private boolean local = false;
 
-    public HdfsRm(String name) {
+    public HdfsRm(String name, boolean local) {
         super(name);
+        this.local = local;
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
-
         try {
+            FileSystem hdfs = this.local ? (FileSystem) env.getValue(LOCAL_FS)
+                            : (FileSystem) env.getValue(HDFS);
             String remoteFile = cmd.getArgs()[0];
-            FileSystem hdfs = (FileSystem)env.getValue(HDFS);
 
-            log(cmd, "HDFS file: " + remoteFile);
+            logv(cmd, "HDFS file: " + remoteFile);
             Path hdfsPath = new Path(hdfs.getWorkingDirectory(), remoteFile);
-            log(cmd, "Remote path: " + hdfsPath);
+            logv(cmd, "Remote path: " + hdfsPath);
 
             boolean recursive = cmd.hasOption("r");
             hdfs.delete(hdfsPath, recursive);
 
         }
         catch (Throwable e) {
-            System.out.println("Error: " + e.getMessage());
+            log(cmd, "Error: " + e.getMessage());
         }
 
     }
@@ -43,7 +45,4 @@ public class HdfsRm extends HdfsCommand {
         opts.addOption("r", false, "delete recursively");
         return opts;
     }
-    
-    
-
 }

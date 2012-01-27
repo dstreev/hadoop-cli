@@ -43,6 +43,10 @@ public class FileSystemNameCompleter implements Completer {
             fs = (FileSystem) env.getValue(HdfsCommand.LOCAL_FS);
             prefix = "file:";
         }
+        if(fs == null){
+//            System.out.println("Not connected.");
+            return 0;
+        }
         // System.out.println(prefix);
 
         Path basePath = fs.getWorkingDirectory();

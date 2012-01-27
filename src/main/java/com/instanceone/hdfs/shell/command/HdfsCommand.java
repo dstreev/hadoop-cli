@@ -2,8 +2,6 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import org.apache.commons.cli.Options;
-
 import com.instanceone.hdfs.shell.AbstractCommand;
 
 public abstract class HdfsCommand extends AbstractCommand {

@@ -21,16 +21,16 @@ public class Env extends AbstractCommand {
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         if (cmd.hasOption("l") || !cmd.hasOption("s")) {
             Properties props = env.getProperties();
-            System.out.println("Local Properties:");
+            log(cmd, "Local Properties:");
             for (Object key : props.keySet()) {
-                System.out.println("\t" + key + "=" + props.get(key));
+                log(cmd, "\t" + key + "=" + props.get(key));
             }
         }
         if (cmd.hasOption("s")) {
-            System.out.println("System Properties:");
+            log(cmd, "System Properties:");
             Properties props = System.getProperties();
             for (Object key : props.keySet()) {
-                System.out.println("\t" + key + "=" + props.get(key));
+                log(cmd, "\t" + key + "=" + props.get(key));
             }
         }
     }

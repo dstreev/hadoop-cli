@@ -40,10 +40,14 @@ public abstract class AbstractCommand implements Command{
         return getName() + " [OPTION ...] [ARGS ...]";
     }
     
-    protected void log(CommandLine cmd, String log){
+    protected static void logv(CommandLine cmd, String log){
         if(cmd.hasOption("v")){
             System.out.println(log);
         }
+    }
+    
+    protected static void log(CommandLine cmd, String log){
+            System.out.println(log);
     }
 
     public Completer getCompleter() {

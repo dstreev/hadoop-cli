@@ -26,45 +26,27 @@ public class HdfsConnect extends HdfsCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
-            
-           
-            
-//            env.setProperty(HDFS_URL, null);
-//            env.setProperty(HDFS_CWD, null);
-            
             if(cmd.getArgs().length > 0){
                 Configuration config = new Configuration();
                 FileSystem hdfs = FileSystem.get(URI.create(cmd.getArgs()[0]),
                                 config);
-//                HdfsCommand.hdfs = hdfs;
                 env.setValue(HDFS, hdfs);
                 // set working dir to root
                 hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
                 
                 FileSystem local = FileSystem.getLocal(new Configuration());
-//                HdfsCommand.localfs = local;
                 env.setValue(LOCAL_FS, local);
                 env.setProperty(HDFS_URL, hdfs.getUri().toString());
                 
                 
-                System.out.println("Connected HDFS Uri: " + hdfs.getUri());
-                System.out.println("HDFS CWD: " + hdfs.getWorkingDirectory());
-                System.out.println("Local FS Uri: " + local.getUri());
-                System.out.println("Local CWD: " + local.getWorkingDirectory());
-                
-                //env.setProperty(HDFS_URL, cmd.getArgs()[0]);
-                //System.out.println("HDFS Connected: " + cmd.getArgs()[0]);
-            }
-            
-//            FileSystem hdfs = super.getFileSystem(env, reader);
-//            String hdfsUrl = super.hdfsUrl(env, reader);
-            
-            
-            
-            
+                logv(cmd, "Connected HDFS Uri: " + hdfs.getUri());
+                logv(cmd, "HDFS CWD: " + hdfs.getWorkingDirectory());
+                logv(cmd, "Local CWD: " + local.getWorkingDirectory());
+
+            }     
         }
         catch (IOException e) {
-            System.out.println(e.getMessage());
+            log(cmd, e.getMessage());
         }
     }
 

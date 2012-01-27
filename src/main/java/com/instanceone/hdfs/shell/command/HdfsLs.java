@@ -25,16 +25,17 @@ public class HdfsLs extends HdfsCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
-            FileSystem hdfs = (FileSystem)env.getValue(HDFS);
-            Path srcPath = cmd.getArgs().length == 0 ? hdfs.getWorkingDirectory() : new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
+            FileSystem hdfs = (FileSystem) env.getValue(HDFS);
+            Path srcPath = cmd.getArgs().length == 0 ? hdfs
+                            .getWorkingDirectory() : new Path(
+                            hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
             FileStatus[] files = hdfs.listStatus(srcPath);
             for (FileStatus file : files) {
-                // String fileName = file.getPath().
                 if (cmd.hasOption("l")) {
-                    System.out.println(longFormat(file));
+                    log(cmd, longFormat(file));
                 }
                 else {
-                    System.out.println(shortFormat(file));
+                    log(cmd, shortFormat(file));
                 }
             }
         }
@@ -43,10 +44,8 @@ public class HdfsLs extends HdfsCommand {
         }
     }
 
-
     @Override
     public Options getOptions() {
-        // TODO Auto-generated method stub
         Options opts = super.getOptions();
         opts.addOption("l", false, "show extended file attributes");
         return opts;

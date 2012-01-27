@@ -27,8 +27,8 @@ public class HdfsCd extends HdfsCommand {
             FileSystem hdfs = (FileSystem)env.getValue(HDFS);
             
             String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
-            log(cmd, "CWD before: " + hdfs.getWorkingDirectory());
-            log(cmd, "Requested CWD: " + dir);   
+            logv(cmd, "CWD before: " + hdfs.getWorkingDirectory());
+            logv(cmd, "Requested CWD: " + dir);   
             
             Path newPath = null;
             if(dir.startsWith("/")){
@@ -38,12 +38,12 @@ public class HdfsCd extends HdfsCommand {
             }
 
             Path qPath = newPath.makeQualified(hdfs);
-            System.out.println(newPath);
+            log(cmd, "" + newPath);
             if (hdfs.getFileStatus(qPath).isDir() && hdfs.exists(qPath)) {
                 hdfs.setWorkingDirectory(qPath);
             }
             else {
-                System.out.println("No such directory: " + dir);
+                log(cmd, "No such directory: " + dir);
             }
             
         }

@@ -43,13 +43,13 @@ public class HdfsPut extends HdfsCommand {
             Path[] filesToUpload = new Path[files.length];
             for(int i = 0; i<files.length;i++){
                 File file = files[i];
-                log(cmd,"Matching file: " + file);
+                logv(cmd,"Matching file: " + file);
                 filesToUpload[i] = new Path(file.getName());
                 
             }
 
             Path hdfsPath = cmd.getArgs().length > 1 ? new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[1]) : hdfs.getWorkingDirectory();
-            log(cmd,"Remote path: " + hdfsPath);
+            logv(cmd,"Remote path: " + hdfsPath);
             
             hdfs.copyFromLocalFile(false, false, filesToUpload, hdfsPath);
 
@@ -59,23 +59,6 @@ public class HdfsPut extends HdfsCommand {
         }
 
     }
-    
-
-    
-    public static void main(String[] args) throws Exception{
-        String file = "*.xml";
-        String localFileRegex = file.replaceAll("\\*", ".*");
-        
-       
-        System.out.println(localFileRegex);
-        
-        System.out.println( Pattern.matches(localFileRegex, "pom.xml"));
-        
-        
-    }
-    
-    
-    
     
     @Override
     public Completer getCompleter() {
@@ -87,21 +70,14 @@ public class HdfsPut extends HdfsCommand {
         return completer;
     }
 
-
-
-
     public static class RegexFilenameFilter implements FilenameFilter {
-        
         private String regex;
-        
         public RegexFilenameFilter(String regex){
             this.regex = regex;
         }
-
         public boolean accept(File dir, String name) {
             return Pattern.matches(this.regex, name);
         }
-        
     }
 
 }
