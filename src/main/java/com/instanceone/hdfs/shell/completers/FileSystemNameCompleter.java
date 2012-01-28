@@ -41,7 +41,7 @@ public class FileSystemNameCompleter implements Completer {
         }
         else {
             fs = (FileSystem) env.getValue(HdfsCommand.LOCAL_FS);
-            prefix = "file:";
+            prefix = "file:" + (buffer != null && buffer.startsWith("/") ? "/" : "");
         }
         if(fs == null){
 //            System.out.println("Not connected.");
@@ -57,9 +57,10 @@ public class FileSystemNameCompleter implements Completer {
             // System.out.println("Buffer was null!");
             buffer = "./";
         }
-
-        // System.out.println("Match: '" + buffer + "'");
-        // System.out.println("Base Path: " + basePath);
+//
+//         System.out.println("Prefix: " + prefix);
+//         System.out.println("Match: '" + buffer + "'");
+//         System.out.println("Base Path: " + basePath);
 
         Path completionPath = buffer.startsWith("/") ? new Path(prefix, buffer)
                         : new Path(basePath, buffer);
