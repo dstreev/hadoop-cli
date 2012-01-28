@@ -39,7 +39,7 @@ public class HdfsConnect extends HdfsCommand {
                 env.setProperty(HDFS_URL, hdfs.getUri().toString());
                 
                 
-                logv(cmd, "Connected HDFS Uri: " + hdfs.getUri());
+                log(cmd, "Connected: " + hdfs.getUri());
                 logv(cmd, "HDFS CWD: " + hdfs.getWorkingDirectory());
                 logv(cmd, "Local CWD: " + local.getWorkingDirectory());
 

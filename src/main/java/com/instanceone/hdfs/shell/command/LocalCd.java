@@ -28,17 +28,17 @@ public class LocalCd extends HdfsCommand {
             FileSystem localfs = (FileSystem) env.getValue(LOCAL_FS);
             String dir = cmd.getArgs().length == 0 ? System
                             .getProperty("user.home") : cmd.getArgs()[0];
-            log(cmd, "Change Dir to: " + dir);
-            log(cmd, "CWD: " + localfs.getWorkingDirectory());
+            logv(cmd, "Change Dir to: " + dir);
+            logv(cmd, "CWD: " + localfs.getWorkingDirectory());
             Path newPath = null;
             if (dir.startsWith("~/")) {
                 dir = System.getProperty("user.home") + dir.substring(1);
             }
-            System.out.println("Dir: " + dir);
+            logv(cmd,"Dir: " + dir);
             newPath = new Path(dir);
 
             Path qPath = localfs.makeQualified(newPath);
-            log(cmd, "Qual Path: " + qPath);
+            logv(cmd, "Qual Path: " + qPath);
 
             if (localfs.getFileStatus(qPath).isDir() && localfs.exists(qPath)) {
                 localfs.setWorkingDirectory(qPath);

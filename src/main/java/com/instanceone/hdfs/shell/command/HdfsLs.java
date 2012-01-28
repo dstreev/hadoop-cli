@@ -40,7 +40,7 @@ public class HdfsLs extends HdfsCommand {
             }
         }
         catch (IOException e) {
-            System.out.println(e.getMessage());
+            log(cmd, e.getMessage());
         }
     }
 

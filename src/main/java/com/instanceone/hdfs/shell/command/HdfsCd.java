@@ -38,7 +38,7 @@ public class HdfsCd extends HdfsCommand {
             }
 
             Path qPath = newPath.makeQualified(hdfs);
-            log(cmd, "" + newPath);
+            logv(cmd, "" + newPath);
             if (hdfs.getFileStatus(qPath).isDir() && hdfs.exists(qPath)) {
                 hdfs.setWorkingDirectory(qPath);
             }
