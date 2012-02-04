@@ -2,7 +2,8 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import static com.instanceone.hdfs.shell.command.FSUtil.*;
+import static com.instanceone.hdfs.shell.command.FSUtil.longFormat;
+import static com.instanceone.hdfs.shell.command.FSUtil.shortFormat;
 
 import java.io.IOException;
 
@@ -15,8 +16,8 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.instanceone.hdfs.shell.Environment;
 import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
+import com.instanceone.stemshell.Environment;
 
 public class LocalLs extends HdfsCommand {
     private Environment env;

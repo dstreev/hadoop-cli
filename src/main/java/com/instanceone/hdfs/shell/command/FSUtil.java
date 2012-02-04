@@ -9,7 +9,7 @@ import java.util.Date;
 
 import org.apache.hadoop.fs.FileStatus;
 
-import com.instanceone.hdfs.shell.format.ANSIStyle;
+import com.instanceone.stemshell.format.ANSIStyle;
 
 public class FSUtil {
 

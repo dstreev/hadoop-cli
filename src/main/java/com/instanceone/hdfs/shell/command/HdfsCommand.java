@@ -2,7 +2,7 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import com.instanceone.hdfs.shell.AbstractCommand;
+import com.instanceone.stemshell.command.AbstractCommand;
 
 public abstract class HdfsCommand extends AbstractCommand {
     public static final String HDFS_URL = "hdfs.url";

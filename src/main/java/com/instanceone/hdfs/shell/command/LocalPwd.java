@@ -8,7 +8,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
 
-import com.instanceone.hdfs.shell.Environment;
+import com.instanceone.stemshell.Environment;
 
 public class LocalPwd extends HdfsCommand {
 

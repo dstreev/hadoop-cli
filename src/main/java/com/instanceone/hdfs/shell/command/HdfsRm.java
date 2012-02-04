@@ -9,7 +9,7 @@ import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.instanceone.hdfs.shell.Environment;
+import com.instanceone.stemshell.Environment;
 
 public class HdfsRm extends HdfsCommand {
     private boolean local = false;

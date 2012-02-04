@@ -9,8 +9,8 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.instanceone.hdfs.shell.Environment;
 import com.instanceone.hdfs.shell.command.HdfsCommand;
+import com.instanceone.stemshell.Environment;
 
 public class FileSystemNameCompleter implements Completer {
     private Environment env;
