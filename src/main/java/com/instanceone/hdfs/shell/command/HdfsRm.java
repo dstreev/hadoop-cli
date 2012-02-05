@@ -30,6 +30,7 @@ public class HdfsRm extends HdfsCommand {
             logv(cmd, "Remote path: " + hdfsPath);
 
             boolean recursive = cmd.hasOption("r");
+            logv(cmd, "Deleting recursively...");
             hdfs.delete(hdfsPath, recursive);
 
         }

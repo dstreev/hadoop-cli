@@ -21,11 +21,11 @@ public class LocalPwd extends HdfsCommand {
         
         String wd = localfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {
-            System.out.println(wd);
+            log(cmd, wd);
         }
         else {
             // strip off prefix: "file:"
-            System.out.println(wd.substring(5));
+            log(cmd, wd.substring(5));
         }
     }
     

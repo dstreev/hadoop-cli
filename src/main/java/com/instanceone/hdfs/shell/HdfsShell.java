@@ -18,6 +18,7 @@ import com.instanceone.stemshell.Environment;
 import com.instanceone.stemshell.commands.Env;
 import com.instanceone.stemshell.commands.Exit;
 import com.instanceone.stemshell.commands.Help;
+import com.instanceone.stemshell.commands.HistoryCmd;
 
 public class HdfsShell extends com.instanceone.stemshell.Shell{
     
@@ -27,7 +28,6 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
     @Override
     public void initialize(Environment env) throws Exception {
-        env.setPrompt("hdfs-cli%");
         
         env.addCommand(new Exit("exit"));
         env.addCommand(new LocalLs("lls", env));
@@ -48,7 +48,13 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
         env.addCommand(new Env("env"));
         env.addCommand(new HdfsConnect("connect"));
         env.addCommand(new Help("help", env));
+        env.addCommand(new HistoryCmd("history"));
         
+    }
+
+    @Override
+    public String getName() {
+        return "hdfs-cli";
     }
 
 }
