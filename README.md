@@ -7,6 +7,10 @@ simpler and more intuitive than the standard command-line tools that come with H
 HDFS-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
 then manage local/remote files and transfers.
 
+To start HDFS-CLI, run the following command:
+
+	java -jar hdfs-cli-0.0.1-SNAPSHOT.jar
+
 #### Local vs. Remote Commands
 When working within a HDFS-CLI session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l`
 character to the name to denote "local".

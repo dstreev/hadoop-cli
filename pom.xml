@@ -6,6 +6,9 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Hadoop HDFS CLI</name>
 	<description>Hadoop HDFS Command Line Interface</description>
+	<properties>
+		<hadoop.version>0.20.205.0</hadoop.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.github.ptgoetz</groupId>
@@ -15,7 +18,7 @@
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-core</artifactId>
-			<version>0.20.205.0</version>
+			<version>${hadoop.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
