@@ -40,19 +40,17 @@ public class HdfsPut extends HdfsCommand {
             FilenameFilter regexFilter = new RegexFilenameFilter(localFileRegex);
             File cwdFile = new File(localfs.getWorkingDirectory().toString().substring(5));
             File[] files = cwdFile.listFiles(regexFilter);
-            Path[] filesToUpload = new Path[files.length];
+            //Path[] filesToUpload = new Path[files.length];
+            Path hdfsPath = cmd.getArgs().length > 1 ? new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[1]) : hdfs.getWorkingDirectory();
+            logv(cmd,"Remote path: " + hdfsPath);
             for(int i = 0; i<files.length;i++){
                 File file = files[i];
                 logv(cmd,"Matching file: " + file);
-                filesToUpload[i] = new Path(file.getName());
+                log(cmd,"Uploading file: " + file);
+                //filesToUpload[i] = new Path(file.getName());
+                hdfs.copyFromLocalFile(false, false,new Path[]{ new Path(file.getName())}, hdfsPath);
                 
             }
-
-            Path hdfsPath = cmd.getArgs().length > 1 ? new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[1]) : hdfs.getWorkingDirectory();
-            logv(cmd,"Remote path: " + hdfsPath);
-            
-            hdfs.copyFromLocalFile(false, false, filesToUpload, hdfsPath);
-
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
