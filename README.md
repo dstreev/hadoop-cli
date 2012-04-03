@@ -32,7 +32,7 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 	put			upload local files to the remote HDFS
 
 
-####Remote (HDFS) Commands
+#### Remote (HDFS) Commands
 	cd		 change current working directory
 	ls		 list directory contents
 	rm		 delete files/directories
