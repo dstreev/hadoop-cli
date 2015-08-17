@@ -19,18 +19,20 @@ public class FSUtil {
     public static String longFormat(FileStatus file) {
         String retval = (file.isDir() ? "d" : "-")
                         + file.getPermission()
-                        + "  "
+                        + (file.getPermission().getAclBit() ? "+":"")
+                        + (file.getPermission().getEncryptedBit() ? "#":"")
+                        + "\t"
                         + file.getOwner()
-                        + "  "
+                        + "\t"
                         + file.getGroup()
-                        + "  "
+                        + "\t"
                         + formatFileSize(file.getLen())
-                        + "  "
+                        + "\t"
                         + formatDate(file.getModificationTime())
 
-                        + "   "
+                        + "\t"
                         + (file.isDir() ? ANSIStyle.style(file.getPath()
-                                        .getName(), ANSIStyle.FG_BLUE) : file
+                                        .getName(), ANSIStyle.FG_GREEN) : file
                                         .getPath().getName());
 
         return retval;
@@ -38,7 +40,7 @@ public class FSUtil {
 
     public static String shortFormat(FileStatus file) {
         String retval = (file.isDir() ? ANSIStyle.style(file.getPath()
-                        .getName(), ANSIStyle.FG_BLUE) : file.getPath()
+                        .getName(), ANSIStyle.FG_GREEN) : file.getPath()
                         .getName());
 
         return retval;
@@ -50,7 +52,7 @@ public class FSUtil {
     }
     
     public static String formatDate(Date date){
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss z");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
         return df.format(date);
     }
     
