@@ -70,7 +70,6 @@ Note that currently, documentation may be limited.
 
 ### Known Bugs/Limitations
 
-* Auto-Completion currently broken
 * No support for paths containing spaces
 * No support for Windows XP
 

@@ -19,7 +19,7 @@ public class HdfsCd extends HdfsCommand {
 
     public HdfsCd(String name, Environment env) {
         super(name, env);
-//        this.env = env;
+        this.env = env;
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {

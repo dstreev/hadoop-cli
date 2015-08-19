@@ -5,6 +5,8 @@ package com.instanceone.hdfs.shell.command;
 import java.io.IOException;
 import java.net.URI;
 
+import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
+import com.instanceone.stemshell.command.AbstractCommand;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
@@ -16,7 +18,7 @@ import org.apache.hadoop.fs.Path;
 
 import com.instanceone.stemshell.Environment;
 
-public class HdfsConnect extends HdfsCommand {
+public class HdfsConnect extends AbstractCommand {
 
     public HdfsConnect(String name) {
         super(name);
@@ -30,14 +32,14 @@ public class HdfsConnect extends HdfsCommand {
                 Configuration config = new Configuration();
                 FileSystem hdfs = FileSystem.get(URI.create(cmd.getArgs()[0]),
                                 config);
-                env.setValue(CFG,config);
-                env.setValue(HDFS, hdfs);
+                env.setValue(HdfsCommand.CFG,config);
+                env.setValue(HdfsCommand.HDFS, hdfs);
                 // set working dir to root
                 hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
                 
                 FileSystem local = FileSystem.getLocal(new Configuration());
-                env.setValue(LOCAL_FS, local);
-                env.setProperty(HDFS_URL, hdfs.getUri().toString());
+                env.setValue(HdfsCommand.LOCAL_FS, local);
+                env.setProperty(HdfsCommand.HDFS_URL, hdfs.getUri().toString());
 
                 FSUtil.prompt(env);
 
@@ -52,5 +54,10 @@ public class HdfsConnect extends HdfsCommand {
         }
     }
 
-    
+    @Override
+    public Completer getCompleter() {
+        return this.completer;
+    }
+
+
 }
