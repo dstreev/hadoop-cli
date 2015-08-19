@@ -9,7 +9,7 @@ then manage local/remote files and transfers.
 
 To start HDFS-CLI, run the following command:
 
-	java -jar hdfs-cli-2.0.0-SNAPSHOT.jar
+	java -jar hdfs-cli-2.0.0-SNAPSHOT-shaded.jar
 
 #### Local vs. Remote Commands
 When working within a HDFS-CLI session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l`
@@ -25,7 +25,7 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 
 ### Binary Package
 
-[All-in-One Distributable Jar](./lib/hdfs-cli-2.0.0-SNAPSHOT-shaded.jar)
+[All-in-One Distributable Jar](lib/hdfs-cli-2.0.0-SNAPSHOT-shaded.jar)
 
 ### Available Commands
 
