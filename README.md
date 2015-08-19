@@ -75,6 +75,7 @@ Note that currently, documentation may be limited.
 
 * No support for paths containing spaces
 * No support for Windows XP
+* Path Completion for chown, chmod, chgrp is broken
 
 ### Road Map
 
