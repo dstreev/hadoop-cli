@@ -18,16 +18,16 @@ import org.apache.hadoop.fs.Path;
 import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 import com.instanceone.stemshell.Environment;
 
-public class HdfsCat extends HdfsCommand {
+public class LocalCat extends HdfsCommand {
     
     public static final int LINE_COUNT = 10;
     
     private Environment env;
     private boolean local = false;
 
-    public HdfsCat(String name, Environment env, boolean local) {
-        super(name);
-        this.env = env;
+    public LocalCat(String name, Environment env, boolean local) {
+        super(name, env);
+//        this.env = env;
         this.local = local;
     }
 
@@ -62,8 +62,7 @@ public class HdfsCat extends HdfsCommand {
         } else{
 //            usage();
         }
-        
-
+        FSUtil.prompt(env);
     }
     
     @Override

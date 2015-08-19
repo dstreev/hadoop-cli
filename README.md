@@ -9,7 +9,7 @@ then manage local/remote files and transfers.
 
 To start HDFS-CLI, run the following command:
 
-	java -jar hdfs-cli-0.0.1-SNAPSHOT.jar
+	java -jar hdfs-cli-2.0.0-SNAPSHOT.jar
 
 #### Local vs. Remote Commands
 When working within a HDFS-CLI session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l`
@@ -30,7 +30,7 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 	connect		connect to a remote HDFS instance
 	help		display help information
 	put			upload local files to the remote HDFS
-
+    get			(todo) retrieve remote files from HDFS to Local Filesystem
 
 #### Remote (HDFS) Commands
 	cd		 change current working directory
@@ -40,6 +40,13 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 	cat		 print file contents
 	head	 print first few lines of a file
 	mkdir	 create directories
+	count    Count the number of directories, files and bytes under the paths that match the specified file pattern.
+	stat     Print statistics about the file/directory at <path> in the specified format.
+	tail     Displays last kilobyte of the file to stdout.
+	test     Test for existence of a file/directory
+	text	 Takes a source file and outputs the file in text format.
+	touch[z] Create a file of zero length.
+	usage	 Return the help for an individual command.
 
 
 #### Local (Local File System) Commands

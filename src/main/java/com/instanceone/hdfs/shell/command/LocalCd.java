@@ -18,8 +18,8 @@ public class LocalCd extends HdfsCommand {
     private Environment env;
 
     public LocalCd(String name, Environment env) {
-        super(name);
-        this.env = env;
+        super(name,env);
+//        this.env = env;
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
@@ -46,6 +46,7 @@ public class LocalCd extends HdfsCommand {
             else {
                 log(cmd, "No such directory: " + dir);
             }
+            FSUtil.prompt(env);
         }
         catch (IOException e) {
             log(cmd, e.getMessage());

@@ -7,9 +7,11 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.instanceone.stemshell.Environment;
 import org.apache.hadoop.fs.FileStatus;
 
 import com.instanceone.stemshell.format.ANSIStyle;
+import org.apache.hadoop.fs.FileSystem;
 
 public class FSUtil {
 
@@ -45,7 +47,28 @@ public class FSUtil {
 
         return retval;
     }
-    
+
+    public static void prompt(Environment env) {
+        try {
+            StringBuilder sb = new StringBuilder();
+
+            FileSystem localfs = (FileSystem) env.getValue(HdfsCommand.LOCAL_FS);
+            FileSystem hdfs = (FileSystem) env.getValue(HdfsCommand.HDFS);
+
+            String hdfswd = hdfs.getWorkingDirectory().toString();
+            String localwd = localfs.getWorkingDirectory().toString();
+
+            String hwd = ANSIStyle.style(hdfswd, ANSIStyle.FG_GREEN) ;
+
+            String lwd = ANSIStyle.style(localwd, ANSIStyle.FG_YELLOW);
+
+            env.setPrompt(" " + hwd + "\n " + lwd + "\n$ ");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String formatDate(long millis){
         Date date = new Date(millis);
         return formatDate(date);

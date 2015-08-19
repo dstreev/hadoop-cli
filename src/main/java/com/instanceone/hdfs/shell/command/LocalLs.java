@@ -23,7 +23,7 @@ public class LocalLs extends HdfsCommand {
     private Environment env;
 
     public LocalLs(String name, Environment env) {
-        super(name);
+        super(name, env);
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
@@ -39,6 +39,7 @@ public class LocalLs extends HdfsCommand {
                     log(cmd, shortFormat(file));
                 }
             }
+            FSUtil.prompt(env);
         }
         catch (IOException e) {
             log(cmd, e.getMessage());

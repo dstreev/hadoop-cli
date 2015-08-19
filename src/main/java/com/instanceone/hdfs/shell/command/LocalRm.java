@@ -11,10 +11,10 @@ import org.apache.hadoop.fs.Path;
 
 import com.instanceone.stemshell.Environment;
 
-public class HdfsRm extends HdfsCommand {
+public class LocalRm extends HdfsCommand {
     private boolean local = false;
 
-    public HdfsRm(String name, boolean local) {
+    public LocalRm(String name, boolean local) {
         super(name);
         this.local = local;
     }
@@ -32,6 +32,8 @@ public class HdfsRm extends HdfsCommand {
             boolean recursive = cmd.hasOption("r");
             logv(cmd, "Deleting recursively...");
             hdfs.delete(hdfsPath, recursive);
+
+            FSUtil.prompt(env);
 
         }
         catch (Throwable e) {

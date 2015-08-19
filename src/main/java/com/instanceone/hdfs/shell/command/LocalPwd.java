@@ -27,6 +27,7 @@ public class LocalPwd extends HdfsCommand {
             // strip off prefix: "file:"
             log(cmd, wd.substring(5));
         }
+        FSUtil.prompt(env);
     }
     
     @Override

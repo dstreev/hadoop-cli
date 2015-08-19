@@ -25,6 +25,7 @@ public class HdfsPwd extends HdfsCommand {
         else {
             log(cmd, wd.substring(env.getProperty(HDFS_URL).length()));
         }
+        FSUtil.prompt(env);
 
     }
 

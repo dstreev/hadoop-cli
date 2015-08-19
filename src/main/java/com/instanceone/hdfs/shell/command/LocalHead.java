@@ -2,7 +2,10 @@
 
 package com.instanceone.hdfs.shell.command;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
@@ -15,15 +18,15 @@ import org.apache.hadoop.fs.Path;
 import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 import com.instanceone.stemshell.Environment;
 
-public class HdfsMkdir extends HdfsCommand {
+public class LocalHead extends HdfsCommand {
 
     public static final int LINE_COUNT = 10;
 
     private Environment env;
     private boolean local = false;
 
-    public HdfsMkdir(String name, Environment env, boolean local) {
-        super(name);
+    public LocalHead(String name, Environment env, boolean local) {
+        super(name, env);
         this.env = env;
         this.local = local;
     }
@@ -34,25 +37,45 @@ public class HdfsMkdir extends HdfsCommand {
         logv(cmd, "CWD: " + hdfs.getWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {
+            int lineCount = Integer.parseInt(cmd.getOptionValue("n",
+                            String.valueOf(LINE_COUNT)));
             Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
-
+            BufferedReader reader = null;
             try {
-                logv(cmd, "Create directory: " + path);
-                hdfs.mkdirs(path);
-
+                InputStream is = hdfs.open(path);
+                InputStreamReader isr = new InputStreamReader(is);
+                reader = new BufferedReader(isr);
+                String line = null;
+                for (int i = 0; ((i <= lineCount) && (line = reader.readLine()) != null); i++) {
+                    log(cmd, line);
+                }
             }
             catch (IOException e) {
-                log(cmd, "Error creating directory '" + cmd.getArgs()[0]
+                log(cmd, "Error reading file '" + cmd.getArgs()[0]
                                 + "': " + e.getMessage());
+            }
+            finally {
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         else {
+            // usage();
         }
+        FSUtil.prompt(env);
     }
 
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();
+        opts.addOption("n", "linecount", true,
+                        "number of lines to display (defaults to 10)");
         return opts;
     }
 

@@ -18,13 +18,14 @@ public class HdfsCd extends HdfsCommand {
     private Environment env;
 
     public HdfsCd(String name, Environment env) {
-        super(name);
-        this.env = env;
+        super(name, env);
+//        this.env = env;
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+        FileSystem hdfs = null;
         try {
-            FileSystem hdfs = (FileSystem)env.getValue(HDFS);
+            hdfs = (FileSystem)env.getValue(HDFS);
             
             String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
             logv(cmd, "CWD before: " + hdfs.getWorkingDirectory());
@@ -49,6 +50,8 @@ public class HdfsCd extends HdfsCommand {
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
+        } finally {
+            FSUtil.prompt(env);
         }
     }
 

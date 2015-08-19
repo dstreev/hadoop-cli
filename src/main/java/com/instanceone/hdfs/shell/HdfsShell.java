@@ -2,18 +2,7 @@
 
 package com.instanceone.hdfs.shell;
 
-import com.instanceone.hdfs.shell.command.HdfsCat;
-import com.instanceone.hdfs.shell.command.HdfsCd;
-import com.instanceone.hdfs.shell.command.HdfsConnect;
-import com.instanceone.hdfs.shell.command.HdfsHead;
-import com.instanceone.hdfs.shell.command.HdfsLs;
-import com.instanceone.hdfs.shell.command.HdfsMkdir;
-import com.instanceone.hdfs.shell.command.HdfsPut;
-import com.instanceone.hdfs.shell.command.HdfsPwd;
-import com.instanceone.hdfs.shell.command.HdfsRm;
-import com.instanceone.hdfs.shell.command.LocalCd;
-import com.instanceone.hdfs.shell.command.LocalLs;
-import com.instanceone.hdfs.shell.command.LocalPwd;
+import com.instanceone.hdfs.shell.command.*;
 import com.instanceone.stemshell.Environment;
 import com.instanceone.stemshell.commands.Env;
 import com.instanceone.stemshell.commands.Exit;
@@ -33,18 +22,52 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
         env.addCommand(new LocalLs("lls", env));
         env.addCommand(new LocalPwd("lpwd"));
         env.addCommand(new LocalCd("lcd", env));
-        env.addCommand(new HdfsLs("ls"));
         env.addCommand(new HdfsCd("cd", env));
         env.addCommand(new HdfsPwd("pwd"));
-        env.addCommand(new HdfsPut("put", env));
-        env.addCommand(new HdfsHead("head", env, false));
-        env.addCommand(new HdfsHead("lhead", env, true));
-        env.addCommand(new HdfsCat("cat", env, false));
-        env.addCommand(new HdfsCat("lcat", env, true));
-        env.addCommand(new HdfsMkdir("mkdir", env, false));
-        env.addCommand(new HdfsMkdir("lmkdir", env, true));
-        env.addCommand(new HdfsRm("rm", false));
-        env.addCommand(new HdfsRm("lrm", true));
+
+        // remote local
+        env.addCommand(new HdfsCommand("get", env, HdfsCommand.Direction.REMOTE_LOCAL));
+        env.addCommand(new HdfsCommand("copyFromLocal", env, HdfsCommand.Direction.LOCAL_REMOTE));
+        // local remote
+        env.addCommand(new HdfsCommand("put", env, HdfsCommand.Direction.LOCAL_REMOTE));
+        env.addCommand(new HdfsCommand("copyToLocal", env, HdfsCommand.Direction.REMOTE_LOCAL));
+        // src dest
+        env.addCommand(new HdfsCommand("cp", env, HdfsCommand.Direction.REMOTE_REMOTE));
+
+        // amend to context path, if present
+        env.addCommand(new HdfsCommand("chown", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("chmod", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("chgrp", env, HdfsCommand.Direction.NONE));
+
+        env.addCommand(new HdfsCommand("du", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("df", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("dus", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("ls", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("lsr", env, HdfsCommand.Direction.NONE));
+
+
+        env.addCommand(new HdfsCommand("mkdir", env, HdfsCommand.Direction.NONE));
+
+        env.addCommand(new HdfsCommand("count", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("stat", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("tail", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("head", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("test", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("touchz", env, HdfsCommand.Direction.NONE));
+
+        env.addCommand(new HdfsCommand("rm", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("rmdir", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("mv", env, HdfsCommand.Direction.REMOTE_REMOTE));
+        env.addCommand(new HdfsCommand("cat", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("text", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("checksum", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("usage", env));
+
+
+        env.addCommand(new LocalHead("lhead", env, true));
+        env.addCommand(new LocalCat("lcat", env, true));
+        env.addCommand(new LocalMkdir("lmkdir", env, true));
+        env.addCommand(new LocalRm("lrm", true));
         env.addCommand(new Env("env"));
         env.addCommand(new HdfsConnect("connect"));
         env.addCommand(new Help("help", env));

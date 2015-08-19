@@ -23,8 +23,8 @@ public class HdfsPut extends HdfsCommand {
     private Environment env;
 
     public HdfsPut(String name, Environment env) {
-        super(name);
-        this.env = env;
+        super(name,env);
+//        this.env = env;
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
@@ -51,6 +51,7 @@ public class HdfsPut extends HdfsCommand {
                 hdfs.copyFromLocalFile(false, false,new Path[]{ new Path(file.getName())}, hdfsPath);
                 
             }
+            FSUtil.prompt(env);
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
