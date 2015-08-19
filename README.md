@@ -23,6 +23,9 @@ For example:
 
 Every HDFS-CLI session keeps track of both the local and remote current working directories.
 
+### Binary Package
+
+[All-in-One Distributable Jar](./lib/hdfs-cli-2.0.0-SNAPSHOT-shaded.jar)
 
 ### Available Commands
 
