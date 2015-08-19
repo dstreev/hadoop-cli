@@ -38,14 +38,16 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 	rm		 delete files/directories
 	pwd		 print working directory path
 	cat		 print file contents
+	chown	 change ownership
+	chmod	 change permissions
+	chgrp	 change group
 	head	 print first few lines of a file
 	mkdir	 create directories
 	count    Count the number of directories, files and bytes under the paths that match the specified file pattern.
 	stat     Print statistics about the file/directory at <path> in the specified format.
 	tail     Displays last kilobyte of the file to stdout.
-	test     Test for existence of a file/directory
 	text	 Takes a source file and outputs the file in text format.
-	touch[z] Create a file of zero length.
+	touchz Create a file of zero length.
 	usage	 Return the help for an individual command.
 
 
@@ -68,8 +70,17 @@ Note that currently, documentation may be limited.
 
 ### Known Bugs/Limitations
 
+* Auto-Completion currently broken
 * No support for paths containing spaces
 * No support for Windows XP
+
+### Road Map
+
+- Support input script
+- Support input variables
+- Expand to support Extended ACL's (get/set)
+- Add Support for setrep
+- Create / Delete / Rename Snapshots
 
 
 
