@@ -198,7 +198,7 @@ public class HdfsCommand extends AbstractCommand {
             case RIGHT:
                 if (args.length > 1)
                     if (directivesBefore)
-                        in = args[directives];
+                        in = args[directives + 1];
                     else
                         in = args[args.length-(directives+1)];
                 switch (context) {
