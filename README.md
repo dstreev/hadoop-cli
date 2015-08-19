@@ -25,7 +25,7 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 
 ### Binary Package
 
-[All-in-One Distributable Jar](lib/hdfs-cli-2.0.0-SNAPSHOT-shaded.jar)
+[All-in-One Distributable Jar](https://github.com/dstreev/hdfs-cli/raw/master/lib/hdfs-cli-2.0.0-SNAPSHOT-shaded.jar)
 
 ### Available Commands
 
