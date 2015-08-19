@@ -2,9 +2,11 @@
 
 package com.instanceone.hdfs.shell.command;
 
+import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 import com.instanceone.stemshell.Environment;
 import com.instanceone.stemshell.command.AbstractCommand;
 import jline.console.ConsoleReader;
+import jline.console.completer.Completer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -34,8 +36,11 @@ public class HdfsCommand extends AbstractCommand {
     enum Side {
         LEFT,RIGHT;
     }
+
     private Direction directionContext = null;
 
+    private int directives = 0;
+    private boolean directivesBefore = true;
 
     public HdfsCommand(String name) {
         super(name);
@@ -45,6 +50,21 @@ public class HdfsCommand extends AbstractCommand {
         super(name);
         this.env = env;
         this.directionContext = directionContext;
+    }
+
+    public HdfsCommand(String name, Environment env, Direction directionContext, int directives ) {
+        super(name);
+        this.env = env;
+        this.directionContext = directionContext;
+        this.directives = directives;
+    }
+
+    public HdfsCommand(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore ) {
+        super(name);
+        this.env = env;
+        this.directionContext = directionContext;
+        this.directives = directives;
+        this.directivesBefore = directivesBefore;
     }
 
     public HdfsCommand(String name, Environment env) {
@@ -76,40 +96,39 @@ public class HdfsCommand extends AbstractCommand {
 
         // TODO:  Need to Handle context aware file operations.
         // put, get, mv, copy.., chmod, chown, chgrp, count
-        int fieldPlus = 0;
+        int pathCount = 0;
 
         String leftPath = null;
         String rightPath = null;
 
         switch (directionContext) {
             case REMOTE_LOCAL:
-                fieldPlus += 2; // Source and Destination Path Elements.
+                pathCount += 2; // Source and Destination Path Elements.
                 break;
             case LOCAL_REMOTE:
-                fieldPlus += 2; // Source and Destination Path Elements.
+                pathCount += 2; // Source and Destination Path Elements.
 
                 break;
             case REMOTE_REMOTE:
-                fieldPlus += 2; // Source and Destination Path Elements.
+                pathCount += 2; // Source and Destination Path Elements.
 
                 break;
             default: // NONE
-                fieldPlus += 1;
+                pathCount += 1;
         }
 
         leftPath = buildPath(Side.LEFT, cmdArgs, directionContext);
         rightPath = buildPath(Side.RIGHT, cmdArgs, directionContext);
 
+        String[] newCmdArgs = new String[pathCount];
         if (rightPath != null) {
-            cmdArgs = new String[2];
-            cmdArgs[0] = leftPath;
-            cmdArgs[1] = rightPath;
+            newCmdArgs[0] = leftPath;
+            newCmdArgs[1] = rightPath;
         } else {
-            cmdArgs = new String[1];
-            cmdArgs[0] = leftPath;
+            newCmdArgs[0] = leftPath;
         }
 
-        argv = new String[cmdOpts.length + cmdArgs.length + 1];
+        argv = new String[cmdOpts.length + newCmdArgs.length + 1 + directives];
 
         int pos = 1;
 
@@ -117,8 +136,20 @@ public class HdfsCommand extends AbstractCommand {
             argv[pos++] = "-" + opt.getOpt();
         }
 
-        for (String arg: cmdArgs) {
+        if (directivesBefore) {
+            for (int i = 0; i < directives; i++) {
+                argv[pos++] = cmdArgs[i];
+            }
+        }
+
+        for (String arg: newCmdArgs) {
             argv[pos++] = arg;
+        }
+
+        if (!directivesBefore) {
+            for (int i = 0; i < directives; i++) {
+                argv[pos++] = cmdArgs[cmdArgs.length - (i + 1)];
+            }
         }
 
         argv[0] = "-" + getName();
@@ -149,7 +180,10 @@ public class HdfsCommand extends AbstractCommand {
         switch (side) {
             case LEFT:
                 if (args.length > 0)
-                    in = args[0];
+                    if (directivesBefore)
+                        in = args[directives];
+                    else
+                        in = args[args.length-(directives+1)];
                 switch (context) {
                     case REMOTE_LOCAL:
                     case REMOTE_REMOTE:
@@ -163,7 +197,10 @@ public class HdfsCommand extends AbstractCommand {
                 break;
             case RIGHT:
                 if (args.length > 1)
-                    in = args[1];
+                    if (directivesBefore)
+                        in = args[directives];
+                    else
+                        in = args[args.length-(directives+1)];
                 switch (context) {
                     case REMOTE_LOCAL:
                         rtn = buildPath2(localfs.getWorkingDirectory().toString().substring(5), in);
@@ -196,19 +233,29 @@ public class HdfsCommand extends AbstractCommand {
         Options opts = super.getOptions();
         opts.addOption("l", false, "show extended file attributes");
         opts.addOption("R", false, "recurse");
-        opts.addOption("f", false, "force");
+        opts.addOption("f", false, "force / is file");
         opts.addOption("p", false, "preserve");
         opts.addOption("h", false, "human readable");
         opts.addOption("s", false, "summary");
-        opts.addOption("d", false, "dump");
-        opts.addOption("e", false, "encoding");
+        opts.addOption("d", false, "dump / path is directory");
+        opts.addOption("e", false, "encoding / path exists");
         opts.addOption("t", false, "sort by Timestamp");
-        opts.addOption("S", false, "sort by Size");
+        opts.addOption("S", false, "sort by Size / path not empty");
         opts.addOption("r", false, "reverse");
+        opts.addOption("z", false, "file length is 0");
         opts.addOption("u", false, "user access time");
         opts.addOption("skipTrash", false, "Skip Trash");
+        opts.addOption("ignorecrc", false, "ignorecrc");
+        opts.addOption("crc", false, "crc");
+
 //        opts.addOption("ignore-fail-on-non-empty", false, "ignore-fail-on-non-empty");
         return opts;
     }
+
+    @Override
+    public Completer getCompleter() {
+        return new FileSystemNameCompleter(this.env, false);
+    }
+
 
 }

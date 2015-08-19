@@ -20,7 +20,7 @@ public class HdfsConnect extends HdfsCommand {
 
     public HdfsConnect(String name) {
         super(name);
-        Completer completer = new StringsCompleter("hdfs://localhost:9000/", "hdfs://hdfshost:9000/");
+        Completer completer = new StringsCompleter("hdfs://localhost:8020/", "hdfs://hdfshost:8020/");
         this.completer = completer;
     }
 

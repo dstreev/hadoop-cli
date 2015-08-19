@@ -35,15 +35,16 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
         env.addCommand(new HdfsCommand("cp", env, HdfsCommand.Direction.REMOTE_REMOTE));
 
         // amend to context path, if present
-        env.addCommand(new HdfsCommand("chown", env, HdfsCommand.Direction.NONE));
-        env.addCommand(new HdfsCommand("chmod", env, HdfsCommand.Direction.NONE));
-        env.addCommand(new HdfsCommand("chgrp", env, HdfsCommand.Direction.NONE));
+        env.addCommand(new HdfsCommand("chown", env, HdfsCommand.Direction.NONE, 1));
+        env.addCommand(new HdfsCommand("chmod", env, HdfsCommand.Direction.NONE, 1));
+        env.addCommand(new HdfsCommand("chgrp", env, HdfsCommand.Direction.NONE, 1));
 
         env.addCommand(new HdfsCommand("du", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("df", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("dus", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("ls", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("lsr", env, HdfsCommand.Direction.NONE));
+//        env.addCommand(new HdfsCommand("find", env, HdfsCommand.Direction.NONE, 1, false));
 
 
         env.addCommand(new HdfsCommand("mkdir", env, HdfsCommand.Direction.NONE));
@@ -52,7 +53,7 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
         env.addCommand(new HdfsCommand("stat", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("tail", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("head", env, HdfsCommand.Direction.NONE));
-        env.addCommand(new HdfsCommand("test", env, HdfsCommand.Direction.NONE));
+//        env.addCommand(new HdfsCommand("test", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("touchz", env, HdfsCommand.Direction.NONE));
 
         env.addCommand(new HdfsCommand("rm", env, HdfsCommand.Direction.NONE));
