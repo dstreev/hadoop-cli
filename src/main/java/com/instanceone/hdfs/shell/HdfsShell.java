@@ -39,6 +39,10 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
         env.addCommand(new HdfsCommand("chmod", env, HdfsCommand.Direction.NONE, 1));
         env.addCommand(new HdfsCommand("chgrp", env, HdfsCommand.Direction.NONE, 1));
 
+        env.addCommand(new HdfsCommand("createSnapshot", env, HdfsCommand.Direction.NONE, 1, false, true));
+        env.addCommand(new HdfsCommand("deleteSnapshot", env, HdfsCommand.Direction.NONE, 1, false, false));
+        env.addCommand(new HdfsCommand("renameSnapshot", env, HdfsCommand.Direction.NONE, 2, false, false));
+
         env.addCommand(new HdfsCommand("du", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("df", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("dus", env, HdfsCommand.Direction.NONE));

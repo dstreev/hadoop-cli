@@ -9,7 +9,21 @@ then manage local/remote files and transfers.
 
 To start HDFS-CLI, run the following command:
 
-	java -jar hdfs-cli-2.0.0-SNAPSHOT-shaded.jar
+	java -jar hdfs-cli-2.1.0-SNAPSHOT-shaded.jar
+
+### Release Notes
+
+#### 2.0.0
+
+	- Initial Forked Release of P. Taylor Goetz.
+	- Update to 2.6.0 Hadoop Libraries
+	- Re-wrote Command Implementation to use FSShell as basis for issuing commands.
+	- Provide Context Feedback in command window to show local and remote context.
+	- Added several missing hdfs dfs commands that didn't exist earlier.
+
+#### 2.1.0
+
+	- Added support for create/delete/rename Snapshot
 
 #### Local vs. Remote Commands
 When working within a HDFS-CLI session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l`
@@ -25,7 +39,7 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 
 ### Binary Package
 
-[All-in-One Distributable Jar](https://github.com/dstreev/hdfs-cli/raw/master/lib/hdfs-cli-2.0.0-SNAPSHOT-shaded.jar)
+[All-in-One Distributable Jar](https://github.com/dstreev/hdfs-cli/raw/master/lib/hdfs-cli-2.1.0-SNAPSHOT-shaded.jar)
 
 ### Available Commands
 
@@ -53,6 +67,9 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 	touchz Create a file of zero length.
 	usage	 Return the help for an individual command.
 
+	createSnapshot	Create Snapshot
+	deleteSnapshot	Delete Snapshot
+	renameSnapshot	Rename Snapshot
 
 #### Local (Local File System) Commands
 	lcd		 change current working directory
@@ -83,7 +100,9 @@ Note that currently, documentation may be limited.
 - Support input variables
 - Expand to support Extended ACL's (get/set)
 - Add Support for setrep
-- Create / Delete / Rename Snapshots
+- HA Commands
+	- NN and RM
+	
 
 
 

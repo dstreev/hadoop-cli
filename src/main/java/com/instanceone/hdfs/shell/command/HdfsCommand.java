@@ -41,6 +41,7 @@ public class HdfsCommand extends AbstractCommand {
 
     private int directives = 0;
     private boolean directivesBefore = true;
+    private boolean directivesOptional = false;
 
     public HdfsCommand(String name) {
         super(name);
@@ -59,12 +60,13 @@ public class HdfsCommand extends AbstractCommand {
         this.directives = directives;
     }
 
-    public HdfsCommand(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore ) {
+    public HdfsCommand(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
         super(name);
         this.env = env;
         this.directionContext = directionContext;
         this.directives = directives;
         this.directivesBefore = directivesBefore;
+        this.directivesOptional = directivesOptional;
     }
 
     public HdfsCommand(String name, Environment env) {
@@ -147,8 +149,12 @@ public class HdfsCommand extends AbstractCommand {
         }
 
         if (!directivesBefore) {
-            for (int i = 0; i < directives; i++) {
-                argv[pos++] = cmdArgs[cmdArgs.length - (i + 1)];
+            for (int i = directives; i > 0; i--) {
+                try {
+                    argv[pos++] = cmdArgs[cmdArgs.length - (i)];
+                } catch (Exception e) {
+                    // Can happen when args are optional
+                }
             }
         }
 
@@ -180,10 +186,19 @@ public class HdfsCommand extends AbstractCommand {
         switch (side) {
             case LEFT:
                 if (args.length > 0)
-                    if (directivesBefore)
+                    if (directivesBefore) {
                         in = args[directives];
-                    else
-                        in = args[args.length-(directives+1)];
+                    } else {
+                        if (directivesOptional) {
+                            if (args.length > directives) {
+                                in = args[args.length-(directives+1)];
+                            } else {
+                                // in is null
+                            }
+                        } else {
+                            in = args[args.length-(directives+1)];
+                        }
+                    }
                 switch (context) {
                     case REMOTE_LOCAL:
                     case REMOTE_REMOTE:
