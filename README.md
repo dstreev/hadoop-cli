@@ -9,7 +9,7 @@ then manage local/remote files and transfers.
 
 To start HDFS-CLI, run the following command:
 
-	java -jar hdfs-cli.jar
+	java -jar hdfs-cli-full-bin.jar
 
 ### Release Notes
 
