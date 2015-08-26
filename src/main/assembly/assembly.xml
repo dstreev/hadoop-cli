@@ -1,0 +1,34 @@
+<assembly>
+    <id>archive</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/src</directory>
+            <outputDirectory>/${project.name}/src</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+        </fileSet>
+
+        <fileSet>
+            <directory>${project.basedir}/</directory>
+            <includes>
+                <include>pom.xml</include>
+                <include>*.md</include>
+            </includes>
+            <outputDirectory>/${project.name}</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+        </fileSet>
+
+        <fileSet>
+            <directory>${project.basedir}/target</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>/${project.name}/target</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+        </fileSet>
+
+    </fileSets>
+</assembly>

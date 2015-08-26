@@ -9,9 +9,13 @@ then manage local/remote files and transfers.
 
 To start HDFS-CLI, run the following command:
 
-	java -jar hdfs-cli-2.1.0-SNAPSHOT-shaded.jar
+	java -jar hdfs-cli.jar
 
 ### Release Notes
+
+#### 2.1.0
+
+	- Added support for create/delete/rename Snapshot
 
 #### 2.0.0
 
@@ -20,10 +24,6 @@ To start HDFS-CLI, run the following command:
 	- Re-wrote Command Implementation to use FSShell as basis for issuing commands.
 	- Provide Context Feedback in command window to show local and remote context.
 	- Added several missing hdfs dfs commands that didn't exist earlier.
-
-#### 2.1.0
-
-	- Added support for create/delete/rename Snapshot
 
 #### Local vs. Remote Commands
 When working within a HDFS-CLI session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l`
@@ -39,7 +39,7 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 
 ### Binary Package
 
-[All-in-One Distributable Jar](https://github.com/dstreev/hdfs-cli/raw/master/lib/hdfs-cli-2.1.0-SNAPSHOT-shaded.jar)
+[Pre-Built Distribution](https://github.com/dstreev/hdfs-cli/releases)
 
 ### Available Commands
 
