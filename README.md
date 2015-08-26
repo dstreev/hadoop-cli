@@ -4,6 +4,11 @@ HDFS-CLI is an interactive command line shell that makes interacting with the Ha
 simpler and more intuitive than the standard command-line tools that come with Hadoop. If you are familiar with OS X, Linux, or even Windows terminal/console-based applications, then you are likely familiar with features such as tab completion, command history, and ANSI formatting.
 
 ### Release Notes
+#### 2.2.0-SNAPSHOT (in-progress)
+
+	- Setup Script to help deploy  (bin/setup.sh)
+	- hdfscli shell script to launch (bin/hdfscli.sh)
+	- ....
 
 #### 2.1.0
 
