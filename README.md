@@ -3,14 +3,6 @@
 HDFS-CLI is an interactive command line shell that makes interacting with the Hadoop Distribted Filesystem (HDFS)
 simpler and more intuitive than the standard command-line tools that come with Hadoop. If you are familiar with OS X, Linux, or even Windows terminal/console-based applications, then you are likely familiar with features such as tab completion, command history, and ANSI formatting.
 
-### Basic Usage
-HDFS-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
-then manage local/remote files and transfers.
-
-To start HDFS-CLI, run the following command:
-
-	java -jar hdfs-cli-full-bin.jar
-
 ### Release Notes
 
 #### 2.1.0
@@ -24,6 +16,26 @@ To start HDFS-CLI, run the following command:
 	- Re-wrote Command Implementation to use FSShell as basis for issuing commands.
 	- Provide Context Feedback in command window to show local and remote context.
 	- Added several missing hdfs dfs commands that didn't exist earlier.
+
+### Basic Usage
+HDFS-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
+then manage local/remote files and transfers.
+
+To start HDFS-CLI, run the following command:
+
+	java -jar hdfs-cli-full-bin.jar
+	
+To connect to HDFS:
+
+	hdfs-cli$ connect hdfs://localhost:8020
+	
+### Command Documentation
+
+Help for any command can be obtained by executing the `help` command:
+
+	help pwd
+
+Note that currently, documentation may be limited.
 
 #### Local vs. Remote Commands
 When working within a HDFS-CLI session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l`
@@ -79,14 +91,6 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 	lcat	 print file contents
 	lhead	 print first few lines of a file
 	lmkdir	 create directories
-	
-### Command Documentation
-Help for any command can be obtained by executing the `help` command:
-
-	help pwd
-
-Note that currently, documentation may be limited.
-
 
 ### Known Bugs/Limitations
 
