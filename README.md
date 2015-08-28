@@ -25,7 +25,7 @@ simpler and more intuitive than the standard command-line tools that come with H
 
 ### Building
 
-This project requires the artifacts from https://github.com/dstreev/stemshell , which is a forked enhancement that has added support of processing command line parameters and deal with quoted variables.
+This project requires the artifacts from https://github.com/dstreev/stemshell , which is a forked enhancement that has added support of processing command line parameters and deals with quoted variables.
 
 ### Basic Usage
 HDFS-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
@@ -65,7 +65,12 @@ Using the option '-i <filename>' when launching the CLI, it will run all the com
 
 The file needs to be location in the $HOME/.hdfs-cli directory.  For example:
 
+	# If you're using the helper shell script
 	hdfscli -i test
+	
+	# If you're using the java command
+	java -jar hdfs-cli-full-bin.jar -i test
+	
 
 Will initialize the session with the command(s) in $HOME/.hdfs-cli/test. One command per line.
 
