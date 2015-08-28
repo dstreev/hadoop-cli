@@ -8,6 +8,7 @@ simpler and more intuitive than the standard command-line tools that come with H
 
 	- Setup Script to help deploy  (bin/setup.sh)
 	- hdfscli shell script to launch (bin/hdfscli.sh)
+	- Support for initialization Script (-i <file>)
 	- ....
 
 #### 2.1.0
@@ -21,6 +22,10 @@ simpler and more intuitive than the standard command-line tools that come with H
 	- Re-wrote Command Implementation to use FSShell as basis for issuing commands.
 	- Provide Context Feedback in command window to show local and remote context.
 	- Added several missing hdfs dfs commands that didn't exist earlier.
+
+### Building
+
+This project requires the artifacts from https://github.com/dstreev/stemshell , which is a forked enhancement that has added support of processing command line parameters and deal with quoted variables.
 
 ### Basic Usage
 HDFS-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
@@ -53,6 +58,23 @@ For example:
 `ls` lists remote files in the remote current working directory.
 
 Every HDFS-CLI session keeps track of both the local and remote current working directories.
+
+### Startup Initialization Option
+
+Using the option '-i <filename>' when launching the CLI, it will run all the commands in the file.
+
+The file needs to be location in the $HOME/.hdfs-cli directory.  For example:
+
+	hdfscli -i test
+
+Will initialize the session with the command(s) in $HOME/.hdfs-cli/test. One command per line.
+
+The contents could be any set of valid commands that you would use in the cli. For example:
+
+	connect hdfs://m1.hdp.local:8020
+	cd user/dstreev
+	
+Obviously, the first command should be to connect.
 
 ### Binary Package
 

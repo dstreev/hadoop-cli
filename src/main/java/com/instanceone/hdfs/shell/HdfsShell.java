@@ -8,11 +8,100 @@ import com.instanceone.stemshell.commands.Env;
 import com.instanceone.stemshell.commands.Exit;
 import com.instanceone.stemshell.commands.Help;
 import com.instanceone.stemshell.commands.HistoryCmd;
+import jline.console.ConsoleReader;
+import org.apache.commons.cli.*;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class HdfsShell extends com.instanceone.stemshell.Shell{
     
     public static void main(String[] args) throws Exception{
         new HdfsShell().run(args);
+    }
+
+    @Override
+    protected void processArguments(String[] arguments, ConsoleReader reader) {
+        super.processArguments(arguments, reader);
+
+        // create Options object
+        Options options = new Options();
+
+        // add i option
+        options.addOption("i", true, "Initialize with set");
+        // TODO: Scripting
+        //options.addOption("f", true, "Script file");
+
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = null;
+
+        try {
+            cmd = parser.parse(options, arguments);
+        } catch (ParseException pe) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("hdfs-cli", options);
+        }
+
+        if (cmd.hasOption("i")) {
+            initialSet(cmd.getOptionValue("i"), reader);
+        }
+
+//        if (cmd.hasOption("f")) {
+//            runScript(cmd.getOptionValue("f"), reader);
+//        }
+
+    }
+
+    private void initialSet(String set, ConsoleReader reader) {
+        System.out.println("-- Initializing with set: " + set);
+
+        File dir = new File(System.getProperty("user.home"), "."
+                + this.getName());
+        if (dir.exists() && dir.isFile()) {
+            throw new IllegalStateException(
+                    "Default configuration file exists and is not a directory: "
+                            + dir.getAbsolutePath());
+        }
+        else if (!dir.exists()) {
+            dir.mkdir();
+        }
+        // directory created, touch history file
+        File setFile = new File(dir, set);
+        if (!setFile.exists()) {
+            try {
+                if (!setFile.createNewFile()) {
+                    throw new IllegalStateException(
+                            "Unable to create set file: "
+                                    + setFile.getAbsolutePath());
+                } else {
+                    System.out.println("New Initialization File create in: " + System.getProperty("user.home") + System.getProperty("file.separator") +  this.getName() + System.getProperty("file.separator") + set + ". Add commands to this file to initialized the next session");
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        } else {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(setFile));
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                    String line2 = line.trim();
+                    if (line2.length() > 0 && !line2.startsWith("#")) {
+                        processInput(line2, reader);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
+    private void runScript(String file, ConsoleReader reader) {
+
     }
 
     @Override

@@ -14,7 +14,7 @@
 			<!-- Pulling forked version from github.com/dstreev/stemshell -->
 			<groupId>com.github.ptgoetz</groupId>
 			<artifactId>stemshell</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
+			<version>0.3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>

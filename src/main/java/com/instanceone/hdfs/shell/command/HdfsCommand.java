@@ -120,7 +120,9 @@ public class HdfsCommand extends AbstractCommand {
         }
 
         leftPath = buildPath(Side.LEFT, cmdArgs, directionContext);
-        rightPath = buildPath(Side.RIGHT, cmdArgs, directionContext);
+        if (directionContext != Direction.NONE) {
+            rightPath = buildPath(Side.RIGHT, cmdArgs, directionContext);
+        }
 
         String[] newCmdArgs = new String[pathCount];
         if (rightPath != null) {
@@ -229,6 +231,9 @@ public class HdfsCommand extends AbstractCommand {
                 }
                 break;
         }
+        if (rtn != null && rtn.contains(" ")) {
+            rtn = "'" + rtn + "'";
+        }
         return rtn;
     }
 
@@ -252,6 +257,7 @@ public class HdfsCommand extends AbstractCommand {
         opts.addOption("p", false, "preserve");
         opts.addOption("h", false, "human readable");
         opts.addOption("s", false, "summary");
+        opts.addOption("q", false, "query");
         opts.addOption("d", false, "dump / path is directory");
         opts.addOption("e", false, "encoding / path exists");
         opts.addOption("t", false, "sort by Timestamp");
