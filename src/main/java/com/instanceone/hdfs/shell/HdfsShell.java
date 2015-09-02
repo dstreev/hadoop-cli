@@ -157,6 +157,9 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
         env.addCommand(new HdfsCommand("checksum", env, HdfsCommand.Direction.NONE));
         env.addCommand(new HdfsCommand("usage", env));
 
+        // Security Help
+        env.addCommand(new HdfsUGI("ugi"));
+
 
         env.addCommand(new LocalHead("lhead", env, true));
         env.addCommand(new LocalCat("lcat", env, true));
