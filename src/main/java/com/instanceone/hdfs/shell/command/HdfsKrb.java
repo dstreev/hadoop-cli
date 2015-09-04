@@ -13,6 +13,8 @@ public class HdfsKrb extends HdfsCommand {
 
     public static final String USE_KERBEROS = "use.kerberos";
     public static final String HADOOP_AUTHENTICATION = "hadoop.security.authentication";
+    public static final String HADOOP_AUTHORIZATION = "hadoop.security.authorization";
+    public static final String HADOOP_KERBEROS_NN_PRINCIPAL = "dfs.namenode.kerberos.principal";
     public static final String KERBEROS = "kerberos";
 
     public HdfsKrb(String name, Environment env, Direction directionContext, int directives) {

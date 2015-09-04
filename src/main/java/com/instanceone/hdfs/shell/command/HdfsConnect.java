@@ -17,6 +17,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.stemshell.Environment;
+import org.apache.hadoop.security.UserGroupInformation;
 
 public class HdfsConnect extends AbstractCommand {
 
@@ -30,6 +31,14 @@ public class HdfsConnect extends AbstractCommand {
         try {
             if(cmd.getArgs().length > 0){
                 Configuration config = new Configuration();
+
+                if (env.getProperty(HdfsKrb.USE_KERBEROS) != null && env.getProperty(HdfsKrb.USE_KERBEROS) == "true") {
+                    config.set(HdfsKrb.HADOOP_AUTHENTICATION, HdfsKrb.KERBEROS);
+                    config.set(HdfsKrb.HADOOP_AUTHORIZATION, "true");
+                    config.set(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, env.getProperty(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL));
+                    UserGroupInformation.setConfiguration(config);
+                }
+
                 FileSystem hdfs = FileSystem.get(URI.create(cmd.getArgs()[0]),
                                 config);
                 env.setValue(HdfsCommand.CFG,config);

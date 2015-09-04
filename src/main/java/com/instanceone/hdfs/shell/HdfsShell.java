@@ -19,6 +19,8 @@ import java.io.IOException;
 public class HdfsShell extends com.instanceone.stemshell.Shell{
 
     private boolean kerberos = false;
+    private String namenodePrincipal = "nn/_HOST@EXAMPLE.COM";
+    private String namenodeId = "nn";
 
     public static void main(String[] args) throws Exception{
         new HdfsShell().run(args);
@@ -30,9 +32,11 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
         // Checking for Kerberos Init.
         Option kerbOption = Option.builder("k").required(false)
+                .argName("Namenode Kerberos Principal '" + namenodePrincipal + "'")
                 .desc("Enable Kerberos Connections")
+                .hasArg(true)
+                .numberOfArgs(1)
                 .longOpt("kerberos")
-                .hasArg(false)
                 .build();
         options.addOption(kerbOption);
 
@@ -70,6 +74,10 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
         if (cmd.hasOption("kerberos")) {
             kerberos = true;
+            namenodePrincipal = cmd.getOptionValue("kerberos");
+
+            System.out.println("Kerberos: " + kerberos);
+            System.out.println("  Namenode Kerberos Principal " + namenodePrincipal);
         }
 
     }
@@ -152,6 +160,7 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
         if (kerberos) {
             env.setProperty(HdfsKrb.USE_KERBEROS,"true");
+            env.setProperty(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, namenodePrincipal);
         }
 
         env.addCommand(new Exit("exit"));
