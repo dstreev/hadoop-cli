@@ -17,22 +17,46 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class HdfsShell extends com.instanceone.stemshell.Shell{
-    
+
+    private boolean kerberos = false;
+
     public static void main(String[] args) throws Exception{
         new HdfsShell().run(args);
     }
 
-    @Override
-    protected void processArguments(String[] arguments, ConsoleReader reader) {
-        super.processArguments(arguments, reader);
-
+    private Options getOptions() {
         // create Options object
         Options options = new Options();
 
+        // Checking for Kerberos Init.
+        Option kerbOption = Option.builder("k").required(false)
+                .desc("Enable Kerberos Connections")
+                .longOpt("kerberos")
+                .hasArg(false)
+                .build();
+        options.addOption(kerbOption);
+
         // add i option
-        options.addOption("i", true, "Initialize with set");
+        Option initOption = Option.builder("i").required(false)
+                .argName("init set").desc("Initialize with set")
+                .longOpt("init")
+                .hasArg(true).numberOfArgs(1)
+                .build();
+        options.addOption(initOption);
+
         // TODO: Scripting
         //options.addOption("f", true, "Script file");
+
+        return options;
+
+    }
+
+    @Override
+    protected void preProcessInitializationArguments(String[] arguments) {
+        super.preProcessInitializationArguments(arguments);
+
+        // create Options object
+        Options options = getOptions();
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
@@ -44,13 +68,32 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
             formatter.printHelp("hdfs-cli", options);
         }
 
-        if (cmd.hasOption("i")) {
-            initialSet(cmd.getOptionValue("i"), reader);
+        if (cmd.hasOption("kerberos")) {
+            kerberos = true;
         }
 
-//        if (cmd.hasOption("f")) {
-//            runScript(cmd.getOptionValue("f"), reader);
-//        }
+    }
+
+    @Override
+    protected void postProcessInitializationArguments(String[] arguments, ConsoleReader reader) {
+        super.postProcessInitializationArguments(arguments, reader);
+
+        // create Options object
+        Options options = getOptions();
+
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = null;
+
+        try {
+            cmd = parser.parse(options, arguments);
+        } catch (ParseException pe) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("hdfs-cli", options);
+        }
+
+        if (cmd.hasOption("init")) {
+            initialSet(cmd.getOptionValue("init"), reader);
+        }
 
     }
 
@@ -106,7 +149,11 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
     @Override
     public void initialize(Environment env) throws Exception {
-        
+
+        if (kerberos) {
+            env.setProperty(HdfsKrb.USE_KERBEROS,"true");
+        }
+
         env.addCommand(new Exit("exit"));
         env.addCommand(new LocalLs("lls", env));
         env.addCommand(new LocalPwd("lpwd"));
@@ -159,6 +206,7 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
         // Security Help
         env.addCommand(new HdfsUGI("ugi"));
+        env.addCommand(new HdfsKrb("krb", env, HdfsCommand.Direction.NONE,1));
 
 
         env.addCommand(new LocalHead("lhead", env, true));

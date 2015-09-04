@@ -78,6 +78,9 @@ public class HdfsCommand extends AbstractCommand {
         FsShell shell = new FsShell();
 
         Configuration conf = (Configuration)env.getValue(HdfsCommand.CFG);
+        if (env.getProperty(HdfsKrb.USE_KERBEROS) != null && env.getProperty(HdfsKrb.USE_KERBEROS) == "true") {
+            conf.set(HdfsKrb.HADOOP_AUTHENTICATION, HdfsKrb.KERBEROS);
+        }
 
         String hdfs_uri = (String)env.getProperty(HdfsCommand.HDFS_URL);
 
