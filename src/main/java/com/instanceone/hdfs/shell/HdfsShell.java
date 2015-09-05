@@ -19,8 +19,9 @@ import java.io.IOException;
 public class HdfsShell extends com.instanceone.stemshell.Shell{
 
     private boolean kerberos = false;
-    private String namenodePrincipal = "nn/_HOST@EXAMPLE.COM";
-    private String namenodeId = "nn";
+    private String nnPrin = "nn";
+    private String nnHost = "_HOST";
+    private String realm = "EXAMPLE.COM";
 
     public static void main(String[] args) throws Exception{
         new HdfsShell().run(args);
@@ -32,10 +33,11 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
         // Checking for Kerberos Init.
         Option kerbOption = Option.builder("k").required(false)
-                .argName("Namenode Kerberos Principal '" + namenodePrincipal + "'")
+                .argName("REALM[,Namenode Prin][,NN Host]")
                 .desc("Enable Kerberos Connections")
                 .hasArg(true)
-                .numberOfArgs(1)
+                .numberOfArgs(Option.UNLIMITED_VALUES)
+                .valueSeparator(',')
                 .longOpt("kerberos")
                 .build();
         options.addOption(kerbOption);
@@ -47,6 +49,12 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
                 .hasArg(true).numberOfArgs(1)
                 .build();
         options.addOption(initOption);
+
+        Option helpOption = Option.builder("?").required(false)
+                .longOpt("help")
+                .build();
+        options.addOption(helpOption);
+
 
         // TODO: Scripting
         //options.addOption("f", true, "Script file");
@@ -72,12 +80,23 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
             formatter.printHelp("hdfs-cli", options);
         }
 
+        if (cmd.hasOption("help")) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("hdfs-cli", options);
+            System.exit(-1);
+        }
+
         if (cmd.hasOption("kerberos")) {
             kerberos = true;
-            namenodePrincipal = cmd.getOptionValue("kerberos");
 
-            System.out.println("Kerberos: " + kerberos);
-            System.out.println("  Namenode Kerberos Principal " + namenodePrincipal);
+//            namenodePrincipal = cmd.getOptionValue("kerberos");
+            String[] nnKerberosInfo = cmd.getOptionValues("kerberos");
+            realm = nnKerberosInfo[0];
+            if (nnKerberosInfo.length > 1)
+                nnPrin = nnKerberosInfo[1];
+                if (nnKerberosInfo.length > 2)
+                    nnHost = nnKerberosInfo[2];
+
         }
 
     }
@@ -160,7 +179,12 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
         if (kerberos) {
             env.setProperty(HdfsKrb.USE_KERBEROS,"true");
-            env.setProperty(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, namenodePrincipal);
+            String nnPrincipal = nnPrin + "/" + nnHost + "@" + realm;
+            env.setProperty(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, nnPrincipal);
+
+            System.out.print("Using Kerberos. ");
+            System.out.println("  Namenode Principal: " + nnPrincipal);
+
         }
 
         env.addCommand(new Exit("exit"));

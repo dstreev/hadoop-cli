@@ -9,7 +9,7 @@ simpler and more intuitive than the standard command-line tools that come with H
 	- Setup Script to help deploy  (bin/setup.sh)
 	- hdfscli shell script to launch (bin/hdfscli.sh)
 	- Support for initialization Script (-i <file>)
-	- ....
+	- Kerberos Support (See Below)
 
 #### 2.1.0
 
@@ -59,6 +59,28 @@ For example:
 
 Every HDFS-CLI session keeps track of both the local and remote current working directories.
 
+### Support for Kerberos Clusters
+
+The `-k,--kerberos` option when starting hdfs-cli will enable connections to a Kerberized Cluster.  You will need the following:
+	- kinit to get a valid Kerberos Ticket for the target cluster.
+	- Ensure you've install Unlimited JCE on your host.
+	- Provide the REALM you are connecting to.
+	- (Optional) Provide the "Namenode" Principal Id (default='nn'). For an HDP cluster, this default value is sufficient to connect.
+	- (Optional) Provide the "Namenode" Host (default='_HOST').  For an HDP cluster, this default value is sufficient to connect.
+	
+Example Connection parameters.
+	
+	# Allow Connections to a cluster with a REALM (HDP.LOCAL).  Default nn principal Id and Host will be used.
+	hdfscli -k HDP.LOCAL
+	
+	# Allow Connections to a cluster with a REALM (HDP.LOCAL) and a custom nn principal.  Default Host will be used.
+	hdfscli -k HDP.LOCAL,namenode
+	
+	Allow Connections to a cluster with a REALM (HDP.LOCAL) and a custom nn principal.
+	hdfscli -k HDP.LOCAL,namenode,m1.hdp.local
+
+This can be used in conjunction with the 'Startup' Init option below to automatically connect to commonly used clusters.
+	
 ### Startup Initialization Option
 
 Using the option '-i <filename>' when launching the CLI, it will run all the commands in the file.
