@@ -3,6 +3,10 @@
 HDFS-CLI is an interactive command line shell that makes interacting with the Hadoop Distribted Filesystem (HDFS)
 simpler and more intuitive than the standard command-line tools that come with Hadoop. If you're familiar with OS X, Linux, or even Windows terminal/console-based applications, then you are likely familiar with features such as tab completion, command history, and ANSI formatting.
 
+### Binary Package
+
+[Pre-Built Distribution](https://github.com/dstreev/hdfs-cli/releases)
+
 ### Release Notes
 #### 2.2.1-SNAPSHOT (in-progress)
 
@@ -132,10 +136,6 @@ The contents could be any set of valid commands that you would use in the cli. F
 	cd user/dstreev
 	
 Obviously, the first command should be to connect.
-
-### Binary Package
-
-[Pre-Built Distribution](https://github.com/dstreev/hdfs-cli/releases)
 
 ### Available Commands
 
