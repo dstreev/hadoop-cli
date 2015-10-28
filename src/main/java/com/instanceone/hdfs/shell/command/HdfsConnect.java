@@ -18,6 +18,7 @@ import org.apache.hadoop.fs.Path;
 
 import com.instanceone.stemshell.Environment;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.ietf.jgss.GSSManager;
 
 public class HdfsConnect extends AbstractCommand {
 
@@ -29,36 +30,44 @@ public class HdfsConnect extends AbstractCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
-            if(cmd.getArgs().length > 0){
-                Configuration config = new Configuration();
+//            if(cmd.getArgs().length > 0){
+            Configuration config = new Configuration();
 
-                if (env.getProperty(HdfsKrb.USE_KERBEROS) != null && env.getProperty(HdfsKrb.USE_KERBEROS) == "true") {
-                    config.set(HdfsKrb.HADOOP_AUTHENTICATION, HdfsKrb.KERBEROS);
-                    config.set(HdfsKrb.HADOOP_AUTHORIZATION, "true");
-                    config.set(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, env.getProperty(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL));
-                    UserGroupInformation.setConfiguration(config);
+            if (env.getProperty(HdfsKrb.USE_KERBEROS) != null && env.getProperty(HdfsKrb.USE_KERBEROS) == "true") {
+                config.set(HdfsKrb.HADOOP_AUTHENTICATION, HdfsKrb.KERBEROS);
+                config.set(HdfsKrb.HADOOP_AUTHORIZATION, "true");
+                config.set(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, env.getProperty(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL));
+                UserGroupInformation.setConfiguration(config);
+            }
+
+            FileSystem hdfs = null;
+            try {
+                if (cmd.getArgs().length > 0) {
+                    hdfs = FileSystem.get(URI.create(cmd.getArgs()[0]), config);
+                } else {
+                    hdfs = FileSystem.get(config);
                 }
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
 
-                FileSystem hdfs = FileSystem.get(URI.create(cmd.getArgs()[0]),
-                                config);
-                env.setValue(HdfsCommand.CFG,config);
-                env.setValue(HdfsCommand.HDFS, hdfs);
-                // set working dir to root
-                hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
-                
-                FileSystem local = FileSystem.getLocal(new Configuration());
-                env.setValue(HdfsCommand.LOCAL_FS, local);
-                env.setProperty(HdfsCommand.HDFS_URL, hdfs.getUri().toString());
+            env.setValue(HdfsCommand.CFG, config);
+            env.setValue(HdfsCommand.HDFS, hdfs);
+            // set working dir to root
+            hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
 
-                FSUtil.prompt(env);
+            FileSystem local = FileSystem.getLocal(new Configuration());
+            env.setValue(HdfsCommand.LOCAL_FS, local);
+            env.setProperty(HdfsCommand.HDFS_URL, hdfs.getUri().toString());
 
-                log(cmd, "Connected: " + hdfs.getUri());
-                logv(cmd, "HDFS CWD: " + hdfs.getWorkingDirectory());
-                logv(cmd, "Local CWD: " + local.getWorkingDirectory());
+            FSUtil.prompt(env);
 
-            }     
-        }
-        catch (IOException e) {
+            log(cmd, "Connected: " + hdfs.getUri());
+            logv(cmd, "HDFS CWD: " + hdfs.getWorkingDirectory());
+            logv(cmd, "Local CWD: " + local.getWorkingDirectory());
+
+//            }
+        } catch (IOException e) {
             log(cmd, e.getMessage());
         }
     }

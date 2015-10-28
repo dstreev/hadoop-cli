@@ -16,14 +16,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class HdfsShell extends com.instanceone.stemshell.Shell{
+public class HdfsShell extends com.instanceone.stemshell.Shell {
 
     private boolean kerberos = false;
     private String nnPrin = "nn";
     private String nnHost = "_HOST";
     private String realm = "EXAMPLE.COM";
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         new HdfsShell().run(args);
     }
 
@@ -49,6 +49,13 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
                 .hasArg(true).numberOfArgs(1)
                 .build();
         options.addOption(initOption);
+
+        Option autoOption = Option.builder("a").required(false)
+                .argName("auto-connect").desc("Auto Connect")
+                .longOpt("auto")
+                .hasArg(false)
+                .build();
+        options.addOption(autoOption);
 
         Option helpOption = Option.builder("?").required(false)
                 .longOpt("help")
@@ -94,8 +101,8 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
             realm = nnKerberosInfo[0];
             if (nnKerberosInfo.length > 1)
                 nnPrin = nnKerberosInfo[1];
-                if (nnKerberosInfo.length > 2)
-                    nnHost = nnKerberosInfo[2];
+            if (nnKerberosInfo.length > 2)
+                nnHost = nnKerberosInfo[2];
 
         }
 
@@ -122,6 +129,10 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
             initialSet(cmd.getOptionValue("init"), reader);
         }
 
+        if (cmd.hasOption("auto")) {
+            autoConnect(reader);
+        }
+
     }
 
     private void initialSet(String set, ConsoleReader reader) {
@@ -133,8 +144,7 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
             throw new IllegalStateException(
                     "Default configuration file exists and is not a directory: "
                             + dir.getAbsolutePath());
-        }
-        else if (!dir.exists()) {
+        } else if (!dir.exists()) {
             dir.mkdir();
         }
         // directory created, touch history file
@@ -146,7 +156,7 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
                             "Unable to create set file: "
                                     + setFile.getAbsolutePath());
                 } else {
-                    System.out.println("New Initialization File create in: " + System.getProperty("user.home") + System.getProperty("file.separator") +  this.getName() + System.getProperty("file.separator") + set + ". Add commands to this file to initialized the next session");
+                    System.out.println("New Initialization File create in: " + System.getProperty("user.home") + System.getProperty("file.separator") + this.getName() + System.getProperty("file.separator") + set + ". Add commands to this file to initialized the next session");
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
@@ -170,6 +180,17 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
     }
 
+    private void autoConnect(ConsoleReader reader) {
+        try {
+            String userHome = System.getProperty("user.name");
+            processInput("connect", reader);
+            processInput("cd /user/" + userHome, reader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void runScript(String file, ConsoleReader reader) {
 
     }
@@ -178,7 +199,7 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
     public void initialize(Environment env) throws Exception {
 
         if (kerberos) {
-            env.setProperty(HdfsKrb.USE_KERBEROS,"true");
+            env.setProperty(HdfsKrb.USE_KERBEROS, "true");
             String nnPrincipal = nnPrin + "/" + nnHost + "@" + realm;
             env.setProperty(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, nnPrincipal);
 
@@ -239,7 +260,7 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
 
         // Security Help
         env.addCommand(new HdfsUGI("ugi"));
-        env.addCommand(new HdfsKrb("krb", env, HdfsCommand.Direction.NONE,1));
+        env.addCommand(new HdfsKrb("krb", env, HdfsCommand.Direction.NONE, 1));
 
 
         env.addCommand(new LocalHead("lhead", env, true));
@@ -250,7 +271,7 @@ public class HdfsShell extends com.instanceone.stemshell.Shell{
         env.addCommand(new HdfsConnect("connect"));
         env.addCommand(new Help("help", env));
         env.addCommand(new HistoryCmd("history"));
-        
+
     }
 
     @Override

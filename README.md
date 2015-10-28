@@ -1,9 +1,15 @@
 ## HDFS-CLI
 
 HDFS-CLI is an interactive command line shell that makes interacting with the Hadoop Distribted Filesystem (HDFS)
-simpler and more intuitive than the standard command-line tools that come with Hadoop. If you are familiar with OS X, Linux, or even Windows terminal/console-based applications, then you are likely familiar with features such as tab completion, command history, and ANSI formatting.
+simpler and more intuitive than the standard command-line tools that come with Hadoop. If you're familiar with OS X, Linux, or even Windows terminal/console-based applications, then you are likely familiar with features such as tab completion, command history, and ANSI formatting.
 
 ### Release Notes
+#### 2.2.1-SNAPSHOT (in-progress)
+
+	- External Config Support (See Below)
+	    - Supports NN HA
+    - Auto Config support using a default config directory.
+
 #### 2.2.0-SNAPSHOT (in-progress)
 
 	- Setup Script to help deploy  (bin/setup.sh)
@@ -61,12 +67,14 @@ Every HDFS-CLI session keeps track of both the local and remote current working 
 
 ### Support for Kerberos Clusters
 
-The `-k,--kerberos` option when starting hdfs-cli will enable connections to a Kerberized Cluster.  You will need the following:
+Use the `-k,--kerberos` option when starting hdfs-cli to connect to a secure cluster.  You will need the following:
 	- kinit to get a valid Kerberos Ticket for the target cluster.
 	- Ensure you've install Unlimited JCE on your host.
 	- Provide the REALM you are connecting to.
 	- (Optional) Provide the "Namenode" Principal Id (default='nn'). For an HDP cluster, this default value is sufficient to connect.
 	- (Optional) Provide the "Namenode" Host (default='_HOST').  For an HDP cluster, this default value is sufficient to connect.
+
+NOTE: If you are using the '-a,--auto' or '-c,--config' option with the supporting Kerberos configurations (in core-site and hdfs-site), do NOT set this 'kerberos' option.  The required values will be extracted from those configurations.	
 	
 Example Connection parameters.
 	
@@ -80,7 +88,29 @@ Example Connection parameters.
 	hdfscli -k HDP.LOCAL,namenode,m1.hdp.local
 
 This can be used in conjunction with the 'Startup' Init option below to automatically connect to commonly used clusters.
-	
+
+### Support for External Configurations (core-site.xml,hdfs-site.xml)
+
+Sometimes you need to have specific properties set via 'core-site' and 'hdfs-site' property files.  This includes the configuration settings needed to connect to a High-Availability Namenode Cluster.
+
+The '--config' option take 1 parameter, a local directory.  This directory should contain hdfs-site.xml and core-site.xml files.  When used, you'll automatically be connected to hdfs and changed to you're hdfs home directory.
+
+Example Connection parameters.
+
+    # Use the hadoop files in the input directory to configure and connect to HDFS.
+    hdfscli --config ../mydir
+
+This can be used in conjunction with the 'Startup' Init option below to run a set of commands automatically after the connection is made.  The 'connect' option should NOT be used in the initialization script.
+
+### Support for default configuration
+
+The '-a,--auto' option has no parameters.  When specified, the default /etc/hadoop/conf directory will be searched for core-site and hdfs-site files.  This option is similiar to using: hdfscli --config /etc/hadoop/conf
+
+    # Basic Usage for Default
+    hdfscli -a
+    
+This can be used in conjunction with the 'Startup' Init option below to run a set of commands automatically after the connection is made.  The 'connect' option should NOT be used in the initialization script.
+
 ### Startup Initialization Option
 
 Using the option '-i <filename>' when launching the CLI, it will run all the commands in the file.
