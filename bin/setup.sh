@@ -23,5 +23,6 @@ chmod +x /usr/local/hdfs-cli/bin/hdfscli
 chmod +x /usr/local/hdfs-cli/bin/JCECheck
 
 ln -sf /usr/local/hdfs-cli/bin/JCECheck /usr/local/bin/JCECheck
+ln -sf /usr/local/hdfs-cli/bin/hdfscli /usr/local/bin/hdfscli
 
 
