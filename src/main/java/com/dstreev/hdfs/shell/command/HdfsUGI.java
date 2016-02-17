@@ -1,5 +1,3 @@
-// Copyright (c) 2012 P. Taylor Goetz (ptgoetz@gmail.com)
-
 package com.instanceone.hdfs.shell.command;
 
 import com.instanceone.stemshell.Environment;
@@ -15,6 +13,10 @@ import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.IOException;
 import java.net.URI;
+
+/**
+ * Created by dstreev on 2015-11-22.
+ */
 
 public class HdfsUGI extends HdfsCommand {
 

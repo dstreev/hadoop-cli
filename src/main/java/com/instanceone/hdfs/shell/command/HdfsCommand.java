@@ -2,87 +2,51 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
+import com.dstreev.hdfs.shell.command.Constants;
+import com.dstreev.hdfs.shell.command.Direction;
 import com.instanceone.stemshell.Environment;
-import com.instanceone.stemshell.command.AbstractCommand;
 import jline.console.ConsoleReader;
-import jline.console.completer.Completer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FsShell;
-import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-public class HdfsCommand extends AbstractCommand {
-    private Environment env;
-
-    public static final String HDFS_URL = "hdfs.url";
-    public static final String HDFS = "hdfs.fs";
-    public static final String LOCAL_FS = "local.fs";
-    public static final String CFG = "config";
-
-    public enum Direction {
-        LOCAL_REMOTE,
-        REMOTE_LOCAL,
-        REMOTE_REMOTE,
-        NONE;
-    }
-
-    enum Side {
-        LEFT,RIGHT;
-    }
-
-    private Direction directionContext = null;
-
-    private int directives = 0;
-    private boolean directivesBefore = true;
-    private boolean directivesOptional = false;
+public class HdfsCommand extends HdfsAbstract {
 
     public HdfsCommand(String name) {
         super(name);
     }
 
     public HdfsCommand(String name, Environment env, Direction directionContext ) {
-        super(name);
-        this.env = env;
-        this.directionContext = directionContext;
+        super(name, env, directionContext);
     }
 
     public HdfsCommand(String name, Environment env, Direction directionContext, int directives ) {
-        super(name);
-        this.env = env;
-        this.directionContext = directionContext;
-        this.directives = directives;
+        super(name,env,directionContext,directives);
     }
 
     public HdfsCommand(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
-        super(name);
-        this.env = env;
-        this.directionContext = directionContext;
-        this.directives = directives;
-        this.directivesBefore = directivesBefore;
-        this.directivesOptional = directivesOptional;
+        super(name,env,directionContext,directives,directivesBefore,directivesOptional);
     }
 
     public HdfsCommand(String name, Environment env) {
-        super(name);
-        this.env = env;
+        super(name,env);
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FsShell shell = new FsShell();
 
-        Configuration conf = (Configuration)env.getValue(HdfsCommand.CFG);
+        Configuration conf = (Configuration)env.getValue(Constants.CFG);
 
-        String hdfs_uri = (String)env.getProperty(HdfsCommand.HDFS_URL);
+        String hdfs_uri = (String)env.getProperty(Constants.HDFS_URL);
 
-        FileSystem hdfs = (FileSystem) env.getValue(HDFS);
+        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
         if (hdfs == null) {
             System.out.println("Please connect first");
@@ -178,77 +142,6 @@ public class HdfsCommand extends AbstractCommand {
         }
     }
 
-    private String buildPath(Side side, String[] args, Direction context) {
-        String rtn = null;
-
-        FileSystem localfs = (FileSystem)env.getValue(LOCAL_FS);
-        FileSystem hdfs = (FileSystem) env.getValue(HDFS);
-
-        String in = null;
-
-        switch (side) {
-            case LEFT:
-                if (args.length > 0)
-                    if (directivesBefore) {
-                        in = args[directives];
-                    } else {
-                        if (directivesOptional) {
-                            if (args.length > directives) {
-                                in = args[args.length-(directives+1)];
-                            } else {
-                                // in is null
-                            }
-                        } else {
-                            in = args[args.length-(directives+1)];
-                        }
-                    }
-                switch (context) {
-                    case REMOTE_LOCAL:
-                    case REMOTE_REMOTE:
-                    case NONE:
-                        rtn = buildPath2(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperty(HdfsCommand.HDFS_URL)).length()), in);
-                        break;
-                    case LOCAL_REMOTE:
-                        rtn = buildPath2(localfs.getWorkingDirectory().toString().substring(5), in);
-                        break;
-                }
-                break;
-            case RIGHT:
-                if (args.length > 1)
-                    if (directivesBefore)
-                        in = args[directives + 1];
-                    else
-                        in = args[args.length-(directives+1)];
-                switch (context) {
-                    case REMOTE_LOCAL:
-                        rtn = buildPath2(localfs.getWorkingDirectory().toString().substring(5), in);
-                        break;
-                    case LOCAL_REMOTE:
-                    case REMOTE_REMOTE:
-                        rtn = buildPath2(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperty(HdfsCommand.HDFS_URL)).length()), in);
-                        break;
-                    case NONE:
-                        break;
-                }
-                break;
-        }
-        if (rtn != null && rtn.contains(" ")) {
-            rtn = "'" + rtn + "'";
-        }
-        return rtn;
-    }
-
-    private String buildPath2(String current, String input) {
-        if (input != null) {
-            if (input.startsWith("/"))
-                return input;
-            else
-                return current + "/" + input;
-        } else {
-            return current;
-        }
-    }
-
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();
@@ -274,10 +167,10 @@ public class HdfsCommand extends AbstractCommand {
         return opts;
     }
 
-    @Override
-    public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, false);
-    }
+//    @Override
+//    public Completer getCompleter() {
+//        return new FileSystemNameCompleter(this.env, false);
+//    }
 
 
 }

@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.dstreev.hdfs.shell.command.Constants;
 import com.instanceone.stemshell.Environment;
 import org.apache.hadoop.fs.FileStatus;
 
@@ -52,8 +53,8 @@ public class FSUtil {
         try {
             StringBuilder sb = new StringBuilder();
 
-            FileSystem localfs = (FileSystem) env.getValue(HdfsCommand.LOCAL_FS);
-            FileSystem hdfs = (FileSystem) env.getValue(HdfsCommand.HDFS);
+            FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
+            FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
             String hdfswd = hdfs.getWorkingDirectory().toString();
             String localwd = localfs.getWorkingDirectory().toString();

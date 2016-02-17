@@ -3,13 +3,13 @@ package com.instanceone.hdfs.shell.completers;
 import java.io.IOException;
 import java.util.List;
 
+import com.dstreev.hdfs.shell.command.Constants;
 import jline.console.completer.Completer;
 
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.instanceone.hdfs.shell.command.HdfsCommand;
 import com.instanceone.stemshell.Environment;
 
 public class FileSystemNameCompleter implements Completer {
@@ -36,11 +36,11 @@ public class FileSystemNameCompleter implements Completer {
         String prefix;
 
         if (!this.local) {
-            fs = (FileSystem) env.getValue(HdfsCommand.HDFS);
-            prefix = env.getProperty(HdfsCommand.HDFS_URL);
+            fs = (FileSystem) env.getValue(Constants.HDFS);
+            prefix = env.getProperty(Constants.HDFS_URL);
         }
         else {
-            fs = (FileSystem) env.getValue(HdfsCommand.LOCAL_FS);
+            fs = (FileSystem) env.getValue(Constants.LOCAL_FS);
             prefix = "file:" + (buffer != null && buffer.startsWith("/") ? "/" : "");
         }
         if(fs == null){

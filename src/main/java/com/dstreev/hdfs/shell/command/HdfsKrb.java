@@ -1,13 +1,15 @@
-// Copyright (c) 2012 P. Taylor Goetz (ptgoetz@gmail.com)
-
 package com.instanceone.hdfs.shell.command;
 
+import com.dstreev.hdfs.shell.command.Direction;
 import com.instanceone.stemshell.Environment;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.security.HadoopKerberosName;
-import org.apache.hadoop.security.UserGroupInformation;
+
+/**
+ * Created by dstreev on 2015-11-22.
+ */
 
 public class HdfsKrb extends HdfsCommand {
 

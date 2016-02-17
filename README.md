@@ -14,13 +14,16 @@ Try it out on a host with default configs:
     hdfscli -a
 
 ### Release Notes
-#### 2.2.1-SNAPSHOT (in-progress)
+#### 2.3.0-SNAPSHOT (in-progress)
+    - Added new 'lsp' function.  Consider it an 'ls' PLUS.
+
+#### 2.2.1-SNAPSHOT 
 
 	- External Config Support (See Below)
 	    - Supports NN HA
     - Auto Config support using a default config directory.
 
-#### 2.2.0-SNAPSHOT (in-progress)
+#### 2.2.0-SNAPSHOT 
 
 	- Setup Script to help deploy  (bin/setup.sh)
 	- hdfscli shell script to launch (bin/hdfscli.sh)
@@ -103,7 +106,7 @@ This can be used in conjunction with the 'Startup' Init option below to automati
 
 Sometimes you need to have specific properties set via 'core-site' and 'hdfs-site' property files.  This includes the configuration settings needed to connect to a High-Availability Namenode Cluster.
 
-The '--config' option take 1 parameter, a local directory.  This directory should contain hdfs-site.xml and core-site.xml files.  When used, you'll automatically be connected to hdfs and changed to you're hdfs home directory.
+The '--config' option takes 1 parameter, a local directory.  This directory should contain hdfs-site.xml and core-site.xml files.  When used, you'll automatically be connected to hdfs and changed to you're hdfs home directory.
 
 Example Connection parameters.
 
@@ -142,6 +145,55 @@ The contents could be any set of valid commands that you would use in the cli. F
 	cd user/dstreev
 	
 Obviously, the first command should be to connect.
+
+### Enhanced Directory Listing (lsp)
+
+Like 'ls', you can fetch many details about a file.  But with this, you can also add information about the file that includes:
+- Block Size
+- Access Time
+- Ratio of File Size to Block
+- Datanode information for the files blocks (Host and Block Id)
+
+Use help to get the options:
+    
+    help lsp
+
+```    
+usage: stats [OPTION ...] [ARGS ...]
+Options:
+ -d,--maxDepth <maxDepth>      Depth of Recursion (default 5), use '-1'
+                               for unlimited
+ -f,--format <output-format>   Comma separated list of one or more:
+                               permissions_long,replication,user,group,siz
+                               e,block_size,ratio,mod,access,path,datanode
+                               _info (default all of the above)
+ -o,--output <output>          Output File (HDFS) (default System.out)
+```
+
+When not argument is specified, it will use the current directory.
+
+Examples:
+    
+    # Using the default format, output a listing to the files in `/user/dstreev/perf` to `/tmp/test.out`
+    stats -o /tmp/test.out /user/dstreev/perf
+
+Output with the default format of:
+
+    permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,datanode_info
+    
+```
+   rw-------,3,dstreev,hdfs,429496700,134217728,3.200,2015-10-24 12:26:39.689,2015-10-24 12:23:27.406,/user/dstreev/perf/teragen_27/part-m-00004,10.0.0.166,d2.hdp.local,blk_1073747900
+   rw-------,3,dstreev,hdfs,429496700,134217728,3.200,2015-10-24 12:26:39.689,2015-10-24 12:23:27.406,/user/dstreev/perf/teragen_27/part-m-00004,10.0.0.167,d3.hdp.local,blk_1073747900
+   rw-------,3,dstreev,hdfs,33,134217728,2.459E-7,2015-10-24 12:27:09.134,2015-10-24 12:27:06.560,/user/dstreev/perf/terasort_27/_partition.lst,10.0.0.166,d2.hdp.local,blk_1073747909
+   rw-------,3,dstreev,hdfs,33,134217728,2.459E-7,2015-10-24 12:27:09.134,2015-10-24 12:27:06.560,/user/dstreev/perf/terasort_27/_partition.lst,10.0.0.167,d3.hdp.local,blk_1073747909
+   rw-------,1,dstreev,hdfs,543201700,134217728,4.047,2015-10-24 12:29:28.706,2015-10-24 12:29:20.882,/user/dstreev/perf/terasort_27/part-r-00002,10.0.0.167,d3.hdp.local,blk_1073747920
+   rw-------,1,dstreev,hdfs,543201700,134217728,4.047,2015-10-24 12:29:28.706,2015-10-24 12:29:20.882,/user/dstreev/perf/terasort_27/part-r-00002,10.0.0.167,d3.hdp.local,blk_1073747921
+```
+With the file in HDFS, you can build a hive table on top of it to do some analysis.  One of the reasons I created this was to be able to review a directory used by some process and get a baring on the file construction and distribution across the cluster.  
+
+#### Use Cases
+- The ratio can be used to identify files the are below the block size (small files).
+- With the Datanode information, you can determine if a dataset is hot-spotted on a cluster.  All you need to a full list of hosts to join the results with.
 
 ### Available Commands
 

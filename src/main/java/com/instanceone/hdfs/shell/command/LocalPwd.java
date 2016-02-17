@@ -2,6 +2,7 @@
 
 package com.instanceone.hdfs.shell.command;
 
+import com.dstreev.hdfs.shell.command.Constants;
 import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
@@ -17,7 +18,7 @@ public class LocalPwd extends HdfsCommand {
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
-        FileSystem localfs = (FileSystem)env.getValue(LOCAL_FS);
+        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
         
         String wd = localfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {

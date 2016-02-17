@@ -2,6 +2,7 @@
 
 package com.instanceone.hdfs.shell.command;
 
+import com.dstreev.hdfs.shell.command.Constants;
 import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
@@ -17,13 +18,13 @@ public class HdfsPwd extends HdfsCommand {
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
-        FileSystem hdfs = (FileSystem) env.getValue(HDFS);
+        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
         String wd = hdfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {
             log(cmd, wd);
         }
         else {
-            log(cmd, wd.substring(env.getProperty(HDFS_URL).length()));
+            log(cmd, wd.substring(env.getProperty(Constants.HDFS_URL).length()));
         }
         FSUtil.prompt(env);
 

@@ -1,7 +1,8 @@
-// Copyright (c) 2012 P. Taylor Goetz (ptgoetz@gmail.com)
+package com.dstreev.hdfs.shell.command;
 
-package com.instanceone.hdfs.shell.command;
-
+import com.dstreev.hdfs.shell.command.Constants;
+import com.instanceone.hdfs.shell.command.FSUtil;
+import com.instanceone.hdfs.shell.command.HdfsCommand;
 import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
@@ -10,6 +11,10 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.stemshell.Environment;
+
+/**
+ * Created by dstreev on 2015-11-22.
+ */
 
 public class LocalRm extends HdfsCommand {
     private boolean local = false;
@@ -21,8 +26,8 @@ public class LocalRm extends HdfsCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
-            FileSystem hdfs = this.local ? (FileSystem) env.getValue(LOCAL_FS)
-                            : (FileSystem) env.getValue(HDFS);
+            FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
+                            : (FileSystem) env.getValue(Constants.HDFS);
             String remoteFile = cmd.getArgs()[0];
 
             logv(cmd, "HDFS file: " + remoteFile);

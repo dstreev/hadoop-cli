@@ -4,6 +4,7 @@ package com.instanceone.hdfs.shell.command;
 
 import java.io.IOException;
 
+import com.dstreev.hdfs.shell.command.Constants;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 
@@ -25,7 +26,7 @@ public class LocalCd extends HdfsCommand {
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
 
-            FileSystem localfs = (FileSystem) env.getValue(LOCAL_FS);
+            FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
             String dir = cmd.getArgs().length == 0 ? System
                             .getProperty("user.home") : cmd.getArgs()[0];
             logv(cmd, "Change Dir to: " + dir);

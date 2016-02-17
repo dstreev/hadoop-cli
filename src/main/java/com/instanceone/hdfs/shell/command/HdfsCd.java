@@ -4,6 +4,7 @@ package com.instanceone.hdfs.shell.command;
 
 import java.io.IOException;
 
+import com.dstreev.hdfs.shell.command.Constants;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 
@@ -25,7 +26,7 @@ public class HdfsCd extends HdfsCommand {
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FileSystem hdfs = null;
         try {
-            hdfs = (FileSystem)env.getValue(HDFS);
+            hdfs = (FileSystem)env.getValue(Constants.HDFS);
             
             String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
             logv(cmd, "CWD before: " + hdfs.getWorkingDirectory());
@@ -33,7 +34,7 @@ public class HdfsCd extends HdfsCommand {
             
             Path newPath = null;
             if(dir.startsWith("/")){
-                newPath = new Path(env.getProperty(HDFS_URL), dir);
+                newPath = new Path(env.getProperty(Constants.HDFS_URL), dir);
             } else{
                 newPath = new Path(hdfs.getWorkingDirectory(), dir);
             }

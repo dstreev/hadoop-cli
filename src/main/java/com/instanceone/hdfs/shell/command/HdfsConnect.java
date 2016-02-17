@@ -5,7 +5,7 @@ package com.instanceone.hdfs.shell.command;
 import java.io.IOException;
 import java.net.URI;
 
-import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
+import com.dstreev.hdfs.shell.command.Constants;
 import com.instanceone.stemshell.command.AbstractCommand;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
@@ -18,7 +18,6 @@ import org.apache.hadoop.fs.Path;
 
 import com.instanceone.stemshell.Environment;
 import org.apache.hadoop.security.UserGroupInformation;
-import org.ietf.jgss.GSSManager;
 
 public class HdfsConnect extends AbstractCommand {
 
@@ -33,10 +32,10 @@ public class HdfsConnect extends AbstractCommand {
 //            if(cmd.getArgs().length > 0){
             Configuration config = new Configuration();
 
-            if (env.getProperty(HdfsKrb.USE_KERBEROS) != null && env.getProperty(HdfsKrb.USE_KERBEROS) == "true") {
-                config.set(HdfsKrb.HADOOP_AUTHENTICATION, HdfsKrb.KERBEROS);
-                config.set(HdfsKrb.HADOOP_AUTHORIZATION, "true");
-                config.set(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, env.getProperty(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL));
+            if (env.getProperty(com.instanceone.hdfs.shell.command.HdfsKrb.USE_KERBEROS) != null && env.getProperty(com.instanceone.hdfs.shell.command.HdfsKrb.USE_KERBEROS) == "true") {
+                config.set(com.instanceone.hdfs.shell.command.HdfsKrb.HADOOP_AUTHENTICATION, com.instanceone.hdfs.shell.command.HdfsKrb.KERBEROS);
+                config.set(com.instanceone.hdfs.shell.command.HdfsKrb.HADOOP_AUTHORIZATION, "true");
+                config.set(com.instanceone.hdfs.shell.command.HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, env.getProperty(com.instanceone.hdfs.shell.command.HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL));
                 UserGroupInformation.setConfiguration(config);
             }
 
@@ -51,14 +50,14 @@ public class HdfsConnect extends AbstractCommand {
                 t.printStackTrace();
             }
 
-            env.setValue(HdfsCommand.CFG, config);
-            env.setValue(HdfsCommand.HDFS, hdfs);
+            env.setValue(Constants.CFG, config);
+            env.setValue(Constants.HDFS, hdfs);
             // set working dir to root
             hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
 
             FileSystem local = FileSystem.getLocal(new Configuration());
-            env.setValue(HdfsCommand.LOCAL_FS, local);
-            env.setProperty(HdfsCommand.HDFS_URL, hdfs.getUri().toString());
+            env.setValue(Constants.LOCAL_FS, local);
+            env.setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
 
             FSUtil.prompt(env);
 

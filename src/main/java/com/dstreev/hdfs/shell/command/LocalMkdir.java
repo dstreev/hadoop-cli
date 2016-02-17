@@ -1,8 +1,10 @@
-// Copyright (c) 2012 P. Taylor Goetz (ptgoetz@gmail.com)
-
-package com.instanceone.hdfs.shell.command;
+package com.dstreev.hdfs.shell.command;
 
 import java.io.IOException;
+
+import com.dstreev.hdfs.shell.command.Constants;
+import com.instanceone.hdfs.shell.command.FSUtil;
+import com.instanceone.hdfs.shell.command.HdfsCommand;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
@@ -14,6 +16,10 @@ import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 import com.instanceone.stemshell.Environment;
+
+/**
+ * Created by dstreev on 2015-11-22.
+ */
 
 public class LocalMkdir extends HdfsCommand {
 
@@ -29,8 +35,8 @@ public class LocalMkdir extends HdfsCommand {
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader console) {
-        FileSystem hdfs = this.local ? (FileSystem) env.getValue(LOCAL_FS)
-                        : (FileSystem) env.getValue(HDFS);
+        FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
+                        : (FileSystem) env.getValue(Constants.HDFS);
         logv(cmd, "CWD: " + hdfs.getWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {

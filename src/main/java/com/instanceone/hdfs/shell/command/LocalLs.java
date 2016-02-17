@@ -7,6 +7,7 @@ import static com.instanceone.hdfs.shell.command.FSUtil.shortFormat;
 
 import java.io.IOException;
 
+import com.dstreev.hdfs.shell.command.Constants;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 
@@ -28,7 +29,7 @@ public class LocalLs extends HdfsCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
-            FileSystem localfs = (FileSystem)env.getValue(LOCAL_FS);
+            FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
             Path srcPath = cmd.getArgs().length == 0 ? localfs.getWorkingDirectory() : new Path(localfs.getWorkingDirectory(), cmd.getArgs()[0]);
             FileStatus[] files = localfs.listStatus(srcPath);
             for (FileStatus file : files) {

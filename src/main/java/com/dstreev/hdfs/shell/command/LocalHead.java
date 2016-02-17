@@ -1,5 +1,3 @@
-// Copyright (c) 2012 P. Taylor Goetz (ptgoetz@gmail.com)
-
 package com.instanceone.hdfs.shell.command;
 
 import java.io.BufferedReader;
@@ -7,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.dstreev.hdfs.shell.command.Constants;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 
@@ -17,6 +16,10 @@ import org.apache.hadoop.fs.Path;
 
 import com.instanceone.hdfs.shell.completers.FileSystemNameCompleter;
 import com.instanceone.stemshell.Environment;
+
+/**
+ * Created by dstreev on 2015-11-22.
+ */
 
 public class LocalHead extends HdfsCommand {
 
@@ -32,8 +35,8 @@ public class LocalHead extends HdfsCommand {
     }
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader console) {
-        FileSystem hdfs = this.local ? (FileSystem) env.getValue(LOCAL_FS)
-                        : (FileSystem) env.getValue(HDFS);
+        FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
+                        : (FileSystem) env.getValue(Constants.HDFS);
         logv(cmd, "CWD: " + hdfs.getWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {
