@@ -15,7 +15,9 @@ Try it out on a host with default configs:
 
 ### Release Notes
 #### 2.3.1-SNAPSHOT (in-progress)
-    - Added new 'nnstat' function to collect Namenode JMX stats for long term analysis. See [NN Stat Feature](https://youtu.be/CZxx_BxCX4Y)
+    - Added new 'nnstat' function to collect Namenode JMX stats for long term analysis. 
+    
+See [NN Stat Feature](https://youtu.be/CZxx_BxCX4Y)
     
 #### 2.3.0-SNAPSHOT 
     - Added new 'lsp' function.  Consider it an 'ls' PLUS.
