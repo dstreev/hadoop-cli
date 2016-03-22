@@ -18,6 +18,13 @@ Try it out on a host with default configs:
     - Added new 'nnstat' function to collect Namenode JMX stats for long term analysis. 
     
 See [NN Stat Feature](https://youtu.be/CZxx_BxCX4Y)
+
+Also checkout how to auto fetch the stats via a script.  Use this technique to run cron jobs to gather the stats.
+
+Where `-a` is to auto connect and `-i stats` defines the initialization file.  See [Auto nnstat](https://youtu.be/gy43_Hg2RXk)
+```
+   hdfscli -a -i stats
+```
     
 #### 2.3.0-SNAPSHOT 
     - Added new 'lsp' function.  Consider it an 'ls' PLUS.

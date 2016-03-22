@@ -286,7 +286,7 @@ public class HdfsNNStats extends HdfsAbstract {
             rtn = new URL[nnRefs.length];
             int pos = 0;
             for (String nnRef: nnRefs) {
-                String hostAndPort = configuration.get("dfs.namenode.http-address."+nameServices+"."+nnRef);
+                String hostAndPort = configuration.get("dfs.namenode.http-address." + nameServices + "."+nnRef);
                 if (hostAndPort != null) {
                     try {
                         rtn[pos++] = new URL("http://" + hostAndPort + "/jmx");

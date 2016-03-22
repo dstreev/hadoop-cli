@@ -135,12 +135,12 @@ public class HdfsShell extends com.instanceone.stemshell.Shell {
             formatter.printHelp("hdfs-cli", options);
         }
 
-        if (cmd.hasOption("init")) {
-            initialSet(cmd.getOptionValue("init"), reader);
-        }
-
         if (cmd.hasOption("auto")) {
             autoConnect(reader);
+        }
+
+        if (cmd.hasOption("init")) {
+            initialSet(cmd.getOptionValue("init"), reader);
         }
 
     }
