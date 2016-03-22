@@ -214,6 +214,8 @@ public class HdfsLsPlus extends HdfsAbstract {
                 System.out.print(".");
             if (count % 1000 == 0)
                 System.out.println();
+            if (count % 10000 == 0)
+                System.out.println("----------");
         } else {
             System.out.print(line);
         }

@@ -3,6 +3,7 @@
 package com.instanceone.hdfs.shell;
 
 import com.dstreev.hadoop.util.HdfsLsPlus;
+import com.dstreev.hadoop.util.HdfsNNStats;
 import com.dstreev.hdfs.shell.command.Direction;
 import com.dstreev.hdfs.shell.command.LocalMkdir;
 import com.dstreev.hdfs.shell.command.LocalRm;
@@ -285,7 +286,8 @@ public class HdfsShell extends com.instanceone.stemshell.Shell {
 
         // HDFS Tools
         env.addCommand(new HdfsLsPlus("lsp", env, Direction.NONE));
-        env.addCommand(new HdfsRepair("repair", env, Direction.NONE));
+        env.addCommand(new HdfsNNStats("nnstat", env, Direction.NONE));
+//        env.addCommand(new HdfsRepair("repair", env, Direction.NONE));
 
     }
 

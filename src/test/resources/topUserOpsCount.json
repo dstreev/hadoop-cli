@@ -1,0 +1,342 @@
+{
+  "timestamp": "2016-03-21T15:00:57-0400",
+  "windows": [
+    {
+      "windowLenMs": 300000,
+      "ops": [
+        {
+          "opType": "delete",
+          "topUsers": [
+            {
+              "user": "hive",
+              "count": 8
+            },
+            {
+              "user": "ambari-qa",
+              "count": 3
+            }
+          ],
+          "totalCount": 11
+        },
+        {
+          "opType": "*",
+          "topUsers": [
+            {
+              "user": "citi_2769197d",
+              "count": 284
+            },
+            {
+              "user": "wre",
+              "count": 152
+            },
+            {
+              "user": "ststrt",
+              "count": 78
+            },
+            {
+              "user": "hive",
+              "count": 63
+            },
+            {
+              "user": "ambari-qa",
+              "count": 21
+            },
+            {
+              "user": "logiq3",
+              "count": 6
+            },
+            {
+              "user": "oozie",
+              "count": 5
+            },
+            {
+              "user": "mapred",
+              "count": 4
+            }
+          ],
+          "totalCount": 613
+        },
+        {
+          "opType": "mkdirs",
+          "topUsers": [
+            {
+              "user": "hive",
+              "count": 14
+            },
+            {
+              "user": "ambari-qa",
+              "count": 8
+            }
+          ],
+          "totalCount": 22
+        },
+        {
+          "opType": "listStatus",
+          "topUsers": [
+            {
+              "user": "oozie",
+              "count": 5
+            },
+            {
+              "user": "mapred",
+              "count": 4
+            }
+          ],
+          "totalCount": 9
+        },
+        {
+          "opType": "getfileinfo",
+          "topUsers": [
+            {
+              "user": "citi_2769197d",
+              "count": 284
+            },
+            {
+              "user": "wre",
+              "count": 152
+            },
+            {
+              "user": "ststrt",
+              "count": 78
+            },
+            {
+              "user": "hive",
+              "count": 49
+            },
+            {
+              "user": "ambari-qa",
+              "count": 20
+            },
+            {
+              "user": "logiq3",
+              "count": 6
+            }
+          ],
+          "totalCount": 589
+        }
+      ]
+    },
+    {
+      "windowLenMs": 1500000,
+      "ops": [
+        {
+          "opType": "delete",
+          "topUsers": [
+            {
+              "user": "hive",
+              "count": 30
+            },
+            {
+              "user": "ambari-qa",
+              "count": 12
+            }
+          ],
+          "totalCount": 42
+        },
+        {
+          "opType": "*",
+          "topUsers": [
+            {
+              "user": "citi_2769197d",
+              "count": 720
+            },
+            {
+              "user": "wre",
+              "count": 544
+            },
+            {
+              "user": "hive",
+              "count": 242
+            },
+            {
+              "user": "ststrt",
+              "count": 234
+            },
+            {
+              "user": "ambari-qa",
+              "count": 134
+            },
+            {
+              "user": "mapred",
+              "count": 18
+            },
+            {
+              "user": "oozie",
+              "count": 10
+            },
+            {
+              "user": "logiq3",
+              "count": 6
+            }
+          ],
+          "totalCount": 1908
+        },
+        {
+          "opType": "mkdirs",
+          "topUsers": [
+            {
+              "user": "hive",
+              "count": 44
+            },
+            {
+              "user": "ambari-qa",
+              "count": 25
+            }
+          ],
+          "totalCount": 69
+        },
+        {
+          "opType": "listStatus",
+          "topUsers": [
+            {
+              "user": "mapred",
+              "count": 18
+            },
+            {
+              "user": "oozie",
+              "count": 11
+            }
+          ],
+          "totalCount": 29
+        },
+        {
+          "opType": "getfileinfo",
+          "topUsers": [
+            {
+              "user": "citi_2769197d",
+              "count": 720
+            },
+            {
+              "user": "wre",
+              "count": 492
+            },
+            {
+              "user": "ststrt",
+              "count": 234
+            },
+            {
+              "user": "hive",
+              "count": 182
+            },
+            {
+              "user": "ambari-qa",
+              "count": 98
+            },
+            {
+              "user": "logiq3",
+              "count": 6
+            }
+          ],
+          "totalCount": 1732
+        }
+      ]
+    },
+    {
+      "windowLenMs": 60000,
+      "ops": [
+        {
+          "opType": "delete",
+          "topUsers": [
+            {
+              "user": "hive",
+              "count": 1
+            },
+            {
+              "user": "ambari-qa",
+              "count": 1
+            }
+          ],
+          "totalCount": 2
+        },
+        {
+          "opType": "*",
+          "topUsers": [
+            {
+              "user": "ststrt",
+              "count": 78
+            },
+            {
+              "user": "wre",
+              "count": 26
+            },
+            {
+              "user": "ambari-qa",
+              "count": 12
+            },
+            {
+              "user": "hive",
+              "count": 11
+            },
+            {
+              "user": "logiq3",
+              "count": 6
+            },
+            {
+              "user": "mapred",
+              "count": 2
+            },
+            {
+              "user": "oozie",
+              "count": 1
+            }
+          ],
+          "totalCount": 136
+        },
+        {
+          "opType": "mkdirs",
+          "topUsers": [
+            {
+              "user": "hive",
+              "count": 2
+            },
+            {
+              "user": "ambari-qa",
+              "count": 2
+            }
+          ],
+          "totalCount": 4
+        },
+        {
+          "opType": "listStatus",
+          "topUsers": [
+            {
+              "user": "mapred",
+              "count": 2
+            },
+            {
+              "user": "oozie",
+              "count": 1
+            }
+          ],
+          "totalCount": 3
+        },
+        {
+          "opType": "getfileinfo",
+          "topUsers": [
+            {
+              "user": "ststrt",
+              "count": 78
+            },
+            {
+              "user": "wre",
+              "count": 26
+            },
+            {
+              "user": "ambari-qa",
+              "count": 9
+            },
+            {
+              "user": "hive",
+              "count": 7
+            },
+            {
+              "user": "logiq3",
+              "count": 6
+            }
+          ],
+          "totalCount": 126
+        }
+      ]
+    }
+  ]
+}
