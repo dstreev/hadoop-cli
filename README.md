@@ -11,9 +11,28 @@ Download the release files to a temp location.  As a root user, chmod +x the 3 s
 
 Try it out on a host with default configs:
 
-    hdfscli -a
+    hdfscli
+
+To use an alternate HADOOP_CONF_DIR:
+
+    hdfscli --config /var/hadoop/dev-cfg
 
 ### Release Notes
+
+#### 2.3.2-SNAPSHOT (in-progress)
+
+##### Behavioural Changes
+- Due to the complexities and requirements of connecting to an environment, I've removed the
+ability to connect manually to an environment by simply using 'connect'.  This option was there from the beginning, but as more and more features are added, I'm finding myself hacking
+away at recreating the settings and controls enabled through the configurations available in
+`hdfs-site.xml` and `core-site.xml`.  Therefore, the options `-k for kerberos` and `-a for auto connect` are no longer available.  Unless specified via the `--config` option, the `hdfs-site.xml` and `core-site.xml` files in the default location of `/etc/hadoop/conf` will be used to establish all of the environment variables needed to connect.  You can have multiple
+directories with various `hdfs|core-site.xml` files in them and use the `--config` option to
+enable connectivity to alternate hadoop environments.
+##### Enhancements
+I noticed some pauses coming from inquiries into the Namenode JMX.  Instead of requesting the
+entire Namenode Jmx stack, we target only the JmxBeans that we are interested in.  This will
+the observed pauses and relieve the Namenode of some unnecessary work.
+
 #### 2.3.1-SNAPSHOT (in-progress)
     - Added new 'nnstat' function to collect Namenode JMX stats for long term analysis. 
     
@@ -21,9 +40,9 @@ See [NN Stat Feature](https://youtu.be/CZxx_BxCX4Y)
 
 Also checkout how to auto fetch the stats via a script.  Use this technique to run cron jobs to gather the stats.
 
-Where `-a` is to auto connect and `-i stats` defines the initialization file.  See [Auto nnstat](https://youtu.be/gy43_Hg2RXk)
+Where `-i stats` defines the initialization file.  See [Auto nnstat](https://youtu.be/gy43_Hg2RXk)
 ```
-   hdfscli -a -i stats
+   hdfscli -i stats
 ```
     
 #### 2.3.0-SNAPSHOT 
@@ -90,50 +109,19 @@ For example:
 
 Every HDFS-CLI session keeps track of both the local and remote current working directories.
 
-### Support for Kerberos Clusters
-
-Use the `-k,--kerberos` option when starting hdfs-cli to connect to a secure cluster.  You will need the following:
-	- kinit to get a valid Kerberos Ticket for the target cluster.
-	- Ensure you've install Unlimited JCE on your host.
-	- Provide the REALM you are connecting to.
-	- (Optional) Provide the "Namenode" Principal Id (default='nn'). For an HDP cluster, this default value is sufficient to connect.
-	- (Optional) Provide the "Namenode" Host (default='_HOST').  For an HDP cluster, this default value is sufficient to connect.
-
-NOTE: If you are using the '-a,--auto' or '-c,--config' option with the supporting Kerberos configurations (in core-site and hdfs-site), do NOT set this 'kerberos' option.  The required values will be extracted from those configurations.	
-	
-Example Connection parameters.
-	
-	# Allow Connections to a cluster with a REALM (HDP.LOCAL).  Default nn principal Id and Host will be used.
-	hdfscli -k HDP.LOCAL
-	
-	# Allow Connections to a cluster with a REALM (HDP.LOCAL) and a custom nn principal.  Default Host will be used.
-	hdfscli -k HDP.LOCAL,namenode
-	
-	Allow Connections to a cluster with a REALM (HDP.LOCAL) and a custom nn principal.
-	hdfscli -k HDP.LOCAL,namenode,m1.hdp.local
-
-This can be used in conjunction with the 'Startup' Init option below to automatically connect to commonly used clusters.
-
 ### Support for External Configurations (core-site.xml,hdfs-site.xml)
 
-Sometimes you need to have specific properties set via 'core-site' and 'hdfs-site' property files.  This includes the configuration settings needed to connect to a High-Availability Namenode Cluster.
+By default, hdfs-cli will use `/etc/hadoop/conf` as the default location to search for
+`core-site.xml` and `hdfs-site.xml`.  If you want to use an alternate, use the `--config`
+option when starting up hdfs-cli.
 
-The '--config' option takes 1 parameter, a local directory.  This directory should contain hdfs-site.xml and core-site.xml files.  When used, you'll automatically be connected to hdfs and changed to you're hdfs home directory.
+The `--config` option takes 1 parameter, a local directory.  This directory should contain hdfs-site.xml and core-site.xml files.  When used, you'll automatically be connected to hdfs and changed to you're hdfs home directory.
 
 Example Connection parameters.
 
     # Use the hadoop files in the input directory to configure and connect to HDFS.
     hdfscli --config ../mydir
 
-This can be used in conjunction with the 'Startup' Init option below to run a set of commands automatically after the connection is made.  The 'connect' option should NOT be used in the initialization script.
-
-### Support for default configuration
-
-The '-a,--auto' option has no parameters.  When specified, the default /etc/hadoop/conf directory will be searched for core-site and hdfs-site files.  This option is similiar to using: hdfscli --config /etc/hadoop/conf
-
-    # Basic Usage for Default
-    hdfscli -a
-    
 This can be used in conjunction with the 'Startup' Init option below to run a set of commands automatically after the connection is made.  The 'connect' option should NOT be used in the initialization script.
 
 ### Startup Initialization Option
@@ -153,11 +141,8 @@ Will initialize the session with the command(s) in $HOME/.hdfs-cli/test. One com
 
 The contents could be any set of valid commands that you would use in the cli. For example:
 
-	connect hdfs://m1.hdp.local:8020
 	cd user/dstreev
 	
-Obviously, the first command should be to connect.
-
 ### Enhanced Directory Listing (lsp)
 
 Like 'ls', you can fetch many details about a file.  But with this, you can also add information about the file that includes:
@@ -246,11 +231,15 @@ With the file in HDFS, you can build a hive table on top of it to do some analys
 	lhead	 print first few lines of a file
 	lmkdir	 create directories
 
+#### Tools and Utilities
+    lsp     ls plus.  Includes Block information and locations.     
+    nnstat  Namenode Statistics
+
 ### Known Bugs/Limitations
 
 * No support for paths containing spaces
 * No support for Windows XP
-* Path Completion for chown, chmod, chgrp is broken
+* Path Completion for chown, chmod, chgrp, rm is broken
 
 ### Road Map
 

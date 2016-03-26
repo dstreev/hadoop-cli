@@ -8,36 +8,24 @@ import jline.console.ConsoleReader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.hdfs.DFSClient;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
-import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
-import org.apache.hadoop.hdfs.protocol.LocatedBlock;
-import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
-
-import static com.dstreev.hadoop.util.HdfsLsPlus.PRINT_OPTION.*;
+import java.util.Map;
 
 /**
  * Created by dstreev on 2016-02-15.
@@ -47,7 +35,7 @@ import static com.dstreev.hadoop.util.HdfsLsPlus.PRINT_OPTION.*;
  */
 public class HdfsNNStats extends HdfsAbstract {
     private Configuration configuration = null;
-    private DFSClient dfsClient = null;
+//    private DFSClient dfsClient = null;
     private FSDataOutputStream outFS = null;
     private String baseOutputDir = null;
 
@@ -56,6 +44,24 @@ public class HdfsNNStats extends HdfsAbstract {
     private static String DEFAULT_FILE_FORMAT = "yyyy-MM";
 
     private DateFormat dfFile = null;
+
+//    private static String FS_STATE_JMX_BEAN = "Hadoop:service=NameNode,name=FSNamesystemState";
+//    private static String NN_INFO_JMX_BEAN = "Hadoop:service=NameNode,name=NameNodeInfo";
+
+//    enum TARGET_BEAN {
+//        FS_STATE_JMX_BEAN("Hadoop:service=NameNode,name=FSNamesystemState"),
+////        NN_STATUS_JMX_BEAN("Hadoop:service=NameNode,name=NameNodeStatus"),
+//        NN_INFO_JMX_BEAN("Hadoop:service=NameNode,name=NameNodeInfo");
+//
+//        private String beanName;
+//
+//        public String getBeanName() {
+//            return beanName;
+//        }
+//        private TARGET_BEAN(String beanName) {
+//            this.beanName = beanName;
+//        }
+//    }
 
     public HdfsNNStats(String name) {
         super(name);
@@ -99,7 +105,6 @@ public class HdfsNNStats extends HdfsAbstract {
     @Override
     public void execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
 
-
         if (cmd.hasOption("help")) {
             getHelp();
             return;
@@ -110,9 +115,6 @@ public class HdfsNNStats extends HdfsAbstract {
         // Get the Filesystem
         configuration = (Configuration) env.getValue(Constants.CFG);
 
-        String hdfs_uri = (String) env.getProperty(Constants.HDFS_URL);
-
-
         fs = (DistributedFileSystem) env.getValue(Constants.HDFS);
 
         if (fs == null) {
@@ -122,19 +124,8 @@ public class HdfsNNStats extends HdfsAbstract {
 
         URI nnURI = fs.getUri();
 
-        try {
-            dfsClient = new DFSClient(nnURI, configuration);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
         // Find the hdfs http urls.
-        URL[] hdfsHttpUrls = getNamenodeHTTPUrls(configuration);
-
-        for (URL url: hdfsHttpUrls) {
-            System.out.println("URL: " + url.toString());
-        }
+        Map<URL, Map<NamenodeJmxBean, URL>> namenodeJmxUrls = getNamenodeHTTPUrls(configuration);
 
         Option[] cmdOpts = cmd.getOptions();
         String[] cmdArgs = cmd.getArgs();
@@ -152,121 +143,134 @@ public class HdfsNNStats extends HdfsAbstract {
         }
 
         // For each URL.
-        for (URL url: hdfsHttpUrls) {
-            URLConnection httpConnection = null;
+        for (Map.Entry<URL, Map<NamenodeJmxBean, URL>> entry : namenodeJmxUrls.entrySet()) {
             try {
-                httpConnection = url.openConnection();
 
-                NamenodeJmxParser njp = null;
+                URLConnection statusConnection = entry.getKey().openConnection();
+                String statusJson = IOUtils.toString(statusConnection.getInputStream());
 
-                String outputFilename = dfFile.format(new Date()) + ".txt";
-                try {
-                    njp = new NamenodeJmxParser(httpConnection.getInputStream());
-                    // Get and Save NN Info.
-                    String nnInfo = njp.getNamenodeInfo();
-                    //      Open NN Info File.
-                    if (baseOutputDir != null) {
-                        String nnInfoPathStr = null;
-                        if (baseOutputDir.endsWith("/")) {
-                            nnInfoPathStr = baseOutputDir + "nn_info/" + outputFilename;
-                        } else {
-                            nnInfoPathStr = baseOutputDir + "/nn_info/" + outputFilename;
-                        }
 
-                        Path nnInfoPath = new Path(nnInfoPathStr);
-                        FSDataOutputStream nnInfoOut = null;
-                        if (fs.exists(nnInfoPath)) {
+                for (Map.Entry<NamenodeJmxBean, URL> innerEntry : entry.getValue().entrySet()) {
+//                    System.out.println(entry.getKey() + ": " + innerEntry.getValue());
+
+                    URLConnection httpConnection = innerEntry.getValue().openConnection();
+                    String beanJson = IOUtils.toString(httpConnection.getInputStream());
+
+                    NamenodeJmxParser njp = null;
+
+                    String outputFilename = dfFile.format(new Date()) + ".txt";
+                    njp = new NamenodeJmxParser(statusJson, beanJson);
+
+                    // URL Query should match key.
+                    switch (innerEntry.getKey()) {
+                        case NN_INFO_JMX_BEAN:
+                            // Get and Save NN Info.
+                            String nnInfo = njp.getNamenodeInfo();
+                            //      Open NN Info File.
+                            if (baseOutputDir != null) {
+                                String nnInfoPathStr = null;
+                                if (baseOutputDir.endsWith("/")) {
+                                    nnInfoPathStr = baseOutputDir + "nn_info/" + outputFilename;
+                                } else {
+                                    nnInfoPathStr = baseOutputDir + "/nn_info/" + outputFilename;
+                                }
+
+                                Path nnInfoPath = new Path(nnInfoPathStr);
+                                FSDataOutputStream nnInfoOut = null;
+                                if (fs.exists(nnInfoPath)) {
 //                            System.out.println("NN Info APPENDING");
-                            nnInfoOut = fs.append(nnInfoPath);
-                        } else {
+                                    nnInfoOut = fs.append(nnInfoPath);
+                                } else {
 //                            System.out.println("NN Info CREATING");
-                            nnInfoOut = fs.create(nnInfoPath);
-                        }
-                        nnInfoOut.write(nnInfo.getBytes());
-                        // Newline
-                        nnInfoOut.write("\n".getBytes());
-                        nnInfoOut.close();
-                    } else {
-                        System.out.println(">> Namenode Info: ");
-                        System.out.println(nnInfo);
-                    }
-
-                    // Get and Save FS State
-                    String fsState = njp.getFSState();
-                    //      Open FS State Stat File.
-                    if (baseOutputDir != null) {
-                        String fsStatePathStr = null;
-                        if (baseOutputDir.endsWith("/")) {
-                            fsStatePathStr = baseOutputDir + "fs_state/" + outputFilename;
-                        } else {
-                            fsStatePathStr = baseOutputDir + "/fs_state/" + outputFilename;
-                        }
-
-                        Path fsStatePath = new Path(fsStatePathStr);
-                        FSDataOutputStream fsStateOut = null;
-                        if (fs.exists(fsStatePath)) {
-//                            System.out.println("FS State APPENDING");
-                            fsStateOut = fs.append(fsStatePath);
-                        } else {
-//                            System.out.println("FS State CREATING");
-                            fsStateOut = fs.create(fsStatePath);
-                        }
-                        fsStateOut.write(fsState.getBytes());
-                        // Newline
-                        fsStateOut.write("\n".getBytes());
-                        fsStateOut.close();
-                    } else {
-                        System.out.println(">> Filesystem State: ");
-                        System.out.println(fsState);
-                    }
-
-                    // Get and Save TopUserOps
-                    List<String> topUserOps = njp.getTopUserOpRecords();
-                    //      Open TopUserOps file.
-                    if (topUserOps.size() > 0) {
-                        if (baseOutputDir != null) {
-                            String topUserOpsPathStr = null;
-                            if (baseOutputDir.endsWith("/")) {
-                                topUserOpsPathStr = baseOutputDir + "top_user_ops/" + outputFilename;
-                            } else {
-                                topUserOpsPathStr = baseOutputDir + "/top_user_ops/" + outputFilename;
-                            }
-
-                            Path topUserOpsPath = new Path(topUserOpsPathStr);
-                            FSDataOutputStream topUserOpsOut = null;
-                            if (fs.exists(topUserOpsPath)) {
-//                                System.out.println("Top User Ops APPENDING");
-                                topUserOpsOut = fs.append(topUserOpsPath);
-                            } else {
-//                                System.out.println("Top User Ops CREATING");
-                                topUserOpsOut = fs.create(topUserOpsPath);
-                            }
-                            for (String record : topUserOps) {
-                                topUserOpsOut.write(record.getBytes());
+                                    nnInfoOut = fs.create(nnInfoPath);
+                                }
+                                nnInfoOut.write(nnInfo.getBytes());
                                 // Newline
-                                topUserOpsOut.write("\n".getBytes());
+                                nnInfoOut.write("\n".getBytes());
+                                nnInfoOut.close();
+                            } else {
+                                System.out.println(">> Namenode Info: ");
+                                System.out.println(nnInfo);
+                            }
+                            break;
+                        case FS_STATE_JMX_BEAN:
+                            List<String> topUserOps = njp.getTopUserOpRecords();
+                            // Get and Save TopUserOps
+                            //      Open TopUserOps file.
+                            if (topUserOps.size() > 0) {
+                                if (baseOutputDir != null) {
+                                    String topUserOpsPathStr = null;
+                                    if (baseOutputDir.endsWith("/")) {
+                                        topUserOpsPathStr = baseOutputDir + "top_user_ops/" + outputFilename;
+                                    } else {
+                                        topUserOpsPathStr = baseOutputDir + "/top_user_ops/" + outputFilename;
+                                    }
 
+                                    Path topUserOpsPath = new Path(topUserOpsPathStr);
+                                    FSDataOutputStream topUserOpsOut = null;
+                                    if (fs.exists(topUserOpsPath)) {
+//                                System.out.println("Top User Ops APPENDING");
+                                        topUserOpsOut = fs.append(topUserOpsPath);
+                                    } else {
+//                                System.out.println("Top User Ops CREATING");
+                                        topUserOpsOut = fs.create(topUserOpsPath);
+                                    }
+                                    for (String record : topUserOps) {
+                                        topUserOpsOut.write(record.getBytes());
+                                        // Newline
+                                        topUserOpsOut.write("\n".getBytes());
+
+                                    }
+                                    topUserOpsOut.close();
+                                } else {
+                                    System.out.println(">> Top User Operations: ");
+                                    for (String record : topUserOps) {
+                                        System.out.println(record);
+                                    }
+                                }
                             }
-                            topUserOpsOut.close();
-                        } else {
-                            System.out.println(">> Top User Operations: ");
-                            for (String record : topUserOps) {
-                                System.out.println(record);
+
+                            // Get and Save FS State
+                            String fsState = njp.getFSState();
+                            //      Open FS State Stat File.
+                            if (baseOutputDir != null) {
+                                String fsStatePathStr = null;
+                                if (baseOutputDir.endsWith("/")) {
+                                    fsStatePathStr = baseOutputDir + "fs_state/" + outputFilename;
+                                } else {
+                                    fsStatePathStr = baseOutputDir + "/fs_state/" + outputFilename;
+                                }
+
+                                Path fsStatePath = new Path(fsStatePathStr);
+                                FSDataOutputStream fsStateOut = null;
+                                if (fs.exists(fsStatePath)) {
+//                            System.out.println("FS State APPENDING");
+                                    fsStateOut = fs.append(fsStatePath);
+                                } else {
+//                            System.out.println("FS State CREATING");
+                                    fsStateOut = fs.create(fsStatePath);
+                                }
+                                fsStateOut.write(fsState.getBytes());
+                                // Newline
+                                fsStateOut.write("\n".getBytes());
+                                fsStateOut.close();
+                            } else {
+                                System.out.println(">> Filesystem State: ");
+                                System.out.println(fsState);
                             }
-                        }
+                            break;
                     }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+
                 }
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
+
         }
         // Get Namenode Info
         // Open File for Append.
         if (fs instanceof DistributedFileSystem) {
-
             System.out.println("Filesystem Reference is Distributed");
         } else {
             System.out.println("Filesystem Reference is NOT distributed");
@@ -274,22 +278,23 @@ public class HdfsNNStats extends HdfsAbstract {
 
     }
 
-    private URL[] getNamenodeHTTPUrls(Configuration configuration) {
-        URL[] rtn = null;
+    private Map<URL, Map<NamenodeJmxBean, URL>> getNamenodeHTTPUrls(Configuration configuration) {
+        Map<URL, Map<NamenodeJmxBean, URL>> rtn = new LinkedHashMap<URL, Map<NamenodeJmxBean, URL>>();
+
         // Determine if HA is enabled.
         // Look for 'dfs.nameservices', if present, then HA is enabled.
         String nameServices = configuration.get("dfs.nameservices");
         if (nameServices != null) {
             // HA Enabled
-            String[] nnRefs = configuration.get("dfs.ha.namenodes."+nameServices).split(",");
+            String[] nnRefs = configuration.get("dfs.ha.namenodes." + nameServices).split(",");
+
             // Get the http addresses.
-            rtn = new URL[nnRefs.length];
-            int pos = 0;
-            for (String nnRef: nnRefs) {
-                String hostAndPort = configuration.get("dfs.namenode.http-address." + nameServices + "."+nnRef);
+            for (String nnRef : nnRefs) {
+                String hostAndPort = configuration.get("dfs.namenode.http-address." + nameServices + "." + nnRef);
                 if (hostAndPort != null) {
                     try {
-                        rtn[pos++] = new URL("http://" + hostAndPort + "/jmx");
+                        URL statusURL = new URL("http://" + hostAndPort + "/jmx?qry=" + NamenodeJmxParser.NN_STATUS_JMX_BEAN);
+                        rtn.put(statusURL, getURLMap(hostAndPort));
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
@@ -297,15 +302,27 @@ public class HdfsNNStats extends HdfsAbstract {
             }
         } else {
             // Standalone
-            rtn = new URL[1];
             String hostAndPort = configuration.get("dfs.namenode.http-address");
             try {
-                rtn[0] = new URL("http://"+hostAndPort + "/jmx");
+                URL statusURL = new URL("http://" + hostAndPort + "/jmx?qry=" + NamenodeJmxParser.NN_STATUS_JMX_BEAN);
+                rtn.put(statusURL, getURLMap(hostAndPort));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
         }
 
+        return rtn;
+    }
+
+    private Map<NamenodeJmxBean, URL> getURLMap(String hostAndPort) {
+        Map<NamenodeJmxBean, URL> rtn = new LinkedHashMap<>();
+        try {
+            for (NamenodeJmxBean target_bean : NamenodeJmxBean.values()) {
+                rtn.put(target_bean, new URL("http://" + hostAndPort + "/jmx?qry=" + target_bean.getBeanName()));
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         return rtn;
     }
 

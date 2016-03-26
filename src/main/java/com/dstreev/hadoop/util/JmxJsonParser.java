@@ -23,10 +23,10 @@ public class JmxJsonParser {
 
     private Map<String, Map<String, Object>> beanMap = new TreeMap<String, Map<String,Object>>();
 
-    public JmxJsonParser(InputStream inputStream) throws Exception {
+    public JmxJsonParser(String input) throws Exception {
         mapper = new ObjectMapper();
         try {
-            root = mapper.readValue(inputStream, JsonNode.class);
+            root = mapper.readValue(input, JsonNode.class);
             beanArrayNode = root.get("beans");
             if (beanArrayNode == null) {
                 throw new Exception("Couldn't locate Jmx 'Beans' array.");

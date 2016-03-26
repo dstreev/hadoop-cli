@@ -8,9 +8,7 @@ import com.dstreev.hdfs.shell.command.Direction;
 import com.dstreev.hdfs.shell.command.LocalMkdir;
 import com.dstreev.hdfs.shell.command.LocalRm;
 import com.instanceone.hdfs.shell.command.*;
-import com.instanceone.hdfs.shell.command.HdfsKrb;
 import com.dstreev.hadoop.util.HdfsRepair;
-import com.instanceone.hdfs.shell.command.HdfsUGI;
 import com.instanceone.hdfs.shell.command.LocalCat;
 import com.instanceone.hdfs.shell.command.LocalHead;
 import com.instanceone.stemshell.Environment;
@@ -28,11 +26,6 @@ import java.io.IOException;
 
 public class HdfsShell extends com.instanceone.stemshell.Shell {
 
-    private boolean kerberos = false;
-    private String nnPrin = "nn";
-    private String nnHost = "_HOST";
-    private String realm = "EXAMPLE.COM";
-
     public static void main(String[] args) throws Exception {
         new HdfsShell().run(args);
     }
@@ -40,17 +33,6 @@ public class HdfsShell extends com.instanceone.stemshell.Shell {
     private Options getOptions() {
         // create Options object
         Options options = new Options();
-
-        // Checking for Kerberos Init.
-        Option kerbOption = Option.builder("k").required(false)
-                .argName("REALM[,Namenode Prin][,NN Host]")
-                .desc("Enable Kerberos Connections")
-                .hasArg(true)
-                .numberOfArgs(Option.UNLIMITED_VALUES)
-                .valueSeparator(',')
-                .longOpt("kerberos")
-                .build();
-        options.addOption(kerbOption);
 
         // add i option
         Option initOption = Option.builder("i").required(false)
@@ -60,18 +42,10 @@ public class HdfsShell extends com.instanceone.stemshell.Shell {
                 .build();
         options.addOption(initOption);
 
-        Option autoOption = Option.builder("a").required(false)
-                .argName("auto-connect").desc("Auto Connect")
-                .longOpt("auto")
-                .hasArg(false)
-                .build();
-        options.addOption(autoOption);
-
         Option helpOption = Option.builder("?").required(false)
                 .longOpt("help")
                 .build();
         options.addOption(helpOption);
-
 
         // TODO: Scripting
         //options.addOption("f", true, "Script file");
@@ -103,19 +77,6 @@ public class HdfsShell extends com.instanceone.stemshell.Shell {
             System.exit(-1);
         }
 
-        if (cmd.hasOption("kerberos")) {
-            kerberos = true;
-
-//            namenodePrincipal = cmd.getOptionValue("kerberos");
-            String[] nnKerberosInfo = cmd.getOptionValues("kerberos");
-            realm = nnKerberosInfo[0];
-            if (nnKerberosInfo.length > 1)
-                nnPrin = nnKerberosInfo[1];
-            if (nnKerberosInfo.length > 2)
-                nnHost = nnKerberosInfo[2];
-
-        }
-
     }
 
     @Override
@@ -135,9 +96,7 @@ public class HdfsShell extends com.instanceone.stemshell.Shell {
             formatter.printHelp("hdfs-cli", options);
         }
 
-        if (cmd.hasOption("auto")) {
-            autoConnect(reader);
-        }
+        autoConnect(reader);
 
         if (cmd.hasOption("init")) {
             initialSet(cmd.getOptionValue("init"), reader);
@@ -208,16 +167,6 @@ public class HdfsShell extends com.instanceone.stemshell.Shell {
     @Override
     public void initialize(Environment env) throws Exception {
 
-        if (kerberos) {
-            env.setProperty(HdfsKrb.USE_KERBEROS, "true");
-            String nnPrincipal = nnPrin + "/" + nnHost + "@" + realm;
-            env.setProperty(HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, nnPrincipal);
-
-            System.out.print("Using Kerberos. ");
-            System.out.println("  Namenode Principal: " + nnPrincipal);
-
-        }
-
         env.addCommand(new Exit("exit"));
         env.addCommand(new LocalLs("lls", env));
         env.addCommand(new LocalPwd("lpwd"));
@@ -269,11 +218,11 @@ public class HdfsShell extends com.instanceone.stemshell.Shell {
         env.addCommand(new HdfsCommand("usage", env));
 
         // Security Help
-        env.addCommand(new HdfsUGI("ugi"));
-        env.addCommand(new HdfsKrb("krb", env, Direction.NONE, 1));
+//        env.addCommand(new HdfsUGI("ugi"));
+//        env.addCommand(new HdfsKrb("krb", env, Direction.NONE, 1));
 
         // HDFS Utils
-        env.addCommand(new HdfsRepair("repair", env, Direction.NONE, 2, true, true));
+        //env.addCommand(new HdfsRepair("repair", env, Direction.NONE, 2, true, true));
 
         env.addCommand(new LocalHead("lhead", env, true));
         env.addCommand(new LocalCat("lcat", env, true));
@@ -287,7 +236,6 @@ public class HdfsShell extends com.instanceone.stemshell.Shell {
         // HDFS Tools
         env.addCommand(new HdfsLsPlus("lsp", env, Direction.NONE));
         env.addCommand(new HdfsNNStats("nnstat", env, Direction.NONE));
-//        env.addCommand(new HdfsRepair("repair", env, Direction.NONE));
 
     }
 

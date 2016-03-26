@@ -1,5 +1,6 @@
 package com.dstreev.hadoop.util;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -14,10 +15,7 @@ import java.util.*;
  */
 public class NamenodeJmxParser {
 
-    private static String FS_JMX_BEAN = "Hadoop:service=NameNode,name=FSNamesystem";
-    private static String FS_STATE_JMX_BEAN = "Hadoop:service=NameNode,name=FSNamesystemState";
-    private static String NN_STATUS_JMX_BEAN = "Hadoop:service=NameNode,name=NameNodeStatus";
-    private static String NN_INFO_JMX_BEAN = "Hadoop:service=NameNode,name=NameNodeInfo";
+    public static String NN_STATUS_JMX_BEAN = "Hadoop:service=NameNode,name=NameNodeStatus";
 
     private static String TOP_USER_OPS_COUNT = "TopUserOpCounts";
 
@@ -29,19 +27,24 @@ public class NamenodeJmxParser {
 
     public NamenodeJmxParser(String resource) throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
-        InputStream in = classLoader.getResourceAsStream(resource);
-        init(in);
+
+        InputStream resourceStream = classLoader.getResourceAsStream(resource);
+//        InputStream dataIn = classLoader.getResourceAsStream(resource);
+        String resourceJson = IOUtils.toString(resourceStream);
+
+        init(resourceJson, resourceJson);
     }
 
-    public NamenodeJmxParser(InputStream in) throws Exception {
-        init(in);
+    public NamenodeJmxParser(String statusIn, String dataIn) throws Exception {
+        init(statusIn, dataIn);
     }
 
-    private void init(InputStream in) throws Exception {
-        jjp = new JmxJsonParser(in);
+    private void init(String statusIn, String dataIn) throws Exception {
+        JmxJsonParser statusjp = new JmxJsonParser(statusIn);
+        jjp = new JmxJsonParser(dataIn);
 
         // Get Host Info
-        Map<String, Object> nnStatusMap = jjp.getJmxBeanContent(NN_STATUS_JMX_BEAN);
+        Map<String, Object> nnStatusMap = statusjp.getJmxBeanContent(NN_STATUS_JMX_BEAN);
         String[] statusInclude = {"HostAndPort", "State"};
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
@@ -107,7 +110,7 @@ public class NamenodeJmxParser {
 
     public List<String> getTopUserOpRecords() {
         List<String> rtn = null;
-        Map<String, Object> fsState = jjp.getJmxBeanContent(FS_STATE_JMX_BEAN);
+        Map<String, Object> fsState = jjp.getJmxBeanContent(NamenodeJmxBean.FS_STATE_JMX_BEAN.getBeanName());
 
         ObjectMapper mapper = new ObjectMapper();
         String tuocStr = fsState.get(TOP_USER_OPS_COUNT).toString();
@@ -126,7 +129,7 @@ public class NamenodeJmxParser {
 
         List<String> working = mapValuesToList(metadata, null);
 
-        Map<String, Object> nnInfo = jjp.getJmxBeanContent(NN_INFO_JMX_BEAN);
+        Map<String, Object> nnInfo = jjp.getJmxBeanContent(NamenodeJmxBean.NN_INFO_JMX_BEAN.getBeanName());
 
         String[] fields = {"Version", "Used", "Free", "Safemode", "TotalBlocks", "TotalFiles", "NumberOfMissingBlocks", "NumberOfMissingBlocksWithReplicationFactorOne"};
 
@@ -166,7 +169,7 @@ public class NamenodeJmxParser {
 
         List<String> working = mapValuesToList(metadata, null);
 
-        Map<String, Object> fsState = jjp.getJmxBeanContent(FS_STATE_JMX_BEAN);
+        Map<String, Object> fsState = jjp.getJmxBeanContent(NamenodeJmxBean.FS_STATE_JMX_BEAN.getBeanName());
 
         String[] fields = {"CapacityUsed", "CapacityRemaining", "BlocksTotal", "PendingReplicationBlocks", "UnderReplicatedBlocks", "ScheduledReplicationBlocks", "PendingDeletionBlocks", "FSState", "NumLiveDataNodes", "NumDeadDataNodes", "NumDecomLiveDataNodes", "NumDecomDeadDataNodes", "VolumeFailuresTotal"};
 

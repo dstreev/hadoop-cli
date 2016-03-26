@@ -2,6 +2,7 @@
 
 package com.instanceone.hdfs.shell.command;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
@@ -21,6 +22,9 @@ import org.apache.hadoop.security.UserGroupInformation;
 
 public class HdfsConnect extends AbstractCommand {
 
+    public static final String HADOOP_CONF_DIR = "HADOOP_CONF_DIR";
+    private static final String[] HADOOP_CONF_FILES = {"core-site.xml", "hdfs-site.xml"};
+
     public HdfsConnect(String name) {
         super(name);
         Completer completer = new StringsCompleter("hdfs://localhost:8020/", "hdfs://hdfshost:8020/");
@@ -29,23 +33,28 @@ public class HdfsConnect extends AbstractCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
-//            if(cmd.getArgs().length > 0){
-            Configuration config = new Configuration();
+            // Get a value that over rides the default, if nothing then use default.
+// Requires Java 1.8...
+//            String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
 
-            if (env.getProperty(com.instanceone.hdfs.shell.command.HdfsKrb.USE_KERBEROS) != null && env.getProperty(com.instanceone.hdfs.shell.command.HdfsKrb.USE_KERBEROS) == "true") {
-                config.set(com.instanceone.hdfs.shell.command.HdfsKrb.HADOOP_AUTHENTICATION, com.instanceone.hdfs.shell.command.HdfsKrb.KERBEROS);
-                config.set(com.instanceone.hdfs.shell.command.HdfsKrb.HADOOP_AUTHORIZATION, "true");
-                config.set(com.instanceone.hdfs.shell.command.HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL, env.getProperty(com.instanceone.hdfs.shell.command.HdfsKrb.HADOOP_KERBEROS_NN_PRINCIPAL));
-                UserGroupInformation.setConfiguration(config);
+            String hadoopConfDirProp = System.getenv().get(HADOOP_CONF_DIR);
+            // Set a default
+            if (hadoopConfDirProp == null)
+                hadoopConfDirProp = "/etc/hadoop/conf";
+
+            Configuration config = new Configuration(false);
+
+            File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
+            for (String file : HADOOP_CONF_FILES) {
+                File f = new File(hadoopConfDir, file);
+                if (f.exists()) {
+                    config.addResource(new Path(f.getAbsolutePath()));
+                }
             }
 
             FileSystem hdfs = null;
             try {
-                if (cmd.getArgs().length > 0) {
-                    hdfs = FileSystem.get(URI.create(cmd.getArgs()[0]), config);
-                } else {
-                    hdfs = FileSystem.get(config);
-                }
+                hdfs = FileSystem.get(config);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -65,7 +74,6 @@ public class HdfsConnect extends AbstractCommand {
             logv(cmd, "HDFS CWD: " + hdfs.getWorkingDirectory());
             logv(cmd, "Local CWD: " + local.getWorkingDirectory());
 
-//            }
         } catch (IOException e) {
             log(cmd, e.getMessage());
         }

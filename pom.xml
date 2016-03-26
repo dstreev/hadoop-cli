@@ -3,13 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.instanceone.hdfs</groupId>
 	<artifactId>hdfs-cli</artifactId>
-	<version>2.3.1-SNAPSHOT</version>
+	<version>2.3.2-SNAPSHOT</version>
 	<name>Hadoop HDFS CLI</name>
 	<description>Hadoop HDFS Command Line Interface</description>
 	<properties>
 		<hadoop.version>2.6.0</hadoop.version>
 		<junit.version>4.11</junit.version>
 		<jackson.parser>2.7.3</jackson.parser>
+        <commons-io.version>2.4</commons-io.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -22,6 +23,11 @@
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-client</artifactId>
 			<version>${hadoop.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
