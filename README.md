@@ -28,9 +28,13 @@ away at recreating the settings and controls enabled through the configurations 
 `hdfs-site.xml` and `core-site.xml`.  Therefore, the options `-k for kerberos` and `-a for auto connect` are no longer available.  Unless specified via the `--config` option, the `hdfs-site.xml` and `core-site.xml` files in the default location of `/etc/hadoop/conf` will be used to establish all of the environment variables needed to connect.  You can have multiple
 directories with various `hdfs|core-site.xml` files in them and use the `--config` option to
 enable connectivity to alternate hadoop environments.
+##### Removed Options
+`-a` Auto Connect.  Use `--config` for alternate site files or nothing for the default `/etc/hadoop/conf`.
+`-k` Kerberos Option
+
 ##### Enhancements
-I noticed some pauses coming from inquiries into the Namenode JMX.  Instead of requesting the
-entire Namenode Jmx stack, we target only the JmxBeans that we are interested in.  This will
+I noticed some pauses coming from inquiries into the Namenode JMX for `nnstat`.  Instead of requesting the
+entire Namenode Jmx stack, now we target only the JmxBeans that we're interested in.  This will help
 the observed pauses and relieve the Namenode of some unnecessary work.
 
 #### 2.3.1-SNAPSHOT (in-progress)
@@ -51,7 +55,7 @@ Where `-i stats` defines the initialization file.  See [Auto nnstat](https://you
 #### 2.2.1-SNAPSHOT 
 
 	- External Config Support (See Below)
-	    - Supports NN HA
+	    - Supports NN HA (thru hdfs and core site files)
     - Auto Config support using a default config directory.
 
 #### 2.2.0-SNAPSHOT 
@@ -59,7 +63,7 @@ Where `-i stats` defines the initialization file.  See [Auto nnstat](https://you
 	- Setup Script to help deploy  (bin/setup.sh)
 	- hdfscli shell script to launch (bin/hdfscli.sh)
 	- Support for initialization Script (-i <file>)
-	- Kerberos Support (See Below)
+	- Kerberos Support via default and --config option for hadoop site files.
 
 #### 2.1.0
 
@@ -75,7 +79,7 @@ Where `-i stats` defines the initialization file.  See [Auto nnstat](https://you
 
 ### Building
 
-This project requires the artifacts from https://github.com/dstreev/stemshell , which is a forked enhancement that has added support of processing command line parameters and deals with quoted variables.
+This project requires the artifacts from https://github.com/dstreev/stemshell , which is a forked enhancement that has added support for processing command line parameters and deals with quoted variables.
 
 ### Basic Usage
 HDFS-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
@@ -84,11 +88,7 @@ then manage local/remote files and transfers.
 To start HDFS-CLI, run the following command:
 
 	java -jar hdfs-cli-full-bin.jar
-	
-To connect to HDFS:
-
-	hdfs-cli$ connect hdfs://localhost:8020
-	
+		
 ### Command Documentation
 
 Help for any command can be obtained by executing the `help` command:
@@ -172,7 +172,7 @@ When not argument is specified, it will use the current directory.
 Examples:
     
     # Using the default format, output a listing to the files in `/user/dstreev/perf` to `/tmp/test.out`
-    stats -o /tmp/test.out /user/dstreev/perf
+    lsp -o /tmp/test.out /user/dstreev/perf
 
 Output with the default format of:
 
@@ -189,13 +189,12 @@ Output with the default format of:
 With the file in HDFS, you can build a hive table on top of it to do some analysis.  One of the reasons I created this was to be able to review a directory used by some process and get a baring on the file construction and distribution across the cluster.  
 
 #### Use Cases
-- The ratio can be used to identify files the are below the block size (small files).
-- With the Datanode information, you can determine if a dataset is hot-spotted on a cluster.  All you need to a full list of hosts to join the results with.
+- The ratio can be used to identify files that are below the block size (small files).
+- With the Datanode information, you can determine if a dataset is hot-spotted on a cluster.  All you need is a full list of hosts to join the results with.
 
 ### Available Commands
 
 #### Common Commands
-	connect		connect to a remote HDFS instance
 	help		display help information
 	put			upload local files to the remote HDFS
     get			(todo) retrieve remote files from HDFS to Local Filesystem
@@ -243,7 +242,6 @@ With the file in HDFS, you can build a hive table on top of it to do some analys
 
 ### Road Map
 
-- Support input script
 - Support input variables
 - Expand to support Extended ACL's (get/set)
 - Add Support for setrep
