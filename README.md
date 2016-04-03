@@ -160,7 +160,7 @@ The 'default' delimiter for all records is '\u0001' (Cntl-A)
 >> Top User Operations: (optionally written to the directory 'top_user_ops')
   Fields: Timestamp, HostAndPort, State, WindowLenMs, Operation, User, Count
 
-[Hive Table DDL for NN Stats](./src/main/hive/nn_stats_.ddl)
+[Hive Table DDL for NN Stats](./src/main/hive/nn_stats.ddl)
 	
 ### Enhanced Directory Listing (lsp)
 
