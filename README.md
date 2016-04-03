@@ -142,6 +142,25 @@ Will initialize the session with the command(s) in $HOME/.hdfs-cli/test. One com
 The contents could be any set of valid commands that you would use in the cli. For example:
 
 	cd user/dstreev
+
+### NN Stats
+
+Collect Namenode stats from the available Namenode JMX url's.
+
+3 Type of stats are current collected and written to hdfs (with -o option) or to screen (no option specified)
+
+The 'default' delimiter for all records is '\u0001' (Cntl-A)
+
+>> Namenode Information: (optionally written to the directory 'nn_info')
+  Fields: Timestamp, HostAndPort, State, Version, Used, Free, Safemode, TotalBlocks, TotalFiles, NumberOfMissingBlocks, NumberOfMissingBlocksWithReplicationFactorOne
+
+>> Filesystem State: (optionally written to the directory 'fs_state')
+  Fields: Timestamp, HostAndPort, State, CapacityUsed, CapacityRemaining, BlocksTotal, PendingReplicationBlocks, UnderReplicatedBlocks, ScheduledReplicationBlocks, PendingDeletionBlocks, FSState, NumLiveDataNodes, NumDeadDataNodes, NumDecomLiveDataNodes, NumDecomDeadDataNodes, VolumeFailuresTotal
+
+>> Top User Operations: (optionally written to the directory 'top_user_ops')
+  Fields: Timestamp, HostAndPort, State, WindowLenMs, Operation, User, Count
+
+[Hive Table DDL for NN Stats](./src/main/hive/nn_stats_.ddl)
 	
 ### Enhanced Directory Listing (lsp)
 
@@ -186,7 +205,8 @@ Output with the default format of:
    rw-------,1,dstreev,hdfs,543201700,134217728,4.047,2015-10-24 12:29:28.706,2015-10-24 12:29:20.882,/user/dstreev/perf/terasort_27/part-r-00002,10.0.0.167,d3.hdp.local,blk_1073747920
    rw-------,1,dstreev,hdfs,543201700,134217728,4.047,2015-10-24 12:29:28.706,2015-10-24 12:29:20.882,/user/dstreev/perf/terasort_27/part-r-00002,10.0.0.167,d3.hdp.local,blk_1073747921
 ```
-With the file in HDFS, you can build a hive table on top of it to do some analysis.  One of the reasons I created this was to be able to review a directory used by some process and get a baring on the file construction and distribution across the cluster.  
+
+With the file in HDFS, you can build a [hive table](./src/main/hive/lsp.ddl) on top of it to do some analysis.  One of the reasons I created this was to be able to review a directory used by some process and get a baring on the file construction and distribution across the cluster.  
 
 #### Use Cases
 - The ratio can be used to identify files that are below the block size (small files).
