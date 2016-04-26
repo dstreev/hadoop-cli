@@ -1,7 +1,7 @@
-package com.dstreev.hadoop.util;
+package com.dstreev.hadoop.hdfs.util;
 
-import com.dstreev.hdfs.shell.command.Constants;
-import com.dstreev.hdfs.shell.command.Direction;
+import com.dstreev.hadoop.hdfs.shell.command.Constants;
+import com.dstreev.hadoop.hdfs.shell.command.Direction;
 import com.instanceone.hdfs.shell.command.HdfsAbstract;
 import com.instanceone.stemshell.Environment;
 import jline.console.ConsoleReader;
@@ -12,10 +12,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hdfs.DFSClient;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -35,7 +33,7 @@ import java.util.Map;
  */
 public class HdfsNNStats extends HdfsAbstract {
     private Configuration configuration = null;
-//    private DFSClient dfsClient = null;
+
     private FSDataOutputStream outFS = null;
     private String baseOutputDir = null;
 
@@ -44,24 +42,6 @@ public class HdfsNNStats extends HdfsAbstract {
     private static String DEFAULT_FILE_FORMAT = "yyyy-MM";
 
     private DateFormat dfFile = null;
-
-//    private static String FS_STATE_JMX_BEAN = "Hadoop:service=NameNode,name=FSNamesystemState";
-//    private static String NN_INFO_JMX_BEAN = "Hadoop:service=NameNode,name=NameNodeInfo";
-
-//    enum TARGET_BEAN {
-//        FS_STATE_JMX_BEAN("Hadoop:service=NameNode,name=FSNamesystemState"),
-////        NN_STATUS_JMX_BEAN("Hadoop:service=NameNode,name=NameNodeStatus"),
-//        NN_INFO_JMX_BEAN("Hadoop:service=NameNode,name=NameNodeInfo");
-//
-//        private String beanName;
-//
-//        public String getBeanName() {
-//            return beanName;
-//        }
-//        private TARGET_BEAN(String beanName) {
-//            this.beanName = beanName;
-//        }
-//    }
 
     public HdfsNNStats(String name) {
         super(name);

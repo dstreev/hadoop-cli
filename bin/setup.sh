@@ -4,25 +4,25 @@
 
 cd `dirname $0`
 
-mkdir -p /usr/local/hdfs-cli/bin
-mkdir -p /usr/local/hdfs-cli/lib
+mkdir -p /usr/local/hadoop-cli/bin
+mkdir -p /usr/local/hadoop-cli/lib
 
-cp -f hdfscli /usr/local/hdfs-cli/bin
-cp -f JCECheck /usr/local/hdfs-cli/bin
+cp -f hadoopcli /usr/local/hadoop-cli/bin
+cp -f JCECheck /usr/local/hadoop-cli/bin
 
-if [ -f ../target/hdfs-cli-full-bin.jar ]; then
-    cp -f ../target/hdfs-cli-full-bin.jar /usr/local/hdfs-cli/lib
+if [ -f ../target/hadoop-cli-full-bin.jar ]; then
+    cp -f ../target/hadoop-cli-full-bin.jar /usr/local/hadoop-cli/lib
 fi
 
-if [ -f hdfs-cli-full-bin.jar ]; then
-    cp -f hdfs-cli-full-bin.jar /usr/local/hdfs-cli/lib
+if [ -f hadoop-cli-full-bin.jar ]; then
+    cp -f hadoop-cli-full-bin.jar /usr/local/hadoop-cli/lib
 fi
 
-chmod -R +r /usr/local/hdfs-cli
-chmod +x /usr/local/hdfs-cli/bin/hdfscli
-chmod +x /usr/local/hdfs-cli/bin/JCECheck
+chmod -R +r /usr/local/hadoop-cli
+chmod +x /usr/local/hadoop-cli/bin/hadoopcli
+chmod +x /usr/local/hadoop-cli/bin/JCECheck
 
-ln -sf /usr/local/hdfs-cli/bin/JCECheck /usr/local/bin/JCECheck
-ln -sf /usr/local/hdfs-cli/bin/hdfscli /usr/local/bin/hdfscli
+ln -sf /usr/local/hadoop-cli/bin/JCECheck /usr/local/bin/JCECheck
+ln -sf /usr/local/hadoop-cli/bin/hadoopcli /usr/local/bin/hadoopcli
 
 

@@ -2,8 +2,8 @@
 
 package com.instanceone.hdfs.shell.command;
 
-import com.dstreev.hdfs.shell.command.Constants;
-import com.dstreev.hdfs.shell.command.Direction;
+import com.dstreev.hadoop.hdfs.shell.command.Constants;
+import com.dstreev.hadoop.hdfs.shell.command.Direction;
 import com.instanceone.stemshell.Environment;
 import jline.console.ConsoleReader;
 import org.apache.commons.cli.CommandLine;

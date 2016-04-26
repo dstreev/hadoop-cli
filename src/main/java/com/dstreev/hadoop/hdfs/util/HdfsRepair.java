@@ -1,6 +1,6 @@
-package com.dstreev.hadoop.util;
+package com.dstreev.hadoop.hdfs.util;
 
-import com.dstreev.hdfs.shell.command.Direction;
+import com.dstreev.hadoop.hdfs.shell.command.Direction;
 import com.instanceone.hdfs.shell.command.HdfsAbstract;
 import com.instanceone.stemshell.Environment;
 import jline.console.ConsoleReader;

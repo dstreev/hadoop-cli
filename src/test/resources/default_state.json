@@ -1,0 +1,25 @@
+{
+  "current": {
+    "successful": true,
+    "applicationId": "xxxxxx",
+    "initialLoad": false,
+    "snapshotWatermark": ".snapshot-2016-04-04_023143",
+    "snapshotUpto": ".snapshot-2016-04-04_043143"
+  },
+  "last10": [
+    {
+      "successful": true,
+      "applicationId": "xxxxxx",
+      "initialLoad": false,
+      "snapshotWatermark": ".snapshot-2016-04-04_023143",
+      "snapshotUpto": ".snapshot-2016-04-04_043143"
+    },
+    {
+      "successful": true,
+      "applicationId": "xxxxxx",
+      "initialLoad": false,
+      "snapshotWatermark": ".snapshot-2016-04-04_023143",
+      "snapshotUpto": ".snapshot-2016-04-04_043143"
+    }
+  ]
+}

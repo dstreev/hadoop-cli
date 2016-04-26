@@ -1,4 +1,4 @@
-package com.dstreev.hadoop.util;
+package com.dstreev.hadoop.hdfs.util;
 
 /**
  * Created by dstreev on 2016-03-24.

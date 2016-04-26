@@ -1,4 +1,4 @@
-package com.dstreev.hadoop.util;
+package com.dstreev.hadoop.hdfs.util;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonNode;

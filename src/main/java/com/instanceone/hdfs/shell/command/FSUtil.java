@@ -7,7 +7,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.dstreev.hdfs.shell.command.Constants;
+import com.dstreev.hadoop.hdfs.shell.command.Constants;
 import com.instanceone.stemshell.Environment;
 import org.apache.hadoop.fs.FileStatus;
 

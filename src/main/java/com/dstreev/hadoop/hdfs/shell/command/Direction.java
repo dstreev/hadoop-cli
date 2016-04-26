@@ -1,4 +1,4 @@
-package com.dstreev.hdfs.shell.command;
+package com.dstreev.hadoop.hdfs.shell.command;
 
 /**
  * Created by dstreev on 2015-11-22.

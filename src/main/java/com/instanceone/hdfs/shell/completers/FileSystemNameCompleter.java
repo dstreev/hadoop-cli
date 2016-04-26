@@ -3,7 +3,7 @@ package com.instanceone.hdfs.shell.completers;
 import java.io.IOException;
 import java.util.List;
 
-import com.dstreev.hdfs.shell.command.Constants;
+import com.dstreev.hadoop.hdfs.shell.command.Constants;
 import jline.console.completer.Completer;
 
 import org.apache.hadoop.fs.FileStatus;

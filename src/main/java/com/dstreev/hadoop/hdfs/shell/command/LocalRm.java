@@ -1,6 +1,5 @@
-package com.dstreev.hdfs.shell.command;
+package com.dstreev.hadoop.hdfs.shell.command;
 
-import com.dstreev.hdfs.shell.command.Constants;
 import com.instanceone.hdfs.shell.command.FSUtil;
 import com.instanceone.hdfs.shell.command.HdfsCommand;
 import jline.console.ConsoleReader;

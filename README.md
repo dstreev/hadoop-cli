@@ -1,93 +1,42 @@
-## HDFS-CLI
+## HADOOP-CLI
 
-HDFS-CLI is an interactive command line shell that makes interacting with the Hadoop Distribted Filesystem (HDFS)
+HADOOP-CLI is an interactive command line shell that makes interacting with the Hadoop Distribted Filesystem (HDFS)
 simpler and more intuitive than the standard command-line tools that come with Hadoop. If you're familiar with OS X, Linux, or even Windows terminal/console-based applications, then you are likely familiar with features such as tab completion, command history, and ANSI formatting.
 
 ### Binary Package
 
-[Pre-Built Distribution](https://github.com/dstreev/hdfs-cli/releases)
+[Pre-Built Distribution](https://github.com/dstreev/hadoop-cli/releases)
 
 Download the release files to a temp location.  As a root user, chmod +x the 3 shell script files then run the 'setup.sh'.  This will create and install the hdfscli application to your path.
 
 Try it out on a host with default configs:
 
-    hdfscli
+    hadoopcli
 
 To use an alternate HADOOP_CONF_DIR:
 
-    hdfscli --config /var/hadoop/dev-cfg
+    hadoopcli --config /var/hadoop/dev-cfg
 
 ### Release Notes
 
-#### 2.3.2-SNAPSHOT (in-progress)
+#### 1.0.0-SNAPSHOT (in-progress)
 
-##### Behavioural Changes
-- Due to the complexities and requirements of connecting to an environment, I've removed the
-ability to connect manually to an environment by simply using 'connect'.  This option was there from the beginning, but as more and more features are added, I'm finding myself hacking
-away at recreating the settings and controls enabled through the configurations available in
-`hdfs-site.xml` and `core-site.xml`.  Therefore, the options `-k for kerberos` and `-a for auto connect` are no longer available.  Unless specified via the `--config` option, the `hdfs-site.xml` and `core-site.xml` files in the default location of `/etc/hadoop/conf` will be used to establish all of the environment variables needed to connect.  You can have multiple
-directories with various `hdfs|core-site.xml` files in them and use the `--config` option to
-enable connectivity to alternate hadoop environments.
-##### Removed Options
-`-a` Auto Connect.  Use `--config` for alternate site files or nothing for the default `/etc/hadoop/conf`.
-`-k` Kerberos Option
+This release is the first for `hadoopcli` and is an extension to (replacement of) `hdfs-cli` found [here](https://github.com/dstreev/hdfs-cli)
 
-##### Enhancements
-I noticed some pauses coming from inquiries into the Namenode JMX for `nnstat`.  Instead of requesting the
-entire Namenode Jmx stack, now we target only the JmxBeans that we're interested in.  This will help
-the observed pauses and relieve the Namenode of some unnecessary work.
+Building on release [2.3.2-SNAPSHOT](https://github.com/dstreev/hdfs-cli) of `hdfscli`, this version starts to integrate with the`Job History Server`, `YARN` and `ATS`.  Hence to change from `hdfscli` to `hadoopcli`.
 
-#### 2.3.1-SNAPSHOT (in-progress)
-    - Added new 'nnstat' function to collect Namenode JMX stats for long term analysis. 
-    
-See [NN Stat Feature](https://youtu.be/CZxx_BxCX4Y)
-
-Also checkout how to auto fetch the stats via a script.  Use this technique to run cron jobs to gather the stats.
-
-Where `-i stats` defines the initialization file.  See [Auto nnstat](https://youtu.be/gy43_Hg2RXk)
-```
-   hdfscli -i stats
-```
-    
-#### 2.3.0-SNAPSHOT 
-    - Added new 'lsp' function.  Consider it an 'ls' PLUS.
-
-#### 2.2.1-SNAPSHOT 
-
-	- External Config Support (See Below)
-	    - Supports NN HA (thru hdfs and core site files)
-    - Auto Config support using a default config directory.
-
-#### 2.2.0-SNAPSHOT 
-
-	- Setup Script to help deploy  (bin/setup.sh)
-	- hdfscli shell script to launch (bin/hdfscli.sh)
-	- Support for initialization Script (-i <file>)
-	- Kerberos Support via default and --config option for hadoop site files.
-
-#### 2.1.0
-
-	- Added support for create/delete/rename Snapshot
-
-#### 2.0.0
-
-	- Initial Forked Release of P. Taylor Goetz.
-	- Update to 2.6.0 Hadoop Libraries
-	- Re-wrote Command Implementation to use FSShell as basis for issuing commands.
-	- Provide Context Feedback in command window to show local and remote context.
-	- Added several missing hdfs dfs commands that didn't exist earlier.
 
 ### Building
 
 This project requires the artifacts from https://github.com/dstreev/stemshell , which is a forked enhancement that has added support for processing command line parameters and deals with quoted variables.
 
 ### Basic Usage
-HDFS-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
+HADOOP-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
 then manage local/remote files and transfers.
 
-To start HDFS-CLI, run the following command:
+To start HADOOP-CLI, run the following command:
 
-	java -jar hdfs-cli-full-bin.jar
+	java -jar hadoop-cli-full-bin.jar
 		
 ### Command Documentation
 
@@ -98,7 +47,7 @@ Help for any command can be obtained by executing the `help` command:
 Note that currently, documentation may be limited.
 
 #### Local vs. Remote Commands
-When working within a HDFS-CLI session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l`
+When working within a HADOOP-CLI session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l`
 character to the name to denote "local".
 
 For example:
@@ -107,7 +56,7 @@ For example:
 
 `ls` lists remote files in the remote current working directory.
 
-Every HDFS-CLI session keeps track of both the local and remote current working directories.
+Every HADOOP-CLI session keeps track of both the local and remote current working directories.
 
 ### Support for External Configurations (core-site.xml,hdfs-site.xml)
 
@@ -120,7 +69,7 @@ The `--config` option takes 1 parameter, a local directory.  This directory shou
 Example Connection parameters.
 
     # Use the hadoop files in the input directory to configure and connect to HDFS.
-    hdfscli --config ../mydir
+    hadoopcli --config ../mydir
 
 This can be used in conjunction with the 'Startup' Init option below to run a set of commands automatically after the connection is made.  The 'connect' option should NOT be used in the initialization script.
 
@@ -128,16 +77,16 @@ This can be used in conjunction with the 'Startup' Init option below to run a se
 
 Using the option '-i <filename>' when launching the CLI, it will run all the commands in the file.
 
-The file needs to be location in the $HOME/.hdfs-cli directory.  For example:
+The file needs to be location in the $HOME/.hadoop-cli directory.  For example:
 
 	# If you're using the helper shell script
-	hdfscli -i test
+	hadoopcli -i test
 	
 	# If you're using the java command
-	java -jar hdfs-cli-full-bin.jar -i test
+	java -jar hadoop-cli-full-bin.jar -i test
 	
 
-Will initialize the session with the command(s) in $HOME/.hdfs-cli/test. One command per line.
+Will initialize the session with the command(s) in $HOME/.hadoop-cli/test. One command per line.
 
 The contents could be any set of valid commands that you would use in the cli. For example:
 

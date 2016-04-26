@@ -1,11 +1,9 @@
-package com.dstreev.hadoop.util;
+package com.dstreev.hadoop.hdfs.util;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;

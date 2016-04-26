@@ -1,5 +1,6 @@
 package com.dstreev.hadoop.util;
 
+import com.dstreev.hadoop.hdfs.util.NamenodeJmxParser;
 import org.junit.Test;
 
 import java.util.List;

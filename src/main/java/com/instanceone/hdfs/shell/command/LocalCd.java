@@ -4,7 +4,7 @@ package com.instanceone.hdfs.shell.command;
 
 import java.io.IOException;
 
-import com.dstreev.hdfs.shell.command.Constants;
+import com.dstreev.hadoop.hdfs.shell.command.Constants;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 

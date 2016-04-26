@@ -1,7 +1,7 @@
-package com.dstreev.hadoop.util;
+package com.dstreev.hadoop.hdfs.util;
 
-import com.dstreev.hdfs.shell.command.Constants;
-import com.dstreev.hdfs.shell.command.Direction;
+import com.dstreev.hadoop.hdfs.shell.command.Constants;
+import com.dstreev.hadoop.hdfs.shell.command.Direction;
 import com.instanceone.hdfs.shell.command.HdfsAbstract;
 import com.instanceone.stemshell.Environment;
 import jline.console.ConsoleReader;
@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static com.dstreev.hadoop.util.HdfsLsPlus.PRINT_OPTION.*;
+import static com.dstreev.hadoop.hdfs.util.HdfsLsPlus.PRINT_OPTION.*;
 
 /**
  * Created by dstreev on 2016-02-15.

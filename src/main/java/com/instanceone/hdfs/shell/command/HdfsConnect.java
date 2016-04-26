@@ -4,9 +4,8 @@ package com.instanceone.hdfs.shell.command;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 
-import com.dstreev.hdfs.shell.command.Constants;
+import com.dstreev.hadoop.hdfs.shell.command.Constants;
 import com.instanceone.stemshell.command.AbstractCommand;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
@@ -18,12 +17,11 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.stemshell.Environment;
-import org.apache.hadoop.security.UserGroupInformation;
 
 public class HdfsConnect extends AbstractCommand {
 
     public static final String HADOOP_CONF_DIR = "HADOOP_CONF_DIR";
-    private static final String[] HADOOP_CONF_FILES = {"core-site.xml", "hdfs-site.xml"};
+    private static final String[] HADOOP_CONF_FILES = {"core-site.xml", "hdfs-site.xml", "mapred-site.xml", "yarn-site.xml"};
 
     public HdfsConnect(String name) {
         super(name);
