@@ -31,27 +31,27 @@ import java.util.*;
  * 'n' (limit).
  */
 public abstract class AbstractStats extends HdfsAbstract {
-    private Configuration configuration = null;
+    protected Configuration configuration = null;
 
-    private FSDataOutputStream outFS = null;
-    private String baseOutputDir = null;
+    protected FSDataOutputStream outFS = null;
+    protected String baseOutputDir = null;
 
-    private DistributedFileSystem fs = null;
+    protected DistributedFileSystem fs = null;
 
-    private static String DEFAULT_FILE_FORMAT = "yyyy-MM";
+    protected static String DEFAULT_FILE_FORMAT = "yyyy-MM";
 
-    private DateFormat dfFile = null;
+    protected DateFormat dfFile = null;
 
-    private Map<String, List<Map<String,String>>> records = new LinkedHashMap<String, List<Map<String,String>>>();
-    private Boolean header = Boolean.FALSE;
+    protected Map<String, List<Map<String,String>>> records = new LinkedHashMap<String, List<Map<String,String>>>();
+    protected Boolean header = Boolean.FALSE;
 
-    private Long increment = 60l * 60l * 1000l; // 1 hour
+    protected Long increment = 60l * 60l * 1000l; // 1 hour
 
     /**
      * The earliest start time to get available jobs. Time since Epoch...
      */
-    private Long startTime = 0l;
-    private Long endTime = 0l;
+    protected Long startTime = 0l;
+    protected Long endTime = 0l;
 
     public AbstractStats(String name) {
         super(name);
@@ -97,8 +97,101 @@ public abstract class AbstractStats extends HdfsAbstract {
         list.add(record);
     }
 
+    public void addRecords(String recordType, List<Map<String, String>> inRecords) {
+        List<Map<String, String>> list = null;
+        if (records.containsKey(recordType)) {
+            list = records.get(recordType);
+        } else {
+            list = new ArrayList<Map<String,String>>();
+            records.put(recordType, list);
+        }
+        list.addAll(inRecords);
+    }
+
     @Override
-    public abstract void execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader);
+    public final void execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+        if (cmd.hasOption("help")) {
+            getHelp();
+            return;
+        }
+
+        // Get the Filesystem
+        configuration = (Configuration) env.getValue(Constants.CFG);
+
+        fs = (DistributedFileSystem) env.getValue(Constants.HDFS);
+
+        if (fs == null) {
+            System.out.println("Please connect first");
+            return;
+        }
+
+        Option[] cmdOpts = cmd.getOptions();
+        String[] cmdArgs = cmd.getArgs();
+
+        if (cmd.hasOption("fileFormat")) {
+            dfFile = new SimpleDateFormat(cmd.getOptionValue("fileFormat"));
+        } else {
+            dfFile = new SimpleDateFormat(DEFAULT_FILE_FORMAT);
+        }
+
+        if (cmd.hasOption("output")) {
+            baseOutputDir = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+        } else {
+            baseOutputDir = null;
+        }
+
+        if (cmd.hasOption("header")) {
+            this.header = Boolean.TRUE;
+        } else {
+            this.header = Boolean.FALSE;
+        }
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (cmd.hasOption("start")) {
+            Date startDate = null;
+            try {
+                startDate = df.parse(cmd.getOptionValue("start"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return;
+            }
+            startTime = startDate.getTime();
+        } else {
+            // Set Start Time to previous day IF no config is specified.
+            Calendar startCal = Calendar.getInstance();
+            startCal.add(Calendar.DAY_OF_MONTH, -1);
+            Date startDate = startCal.getTime();
+            startTime = startDate.getTime();
+        }
+
+        if (cmd.hasOption("end")) {
+            Date endDate = null;
+            try {
+                endDate = df.parse(cmd.getOptionValue("end"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return;
+            }
+            endTime = endDate.getTime();
+        } else {
+            // If no Config.
+            // Set to now.
+            endTime = new Date().getTime();
+        }
+
+        if (cmd.hasOption("increment")) {
+            String incStr = cmd.getOptionValue("increment");
+            increment = Long.parseLong(incStr) * 60l * 1000l;
+        }
+
+        clearCache();
+
+        process(cmd);
+
+        clearCache();
+    }
+
+    public abstract void process(CommandLine cmdln);
 
     protected void print(String recordSet, List<Map<String, String>> records) {
         System.out.println("Record set: " + recordSet);

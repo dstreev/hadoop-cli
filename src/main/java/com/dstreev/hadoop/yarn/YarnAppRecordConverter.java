@@ -1,10 +1,6 @@
 package com.dstreev.hadoop.yarn;
 
-import com.dstreev.hadoop.mapreduce.parsers.JobCounterGroupParser;
-import com.dstreev.hadoop.mapreduce.parsers.TaskCounterGroupParser;
 import com.dstreev.hadoop.util.RecordConverter;
-import com.dstreev.hadoop.util.TraverseBehavior;
-import com.dstreev.hadoop.util.TraversePath;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 

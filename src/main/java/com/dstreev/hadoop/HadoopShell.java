@@ -8,7 +8,7 @@ import com.dstreev.hadoop.hdfs.shell.command.Direction;
 import com.dstreev.hadoop.hdfs.shell.command.LocalMkdir;
 import com.dstreev.hadoop.hdfs.shell.command.LocalRm;
 import com.dstreev.hadoop.mapreduce.JhsStats;
-import com.dstreev.hadoop.yarn.YarnStats;
+import com.dstreev.hadoop.yarn.ContainerStats;
 import com.instanceone.hdfs.shell.command.*;
 import com.instanceone.hdfs.shell.command.LocalCat;
 import com.instanceone.hdfs.shell.command.LocalHead;
@@ -242,7 +242,7 @@ public class HadoopShell extends com.instanceone.stemshell.Shell {
         env.addCommand(new JhsStats("jhsstat", env, Direction.NONE));
 
         // Yarn Tools
-        env.addCommand(new YarnStats("yarnstat", env, Direction.NONE));
+        env.addCommand(new ContainerStats("cstat", env, Direction.NONE));
 
     }
 
