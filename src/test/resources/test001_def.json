@@ -1,0 +1,39 @@
+{
+  "name" : "my_replication_set",
+  "stateOutputDirectory" : "/user/dstreev/replication_state/my_replication_set",
+  "snapshotNamePattern" : {
+    "useDefault" : false,
+    "namePattern" : "yyyyMMdd24Hmmss"
+  },
+  "source": {
+    "name":"HOME",
+    "haEnabled": true,
+    "dfsNameService": {
+      "defined":true
+    },
+    "directory":"/user/dstreev/sourceSync"
+  },
+  "target": {
+    "name":"HOME_2",
+    "haEnabled": true,
+    "dfsNameService" :
+    {
+      "defined":false,
+      "namenodeHosts": [ {
+        "fqdn": "m1.hdp.local",
+        "rpcPort":8020,
+        "serviceRpcPort":8021,
+        "httpPort":50070,
+        "httpsPort":50470
+      } , {
+        "fqdn": "m2.hdp.local",
+        "rpcPort":8020,
+        "serviceRpcPort":8021,
+        "httpPort":50070,
+        "httpsPort":50470
+
+      }]
+    },
+    "directory":"/user/dstreev/targetSync"
+  }
+}

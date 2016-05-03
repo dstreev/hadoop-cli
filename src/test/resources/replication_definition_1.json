@@ -1,0 +1,19 @@
+{
+  "source": {
+    "name":"HOME",
+    "type":"HA",
+    "dfs.nameservice": {
+      "defined":true
+    },
+    "directory":"/target_dir"
+  },
+  "target": {
+    "name":"MY_REPLICA",
+    "type":"HA",
+    "dfs.nameservice" :
+    {
+      "defined":true
+    },
+    "directory":"/target_dir"
+  }
+}

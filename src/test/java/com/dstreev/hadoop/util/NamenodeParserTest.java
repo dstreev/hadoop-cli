@@ -3,7 +3,9 @@ package com.dstreev.hadoop.util;
 import com.dstreev.hadoop.hdfs.util.NamenodeJmxParser;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,11 +19,14 @@ public class NamenodeParserTest {
     public void getTopUserOpsString() {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_active.json");
-            List<String> userOpsList = njp.getTopUserOpRecords();
-            for (String userOps : userOpsList) {
-                System.out.println(userOps);
+            List<Map<String,Object>> list = njp.getTopUserOpRecords();
+            for (Map<String,Object> map: list) {
+                Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
+                while (iEntries.hasNext()) {
+                    Map.Entry<String, Object> item = iEntries.next();
+                    System.out.println(item.getKey() + ":" + item.getValue().toString());
+                }
             }
-//            assertTrue(njp.getTopUserOpRecords() != null);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -32,8 +37,12 @@ public class NamenodeParserTest {
     public void getFSState() {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_active.json");
-            String fsState = njp.getFSState();
-            System.out.println(fsState);
+            Map<String,Object> map = njp.getFSState();
+            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
+            while (iEntries.hasNext()) {
+                Map.Entry<String, Object> item = iEntries.next();
+                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -44,8 +53,12 @@ public class NamenodeParserTest {
     public void getNamenodeInfo() {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_active.json");
-            String nnInfo = njp.getNamenodeInfo();
-            System.out.println(nnInfo);
+            Map<String,Object> map = njp.getNamenodeInfo();
+            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
+            while (iEntries.hasNext()) {
+                Map.Entry<String, Object> item = iEntries.next();
+                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -56,11 +69,14 @@ public class NamenodeParserTest {
     public void getTopUserOpsStringStandby() {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_standby.json");
-            List<String> userOpsList = njp.getTopUserOpRecords();
-            for (String userOps : userOpsList) {
-                System.out.println(userOps);
+            List<Map<String,Object>> list = njp.getTopUserOpRecords();
+            for (Map<String,Object> map: list) {
+                Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
+                while (iEntries.hasNext()) {
+                    Map.Entry<String, Object> item = iEntries.next();
+                    System.out.println(item.getKey() + ":" + item.getValue().toString());
+                }
             }
-//            assertTrue(njp.getTopUserOpRecords() != null);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -71,8 +87,8 @@ public class NamenodeParserTest {
     public void getFSStateStandby() {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_standby.json");
-            String fsState = njp.getFSState();
-            System.out.println(fsState);
+            Map<String,Object> fsState = njp.getFSState();
+//            System.out.println(fsState);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -83,8 +99,12 @@ public class NamenodeParserTest {
     public void getNamenodeInfoStandby() {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_standby.json");
-            String nnInfo = njp.getNamenodeInfo();
-            System.out.println(nnInfo);
+            Map<String,Object> map = njp.getNamenodeInfo();
+            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
+            while (iEntries.hasNext()) {
+                Map.Entry<String, Object> item = iEntries.next();
+                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -95,11 +115,14 @@ public class NamenodeParserTest {
     public void getTopUserOpsStringStandalone() {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.2.0_standalone.json");
-            List<String> userOpsList = njp.getTopUserOpRecords();
-            for (String userOps : userOpsList) {
-                System.out.println(userOps);
+            List<Map<String,Object>> list = njp.getTopUserOpRecords();
+            for (Map<String,Object> map: list) {
+                Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
+                while (iEntries.hasNext()) {
+                    Map.Entry<String, Object> item = iEntries.next();
+                    System.out.println(item.getKey() + ":" + item.getValue().toString());
+                }
             }
-//            assertTrue(njp.getTopUserOpRecords() != null);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -110,8 +133,12 @@ public class NamenodeParserTest {
     public void getFSStateStandalone() {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.2.0_standalone.json");
-            String fsState = njp.getFSState();
-            System.out.println(fsState);
+            Map<String,Object> map = njp.getFSState();
+            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
+            while (iEntries.hasNext()) {
+                Map.Entry<String, Object> item = iEntries.next();
+                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -122,8 +149,12 @@ public class NamenodeParserTest {
     public void getNamenodeInfoStandalone() {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.2.0_standalone.json");
-            String nnInfo = njp.getNamenodeInfo();
-            System.out.println(nnInfo);
+            Map<String,Object> map = njp.getNamenodeInfo();
+            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
+            while (iEntries.hasNext()) {
+                Map.Entry<String, Object> item = iEntries.next();
+                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

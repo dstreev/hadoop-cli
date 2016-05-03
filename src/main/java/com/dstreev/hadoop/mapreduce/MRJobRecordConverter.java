@@ -119,9 +119,9 @@ public class MRJobRecordConverter {
     }
 }
      */
-    public Map<String, String> jobDetail(String jobJson) throws IOException {
+    public Map<String, Object> jobDetail(String jobJson) throws IOException {
 
-        Map<String, String> rtn = recordConverter.convert(null, jobJson, "job", null);
+        Map<String, Object> rtn = recordConverter.convert(null, jobJson, "job", null);
 
         return rtn;
     }
@@ -379,8 +379,8 @@ public class MRJobRecordConverter {
 }
 
      */
-    public Map<String, String> jobCounters(String counterJson) {
-        Map<String, String> rtn = null;
+    public Map<String, Object> jobCounters(String counterJson) {
+        Map<String, Object> rtn = null;
 
         TraversePath tp = new TraversePath();
         TraverseBehavior tbcg = new TraverseBehavior(TraverseBehavior.TRAVERSE_MODE.FLATTEN, new JobCounterGroupParser());
@@ -409,8 +409,8 @@ public class MRJobRecordConverter {
     }
 }
      */
-    public Map<String, String> taskDetail(String jobId, String taskJson) throws IOException {
-        Map<String, String> rtn = new LinkedHashMap<String, String>();
+    public Map<String, Object> taskDetail(String jobId, String taskJson) throws IOException {
+        Map<String, Object> rtn = new LinkedHashMap<String, Object>();
         rtn.put("jobId", jobId);
 
         rtn = recordConverter.convert(rtn, taskJson, "task", null);
@@ -541,8 +541,8 @@ public class MRJobRecordConverter {
 }
 
      */
-    public Map<String, String> taskCounter(String jobId, String counterJson) {
-        Map<String, String> rtn = new LinkedHashMap<String, String>();
+    public Map<String, Object> taskCounter(String jobId, String counterJson) {
+        Map<String, Object> rtn = new LinkedHashMap<String, Object>();
         rtn.put("jobId", jobId);
 
         TraversePath tp = new TraversePath();
@@ -625,8 +625,8 @@ public class MRJobRecordConverter {
     }
 }
      */
-    public Map<String, String> attemptDetail(String jobId, String taskId, String attemptJson) throws IOException {
-        Map<String, String> rtn = new LinkedHashMap<String, String>();
+    public Map<String, Object> attemptDetail(String jobId, String taskId, String attemptJson) throws IOException {
+        Map<String, Object> rtn = new LinkedHashMap<String, Object>();
         rtn.put("jobId", jobId);
         rtn.put("taskId", taskId);
 
@@ -757,10 +757,10 @@ public class MRJobRecordConverter {
     }
 }
      */
-    public Map<String,String> attemptCounter(String jobId, String taskId, String counterJson) throws IOException {
-        Map<String,String> rtn = new LinkedHashMap<String, String>();
-        rtn.put("jobId", jobId);
-        rtn.put("taskId", taskId);
+        public Map<String,Object> attemptCounter(String jobId, String taskId, String counterJson) throws IOException {
+            Map<String,Object> rtn = new LinkedHashMap<String, Object>();
+            rtn.put("jobId", jobId);
+            rtn.put("taskId", taskId);
 
         TraversePath tp = new TraversePath();
         TraverseBehavior tbcg = new TraverseBehavior(TraverseBehavior.TRAVERSE_MODE.FLATTEN, new TaskCounterGroupParser());

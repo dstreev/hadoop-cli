@@ -78,16 +78,17 @@ public class NamenodeJmxParser {
         }
     }
 
-    private List<String> mapValuesToList(Map<String, Object> map, String[] fields) {
-        List<String> rtn = new LinkedList<>();
+    private Map<String,Object> mapToReducedMap(Map<String, Object> map, String[] fields) {
+        Map<String,Object> rtn = new LinkedHashMap<>();
         if (fields == null) {
             for (Map.Entry<String, Object> entry : map.entrySet()) {
-                rtn.add(entry.getValue().toString());
+                rtn.put(entry.getKey(), entry.getValue());
             }
         } else {
             for (String field: fields) {
                 if (map.containsKey(field)) {
-                    rtn.add(map.get(field).toString());
+                    rtn.put(field, map.get(field));
+//                    rtn.add(map.get(field).toString());
                 } else {
                     System.out.println("Map doesn't contain key: " + field);
                 }
@@ -108,8 +109,8 @@ public class NamenodeJmxParser {
         return sb.toString();
     }
 
-    public List<String> getTopUserOpRecords() {
-        List<String> rtn = null;
+    public List<Map<String,Object>> getTopUserOpRecords() {
+        List<Map<String,Object>> rtn = null;
         Map<String, Object> fsState = jjp.getJmxBeanContent(NamenodeJmxBean.FS_STATE_JMX_BEAN.getBeanName());
 
         ObjectMapper mapper = new ObjectMapper();
@@ -125,20 +126,19 @@ public class NamenodeJmxParser {
         return rtn;
     }
 
-    public String getNamenodeInfo() {
+    public Map<String, Object> getNamenodeInfo() {
 
-        List<String> working = mapValuesToList(metadata, null);
+        Map<String,Object> working = new LinkedHashMap<>(metadata);
 
         Map<String, Object> nnInfo = jjp.getJmxBeanContent(NamenodeJmxBean.NN_INFO_JMX_BEAN.getBeanName());
 
         String[] fields = {"Version", "Used", "Free", "Safemode", "TotalBlocks", "TotalFiles", "NumberOfMissingBlocks", "NumberOfMissingBlocksWithReplicationFactorOne"};
 
-        List<String> fieldList = mapValuesToList(nnInfo, fields);
+        Map<String,Object> fieldMap = mapToReducedMap(nnInfo, fields);
 
-        working.addAll(fieldList);
+        working.putAll(fieldMap);
 
-        return listToString(working);
-//        return working;
+        return working;
 
         /*
             "name" : "Hadoop:service=NameNode,name=NameNodeInfo",
@@ -165,20 +165,20 @@ public class NamenodeJmxParser {
          */
     }
 
-    public String getFSState() {
+    public Map<String, Object> getFSState() {
 
-        List<String> working = mapValuesToList(metadata, null);
+        Map<String, Object> working = new LinkedHashMap<>(metadata);
 
         Map<String, Object> fsState = jjp.getJmxBeanContent(NamenodeJmxBean.FS_STATE_JMX_BEAN.getBeanName());
 
         String[] fields = {"CapacityUsed", "CapacityRemaining", "BlocksTotal", "PendingReplicationBlocks", "UnderReplicatedBlocks", "ScheduledReplicationBlocks", "PendingDeletionBlocks", "FSState", "NumLiveDataNodes", "NumDeadDataNodes", "NumDecomLiveDataNodes", "NumDecomDeadDataNodes", "VolumeFailuresTotal"};
 
 
-        List<String> fieldList = mapValuesToList(fsState, fields);
+        Map<String, Object> fieldMap = mapToReducedMap(fsState, fields);
 
-        working.addAll(fieldList);
+        working.putAll(fieldMap);
 
-        return listToString(working);
+        return working;
 
         /*
             "CapacityTotal" : 1254254346240,
@@ -209,34 +209,40 @@ public class NamenodeJmxParser {
          */
     }
 
-    private List<String> buildTopUserOpsCountRecords(JsonNode topNode) {
-        List<String> rtn = null;
+    private List<Map<String,Object>> buildTopUserOpsCountRecords(JsonNode topNode) {
+        List<Map<String,Object>> rtn = null;
         if (topNode != null) {
-            rtn = new ArrayList<String>();
+            rtn = new ArrayList<Map<String,Object>>();
             try {
-                StringBuilder sbHeader = new StringBuilder();
+//                StringBuilder sbHeader = new StringBuilder();
                 // Build the Key for the Record.
-                for (String key : metadata.keySet()) {
-                    sbHeader.append(metadata.get(key)).append(delimiter);
-                }
+//                for (String key : metadata.keySet()) {
+//                    sbHeader.append(metadata.get(key)).append(delimiter);
+//                }
 
                 // Cycle through the Windows
                 for (JsonNode wNode : topNode.get("windows")) {
-                    StringBuilder sbWindow = new StringBuilder(sbHeader);
-
-                    sbWindow.append(wNode.get("windowLenMs").asText()).append(delimiter);
+                    Map<String, Object> winMap = new LinkedHashMap<String, Object>(metadata);
+//                    StringBuilder sbWindow = new StringBuilder(sbHeader);
+                    winMap.put("windowLenMs", wNode.get("windowLenMs").asText());
+//                    sbWindow.append(wNode.get("windowLenMs").asText()).append(delimiter);
                     // Cycle through the Operations.
                     for (JsonNode opNode : wNode.get("ops")) {
                         // Get Op Type
-                        StringBuilder sbOp = new StringBuilder(sbWindow);
-                        sbOp.append(opNode.get("opType").asText()).append(delimiter);
+//                        StringBuilder sbOp = new StringBuilder(sbWindow);
+                        Map<String, Object> opMap = new LinkedHashMap<String, Object>(winMap);
+//                        sbOp.append(opNode.get("opType").asText()).append(delimiter);
+                        opMap.put("opType", opNode.get("opType").asText());
                         // Cycle through the Users.
                         for (JsonNode userNode : opNode.get("topUsers")) {
-                            StringBuilder sbUser = new StringBuilder(sbOp);
-                            sbUser.append(userNode.get("user").asText()).append(delimiter);
-                            sbUser.append(userNode.get("count").asText());
+                            Map<String, Object> userMap = new LinkedHashMap<String, Object>(opMap);
+//                            StringBuilder sbUser = new StringBuilder(sbOp);
+//                            sbUser.append(userNode.get("user").asText()).append(delimiter);
+//                            sbUser.append(userNode.get("count").asText());
+                            userMap.put("user", userNode.get("user").asText());
+                            userMap.put("count", userNode.get("count").asText());
                             // Add to the list.
-                            rtn.add(sbUser.toString());
+                            rtn.add(userMap);
                         }
                     }
                 }

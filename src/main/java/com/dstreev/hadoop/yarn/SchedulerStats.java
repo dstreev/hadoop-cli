@@ -6,20 +6,26 @@ import com.dstreev.hadoop.yarn.parsers.QueueParser;
 import com.instanceone.stemshell.Environment;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dstreev on 2016-04-25.
  * <p>
- * Using the Resource Manager JMX, collect the stats on applications since the last time this was run or up to
- * 'n' (limit).
+ * Using the Resource Manager JMX, collect the queue stats .
+ *
  */
 public class SchedulerStats extends AbstractStats {
+
+    private String timestamp = null;
 
     public SchedulerStats(String name) {
         super(name);
@@ -44,6 +50,9 @@ public class SchedulerStats extends AbstractStats {
     @Override
     public void process(CommandLine cmdln) {
 
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.timestamp = df.format(new Date());
+
         String hostAndPort = configuration.get("yarn.resourcemanager.webapp.address");
 
         System.out.println("Resource Manager Server URL: " + hostAndPort);
@@ -58,12 +67,12 @@ public class SchedulerStats extends AbstractStats {
             String schJson = IOUtils.toString(schConnection.getInputStream());
 
             QueueParser queueParser = new QueueParser(schJson);
-            Map<String, List<Map<String,String>>> queueSet = queueParser.getQueues();
+            Map<String, List<Map<String,Object>>> queueSet = queueParser.getQueues(timestamp);
 
-            Iterator<Map.Entry<String,List<Map<String,String>>>> qIter = queueSet.entrySet().iterator();
+            Iterator<Map.Entry<String,List<Map<String,Object>>>> qIter = queueSet.entrySet().iterator();
 
             while (qIter.hasNext()) {
-                Map.Entry<String, List<Map<String,String>>> entry = qIter.next();
+                Map.Entry<String, List<Map<String,Object>>> entry = qIter.next();
                 addRecords(entry.getKey(), entry.getValue());
             }
 
@@ -73,9 +82,9 @@ public class SchedulerStats extends AbstractStats {
                  */
 
 
-            Iterator<Map.Entry<String, List<Map<String, String>>>> rIter = getRecords().entrySet().iterator();
+            Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
             while (rIter.hasNext()) {
-                Map.Entry<String, List<Map<String, String>>> recordSet = rIter.next();
+                Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
                 print(recordSet.getKey(), recordSet.getValue());
             }
 

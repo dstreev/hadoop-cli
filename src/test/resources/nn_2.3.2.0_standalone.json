@@ -1,0 +1,1377 @@
+{
+  "beans" : [ {
+    "name" : "java.lang:type=Memory",
+    "modelerType" : "sun.management.MemoryImpl",
+    "Verbose" : true,
+    "HeapMemoryUsage" : {
+      "committed" : 4241293312,
+      "init" : 4294967296,
+      "max" : 4241293312,
+      "used" : 1069338944
+    },
+    "NonHeapMemoryUsage" : {
+      "committed" : 153812992,
+      "init" : 136773632,
+      "max" : 318767104,
+      "used" : 85287752
+    },
+    "ObjectPendingFinalizationCount" : 0,
+    "ObjectName" : "java.lang:type=Memory"
+  }, {
+    "name" : "Hadoop:service=NameNode,name=NameNodeStatus",
+    "modelerType" : "org.apache.hadoop.hdfs.server.namenode.NameNode",
+    "State" : "active",
+    "NNRole" : "NameNode",
+    "HostAndPort" : "ip-172-31-14-9.ec2.internal:8020",
+    "SecurityEnabled" : false,
+    "LastHATransitionTime" : 0
+  }, {
+    "name" : "Hadoop:service=NameNode,name=RpcActivityForPort8020",
+    "modelerType" : "RpcActivityForPort8020",
+    "tag.port" : "8020",
+    "tag.Context" : "rpc",
+    "tag.Hostname" : "ip-172-31-14-9.ec2.internal",
+    "ReceivedBytes" : 13180271067,
+    "SentBytes" : 19187791433,
+    "RpcQueueTimeNumOps" : 33896496,
+    "RpcQueueTimeAvgTime" : 0.0,
+    "RpcProcessingTimeNumOps" : 33896496,
+    "RpcProcessingTimeAvgTime" : 0.0,
+    "RpcAuthenticationFailures" : 0,
+    "RpcAuthenticationSuccesses" : 0,
+    "RpcAuthorizationFailures" : 0,
+    "RpcAuthorizationSuccesses" : 1391939,
+    "RpcClientBackoff" : 0,
+    "RpcSlowCalls" : 0,
+    "NumOpenConnections" : 8,
+    "CallQueueLength" : 0
+  }, {
+    "name" : "java.lang:type=GarbageCollector,name=ConcurrentMarkSweep",
+    "modelerType" : "sun.management.GarbageCollectorImpl",
+    "LastGcInfo" : {
+      "GcThreadCount" : 11,
+      "duration" : 7416,
+      "endTime" : 3440289318,
+      "id" : 3,
+      "memoryUsageAfterGc" : [ {
+        "key" : "CMS Perm Gen",
+        "value" : {
+          "committed" : 134217728,
+          "init" : 134217728,
+          "max" : 268435456,
+          "used" : 65894784
+        }
+      }, {
+        "key" : "Par Eden Space",
+        "value" : {
+          "committed" : 429522944,
+          "init" : 429522944,
+          "max" : 429522944,
+          "used" : 8518616
+        }
+      }, {
+        "key" : "Code Cache",
+        "value" : {
+          "committed" : 19529728,
+          "init" : 2555904,
+          "max" : 50331648,
+          "used" : 19220736
+        }
+      }, {
+        "key" : "Par Survivor Space",
+        "value" : {
+          "committed" : 53673984,
+          "init" : 53673984,
+          "max" : 53673984,
+          "used" : 21423512
+        }
+      }, {
+        "key" : "CMS Old Gen",
+        "value" : {
+          "committed" : 3758096384,
+          "init" : 3758096384,
+          "max" : 3758096384,
+          "used" : 566694488
+        }
+      } ],
+      "memoryUsageBeforeGc" : [ {
+        "key" : "CMS Perm Gen",
+        "value" : {
+          "committed" : 134217728,
+          "init" : 134217728,
+          "max" : 268435456,
+          "used" : 65894784
+        }
+      }, {
+        "key" : "Par Eden Space",
+        "value" : {
+          "committed" : 429522944,
+          "init" : 429522944,
+          "max" : 429522944,
+          "used" : 198456
+        }
+      }, {
+        "key" : "Code Cache",
+        "value" : {
+          "committed" : 19529728,
+          "init" : 2555904,
+          "max" : 50331648,
+          "used" : 19220736
+        }
+      }, {
+        "key" : "Par Survivor Space",
+        "value" : {
+          "committed" : 53673984,
+          "init" : 53673984,
+          "max" : 53673984,
+          "used" : 21423512
+        }
+      }, {
+        "key" : "CMS Old Gen",
+        "value" : {
+          "committed" : 3758096384,
+          "init" : 3758096384,
+          "max" : 3758096384,
+          "used" : 3457962664
+        }
+      } ],
+      "startTime" : 3440281902
+    },
+    "CollectionCount" : 3,
+    "CollectionTime" : 158,
+    "Name" : "ConcurrentMarkSweep",
+    "Valid" : true,
+    "MemoryPoolNames" : [ "Par Eden Space", "Par Survivor Space", "CMS Old Gen", "CMS Perm Gen" ],
+    "ObjectName" : "java.lang:type=GarbageCollector,name=ConcurrentMarkSweep"
+  }, {
+    "name" : "java.nio:type=BufferPool,name=mapped",
+    "modelerType" : "sun.management.ManagementFactoryHelper$1",
+    "Name" : "mapped",
+    "MemoryUsed" : 36007,
+    "TotalCapacity" : 36007,
+    "Count" : 5,
+    "ObjectName" : "java.nio:type=BufferPool,name=mapped"
+  }, {
+    "name" : "Hadoop:service=NameNode,name=NameNodeActivity",
+    "modelerType" : "NameNodeActivity",
+    "tag.ProcessName" : "NameNode",
+    "tag.SessionId" : null,
+    "tag.Context" : "dfs",
+    "tag.Hostname" : "ip-172-31-14-9.ec2.internal",
+    "CreateFileOps" : 510601,
+    "FilesCreated" : 1630060,
+    "FilesAppended" : 73,
+    "GetBlockLocations" : 6277666,
+    "FilesRenamed" : 502583,
+    "FilesTruncated" : 0,
+    "GetListingOps" : 1335659,
+    "DeleteFileOps" : 485623,
+    "FilesDeleted" : 484702,
+    "FileInfoOps" : 13337911,
+    "AddBlockOps" : 496057,
+    "GetAdditionalDatanodeOps" : 0,
+    "CreateSymlinkOps" : 0,
+    "GetLinkTargetOps" : 0,
+    "FilesInGetListingOps" : 16417492,
+    "AllowSnapshotOps" : 0,
+    "DisallowSnapshotOps" : 0,
+    "CreateSnapshotOps" : 52,
+    "DeleteSnapshotOps" : 193,
+    "RenameSnapshotOps" : 0,
+    "ListSnapshottableDirOps" : 2,
+    "SnapshotDiffReportOps" : 1,
+    "BlockReceivedAndDeletedOps" : 1639869,
+    "StorageBlockReportOps" : 3312,
+    "TransactionsNumOps" : 8466301,
+    "TransactionsAvgTime" : 0.0,
+    "SyncsNumOps" : 3754786,
+    "SyncsAvgTime" : 0.6666666666666666,
+    "TransactionsBatchedInSync" : 313055,
+    "BlockReportNumOps" : 3312,
+    "BlockReportAvgTime" : 8.0,
+    "CacheReportNumOps" : 0,
+    "CacheReportAvgTime" : 0.0,
+    "SafeModeTime" : 105805,
+    "FsImageLoadTime" : 43520,
+    "GetEditNumOps" : 208,
+    "GetEditAvgTime" : 12.0,
+    "GetImageNumOps" : 1,
+    "GetImageAvgTime" : 7779.0,
+    "PutImageNumOps" : 207,
+    "PutImageAvgTime" : 3500.0,
+    "TotalFileOps" : 22946421
+  }, {
+    "name" : "java.lang:type=Compilation",
+    "modelerType" : "sun.management.CompilationImpl",
+    "Name" : "HotSpot 64-Bit Tiered Compilers",
+    "CompilationTimeMonitoringSupported" : true,
+    "TotalCompilationTime" : 66691,
+    "ObjectName" : "java.lang:type=Compilation"
+  }, {
+    "name" : "java.lang:type=MemoryPool,name=Par Eden Space",
+    "modelerType" : "sun.management.MemoryPoolImpl",
+    "Name" : "Par Eden Space",
+    "Type" : "HEAP",
+    "Valid" : true,
+    "CollectionUsage" : {
+      "committed" : 429522944,
+      "init" : 429522944,
+      "max" : 429522944,
+      "used" : 0
+    },
+    "CollectionUsageThreshold" : 0,
+    "CollectionUsageThresholdCount" : 0,
+    "MemoryManagerNames" : [ "ConcurrentMarkSweep", "ParNew" ],
+    "PeakUsage" : {
+      "committed" : 429522944,
+      "init" : 429522944,
+      "max" : 429522944,
+      "used" : 429522944
+    },
+    "Usage" : {
+      "committed" : 429522944,
+      "init" : 429522944,
+      "max" : 429522944,
+      "used" : 66598520
+    },
+    "CollectionUsageThresholdExceeded" : false,
+    "CollectionUsageThresholdSupported" : true,
+    "UsageThresholdSupported" : false,
+    "ObjectName" : "java.lang:type=MemoryPool,name=Par Eden Space"
+  }, {
+    "name" : "Hadoop:service=NameNode,name=SnapshotInfo",
+    "modelerType" : "org.apache.hadoop.hdfs.server.namenode.snapshot.SnapshotManager",
+    "SnapshottableDirectories" : [ {
+      "group" : "service",
+      "modificationTime" : 1458545409681,
+      "owner" : "wre",
+      "path" : "/user/wre",
+      "permission" : 770,
+      "snapshotNumber" : 50,
+      "snapshotQuota" : 65536
+    }, {
+      "group" : "hadoop",
+      "modificationTime" : 1457966261269,
+      "owner" : "hive",
+      "path" : "/apps/hive/warehouse",
+      "permission" : 777,
+      "snapshotNumber" : 0,
+      "snapshotQuota" : 65536
+    }, {
+      "group" : "vendor",
+      "modificationTime" : 1425517264151,
+      "owner" : "ecsight",
+      "path" : "/user/ecsight",
+      "permission" : 750,
+      "snapshotNumber" : 0,
+      "snapshotQuota" : 65536
+    } ],
+    "Snapshots" : [ {
+      "modificationTime" : 1454315409547,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160201-033009.547",
+      "snapshotID" : "s20160201-033009.547"
+    }, {
+      "modificationTime" : 1454401810206,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160202-033010.206",
+      "snapshotID" : "s20160202-033010.206"
+    }, {
+      "modificationTime" : 1454488210433,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160203-033010.433",
+      "snapshotID" : "s20160203-033010.433"
+    }, {
+      "modificationTime" : 1454574608818,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160204-033008.818",
+      "snapshotID" : "s20160204-033008.818"
+    }, {
+      "modificationTime" : 1454661009206,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160205-033009.205",
+      "snapshotID" : "s20160205-033009.205"
+    }, {
+      "modificationTime" : 1454747408943,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160206-033008.943",
+      "snapshotID" : "s20160206-033008.943"
+    }, {
+      "modificationTime" : 1454833808743,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160207-033008.743",
+      "snapshotID" : "s20160207-033008.743"
+    }, {
+      "modificationTime" : 1454920210377,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160208-033010.377",
+      "snapshotID" : "s20160208-033010.377"
+    }, {
+      "modificationTime" : 1455006609341,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160209-033009.341",
+      "snapshotID" : "s20160209-033009.341"
+    }, {
+      "modificationTime" : 1455093009386,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160210-033009.386",
+      "snapshotID" : "s20160210-033009.386"
+    }, {
+      "modificationTime" : 1455179410199,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160211-033010.199",
+      "snapshotID" : "s20160211-033010.199"
+    }, {
+      "modificationTime" : 1455265809429,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160212-033009.429",
+      "snapshotID" : "s20160212-033009.429"
+    }, {
+      "modificationTime" : 1455352209215,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160213-033009.215",
+      "snapshotID" : "s20160213-033009.215"
+    }, {
+      "modificationTime" : 1455438609095,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160214-033009.095",
+      "snapshotID" : "s20160214-033009.095"
+    }, {
+      "modificationTime" : 1455525009687,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160215-033009.687",
+      "snapshotID" : "s20160215-033009.687"
+    }, {
+      "modificationTime" : 1455611410073,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160216-033010.073",
+      "snapshotID" : "s20160216-033010.073"
+    }, {
+      "modificationTime" : 1455697809518,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160217-033009.518",
+      "snapshotID" : "s20160217-033009.518"
+    }, {
+      "modificationTime" : 1455784208746,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160218-033008.746",
+      "snapshotID" : "s20160218-033008.746"
+    }, {
+      "modificationTime" : 1455870609335,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160219-033009.335",
+      "snapshotID" : "s20160219-033009.335"
+    }, {
+      "modificationTime" : 1455957008577,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160220-033008.577",
+      "snapshotID" : "s20160220-033008.577"
+    }, {
+      "modificationTime" : 1456043408868,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160221-033008.868",
+      "snapshotID" : "s20160221-033008.868"
+    }, {
+      "modificationTime" : 1456129809479,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160222-033009.479",
+      "snapshotID" : "s20160222-033009.479"
+    }, {
+      "modificationTime" : 1456216209920,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160223-033009.920",
+      "snapshotID" : "s20160223-033009.920"
+    }, {
+      "modificationTime" : 1456302609734,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160224-033009.734",
+      "snapshotID" : "s20160224-033009.734"
+    }, {
+      "modificationTime" : 1456389009935,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160225-033009.935",
+      "snapshotID" : "s20160225-033009.935"
+    }, {
+      "modificationTime" : 1456475409978,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160226-033009.978",
+      "snapshotID" : "s20160226-033009.978"
+    }, {
+      "modificationTime" : 1456561808458,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160227-033008.458",
+      "snapshotID" : "s20160227-033008.458"
+    }, {
+      "modificationTime" : 1456648209199,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160228-033009.199",
+      "snapshotID" : "s20160228-033009.199"
+    }, {
+      "modificationTime" : 1456734610207,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160229-033010.207",
+      "snapshotID" : "s20160229-033010.207"
+    }, {
+      "modificationTime" : 1456821009449,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160301-033009.449",
+      "snapshotID" : "s20160301-033009.449"
+    }, {
+      "modificationTime" : 1456907408801,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160302-033008.801",
+      "snapshotID" : "s20160302-033008.801"
+    }, {
+      "modificationTime" : 1456993809000,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160303-033009.000",
+      "snapshotID" : "s20160303-033009.000"
+    }, {
+      "modificationTime" : 1457080209510,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160304-033009.510",
+      "snapshotID" : "s20160304-033009.510"
+    }, {
+      "modificationTime" : 1457166609661,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160305-033009.661",
+      "snapshotID" : "s20160305-033009.661"
+    }, {
+      "modificationTime" : 1457253010649,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160306-033010.649",
+      "snapshotID" : "s20160306-033010.649"
+    }, {
+      "modificationTime" : 1457339409837,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160307-033009.837",
+      "snapshotID" : "s20160307-033009.837"
+    }, {
+      "modificationTime" : 1457425808757,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160308-033008.757",
+      "snapshotID" : "s20160308-033008.757"
+    }, {
+      "modificationTime" : 1457512208991,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160309-033008.991",
+      "snapshotID" : "s20160309-033008.991"
+    }, {
+      "modificationTime" : 1457598610131,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160310-033010.131",
+      "snapshotID" : "s20160310-033010.131"
+    }, {
+      "modificationTime" : 1457685009836,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160311-033009.836",
+      "snapshotID" : "s20160311-033009.836"
+    }, {
+      "modificationTime" : 1457771410842,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160312-033010.842",
+      "snapshotID" : "s20160312-033010.842"
+    }, {
+      "modificationTime" : 1457854209896,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160313-033009.896",
+      "snapshotID" : "s20160313-033009.896"
+    }, {
+      "modificationTime" : 1457940609569,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160314-033009.569",
+      "snapshotID" : "s20160314-033009.569"
+    }, {
+      "modificationTime" : 1458027009119,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160315-033009.119",
+      "snapshotID" : "s20160315-033009.119"
+    }, {
+      "modificationTime" : 1458113409418,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160316-033009.418",
+      "snapshotID" : "s20160316-033009.418"
+    }, {
+      "modificationTime" : 1458199809524,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160317-033009.524",
+      "snapshotID" : "s20160317-033009.524"
+    }, {
+      "modificationTime" : 1458286208995,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160318-033008.995",
+      "snapshotID" : "s20160318-033008.995"
+    }, {
+      "modificationTime" : 1458372610051,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160319-033010.051",
+      "snapshotID" : "s20160319-033010.051"
+    }, {
+      "modificationTime" : 1458459009139,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160320-033009.138",
+      "snapshotID" : "s20160320-033009.138"
+    }, {
+      "modificationTime" : 1458545409681,
+      "snapshotDirectory" : "/user/wre/.snapshot/s20160321-033009.681",
+      "snapshotID" : "s20160321-033009.681"
+    } ]
+  }, {
+    "name" : "java.lang:type=MemoryPool,name=CMS Perm Gen",
+    "modelerType" : "sun.management.MemoryPoolImpl",
+    "Name" : "CMS Perm Gen",
+    "Type" : "NON_HEAP",
+    "Valid" : true,
+    "CollectionUsage" : {
+      "committed" : 134217728,
+      "init" : 134217728,
+      "max" : 268435456,
+      "used" : 65894784
+    },
+    "CollectionUsageThreshold" : 0,
+    "CollectionUsageThresholdCount" : 0,
+    "MemoryManagerNames" : [ "ConcurrentMarkSweep" ],
+    "PeakUsage" : {
+      "committed" : 134217728,
+      "init" : 134217728,
+      "max" : 268435456,
+      "used" : 65948744
+    },
+    "Usage" : {
+      "committed" : 134217728,
+      "init" : 134217728,
+      "max" : 268435456,
+      "used" : 65948744
+    },
+    "UsageThreshold" : 0,
+    "UsageThresholdCount" : 0,
+    "CollectionUsageThresholdExceeded" : false,
+    "CollectionUsageThresholdSupported" : true,
+    "UsageThresholdExceeded" : false,
+    "UsageThresholdSupported" : true,
+    "ObjectName" : "java.lang:type=MemoryPool,name=CMS Perm Gen"
+  }, {
+    "name" : "java.lang:type=OperatingSystem",
+    "modelerType" : "com.sun.management.UnixOperatingSystem",
+    "MaxFileDescriptorCount" : 128000,
+    "OpenFileDescriptorCount" : 412,
+    "CommittedVirtualMemorySize" : 5356179456,
+    "FreePhysicalMemorySize" : 1110175744,
+    "FreeSwapSpaceSize" : 0,
+    "ProcessCpuLoad" : 0.003048780487804878,
+    "ProcessCpuTime" : 28618120000000,
+    "SystemCpuLoad" : 0.006097560975609756,
+    "TotalPhysicalMemorySize" : 15740502016,
+    "TotalSwapSpaceSize" : 0,
+    "Name" : "Linux",
+    "AvailableProcessors" : 4,
+    "Arch" : "amd64",
+    "SystemLoadAverage" : 0.05,
+    "Version" : "2.6.32-358.14.1.el6.x86_64",
+    "ObjectName" : "java.lang:type=OperatingSystem"
+  }, {
+    "name" : "Hadoop:service=NameNode,name=RetryCache.NameNodeRetryCache",
+    "modelerType" : "RetryCache.NameNodeRetryCache",
+    "tag.Context" : "rpc",
+    "tag.Hostname" : "ip-172-31-14-9.ec2.internal",
+    "CacheHit" : 0,
+    "CacheCleared" : 0,
+    "CacheUpdated" : 1668691
+  }, {
+    "name" : "java.lang:type=MemoryPool,name=Par Survivor Space",
+    "modelerType" : "sun.management.MemoryPoolImpl",
+    "Name" : "Par Survivor Space",
+    "Type" : "HEAP",
+    "Valid" : true,
+    "CollectionUsage" : {
+      "committed" : 53673984,
+      "init" : 53673984,
+      "max" : 53673984,
+      "used" : 3599240
+    },
+    "CollectionUsageThreshold" : 0,
+    "CollectionUsageThresholdCount" : 0,
+    "MemoryManagerNames" : [ "ConcurrentMarkSweep", "ParNew" ],
+    "PeakUsage" : {
+      "committed" : 53673984,
+      "init" : 53673984,
+      "max" : 53673984,
+      "used" : 53673984
+    },
+    "Usage" : {
+      "committed" : 53673984,
+      "init" : 53673984,
+      "max" : 53673984,
+      "used" : 3599240
+    },
+    "CollectionUsageThresholdExceeded" : false,
+    "CollectionUsageThresholdSupported" : true,
+    "UsageThresholdSupported" : false,
+    "ObjectName" : "java.lang:type=MemoryPool,name=Par Survivor Space"
+  }, {
+    "name" : "java.lang:type=MemoryManager,name=CodeCacheManager",
+    "modelerType" : "sun.management.MemoryManagerImpl",
+    "Name" : "CodeCacheManager",
+    "Valid" : true,
+    "MemoryPoolNames" : [ "Code Cache" ],
+    "ObjectName" : "java.lang:type=MemoryManager,name=CodeCacheManager"
+  }, {
+    "name" : "Hadoop:service=NameNode,name=UgiMetrics",
+    "modelerType" : "UgiMetrics",
+    "tag.Context" : "ugi",
+    "tag.Hostname" : "ip-172-31-14-9.ec2.internal",
+    "LoginSuccessNumOps" : 0,
+    "LoginSuccessAvgTime" : 0.0,
+    "LoginFailureNumOps" : 0,
+    "LoginFailureAvgTime" : 0.0,
+    "GetGroupsNumOps" : 102535,
+    "GetGroupsAvgTime" : 2.0
+  }, {
+    "name" : "java.lang:type=MemoryPool,name=CMS Old Gen",
+    "modelerType" : "sun.management.MemoryPoolImpl",
+    "Name" : "CMS Old Gen",
+    "Type" : "HEAP",
+    "Valid" : true,
+    "CollectionUsage" : {
+      "committed" : 3758096384,
+      "init" : 3758096384,
+      "max" : 3758096384,
+      "used" : 566694488
+    },
+    "CollectionUsageThreshold" : 0,
+    "CollectionUsageThresholdCount" : 0,
+    "MemoryManagerNames" : [ "ConcurrentMarkSweep" ],
+    "PeakUsage" : {
+      "committed" : 3758096384,
+      "init" : 3758096384,
+      "max" : 3758096384,
+      "used" : 3459346584
+    },
+    "Usage" : {
+      "committed" : 3758096384,
+      "init" : 3758096384,
+      "max" : 3758096384,
+      "used" : 999206288
+    },
+    "UsageThreshold" : 0,
+    "UsageThresholdCount" : 0,
+    "CollectionUsageThresholdExceeded" : false,
+    "CollectionUsageThresholdSupported" : true,
+    "UsageThresholdExceeded" : false,
+    "UsageThresholdSupported" : true,
+    "ObjectName" : "java.lang:type=MemoryPool,name=CMS Old Gen"
+  }, {
+    "name" : "Hadoop:service=NameNode,name=MetricsSystem,sub=Control",
+    "modelerType" : "org.apache.hadoop.metrics2.impl.MetricsSystemImpl"
+  }, {
+    "name" : "Hadoop:service=NameNode,name=RpcDetailedActivityForPort8020",
+    "modelerType" : "RpcDetailedActivityForPort8020",
+    "tag.port" : "8020",
+    "tag.Context" : "rpcdetailed",
+    "tag.Hostname" : "ip-172-31-14-9.ec2.internal",
+    "RetriableExceptionNumOps" : 10,
+    "RetriableExceptionAvgTime" : 3.8000000000000003,
+    "SafeModeExceptionNumOps" : 182,
+    "SafeModeExceptionAvgTime" : 0.7272727272727272,
+    "GetFileInfoNumOps" : 10947165,
+    "GetFileInfoAvgTime" : 0.043478260869565216,
+    "VersionRequestNumOps" : 4,
+    "VersionRequestAvgTime" : 11.25,
+    "GetListingNumOps" : 1114728,
+    "GetListingAvgTime" : 2.6666666666666665,
+    "GetTransactionIdNumOps" : 74200,
+    "GetTransactionIdAvgTime" : 0.0,
+    "RegisterDatanodeNumOps" : 4,
+    "RegisterDatanodeAvgTime" : 37.25,
+    "SendHeartbeatNumOps" : 5942130,
+    "SendHeartbeatAvgTime" : 0.0,
+    "BlockReportNumOps" : 828,
+    "BlockReportAvgTime" : 33.0,
+    "SetSafeModeNumOps" : 5,
+    "SetSafeModeAvgTime" : 0.0,
+    "RenewLeaseNumOps" : 549109,
+    "RenewLeaseAvgTime" : 0.0,
+    "MkdirsNumOps" : 1064824,
+    "MkdirsAvgTime" : 0.8333333333333333,
+    "DeleteNumOps" : 656957,
+    "DeleteAvgTime" : 1.3333333333333333,
+    "RollEditLogNumOps" : 207,
+    "RollEditLogAvgTime" : 16.0,
+    "GetEditLogManifestNumOps" : 207,
+    "GetEditLogManifestAvgTime" : 0.0,
+    "BlockReceivedAndDeletedNumOps" : 1639869,
+    "BlockReceivedAndDeletedAvgTime" : 0.0,
+    "CreateNumOps" : 510601,
+    "CreateAvgTime" : 2.0,
+    "AddBlockNumOps" : 496057,
+    "AddBlockAvgTime" : 1.0,
+    "GetServerDefaultsNumOps" : 204465,
+    "GetServerDefaultsAvgTime" : 0.0,
+    "CompleteNumOps" : 490043,
+    "CompleteAvgTime" : 0.0,
+    "FsyncNumOps" : 52355,
+    "FsyncAvgTime" : 0.6250000000000001,
+    "GetBlockLocationsNumOps" : 6277187,
+    "GetBlockLocationsAvgTime" : 0.022222222222222223,
+    "RenameNumOps" : 490865,
+    "RenameAvgTime" : 0.8571428571428571,
+    "CheckAccessNumOps" : 424642,
+    "CheckAccessAvgTime" : 0.0,
+    "SetPermissionNumOps" : 271208,
+    "SetPermissionAvgTime" : 0.8181818181818181,
+    "GetEZForPathNumOps" : 270372,
+    "GetEZForPathAvgTime" : 0.0,
+    "LeaseExpiredExceptionNumOps" : 19041,
+    "LeaseExpiredExceptionAvgTime" : 0.16666666666666669,
+    "Rename2NumOps" : 7480,
+    "Rename2AvgTime" : 1.0,
+    "GetFileLinkInfoNumOps" : 2365365,
+    "GetFileLinkInfoAvgTime" : 0.18750000000000006,
+    "SetTimesNumOps" : 2780,
+    "SetTimesAvgTime" : 1.0,
+    "InvalidPathExceptionNumOps" : 3,
+    "InvalidPathExceptionAvgTime" : 0.0,
+    "SetReplicationNumOps" : 3643,
+    "SetReplicationAvgTime" : 1.0,
+    "GetContentSummaryNumOps" : 11328,
+    "GetContentSummaryAvgTime" : 0.0,
+    "CreateSnapshotNumOps" : 52,
+    "CreateSnapshotAvgTime" : 1.0,
+    "SetOwnerNumOps" : 7489,
+    "SetOwnerAvgTime" : 1.0,
+    "AccessControlExceptionNumOps" : 760,
+    "AccessControlExceptionAvgTime" : 0.0,
+    "AppendNumOps" : 73,
+    "AppendAvgTime" : 1.0,
+    "FileAlreadyExistsExceptionNumOps" : 3,
+    "FileAlreadyExistsExceptionAvgTime" : 4.0,
+    "FileNotFoundExceptionNumOps" : 19,
+    "FileNotFoundExceptionAvgTime" : 0.0,
+    "UpdateBlockForPipelineNumOps" : 20,
+    "UpdateBlockForPipelineAvgTime" : 1.0,
+    "UpdatePipelineNumOps" : 12,
+    "UpdatePipelineAvgTime" : 1.0,
+    "GetFsStatsNumOps" : 5,
+    "GetFsStatsAvgTime" : 0.0,
+    "DeleteSnapshotNumOps" : 193,
+    "DeleteSnapshotAvgTime" : 182.0,
+    "GetSnapshottableDirListingNumOps" : 2,
+    "GetSnapshottableDirListingAvgTime" : 46.0,
+    "SnapshotExceptionNumOps" : 1,
+    "SnapshotExceptionAvgTime" : 54.0,
+    "GetSnapshotDiffReportNumOps" : 1,
+    "GetSnapshotDiffReportAvgTime" : 421.0,
+    "AbandonBlockNumOps" : 2,
+    "AbandonBlockAvgTime" : 1.0
+  }, {
+    "name" : "Hadoop:service=NameNode,name=JvmMetrics",
+    "modelerType" : "JvmMetrics",
+    "tag.Context" : "jvm",
+    "tag.ProcessName" : "NameNode",
+    "tag.SessionId" : null,
+    "tag.Hostname" : "ip-172-31-14-9.ec2.internal",
+    "MemNonHeapUsedM" : 81.33674,
+    "MemNonHeapCommittedM" : 146.6875,
+    "MemNonHeapMaxM" : 304.0,
+    "MemHeapUsedM" : 1020.04944,
+    "MemHeapCommittedM" : 4044.8125,
+    "MemHeapMaxM" : 4044.8125,
+    "MemMaxM" : 4044.8125,
+    "GcCountParNew" : 4114,
+    "GcTimeMillisParNew" : 111112,
+    "GcCountConcurrentMarkSweep" : 3,
+    "GcTimeMillisConcurrentMarkSweep" : 158,
+    "GcCount" : 4117,
+    "GcTimeMillis" : 111270,
+    "GcNumWarnThresholdExceeded" : 0,
+    "GcNumInfoThresholdExceeded" : 0,
+    "GcTotalExtraSleepTime" : 10428,
+    "ThreadsNew" : 0,
+    "ThreadsRunnable" : 8,
+    "ThreadsBlocked" : 0,
+    "ThreadsWaiting" : 6,
+    "ThreadsTimedWaiting" : 129,
+    "ThreadsTerminated" : 0,
+    "LogFatal" : 0,
+    "LogError" : 31872,
+    "LogWarn" : 10311,
+    "LogInfo" : 5888766
+  }, {
+    "name" : "Hadoop:service=NameNode,name=FSNamesystemState",
+    "modelerType" : "org.apache.hadoop.hdfs.server.namenode.FSNamesystem",
+    "CapacityTotal" : 1673850781696,
+    "CapacityUsed" : 159902674944,
+    "CapacityRemaining" : 1419670337536,
+    "TotalLoad" : 15,
+    "SnapshotStats" : "{\"SnapshottableDirectories\":3,\"Snapshots\":50}",
+    "FsLockQueueLength" : 0,
+    "BlocksTotal" : 167047,
+    "MaxObjects" : 0,
+    "FilesTotal" : 193359,
+    "PendingReplicationBlocks" : 0,
+    "UnderReplicatedBlocks" : 72,
+    "ScheduledReplicationBlocks" : 0,
+    "PendingDeletionBlocks" : 0,
+    "BlockDeletionStartTime" : 1454133868034,
+    "FSState" : "Operational",
+    "NumLiveDataNodes" : 4,
+    "NumDeadDataNodes" : 0,
+    "NumDecomLiveDataNodes" : 0,
+    "NumDecomDeadDataNodes" : 0,
+    "VolumeFailuresTotal" : 0,
+    "EstimatedCapacityLostTotal" : 0,
+    "NumDecommissioningDataNodes" : 0,
+    "NumStaleDataNodes" : 0,
+    "NumStaleStorages" : 0,
+    "TopUserOpCounts" : "{\"timestamp\":\"2016-03-21T15:00:57-0400\",\"windows\":[{\"windowLenMs\":300000,\"ops\":[{\"opType\":\"delete\",\"topUsers\":[{\"user\":\"hive\",\"count\":8},{\"user\":\"ambari-qa\",\"count\":3}],\"totalCount\":11},{\"opType\":\"*\",\"topUsers\":[{\"user\":\"citi_2769197d\",\"count\":284},{\"user\":\"wre\",\"count\":152},{\"user\":\"ststrt\",\"count\":78},{\"user\":\"hive\",\"count\":63},{\"user\":\"ambari-qa\",\"count\":21},{\"user\":\"logiq3\",\"count\":6},{\"user\":\"oozie\",\"count\":5},{\"user\":\"mapred\",\"count\":4}],\"totalCount\":613},{\"opType\":\"mkdirs\",\"topUsers\":[{\"user\":\"hive\",\"count\":14},{\"user\":\"ambari-qa\",\"count\":8}],\"totalCount\":22},{\"opType\":\"listStatus\",\"topUsers\":[{\"user\":\"oozie\",\"count\":5},{\"user\":\"mapred\",\"count\":4}],\"totalCount\":9},{\"opType\":\"getfileinfo\",\"topUsers\":[{\"user\":\"citi_2769197d\",\"count\":284},{\"user\":\"wre\",\"count\":152},{\"user\":\"ststrt\",\"count\":78},{\"user\":\"hive\",\"count\":49},{\"user\":\"ambari-qa\",\"count\":20},{\"user\":\"logiq3\",\"count\":6}],\"totalCount\":589}]},{\"windowLenMs\":1500000,\"ops\":[{\"opType\":\"delete\",\"topUsers\":[{\"user\":\"hive\",\"count\":30},{\"user\":\"ambari-qa\",\"count\":12}],\"totalCount\":42},{\"opType\":\"*\",\"topUsers\":[{\"user\":\"citi_2769197d\",\"count\":720},{\"user\":\"wre\",\"count\":544},{\"user\":\"hive\",\"count\":242},{\"user\":\"ststrt\",\"count\":234},{\"user\":\"ambari-qa\",\"count\":134},{\"user\":\"mapred\",\"count\":18},{\"user\":\"oozie\",\"count\":10},{\"user\":\"logiq3\",\"count\":6}],\"totalCount\":1908},{\"opType\":\"mkdirs\",\"topUsers\":[{\"user\":\"hive\",\"count\":44},{\"user\":\"ambari-qa\",\"count\":25}],\"totalCount\":69},{\"opType\":\"listStatus\",\"topUsers\":[{\"user\":\"mapred\",\"count\":18},{\"user\":\"oozie\",\"count\":11}],\"totalCount\":29},{\"opType\":\"getfileinfo\",\"topUsers\":[{\"user\":\"citi_2769197d\",\"count\":720},{\"user\":\"wre\",\"count\":492},{\"user\":\"ststrt\",\"count\":234},{\"user\":\"hive\",\"count\":182},{\"user\":\"ambari-qa\",\"count\":98},{\"user\":\"logiq3\",\"count\":6}],\"totalCount\":1732}]},{\"windowLenMs\":60000,\"ops\":[{\"opType\":\"delete\",\"topUsers\":[{\"user\":\"hive\",\"count\":1},{\"user\":\"ambari-qa\",\"count\":1}],\"totalCount\":2},{\"opType\":\"*\",\"topUsers\":[{\"user\":\"ststrt\",\"count\":78},{\"user\":\"wre\",\"count\":26},{\"user\":\"ambari-qa\",\"count\":12},{\"user\":\"hive\",\"count\":11},{\"user\":\"logiq3\",\"count\":6},{\"user\":\"mapred\",\"count\":2},{\"user\":\"oozie\",\"count\":1}],\"totalCount\":136},{\"opType\":\"mkdirs\",\"topUsers\":[{\"user\":\"hive\",\"count\":2},{\"user\":\"ambari-qa\",\"count\":2}],\"totalCount\":4},{\"opType\":\"listStatus\",\"topUsers\":[{\"user\":\"mapred\",\"count\":2},{\"user\":\"oozie\",\"count\":1}],\"totalCount\":3},{\"opType\":\"getfileinfo\",\"topUsers\":[{\"user\":\"ststrt\",\"count\":78},{\"user\":\"wre\",\"count\":26},{\"user\":\"ambari-qa\",\"count\":9},{\"user\":\"hive\",\"count\":7},{\"user\":\"logiq3\",\"count\":6}],\"totalCount\":126}]}]}",
+    "TotalSyncCount" : 371,
+    "TotalSyncTimes" : "502 "
+  }, {
+    "name" : "java.lang:type=MemoryPool,name=Code Cache",
+    "modelerType" : "sun.management.MemoryPoolImpl",
+    "Name" : "Code Cache",
+    "Type" : "NON_HEAP",
+    "Valid" : true,
+    "CollectionUsage" : null,
+    "MemoryManagerNames" : [ "CodeCacheManager" ],
+    "PeakUsage" : {
+      "committed" : 19595264,
+      "init" : 2555904,
+      "max" : 50331648,
+      "used" : 19344384
+    },
+    "Usage" : {
+      "committed" : 19595264,
+      "init" : 2555904,
+      "max" : 50331648,
+      "used" : 19339008
+    },
+    "UsageThreshold" : 0,
+    "UsageThresholdCount" : 0,
+    "CollectionUsageThresholdSupported" : false,
+    "UsageThresholdExceeded" : false,
+    "UsageThresholdSupported" : true,
+    "ObjectName" : "java.lang:type=MemoryPool,name=Code Cache"
+  }, {
+    "name" : "java.lang:type=Runtime",
+    "modelerType" : "sun.management.RuntimeImpl",
+    "Name" : "8074@ip-172-31-14-9.ec2.internal",
+    "ClassPath" : "/usr/hdp/current/hadoop-client/conf:/usr/hdp/2.3.2.0-2950/hadoop/lib/httpmime-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hadoop-lzo-0.6.0.2.3.2.0-2950-sources.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/curator-client-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-net-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/eclipselink-2.5.2-M1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/api-asn1-api-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/curator-recipes-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/mysql-connector-java.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/javax.persistence-2.1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-yarn-plugin-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-plugins-audit-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/snappy-java-1.0.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-jaxrs-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-plugins-cred-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-beanutils-1.7.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-hdfs-plugin-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/junit-4.11.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/avro-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jets3t-0.9.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-core-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/htrace-core-3.1.0-incubating.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-digester-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/httpcore-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-logging-1.1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hamcrest-core-1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/java-xmlbuilder-0.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/gson-2.2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/slf4j-log4j12-1.7.10.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/noggit-0.6.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hadoop-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/paranamer-2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jaxb-api-2.2.2.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger_solrj-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/xz-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ojdbc6.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jsch-0.1.42.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jettison-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jsp-api-2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/httpclient-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-databind-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/slf4j-api-1.7.10.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-configuration-1.6.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-xc-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/azure-storage-2.2.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-plugins-common-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-httpclient-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hadoop-lzo-0.6.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-annotations-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-compress-1.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/aws-java-sdk-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jsr305-3.0.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/mockito-all-1.8.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/xmlenc-0.52.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-beanutils-core-1.8.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jaxb-impl-2.2.3-1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hadoop-lzo-0.6.0.2.3.2.0-2950-test.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/api-util-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/curator-framework-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/activation-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/stax-api-1.0-2.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-azure.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-auth.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-common.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-annotations.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-common-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-common-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-nfs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-nfs.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-aws.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/./:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/leveldbjni-all-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-daemon-1.0.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/okhttp-2.4.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/xercesImpl-2.9.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/xml-apis-1.3.04.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/netty-all-4.0.23.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/htrace-core-3.1.0-incubating.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-logging-1.1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/okio-1.4.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jsr305-3.0.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/xmlenc-0.52.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-nfs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-nfs.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/leveldbjni-all-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/guice-3.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/curator-client-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-net-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/api-asn1-api-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/curator-recipes-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/fst-2.24.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/snappy-java-1.0.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/aopalliance-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-jaxrs-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/zookeeper-3.4.6.2.3.2.0-2950-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-beanutils-1.7.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/avro-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/guice-servlet-3.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jets3t-0.9.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-core-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/htrace-core-3.1.0-incubating.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-digester-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/httpcore-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-logging-1.1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/java-xmlbuilder-0.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/gson-2.2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/objenesis-2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/paranamer-2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jaxb-api-2.2.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/xz-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jsch-0.1.42.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jettison-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jsp-api-2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/httpclient-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-configuration-1.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/javax.inject-1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-xc-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-httpclient-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-compress-1.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-client-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jsr305-3.0.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/xmlenc-0.52.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-guice-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-beanutils-core-1.8.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jaxb-impl-2.2.3-1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/api-util-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/curator-framework-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/activation-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/stax-api-1.0-2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/javassist-3.18.1-GA.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-sharedcachemanager-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-applications-distributedshell.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-tests-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-applications-unmanaged-am-launcher-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-web-proxy.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-nodemanager.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-nodemanager-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-common.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-timeline-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-api.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-client-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-resourcemanager-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-registry.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-api-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-applicationhistoryservice-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-applications-unmanaged-am-launcher.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-applicationhistoryservice.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-applications-distributedshell-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-common.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-timeline-plugins.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-registry-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-sharedcachemanager.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-resourcemanager.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-client.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/leveldbjni-all-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/guice-3.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/snappy-java-1.0.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/aopalliance-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/junit-4.11.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/avro-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/guice-servlet-3.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/hamcrest-core-1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/paranamer-2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/xz-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/javax.inject-1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/commons-compress-1.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jersey-guice-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-examples-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-rumen-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-auth.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-extras.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-common.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//curator-client-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-sls-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-net-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//api-asn1-api-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//curator-recipes-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//metrics-core-3.0.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-gridmix.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-app.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-ant-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//snappy-java-1.0.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-sls.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-jaxrs-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-gridmix-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-beanutils-1.7.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//junit-4.11.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//avro-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jets3t-0.9.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-openstack-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-distcp-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-core-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//htrace-core-3.1.0-incubating.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-archives.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-digester-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//httpcore-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-datajoin-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-logging-1.1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hamcrest-core-1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//java-xmlbuilder-0.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-streaming.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//gson-2.2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-hs-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//apacheds-i18n-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-shuffle.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-examples.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-extras-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-distcp.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//paranamer-2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jaxb-api-2.2.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-hs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-datajoin.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//xz-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jsch-0.1.42.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jettison-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jsp-api-2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//httpclient-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-configuration-1.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-xc-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-hs.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-archives-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-httpclient-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-ant.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-streaming-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-compress-1.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-core.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-app-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jsr305-3.0.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-rumen.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//mockito-all-1.8.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//xmlenc-0.52.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//joda-time-2.8.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-shuffle-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-beanutils-core-1.8.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-hs-plugins.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jaxb-impl-2.2.3-1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-openstack.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//api-util-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-lang3-3.3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//curator-framework-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//activation-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//stax-api-1.0-2.jar::/usr/share/java/mysql-connector-java-5.1.17.jar:/usr/share/java/mysql-connector-java-5.1.34-bin.jar:/usr/share/java/mysql-connector-java.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-client-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-net-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-json-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/api-asn1-api-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-recipes-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/metrics-core-3.0.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/snappy-java-1.0.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-math3-3.1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-core-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-jaxrs-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-1.7.0.jar:/usr/hdp/current/hadoop-mapreduce-client/servlet-api-2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang-2.6.jar:/usr/hdp/current/hadoop-mapreduce-client/junit-4.11.jar:/usr/hdp/current/hadoop-mapreduce-client/asm-3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/avro-1.7.4.jar:/usr/hdp/current/hadoop-mapreduce-client/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jets3t-0.9.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-2.2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/log4j-1.2.17.jar:/usr/hdp/current/hadoop-mapreduce-client/htrace-core-3.1.0-incubating.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-digester-1.8.jar:/usr/hdp/current/hadoop-mapreduce-client/httpcore-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-io-2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-logging-1.1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/hamcrest-core-1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/java-xmlbuilder-0.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-codec-1.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient.jar:/usr/hdp/current/hadoop-mapreduce-client/gson-2.2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-server-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-mapper-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp.jar:/usr/hdp/current/hadoop-mapreduce-client/paranamer-2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-api-2.2.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin.jar:/usr/hdp/current/hadoop-mapreduce-client/xz-1.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jsch-0.1.42.jar:/usr/hdp/current/hadoop-mapreduce-client/jettison-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jsp-api-2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/httpclient-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-configuration-1.6.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-xc-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs.jar:/usr/hdp/current/hadoop-mapreduce-client/netty-3.6.2.Final.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/guava-11.0.2.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-httpclient-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-compress-1.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jsr305-3.0.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen.jar:/usr/hdp/current/hadoop-mapreduce-client/mockito-all-1.8.5.jar:/usr/hdp/current/hadoop-mapreduce-client/protobuf-java-2.5.0.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-collections-3.2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/xmlenc-0.52.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-cli-1.2.jar:/usr/hdp/current/hadoop-mapreduce-client/joda-time-2.8.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-core-1.8.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-impl-2.2.3-1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack.jar:/usr/hdp/current/hadoop-mapreduce-client/api-util-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang3-3.3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-framework-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/activation-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/stax-api-1.0-2.jar:/usr/hdp/current/tez-client/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jersey-json-1.9.jar:/usr/hdp/current/tez-client/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/commons-math3-3.1.1.jar:/usr/hdp/current/tez-client/lib/servlet-api-2.5.jar:/usr/hdp/current/tez-client/lib/commons-lang-2.6.jar:/usr/hdp/current/tez-client/lib/commons-io-2.4.jar:/usr/hdp/current/tez-client/lib/commons-codec-1.4.jar:/usr/hdp/current/tez-client/lib/commons-collections4-4.0.jar:/usr/hdp/current/tez-client/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/jettison-1.3.4.jar:/usr/hdp/current/tez-client/lib/guava-11.0.2.jar:/usr/hdp/current/tez-client/lib/jsr305-2.0.3.jar:/usr/hdp/current/tez-client/lib/jersey-client-1.9.jar:/usr/hdp/current/tez-client/lib/protobuf-java-2.5.0.jar:/usr/hdp/current/tez-client/lib/commons-collections-3.2.1.jar:/usr/hdp/current/tez-client/lib/commons-cli-1.2.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/slf4j-api-1.7.5.jar:/etc/tez/conf/:/usr/hdp/2.3.2.0-2950/tez/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/tez/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-collections4-4.0.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jettison-1.3.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jsr305-2.0.3.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jersey-client-1.9.jar:/usr/hdp/2.3.2.0-2950/tez/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/slf4j-api-1.7.5.jar:/usr/hdp/2.3.2.0-2950/tez/conf:/usr/share/java/mysql-connector-java-5.1.17.jar:/usr/share/java/mysql-connector-java-5.1.34-bin.jar:/usr/share/java/mysql-connector-java.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-client-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-net-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-json-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/api-asn1-api-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-recipes-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/metrics-core-3.0.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/snappy-java-1.0.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-math3-3.1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-core-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-jaxrs-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-1.7.0.jar:/usr/hdp/current/hadoop-mapreduce-client/servlet-api-2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang-2.6.jar:/usr/hdp/current/hadoop-mapreduce-client/junit-4.11.jar:/usr/hdp/current/hadoop-mapreduce-client/asm-3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/avro-1.7.4.jar:/usr/hdp/current/hadoop-mapreduce-client/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jets3t-0.9.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-2.2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/log4j-1.2.17.jar:/usr/hdp/current/hadoop-mapreduce-client/htrace-core-3.1.0-incubating.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-digester-1.8.jar:/usr/hdp/current/hadoop-mapreduce-client/httpcore-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-io-2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-logging-1.1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/hamcrest-core-1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/java-xmlbuilder-0.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-codec-1.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient.jar:/usr/hdp/current/hadoop-mapreduce-client/gson-2.2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-server-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-mapper-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp.jar:/usr/hdp/current/hadoop-mapreduce-client/paranamer-2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-api-2.2.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin.jar:/usr/hdp/current/hadoop-mapreduce-client/xz-1.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jsch-0.1.42.jar:/usr/hdp/current/hadoop-mapreduce-client/jettison-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jsp-api-2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/httpclient-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-configuration-1.6.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-xc-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs.jar:/usr/hdp/current/hadoop-mapreduce-client/netty-3.6.2.Final.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/guava-11.0.2.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-httpclient-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-compress-1.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jsr305-3.0.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen.jar:/usr/hdp/current/hadoop-mapreduce-client/mockito-all-1.8.5.jar:/usr/hdp/current/hadoop-mapreduce-client/protobuf-java-2.5.0.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-collections-3.2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/xmlenc-0.52.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-cli-1.2.jar:/usr/hdp/current/hadoop-mapreduce-client/joda-time-2.8.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-core-1.8.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-impl-2.2.3-1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack.jar:/usr/hdp/current/hadoop-mapreduce-client/api-util-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang3-3.3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-framework-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/activation-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/stax-api-1.0-2.jar:/usr/hdp/current/tez-client/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jersey-json-1.9.jar:/usr/hdp/current/tez-client/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/commons-math3-3.1.1.jar:/usr/hdp/current/tez-client/lib/servlet-api-2.5.jar:/usr/hdp/current/tez-client/lib/commons-lang-2.6.jar:/usr/hdp/current/tez-client/lib/commons-io-2.4.jar:/usr/hdp/current/tez-client/lib/commons-codec-1.4.jar:/usr/hdp/current/tez-client/lib/commons-collections4-4.0.jar:/usr/hdp/current/tez-client/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/jettison-1.3.4.jar:/usr/hdp/current/tez-client/lib/guava-11.0.2.jar:/usr/hdp/current/tez-client/lib/jsr305-2.0.3.jar:/usr/hdp/current/tez-client/lib/jersey-client-1.9.jar:/usr/hdp/current/tez-client/lib/protobuf-java-2.5.0.jar:/usr/hdp/current/tez-client/lib/commons-collections-3.2.1.jar:/usr/hdp/current/tez-client/lib/commons-cli-1.2.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/slf4j-api-1.7.5.jar:/etc/tez/conf/:/usr/share/java/mysql-connector-java-5.1.17.jar:/usr/share/java/mysql-connector-java-5.1.34-bin.jar:/usr/share/java/mysql-connector-java.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-client-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-net-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-json-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/api-asn1-api-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-recipes-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/metrics-core-3.0.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/snappy-java-1.0.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-math3-3.1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-core-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-jaxrs-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-1.7.0.jar:/usr/hdp/current/hadoop-mapreduce-client/servlet-api-2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang-2.6.jar:/usr/hdp/current/hadoop-mapreduce-client/junit-4.11.jar:/usr/hdp/current/hadoop-mapreduce-client/asm-3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/avro-1.7.4.jar:/usr/hdp/current/hadoop-mapreduce-client/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jets3t-0.9.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-2.2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/log4j-1.2.17.jar:/usr/hdp/current/hadoop-mapreduce-client/htrace-core-3.1.0-incubating.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-digester-1.8.jar:/usr/hdp/current/hadoop-mapreduce-client/httpcore-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-io-2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-logging-1.1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/hamcrest-core-1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/java-xmlbuilder-0.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-codec-1.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient.jar:/usr/hdp/current/hadoop-mapreduce-client/gson-2.2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-server-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-mapper-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp.jar:/usr/hdp/current/hadoop-mapreduce-client/paranamer-2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-api-2.2.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin.jar:/usr/hdp/current/hadoop-mapreduce-client/xz-1.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jsch-0.1.42.jar:/usr/hdp/current/hadoop-mapreduce-client/jettison-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jsp-api-2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/httpclient-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-configuration-1.6.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-xc-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs.jar:/usr/hdp/current/hadoop-mapreduce-client/netty-3.6.2.Final.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/guava-11.0.2.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-httpclient-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-compress-1.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jsr305-3.0.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen.jar:/usr/hdp/current/hadoop-mapreduce-client/mockito-all-1.8.5.jar:/usr/hdp/current/hadoop-mapreduce-client/protobuf-java-2.5.0.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-collections-3.2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/xmlenc-0.52.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-cli-1.2.jar:/usr/hdp/current/hadoop-mapreduce-client/joda-time-2.8.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-core-1.8.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-impl-2.2.3-1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack.jar:/usr/hdp/current/hadoop-mapreduce-client/api-util-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang3-3.3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-framework-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/activation-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/stax-api-1.0-2.jar:/usr/hdp/current/tez-client/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jersey-json-1.9.jar:/usr/hdp/current/tez-client/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/commons-math3-3.1.1.jar:/usr/hdp/current/tez-client/lib/servlet-api-2.5.jar:/usr/hdp/current/tez-client/lib/commons-lang-2.6.jar:/usr/hdp/current/tez-client/lib/commons-io-2.4.jar:/usr/hdp/current/tez-client/lib/commons-codec-1.4.jar:/usr/hdp/current/tez-client/lib/commons-collections4-4.0.jar:/usr/hdp/current/tez-client/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/jettison-1.3.4.jar:/usr/hdp/current/tez-client/lib/guava-11.0.2.jar:/usr/hdp/current/tez-client/lib/jsr305-2.0.3.jar:/usr/hdp/current/tez-client/lib/jersey-client-1.9.jar:/usr/hdp/current/tez-client/lib/protobuf-java-2.5.0.jar:/usr/hdp/current/tez-client/lib/commons-collections-3.2.1.jar:/usr/hdp/current/tez-client/lib/commons-cli-1.2.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/slf4j-api-1.7.5.jar:/etc/tez/conf/:/usr/hdp/2.3.2.0-2950/tez/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/tez/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-collections4-4.0.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jettison-1.3.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jsr305-2.0.3.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jersey-client-1.9.jar:/usr/hdp/2.3.2.0-2950/tez/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/slf4j-api-1.7.5.jar:/usr/hdp/2.3.2.0-2950/tez/conf",
+    "BootClassPath" : "/usr/java/jdk1.7.0_71/jre/lib/resources.jar:/usr/java/jdk1.7.0_71/jre/lib/rt.jar:/usr/java/jdk1.7.0_71/jre/lib/sunrsasign.jar:/usr/java/jdk1.7.0_71/jre/lib/jsse.jar:/usr/java/jdk1.7.0_71/jre/lib/jce.jar:/usr/java/jdk1.7.0_71/jre/lib/charsets.jar:/usr/java/jdk1.7.0_71/jre/lib/jfr.jar:/usr/java/jdk1.7.0_71/jre/classes",
+    "LibraryPath" : ":/usr/hdp/2.3.2.0-2950/hadoop/lib/native/Linux-amd64-64:/usr/hdp/2.3.2.0-2950/hadoop/lib/native:/usr/hdp/2.3.2.0-2950/hadoop/lib/native/Linux-amd64-64:/usr/hdp/2.3.2.0-2950/hadoop/lib/native",
+    "VmName" : "Java HotSpot(TM) 64-Bit Server VM",
+    "VmVendor" : "Oracle Corporation",
+    "VmVersion" : "24.71-b01",
+    "BootClassPathSupported" : true,
+    "InputArguments" : [ "-Dproc_namenode", "-Xmx1024m", "-Dhdp.version=2.3.2.0-2950", "-Djava.net.preferIPv4Stack=true", "-Dhdp.version=", "-Djava.net.preferIPv4Stack=true", "-Dhdp.version=", "-Djava.net.preferIPv4Stack=true", "-Dhadoop.log.dir=/hadoop/logs/hdfs", "-Dhadoop.log.file=hadoop.log", "-Dhadoop.home.dir=/usr/hdp/2.3.2.0-2950/hadoop", "-Dhadoop.id.str=hdfs", "-Dhadoop.root.logger=INFO,console", "-Djava.library.path=:/usr/hdp/2.3.2.0-2950/hadoop/lib/native/Linux-amd64-64:/usr/hdp/2.3.2.0-2950/hadoop/lib/native", "-Dhadoop.policy.file=hadoop-policy.xml", "-Djava.net.preferIPv4Stack=true", "-Dhdp.version=2.3.2.0-2950", "-Dhadoop.log.dir=/hadoop/logs/hdfs", "-Dhadoop.log.file=hadoop-hdfs-namenode-ip-172-31-14-9.ec2.internal.log", "-Dhadoop.home.dir=/usr/hdp/2.3.2.0-2950/hadoop", "-Dhadoop.id.str=hdfs", "-Dhadoop.root.logger=INFO,RFA", "-Djava.library.path=:/usr/hdp/2.3.2.0-2950/hadoop/lib/native/Linux-amd64-64:/usr/hdp/2.3.2.0-2950/hadoop/lib/native:/usr/hdp/2.3.2.0-2950/hadoop/lib/native/Linux-amd64-64:/usr/hdp/2.3.2.0-2950/hadoop/lib/native", "-Dhadoop.policy.file=hadoop-policy.xml", "-Djava.net.preferIPv4Stack=true", "-XX:ParallelGCThreads=8", "-XX:+UseConcMarkSweepGC", "-XX:ErrorFile=/hadoop/logs/hdfs/hs_err_pid%p.log", "-XX:NewSize=512m", "-XX:MaxNewSize=512m", "-XX:PermSize=128m", "-XX:MaxPermSize=256m", "-Xloggc:/hadoop/logs/hdfs/gc.log-201601300004", "-verbose:gc", "-XX:+PrintGCDetails", "-XX:+PrintGCTimeStamps", "-XX:+PrintGCDateStamps", "-Xms4096m", "-Xmx4096m", "-Dhadoop.security.logger=INFO,DRFAS", "-Dhdfs.audit.logger=INFO,DRFAAUDIT", "-XX:ParallelGCThreads=8", "-XX:+UseConcMarkSweepGC", "-XX:ErrorFile=/hadoop/logs/hdfs/hs_err_pid%p.log", "-XX:NewSize=512m", "-XX:MaxNewSize=512m", "-XX:PermSize=128m", "-XX:MaxPermSize=256m", "-Xloggc:/hadoop/logs/hdfs/gc.log-201601300004", "-verbose:gc", "-XX:+PrintGCDetails", "-XX:+PrintGCTimeStamps", "-XX:+PrintGCDateStamps", "-Xms4096m", "-Xmx4096m", "-Dhadoop.security.logger=INFO,DRFAS", "-Dhdfs.audit.logger=INFO,DRFAAUDIT", "-XX:ParallelGCThreads=8", "-XX:+UseConcMarkSweepGC", "-XX:ErrorFile=/hadoop/logs/hdfs/hs_err_pid%p.log", "-XX:NewSize=512m", "-XX:MaxNewSize=512m", "-XX:PermSize=128m", "-XX:MaxPermSize=256m", "-Xloggc:/hadoop/logs/hdfs/gc.log-201601300004", "-verbose:gc", "-XX:+PrintGCDetails", "-XX:+PrintGCTimeStamps", "-XX:+PrintGCDateStamps", "-Xms4096m", "-Xmx4096m", "-Dhadoop.security.logger=INFO,DRFAS", "-Dhdfs.audit.logger=INFO,DRFAAUDIT", "-Dorg.mortbay.jetty.Request.maxFormContentSize=-1", "-Dorg.mortbay.jetty.Request.maxFormContentSize=-1", "-Dorg.mortbay.jetty.Request.maxFormContentSize=-1", "-Dhadoop.security.logger=INFO,RFAS" ],
+    "ManagementSpecVersion" : "1.2",
+    "SpecName" : "Java Virtual Machine Specification",
+    "SpecVendor" : "Oracle Corporation",
+    "SpecVersion" : "1.7",
+    "SystemProperties" : [ {
+      "key" : "java.vm.version",
+      "value" : "24.71-b01"
+    }, {
+      "key" : "java.vendor.url",
+      "value" : "http://java.oracle.com/"
+    }, {
+      "key" : "sun.jnu.encoding",
+      "value" : "UTF-8"
+    }, {
+      "key" : "java.vm.info",
+      "value" : "mixed mode"
+    }, {
+      "key" : "user.dir",
+      "value" : "/usr/hdp/2.3.2.0-2950/hadoop"
+    }, {
+      "key" : "sun.cpu.isalist",
+      "value" : ""
+    }, {
+      "key" : "java.awt.graphicsenv",
+      "value" : "sun.awt.X11GraphicsEnvironment"
+    }, {
+      "key" : "sun.os.patch.level",
+      "value" : "unknown"
+    }, {
+      "key" : "hadoop.log.dir",
+      "value" : "/hadoop/logs/hdfs"
+    }, {
+      "key" : "java.io.tmpdir",
+      "value" : "/tmp"
+    }, {
+      "key" : "user.home",
+      "value" : "/home/hdfs"
+    }, {
+      "key" : "java.awt.printerjob",
+      "value" : "sun.print.PSPrinterJob"
+    }, {
+      "key" : "java.version",
+      "value" : "1.7.0_71"
+    }, {
+      "key" : "file.encoding.pkg",
+      "value" : "sun.io"
+    }, {
+      "key" : "java.vendor.url.bug",
+      "value" : "http://bugreport.sun.com/bugreport/"
+    }, {
+      "key" : "file.encoding",
+      "value" : "UTF-8"
+    }, {
+      "key" : "line.separator",
+      "value" : "\n"
+    }, {
+      "key" : "sun.java.command",
+      "value" : "org.apache.hadoop.hdfs.server.namenode.NameNode"
+    }, {
+      "key" : "java.vm.specification.vendor",
+      "value" : "Oracle Corporation"
+    }, {
+      "key" : "java.vm.vendor",
+      "value" : "Oracle Corporation"
+    }, {
+      "key" : "hadoop.id.str",
+      "value" : "hdfs"
+    }, {
+      "key" : "hadoop.security.logger",
+      "value" : "INFO,RFAS"
+    }, {
+      "key" : "java.class.path",
+      "value" : "/usr/hdp/current/hadoop-client/conf:/usr/hdp/2.3.2.0-2950/hadoop/lib/httpmime-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hadoop-lzo-0.6.0.2.3.2.0-2950-sources.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/curator-client-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-net-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/eclipselink-2.5.2-M1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/api-asn1-api-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/curator-recipes-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/mysql-connector-java.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/javax.persistence-2.1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-yarn-plugin-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-plugins-audit-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/snappy-java-1.0.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-jaxrs-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-plugins-cred-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-beanutils-1.7.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-hdfs-plugin-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/junit-4.11.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/avro-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jets3t-0.9.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-core-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/htrace-core-3.1.0-incubating.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-digester-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/httpcore-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-logging-1.1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hamcrest-core-1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/java-xmlbuilder-0.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/gson-2.2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/slf4j-log4j12-1.7.10.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/noggit-0.6.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hadoop-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/paranamer-2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jaxb-api-2.2.2.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger_solrj-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/xz-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ojdbc6.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jsch-0.1.42.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jettison-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jsp-api-2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/httpclient-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-databind-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/slf4j-api-1.7.10.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-configuration-1.6.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-xc-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/azure-storage-2.2.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/ranger-plugins-common-0.5.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-httpclient-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hadoop-lzo-0.6.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jackson-annotations-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-compress-1.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/aws-java-sdk-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jsr305-3.0.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/mockito-all-1.8.5.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/xmlenc-0.52.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/commons-beanutils-core-1.8.0.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/jaxb-impl-2.2.3-1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/hadoop-lzo-0.6.0.2.3.2.0-2950-test.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/api-util-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/curator-framework-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/activation-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop/lib/stax-api-1.0-2.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-azure.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-auth.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-common.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-annotations.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-common-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-common-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-nfs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-nfs.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop/.//hadoop-aws.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/./:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/leveldbjni-all-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-daemon-1.0.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/okhttp-2.4.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/xercesImpl-2.9.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/xml-apis-1.3.04.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/netty-all-4.0.23.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/htrace-core-3.1.0-incubating.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-logging-1.1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/okio-1.4.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/jsr305-3.0.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/xmlenc-0.52.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-nfs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-hdfs/.//hadoop-hdfs-nfs.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/leveldbjni-all-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/guice-3.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/curator-client-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-net-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/api-asn1-api-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/curator-recipes-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/fst-2.24.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/snappy-java-1.0.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/aopalliance-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-jaxrs-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/zookeeper-3.4.6.2.3.2.0-2950-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-beanutils-1.7.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/avro-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/guice-servlet-3.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jets3t-0.9.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-core-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/htrace-core-3.1.0-incubating.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-digester-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/httpcore-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-logging-1.1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/java-xmlbuilder-0.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/gson-2.2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/objenesis-2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/paranamer-2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jaxb-api-2.2.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/xz-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jsch-0.1.42.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jettison-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jsp-api-2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/httpclient-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-configuration-1.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/javax.inject-1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-xc-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-httpclient-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-compress-1.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-client-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jsr305-3.0.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/xmlenc-0.52.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jersey-guice-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/commons-beanutils-core-1.8.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/jaxb-impl-2.2.3-1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/api-util-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/curator-framework-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/activation-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/stax-api-1.0-2.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/lib/javassist-3.18.1-GA.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-sharedcachemanager-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-applications-distributedshell.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-tests-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-applications-unmanaged-am-launcher-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-web-proxy.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-nodemanager.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-nodemanager-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-common.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-timeline-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-api.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-client-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-resourcemanager-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-registry.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-api-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-applicationhistoryservice-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-applications-unmanaged-am-launcher.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-applicationhistoryservice.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-applications-distributedshell-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-common.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-timeline-plugins.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-registry-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-sharedcachemanager.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-server-resourcemanager.jar:/usr/hdp/2.3.2.0-2950/hadoop-yarn/.//hadoop-yarn-client.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/leveldbjni-all-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/guice-3.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/snappy-java-1.0.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/aopalliance-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/junit-4.11.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/avro-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/guice-servlet-3.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/hamcrest-core-1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/paranamer-2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/xz-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/javax.inject-1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/commons-compress-1.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/lib/jersey-guice-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-examples-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-rumen-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-auth.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-extras.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-common.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//curator-client-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-sls-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-net-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//api-asn1-api-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//curator-recipes-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//metrics-core-3.0.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-gridmix.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-app.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-ant-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//snappy-java-1.0.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jersey-core-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-sls.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-jaxrs-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-gridmix-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-beanutils-1.7.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//junit-4.11.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//asm-3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//avro-1.7.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jets3t-0.9.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-openstack-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-distcp-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-core-2.2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//log4j-1.2.17.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//htrace-core-3.1.0-incubating.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-archives.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-digester-1.8.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//httpcore-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-datajoin-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-logging-1.1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hamcrest-core-1.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//java-xmlbuilder-0.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-streaming.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//gson-2.2.4.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-hs-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jersey-server-1.9.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//apacheds-i18n-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-mapper-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-shuffle.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-examples.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-extras-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-distcp.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//paranamer-2.3.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jaxb-api-2.2.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-hs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-datajoin.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//xz-1.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jsch-0.1.42.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jettison-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jsp-api-2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//httpclient-4.2.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient-tests.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-configuration-1.6.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-xc-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-hs.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//netty-3.6.2.Final.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-archives-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jackson-core-asl-1.9.13.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-httpclient-3.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-ant.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-streaming-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-compress-1.4.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-core.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-app-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jsr305-3.0.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-rumen.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//mockito-all-1.8.5.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//xmlenc-0.52.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//joda-time-2.8.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-shuffle-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-beanutils-core-1.8.0.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-mapreduce-client-hs-plugins.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//jaxb-impl-2.2.3-1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//hadoop-openstack.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//api-util-1.0.0-M20.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//commons-lang3-3.3.2.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//curator-framework-2.7.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//activation-1.1.jar:/usr/hdp/2.3.2.0-2950/hadoop-mapreduce/.//stax-api-1.0-2.jar::/usr/share/java/mysql-connector-java-5.1.17.jar:/usr/share/java/mysql-connector-java-5.1.34-bin.jar:/usr/share/java/mysql-connector-java.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-client-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-net-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-json-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/api-asn1-api-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-recipes-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/metrics-core-3.0.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/snappy-java-1.0.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-math3-3.1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-core-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-jaxrs-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-1.7.0.jar:/usr/hdp/current/hadoop-mapreduce-client/servlet-api-2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang-2.6.jar:/usr/hdp/current/hadoop-mapreduce-client/junit-4.11.jar:/usr/hdp/current/hadoop-mapreduce-client/asm-3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/avro-1.7.4.jar:/usr/hdp/current/hadoop-mapreduce-client/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jets3t-0.9.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-2.2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/log4j-1.2.17.jar:/usr/hdp/current/hadoop-mapreduce-client/htrace-core-3.1.0-incubating.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-digester-1.8.jar:/usr/hdp/current/hadoop-mapreduce-client/httpcore-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-io-2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-logging-1.1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/hamcrest-core-1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/java-xmlbuilder-0.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-codec-1.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient.jar:/usr/hdp/current/hadoop-mapreduce-client/gson-2.2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-server-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-mapper-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp.jar:/usr/hdp/current/hadoop-mapreduce-client/paranamer-2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-api-2.2.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin.jar:/usr/hdp/current/hadoop-mapreduce-client/xz-1.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jsch-0.1.42.jar:/usr/hdp/current/hadoop-mapreduce-client/jettison-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jsp-api-2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/httpclient-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-configuration-1.6.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-xc-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs.jar:/usr/hdp/current/hadoop-mapreduce-client/netty-3.6.2.Final.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/guava-11.0.2.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-httpclient-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-compress-1.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jsr305-3.0.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen.jar:/usr/hdp/current/hadoop-mapreduce-client/mockito-all-1.8.5.jar:/usr/hdp/current/hadoop-mapreduce-client/protobuf-java-2.5.0.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-collections-3.2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/xmlenc-0.52.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-cli-1.2.jar:/usr/hdp/current/hadoop-mapreduce-client/joda-time-2.8.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-core-1.8.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-impl-2.2.3-1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack.jar:/usr/hdp/current/hadoop-mapreduce-client/api-util-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang3-3.3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-framework-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/activation-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/stax-api-1.0-2.jar:/usr/hdp/current/tez-client/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jersey-json-1.9.jar:/usr/hdp/current/tez-client/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/commons-math3-3.1.1.jar:/usr/hdp/current/tez-client/lib/servlet-api-2.5.jar:/usr/hdp/current/tez-client/lib/commons-lang-2.6.jar:/usr/hdp/current/tez-client/lib/commons-io-2.4.jar:/usr/hdp/current/tez-client/lib/commons-codec-1.4.jar:/usr/hdp/current/tez-client/lib/commons-collections4-4.0.jar:/usr/hdp/current/tez-client/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/jettison-1.3.4.jar:/usr/hdp/current/tez-client/lib/guava-11.0.2.jar:/usr/hdp/current/tez-client/lib/jsr305-2.0.3.jar:/usr/hdp/current/tez-client/lib/jersey-client-1.9.jar:/usr/hdp/current/tez-client/lib/protobuf-java-2.5.0.jar:/usr/hdp/current/tez-client/lib/commons-collections-3.2.1.jar:/usr/hdp/current/tez-client/lib/commons-cli-1.2.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/slf4j-api-1.7.5.jar:/etc/tez/conf/:/usr/hdp/2.3.2.0-2950/tez/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/tez/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-collections4-4.0.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jettison-1.3.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jsr305-2.0.3.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jersey-client-1.9.jar:/usr/hdp/2.3.2.0-2950/tez/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/slf4j-api-1.7.5.jar:/usr/hdp/2.3.2.0-2950/tez/conf:/usr/share/java/mysql-connector-java-5.1.17.jar:/usr/share/java/mysql-connector-java-5.1.34-bin.jar:/usr/share/java/mysql-connector-java.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-client-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-net-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-json-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/api-asn1-api-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-recipes-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/metrics-core-3.0.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/snappy-java-1.0.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-math3-3.1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-core-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-jaxrs-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-1.7.0.jar:/usr/hdp/current/hadoop-mapreduce-client/servlet-api-2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang-2.6.jar:/usr/hdp/current/hadoop-mapreduce-client/junit-4.11.jar:/usr/hdp/current/hadoop-mapreduce-client/asm-3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/avro-1.7.4.jar:/usr/hdp/current/hadoop-mapreduce-client/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jets3t-0.9.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-2.2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/log4j-1.2.17.jar:/usr/hdp/current/hadoop-mapreduce-client/htrace-core-3.1.0-incubating.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-digester-1.8.jar:/usr/hdp/current/hadoop-mapreduce-client/httpcore-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-io-2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-logging-1.1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/hamcrest-core-1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/java-xmlbuilder-0.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-codec-1.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient.jar:/usr/hdp/current/hadoop-mapreduce-client/gson-2.2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-server-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-mapper-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp.jar:/usr/hdp/current/hadoop-mapreduce-client/paranamer-2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-api-2.2.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin.jar:/usr/hdp/current/hadoop-mapreduce-client/xz-1.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jsch-0.1.42.jar:/usr/hdp/current/hadoop-mapreduce-client/jettison-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jsp-api-2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/httpclient-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-configuration-1.6.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-xc-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs.jar:/usr/hdp/current/hadoop-mapreduce-client/netty-3.6.2.Final.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/guava-11.0.2.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-httpclient-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-compress-1.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jsr305-3.0.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen.jar:/usr/hdp/current/hadoop-mapreduce-client/mockito-all-1.8.5.jar:/usr/hdp/current/hadoop-mapreduce-client/protobuf-java-2.5.0.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-collections-3.2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/xmlenc-0.52.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-cli-1.2.jar:/usr/hdp/current/hadoop-mapreduce-client/joda-time-2.8.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-core-1.8.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-impl-2.2.3-1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack.jar:/usr/hdp/current/hadoop-mapreduce-client/api-util-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang3-3.3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-framework-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/activation-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/stax-api-1.0-2.jar:/usr/hdp/current/tez-client/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jersey-json-1.9.jar:/usr/hdp/current/tez-client/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/commons-math3-3.1.1.jar:/usr/hdp/current/tez-client/lib/servlet-api-2.5.jar:/usr/hdp/current/tez-client/lib/commons-lang-2.6.jar:/usr/hdp/current/tez-client/lib/commons-io-2.4.jar:/usr/hdp/current/tez-client/lib/commons-codec-1.4.jar:/usr/hdp/current/tez-client/lib/commons-collections4-4.0.jar:/usr/hdp/current/tez-client/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/jettison-1.3.4.jar:/usr/hdp/current/tez-client/lib/guava-11.0.2.jar:/usr/hdp/current/tez-client/lib/jsr305-2.0.3.jar:/usr/hdp/current/tez-client/lib/jersey-client-1.9.jar:/usr/hdp/current/tez-client/lib/protobuf-java-2.5.0.jar:/usr/hdp/current/tez-client/lib/commons-collections-3.2.1.jar:/usr/hdp/current/tez-client/lib/commons-cli-1.2.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/slf4j-api-1.7.5.jar:/etc/tez/conf/:/usr/share/java/mysql-connector-java-5.1.17.jar:/usr/share/java/mysql-connector-java-5.1.34-bin.jar:/usr/share/java/mysql-connector-java.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-client-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/zookeeper-3.4.6.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-net-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-json-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/api-asn1-api-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-recipes-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-2.7.1.2.3.2.0-2950-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/metrics-core-3.0.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/snappy-java-1.0.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-math3-3.1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-core-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-auth-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-sls.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-jaxrs-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-gridmix-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-1.7.0.jar:/usr/hdp/current/hadoop-mapreduce-client/servlet-api-2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang-2.6.jar:/usr/hdp/current/hadoop-mapreduce-client/junit-4.11.jar:/usr/hdp/current/hadoop-mapreduce-client/asm-3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/avro-1.7.4.jar:/usr/hdp/current/hadoop-mapreduce-client/microsoft-windowsazure-storage-sdk-0.6.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jets3t-0.9.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-2.2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/log4j-1.2.17.jar:/usr/hdp/current/hadoop-mapreduce-client/htrace-core-3.1.0-incubating.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-digester-1.8.jar:/usr/hdp/current/hadoop-mapreduce-client/httpcore-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-io-2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-logging-1.1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/hamcrest-core-1.3.jar:/usr/hdp/current/hadoop-mapreduce-client/java-xmlbuilder-0.4.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-codec-1.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient.jar:/usr/hdp/current/hadoop-mapreduce-client/gson-2.2.4.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jersey-server-1.9.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-i18n-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-mapper-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-extras-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-distcp.jar:/usr/hdp/current/hadoop-mapreduce-client/paranamer-2.3.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-api-2.2.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-datajoin.jar:/usr/hdp/current/hadoop-mapreduce-client/xz-1.0.jar:/usr/hdp/current/hadoop-mapreduce-client/jsch-0.1.42.jar:/usr/hdp/current/hadoop-mapreduce-client/jettison-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/jsp-api-2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/httpclient-4.2.5.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient-tests.jar:/usr/hdp/current/hadoop-mapreduce-client/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-configuration-1.6.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-xc-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs.jar:/usr/hdp/current/hadoop-mapreduce-client/netty-3.6.2.Final.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-archives-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jackson-core-asl-1.9.13.jar:/usr/hdp/current/hadoop-mapreduce-client/guava-11.0.2.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-httpclient-3.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-ant.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-compress-1.4.1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core.jar:/usr/hdp/current/hadoop-mapreduce-client/apacheds-kerberos-codec-2.0.0-M15.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-app-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/jsr305-3.0.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-rumen.jar:/usr/hdp/current/hadoop-mapreduce-client/mockito-all-1.8.5.jar:/usr/hdp/current/hadoop-mapreduce-client/protobuf-java-2.5.0.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-collections-3.2.1.jar:/usr/hdp/current/hadoop-mapreduce-client/xmlenc-0.52.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-cli-1.2.jar:/usr/hdp/current/hadoop-mapreduce-client/joda-time-2.8.2.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-beanutils-core-1.8.0.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins.jar:/usr/hdp/current/hadoop-mapreduce-client/jaxb-impl-2.2.3-1.jar:/usr/hdp/current/hadoop-mapreduce-client/hadoop-openstack.jar:/usr/hdp/current/hadoop-mapreduce-client/api-util-1.0.0-M20.jar:/usr/hdp/current/hadoop-mapreduce-client/commons-lang3-3.3.2.jar:/usr/hdp/current/hadoop-mapreduce-client/curator-framework-2.7.1.jar:/usr/hdp/current/hadoop-mapreduce-client/activation-1.1.jar:/usr/hdp/current/hadoop-mapreduce-client/stax-api-1.0-2.jar:/usr/hdp/current/tez-client/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jersey-json-1.9.jar:/usr/hdp/current/tez-client/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/commons-math3-3.1.1.jar:/usr/hdp/current/tez-client/lib/servlet-api-2.5.jar:/usr/hdp/current/tez-client/lib/commons-lang-2.6.jar:/usr/hdp/current/tez-client/lib/commons-io-2.4.jar:/usr/hdp/current/tez-client/lib/commons-codec-1.4.jar:/usr/hdp/current/tez-client/lib/commons-collections4-4.0.jar:/usr/hdp/current/tez-client/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/current/tez-client/lib/jettison-1.3.4.jar:/usr/hdp/current/tez-client/lib/guava-11.0.2.jar:/usr/hdp/current/tez-client/lib/jsr305-2.0.3.jar:/usr/hdp/current/tez-client/lib/jersey-client-1.9.jar:/usr/hdp/current/tez-client/lib/protobuf-java-2.5.0.jar:/usr/hdp/current/tez-client/lib/commons-collections-3.2.1.jar:/usr/hdp/current/tez-client/lib/commons-cli-1.2.jar:/usr/hdp/current/tez-client/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/current/tez-client/lib/slf4j-api-1.7.5.jar:/etc/tez/conf/:/usr/hdp/2.3.2.0-2950/tez/tez-runtime-internals-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-runtime-library-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-yarn-timeline-history-with-acls-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-examples-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-tests-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-common-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-yarn-timeline-history-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-dag-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-api-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-history-parser-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/tez-mapreduce-0.7.0.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-yarn-server-web-proxy-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jersey-json-1.9.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-aws-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jetty-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-mapreduce-client-common-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-math3-3.1.1.jar:/usr/hdp/2.3.2.0-2950/tez/lib/servlet-api-2.5.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-lang-2.6.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-io-2.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-codec-1.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-collections4-4.0.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-annotations-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jetty-util-6.1.26.hwx.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jettison-1.3.4.jar:/usr/hdp/2.3.2.0-2950/tez/lib/guava-11.0.2.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jsr305-2.0.3.jar:/usr/hdp/2.3.2.0-2950/tez/lib/jersey-client-1.9.jar:/usr/hdp/2.3.2.0-2950/tez/lib/protobuf-java-2.5.0.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-collections-3.2.1.jar:/usr/hdp/2.3.2.0-2950/tez/lib/commons-cli-1.2.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-mapreduce-client-core-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/hadoop-azure-2.7.1.2.3.2.0-2950.jar:/usr/hdp/2.3.2.0-2950/tez/lib/slf4j-api-1.7.5.jar:/usr/hdp/2.3.2.0-2950/tez/conf"
+    }, {
+      "key" : "sun.io.unicode.encoding",
+      "value" : "UnicodeLittle"
+    }, {
+      "key" : "user.language",
+      "value" : "en"
+    }, {
+      "key" : "os.arch",
+      "value" : "amd64"
+    }, {
+      "key" : "user.name",
+      "value" : "hdfs"
+    }, {
+      "key" : "java.runtime.version",
+      "value" : "1.7.0_71-b14"
+    }, {
+      "key" : "sun.boot.class.path",
+      "value" : "/usr/java/jdk1.7.0_71/jre/lib/resources.jar:/usr/java/jdk1.7.0_71/jre/lib/rt.jar:/usr/java/jdk1.7.0_71/jre/lib/sunrsasign.jar:/usr/java/jdk1.7.0_71/jre/lib/jsse.jar:/usr/java/jdk1.7.0_71/jre/lib/jce.jar:/usr/java/jdk1.7.0_71/jre/lib/charsets.jar:/usr/java/jdk1.7.0_71/jre/lib/jfr.jar:/usr/java/jdk1.7.0_71/jre/classes"
+    }, {
+      "key" : "hadoop.log.file",
+      "value" : "hadoop-hdfs-namenode-ip-172-31-14-9.ec2.internal.log"
+    }, {
+      "key" : "sun.cpu.endian",
+      "value" : "little"
+    }, {
+      "key" : "awt.toolkit",
+      "value" : "sun.awt.X11.XToolkit"
+    }, {
+      "key" : "hadoop.root.logger",
+      "value" : "INFO,RFA"
+    }, {
+      "key" : "sun.boot.library.path",
+      "value" : "/usr/java/jdk1.7.0_71/jre/lib/amd64"
+    }, {
+      "key" : "java.vm.name",
+      "value" : "Java HotSpot(TM) 64-Bit Server VM"
+    }, {
+      "key" : "java.home",
+      "value" : "/usr/java/jdk1.7.0_71/jre"
+    }, {
+      "key" : "java.endorsed.dirs",
+      "value" : "/usr/java/jdk1.7.0_71/jre/lib/endorsed"
+    }, {
+      "key" : "java.net.preferIPv4Stack",
+      "value" : "true"
+    }, {
+      "key" : "sun.management.compiler",
+      "value" : "HotSpot 64-Bit Tiered Compilers"
+    }, {
+      "key" : "java.runtime.name",
+      "value" : "Java(TM) SE Runtime Environment"
+    }, {
+      "key" : "hdfs.audit.logger",
+      "value" : "INFO,DRFAAUDIT"
+    }, {
+      "key" : "java.library.path",
+      "value" : ":/usr/hdp/2.3.2.0-2950/hadoop/lib/native/Linux-amd64-64:/usr/hdp/2.3.2.0-2950/hadoop/lib/native:/usr/hdp/2.3.2.0-2950/hadoop/lib/native/Linux-amd64-64:/usr/hdp/2.3.2.0-2950/hadoop/lib/native"
+    }, {
+      "key" : "file.separator",
+      "value" : "/"
+    }, {
+      "key" : "java.specification.vendor",
+      "value" : "Oracle Corporation"
+    }, {
+      "key" : "java.vm.specification.version",
+      "value" : "1.7"
+    }, {
+      "key" : "hadoop.home.dir",
+      "value" : "/usr/hdp/2.3.2.0-2950/hadoop"
+    }, {
+      "key" : "sun.java.launcher",
+      "value" : "SUN_STANDARD"
+    }, {
+      "key" : "user.timezone",
+      "value" : "US/Eastern"
+    }, {
+      "key" : "os.name",
+      "value" : "Linux"
+    }, {
+      "key" : "path.separator",
+      "value" : ":"
+    }, {
+      "key" : "proc_namenode",
+      "value" : ""
+    }, {
+      "key" : "java.ext.dirs",
+      "value" : "/usr/java/jdk1.7.0_71/jre/lib/ext:/usr/java/packages/lib/ext"
+    }, {
+      "key" : "hdp.version",
+      "value" : "2.3.2.0-2950"
+    }, {
+      "key" : "sun.arch.data.model",
+      "value" : "64"
+    }, {
+      "key" : "java.specification.name",
+      "value" : "Java Platform API Specification"
+    }, {
+      "key" : "os.version",
+      "value" : "2.6.32-358.14.1.el6.x86_64"
+    }, {
+      "key" : "hadoop.policy.file",
+      "value" : "hadoop-policy.xml"
+    }, {
+      "key" : "user.country",
+      "value" : "US"
+    }, {
+      "key" : "java.class.version",
+      "value" : "51.0"
+    }, {
+      "key" : "java.vendor",
+      "value" : "Oracle Corporation"
+    }, {
+      "key" : "java.vm.specification.name",
+      "value" : "Java Virtual Machine Specification"
+    }, {
+      "key" : "org.mortbay.jetty.Request.maxFormContentSize",
+      "value" : "-1"
+    }, {
+      "key" : "java.specification.version",
+      "value" : "1.7"
+    } ],
+    "Uptime" : 4456592605,
+    "StartTime" : 1454130265161,
+    "ObjectName" : "java.lang:type=Runtime"
+  }, {
+    "name" : "java.nio:type=BufferPool,name=direct",
+    "modelerType" : "sun.management.ManagementFactoryHelper$1",
+    "Name" : "direct",
+    "MemoryUsed" : 4108705,
+    "TotalCapacity" : 4108705,
+    "Count" : 175,
+    "ObjectName" : "java.nio:type=BufferPool,name=direct"
+  }, {
+    "name" : "java.lang:type=ClassLoading",
+    "modelerType" : "sun.management.ClassLoadingImpl",
+    "TotalLoadedClassCount" : 9116,
+    "Verbose" : false,
+    "LoadedClassCount" : 9116,
+    "UnloadedClassCount" : 0,
+    "ObjectName" : "java.lang:type=ClassLoading"
+  }, {
+    "name" : "java.lang:type=Threading",
+    "modelerType" : "sun.management.ThreadImpl",
+    "ThreadAllocatedMemoryEnabled" : true,
+    "ThreadAllocatedMemorySupported" : true,
+    "DaemonThreadCount" : 137,
+    "PeakThreadCount" : 148,
+    "CurrentThreadCpuTimeSupported" : true,
+    "ObjectMonitorUsageSupported" : true,
+    "SynchronizerUsageSupported" : true,
+    "ThreadContentionMonitoringSupported" : true,
+    "ThreadCpuTimeEnabled" : true,
+    "CurrentThreadCpuTime" : 98254694,
+    "CurrentThreadUserTime" : 90000000,
+    "TotalStartedThreadCount" : 360029,
+    "ThreadCpuTimeSupported" : true,
+    "ThreadCount" : 143,
+    "ThreadContentionMonitoringEnabled" : false,
+    "AllThreadIds" : [ 360037, 360036, 360035, 360032, 360022, 356154, 356028, 172, 170, 153, 152, 151, 150, 149, 148, 147, 146, 145, 144, 143, 142, 141, 140, 139, 138, 137, 136, 135, 134, 133, 132, 131, 130, 129, 128, 127, 126, 125, 124, 123, 122, 121, 120, 119, 118, 117, 116, 115, 114, 113, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 28, 31, 44, 42, 41, 40, 39, 38, 37, 22, 23, 35, 34, 32, 30, 29, 21, 20, 19, 17, 15, 14, 5, 3, 2, 1 ],
+    "ObjectName" : "java.lang:type=Threading"
+  }, {
+    "name" : "Hadoop:service=NameNode,name=StartupProgress",
+    "modelerType" : "StartupProgress",
+    "tag.Hostname" : "ip-172-31-14-9.ec2.internal",
+    "ElapsedTime" : 105300,
+    "PercentComplete" : 1.0,
+    "LoadingFsImageCount" : 0,
+    "LoadingFsImageElapsedTime" : 41211,
+    "LoadingFsImageTotal" : 0,
+    "LoadingFsImagePercentComplete" : 1.0,
+    "LoadingEditsCount" : 11835,
+    "LoadingEditsElapsedTime" : 2098,
+    "LoadingEditsTotal" : 11835,
+    "LoadingEditsPercentComplete" : 1.0,
+    "SavingCheckpointCount" : 0,
+    "SavingCheckpointElapsedTime" : 0,
+    "SavingCheckpointTotal" : 0,
+    "SavingCheckpointPercentComplete" : 1.0,
+    "SafeModeCount" : 167213,
+    "SafeModeElapsedTime" : 61436,
+    "SafeModeTotal" : 167213,
+    "SafeModePercentComplete" : 1.0
+  }, {
+    "name" : "Hadoop:service=NameNode,name=FSNamesystem",
+    "modelerType" : "FSNamesystem",
+    "tag.Context" : "dfs",
+    "tag.HAState" : "active",
+    "tag.TotalSyncTimes" : "502 ",
+    "tag.Hostname" : "ip-172-31-14-9.ec2.internal",
+    "MissingBlocks" : 0,
+    "MissingReplOneBlocks" : 0,
+    "ExpiredHeartbeats" : 0,
+    "TransactionsSinceLastCheckpoint" : 370,
+    "TransactionsSinceLastLogRoll" : 370,
+    "LastWrittenTransactionId" : 55122386,
+    "LastCheckpointTime" : 1458584413912,
+    "CapacityTotal" : 1673850781696,
+    "CapacityTotalGB" : 1559.0,
+    "CapacityUsed" : 159902674944,
+    "CapacityUsedGB" : 149.0,
+    "CapacityRemaining" : 1419670337536,
+    "CapacityRemainingGB" : 1322.0,
+    "CapacityUsedNonDFS" : 94277769216,
+    "TotalLoad" : 15,
+    "SnapshottableDirectories" : 3,
+    "Snapshots" : 50,
+    "LockQueueLength" : 0,
+    "BlocksTotal" : 167047,
+    "NumFilesUnderConstruction" : 1,
+    "NumActiveClients" : 1,
+    "FilesTotal" : 193359,
+    "PendingReplicationBlocks" : 0,
+    "UnderReplicatedBlocks" : 72,
+    "CorruptBlocks" : 0,
+    "ScheduledReplicationBlocks" : 0,
+    "PendingDeletionBlocks" : 0,
+    "ExcessBlocks" : 0,
+    "PostponedMisreplicatedBlocks" : 0,
+    "PendingDataNodeMessageCount" : 0,
+    "MillisSinceLastLoadedEdits" : 0,
+    "BlockCapacity" : 8388608,
+    "StaleDataNodes" : 0,
+    "TotalFiles" : 193359,
+    "TotalSyncCount" : 371
+  }, {
+    "name" : "java.util.logging:type=Logging",
+    "modelerType" : "sun.management.ManagementFactoryHelper$PlatformLoggingImpl",
+    "ObjectName" : "java.util.logging:type=Logging",
+    "LoggerNames" : [ "com.sun.jersey.server.impl.resource.PerRequestFactory", "com.sun.jersey.api.client.RequestWriter", "global", "com.sun.jersey.api.core.ScanningResourceConfig", "com.sun.jersey.spi.container.ContainerRequest", "com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator", "com.sun.jersey.server.impl.wadl.WadlApplicationContextImpl", "com.sun.jersey.server.impl.application.ResourceMethodDispatcherFactory", "com.sun.jersey.server.impl.monitoring.GlassFishMonitoringInitializer", "com.sun.jersey.spi.container.servlet.WebComponent", "javax.management.monitor", "com.sun.jersey.api.client.Client", "com.sun.jersey.server.impl.container.filter.FilterFactory", "com.google.common.cache.LocalCache", "com.sun.xml.bind.v2.schemagen.FoolProofResolver", "com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl", "com.sun.xml.bind.v2.runtime.JaxBeanInfo", "com.sun.jersey.server.impl.cdi.CDIComponentProviderFactoryInitializer", "com.sun.jersey.api.core.PackagesResourceConfig", "javax.management", "com.sun.jersey.server.impl.ejb.EJBComponentProviderFactoryInitilizer", "javax.management.snmp", "com.google.common.util.concurrent.ExecutionList", "javax.management.notification", "com.sun.jersey.server.impl.managedbeans.ManagedBeanComponentProviderFactoryInitilizer", "javax.management.snmp.daemon", "com.sun.jersey.core.impl.provider.xml.SAXParserContextProvider", "com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedAccessorFactory", "com.sun.xml.bind.v2.ContextFactory", "com.sun.jersey.server.impl.wadl.WadlResource", "com.sun.jersey.json.impl.provider.entity.JSONWithPaddingProvider", "javax.management.modelmbean", "com.sun.xml.bind.v2.ClassFactory", "sun.net.www.protocol.http.HttpURLConnection", "com.sun.jersey.server.impl.application.CloseableServiceFactory", "com.sun.jersey.server.impl.resource.SingletonFactory", "com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedTransducedAccessorFactory", "javax.management.misc", "com.sun.xml.bind.v2.runtime.reflect.opt.AccessorInjector", "com.sun.jersey.spi.container.ContainerResponse", "javax.security.sasl", "javax.management.mlet", "com.sun.jersey.core.impl.provider.entity.EntityHolderReader", "javax.xml.bind", "com.sun.jersey.core.spi.component.ProviderServices", "javax.management.timer", "com.sun.xml.bind.v2.runtime.reflect.Accessor$FieldReflection", "com.sun.jersey.server.impl.application.RootResourceUriRules", "com.sun.jersey.api.core.ResourceConfig", "com.sun.xml.bind.v2.runtime.reflect.opt.Injector", "com.sun.jersey.api.wadl.config.WadlGeneratorLoader", "com.google.common.collect.MapMakerInternalMap", "com.sun.jersey.server.impl.application.WebApplicationImpl", "com.sun.jersey.server.impl.model.method.dispatch.MultipartFormDispatchProvider", "javax.management.relation", "com.sun.jersey.spi.service.ServiceFinder", "com.google.common.cache.CacheBuilder", "com.sun.jersey.api.client.ClientResponse", "com.sun.xml.bind.v2.bytecode.ClassTailor", "com.sun.jersey.server.wadl.generators.WadlGeneratorJAXBGrammarGenerator", "com.sun.jersey.server.impl.modelapi.annotation.IntrospectionModeller", "com.sun.jersey.server.impl.wadl.WadlFactory", "com.sun.jersey.core.impl.provider.xml.DocumentBuilderFactoryProvider", "com.sun.jersey.core.spi.component.ProviderFactory", "", "com.sun.jersey.spi.inject.Errors", "javax.management.mbeanserver" ]
+  }, {
+    "name" : "java.lang:type=GarbageCollector,name=ParNew",
+    "modelerType" : "sun.management.GarbageCollectorImpl",
+    "LastGcInfo" : {
+      "GcThreadCount" : 11,
+      "duration" : 24,
+      "endTime" : 4456276121,
+      "id" : 4114,
+      "memoryUsageAfterGc" : [ {
+        "key" : "CMS Perm Gen",
+        "value" : {
+          "committed" : 134217728,
+          "init" : 134217728,
+          "max" : 268435456,
+          "used" : 65947752
+        }
+      }, {
+        "key" : "Par Eden Space",
+        "value" : {
+          "committed" : 429522944,
+          "init" : 429522944,
+          "max" : 429522944,
+          "used" : 0
+        }
+      }, {
+        "key" : "Code Cache",
+        "value" : {
+          "committed" : 19595264,
+          "init" : 2555904,
+          "max" : 50331648,
+          "used" : 19315648
+        }
+      }, {
+        "key" : "Par Survivor Space",
+        "value" : {
+          "committed" : 53673984,
+          "init" : 53673984,
+          "max" : 53673984,
+          "used" : 3599240
+        }
+      }, {
+        "key" : "CMS Old Gen",
+        "value" : {
+          "committed" : 3758096384,
+          "init" : 3758096384,
+          "max" : 3758096384,
+          "used" : 999206288
+        }
+      } ],
+      "memoryUsageBeforeGc" : [ {
+        "key" : "CMS Perm Gen",
+        "value" : {
+          "committed" : 134217728,
+          "init" : 134217728,
+          "max" : 268435456,
+          "used" : 65947752
+        }
+      }, {
+        "key" : "Par Eden Space",
+        "value" : {
+          "committed" : 429522944,
+          "init" : 429522944,
+          "max" : 429522944,
+          "used" : 429522944
+        }
+      }, {
+        "key" : "Code Cache",
+        "value" : {
+          "committed" : 19595264,
+          "init" : 2555904,
+          "max" : 50331648,
+          "used" : 19315648
+        }
+      }, {
+        "key" : "Par Survivor Space",
+        "value" : {
+          "committed" : 53673984,
+          "init" : 53673984,
+          "max" : 53673984,
+          "used" : 2495824
+        }
+      }, {
+        "key" : "CMS Old Gen",
+        "value" : {
+          "committed" : 3758096384,
+          "init" : 3758096384,
+          "max" : 3758096384,
+          "used" : 999014208
+        }
+      } ],
+      "startTime" : 4456276097
+    },
+    "CollectionCount" : 4114,
+    "CollectionTime" : 111112,
+    "Name" : "ParNew",
+    "Valid" : true,
+    "MemoryPoolNames" : [ "Par Eden Space", "Par Survivor Space" ],
+    "ObjectName" : "java.lang:type=GarbageCollector,name=ParNew"
+  }, {
+    "name" : "Hadoop:service=NameNode,name=MetricsSystem,sub=Stats",
+    "modelerType" : "MetricsSystem,sub=Stats",
+    "tag.Context" : "metricssystem",
+    "tag.Hostname" : "ip-172-31-14-9.ec2.internal",
+    "NumActiveSources" : 8,
+    "NumAllSources" : 8,
+    "NumActiveSinks" : 1,
+    "NumAllSinks" : 0,
+    "Sink_timelineNumOps" : 74182,
+    "Sink_timelineAvgTime" : 52.0,
+    "Sink_timelineDropped" : 94,
+    "Sink_timelineQsize" : 0,
+    "SnapshotNumOps" : 668484,
+    "SnapshotAvgTime" : 0.0,
+    "PublishNumOps" : 74276,
+    "PublishAvgTime" : 0.0,
+    "DroppedPubAll" : 94
+  }, {
+    "name" : "Hadoop:service=NameNode,name=NameNodeInfo",
+    "modelerType" : "org.apache.hadoop.hdfs.server.namenode.FSNamesystem",
+    "Threads" : 143,
+    "Total" : 1673850781696,
+    "ClusterId" : "CID-dd6abe10-2219-4d7f-8343-d10403dc53aa",
+    "UpgradeFinalized" : true,
+    "Version" : "2.7.1.2.3.2.0-2950, r5cc60e0003e33aa98205f18bccaeaf36cb193c1c",
+    "Used" : 159902674944,
+    "Free" : 1419670337536,
+    "Safemode" : "",
+    "NonDfsUsedSpace" : 94277769216,
+    "PercentUsed" : 9.552983,
+    "BlockPoolUsedSpace" : 159902674944,
+    "PercentBlockPoolUsed" : 9.552983,
+    "PercentRemaining" : 84.81464,
+    "CacheCapacity" : 0,
+    "CacheUsed" : 0,
+    "TotalBlocks" : 167047,
+    "TotalFiles" : 193359,
+    "NumberOfMissingBlocks" : 0,
+    "NumberOfMissingBlocksWithReplicationFactorOne" : 0,
+    "LiveNodes" : "{\"ip-172-31-12-55.ec2.internal:50010\":{\"infoAddr\":\"172.31.12.55:50075\",\"infoSecureAddr\":\"172.31.12.55:0\",\"xferaddr\":\"172.31.12.55:50010\",\"lastContact\":1,\"usedSpace\":43793997824,\"adminState\":\"In Service\",\"nonDfsUsedSpace\":23461457920,\"capacity\":418462695424,\"numBlocks\":125552,\"version\":\"2.7.1.2.3.2.0-2950\",\"used\":43793997824,\"remaining\":351207239680,\"blockScheduled\":0,\"blockPoolUsed\":43793997824,\"blockPoolUsedPercent\":10.465448,\"volfails\":0},\"ip-172-31-5-172.ec2.internal:50010\":{\"infoAddr\":\"172.31.5.172:50075\",\"infoSecureAddr\":\"172.31.5.172:0\",\"xferaddr\":\"172.31.5.172:50010\",\"lastContact\":2,\"usedSpace\":44351131648,\"adminState\":\"In Service\",\"nonDfsUsedSpace\":23397107712,\"capacity\":418462695424,\"numBlocks\":124882,\"version\":\"2.7.1.2.3.2.0-2950\",\"used\":44351131648,\"remaining\":350714456064,\"blockScheduled\":0,\"blockPoolUsed\":44351131648,\"blockPoolUsedPercent\":10.598587,\"volfails\":0},\"ip-172-31-12-220.ec2.internal:50010\":{\"infoAddr\":\"172.31.12.220:50075\",\"infoSecureAddr\":\"172.31.12.220:0\",\"xferaddr\":\"172.31.12.220:50010\",\"lastContact\":0,\"usedSpace\":43234332672,\"adminState\":\"In Service\",\"nonDfsUsedSpace\":23639865344,\"capacity\":418462695424,\"numBlocks\":126005,\"version\":\"2.7.1.2.3.2.0-2950\",\"used\":43234332672,\"remaining\":351588497408,\"blockScheduled\":0,\"blockPoolUsed\":43234332672,\"blockPoolUsedPercent\":10.331705,\"volfails\":0},\"ip-172-31-13-140.ec2.internal:50010\":{\"infoAddr\":\"172.31.13.140:50075\",\"infoSecureAddr\":\"172.31.13.140:0\",\"xferaddr\":\"172.31.13.140:50010\",\"lastContact\":2,\"usedSpace\":28523212800,\"adminState\":\"In Service\",\"nonDfsUsedSpace\":23779338240,\"capacity\":418462695424,\"numBlocks\":124772,\"version\":\"2.7.1.2.3.2.0-2950\",\"used\":28523212800,\"remaining\":366160144384,\"blockScheduled\":0,\"blockPoolUsed\":28523212800,\"blockPoolUsedPercent\":6.81619,\"volfails\":0}}",
+    "DeadNodes" : "{}",
+    "DecomNodes" : "{}",
+    "BlockPoolId" : "BP-2009917013-172.31.7.246-1398771635572",
+    "NameDirStatuses" : "{\"failed\":{},\"active\":{\"/hadoop/hdfs/namenode\":\"IMAGE_AND_EDITS\"}}",
+    "NodeUsage" : "{\"nodeUsage\":{\"min\":\"6.82%\",\"median\":\"10.47%\",\"max\":\"10.60%\",\"stdDev\":\"1.58%\"}}",
+    "NameJournalStatus" : "[{\"stream\":\"EditLogFileOutputStream(/hadoop/hdfs/namenode/current/edits_inprogress_0000000000055122017)\",\"manager\":\"FileJournalManager(root=/hadoop/hdfs/namenode)\",\"required\":\"false\",\"disabled\":\"false\"}]",
+    "JournalTransactionInfo" : "{\"LastAppliedOrWrittenTxId\":\"55122386\",\"MostRecentCheckpointTxId\":\"55122016\"}",
+    "NNStarted" : "Sat Jan 30 00:04:28 EST 2016",
+    "CompileInfo" : "2015-09-30T18:08Z by jenkins from (HEAD detached at 5cc60e0)",
+    "CorruptFiles" : "[]",
+    "DistinctVersionCount" : 1,
+    "DistinctVersions" : [ {
+      "key" : "2.7.1.2.3.2.0-2950",
+      "value" : 4
+    } ],
+    "SoftwareVersion" : "2.7.1.2.3.2.0-2950",
+    "RollingUpgradeStatus" : null
+  }, {
+    "name" : "com.sun.management:type=HotSpotDiagnostic",
+    "modelerType" : "sun.management.HotSpotDiagnostic",
+    "DiagnosticOptions" : [ {
+      "name" : "HeapDumpBeforeFullGC",
+      "origin" : "DEFAULT",
+      "value" : "false",
+      "writeable" : true
+    }, {
+      "name" : "HeapDumpAfterFullGC",
+      "origin" : "DEFAULT",
+      "value" : "false",
+      "writeable" : true
+    }, {
+      "name" : "HeapDumpOnOutOfMemoryError",
+      "origin" : "DEFAULT",
+      "value" : "false",
+      "writeable" : true
+    }, {
+      "name" : "HeapDumpPath",
+      "origin" : "DEFAULT",
+      "value" : "",
+      "writeable" : true
+    }, {
+      "name" : "CMSAbortablePrecleanWaitMillis",
+      "origin" : "DEFAULT",
+      "value" : "100",
+      "writeable" : true
+    }, {
+      "name" : "CMSWaitDuration",
+      "origin" : "DEFAULT",
+      "value" : "2000",
+      "writeable" : true
+    }, {
+      "name" : "PrintGC",
+      "origin" : "VM_CREATION",
+      "value" : "true",
+      "writeable" : true
+    }, {
+      "name" : "PrintGCDetails",
+      "origin" : "VM_CREATION",
+      "value" : "true",
+      "writeable" : true
+    }, {
+      "name" : "PrintGCDateStamps",
+      "origin" : "VM_CREATION",
+      "value" : "true",
+      "writeable" : true
+    }, {
+      "name" : "PrintGCTimeStamps",
+      "origin" : "VM_CREATION",
+      "value" : "true",
+      "writeable" : true
+    }, {
+      "name" : "PrintClassHistogramBeforeFullGC",
+      "origin" : "DEFAULT",
+      "value" : "false",
+      "writeable" : true
+    }, {
+      "name" : "PrintClassHistogramAfterFullGC",
+      "origin" : "DEFAULT",
+      "value" : "false",
+      "writeable" : true
+    }, {
+      "name" : "PrintClassHistogram",
+      "origin" : "DEFAULT",
+      "value" : "false",
+      "writeable" : true
+    }, {
+      "name" : "MinHeapFreeRatio",
+      "origin" : "DEFAULT",
+      "value" : "40",
+      "writeable" : true
+    }, {
+      "name" : "MaxHeapFreeRatio",
+      "origin" : "DEFAULT",
+      "value" : "70",
+      "writeable" : true
+    }, {
+      "name" : "PrintConcurrentLocks",
+      "origin" : "DEFAULT",
+      "value" : "false",
+      "writeable" : true
+    }, {
+      "name" : "UnlockCommercialFeatures",
+      "origin" : "DEFAULT",
+      "value" : "false",
+      "writeable" : true
+    } ],
+    "ObjectName" : "com.sun.management:type=HotSpotDiagnostic"
+  }, {
+    "name" : "JMImplementation:type=MBeanServerDelegate",
+    "modelerType" : "javax.management.MBeanServerDelegate",
+    "MBeanServerId" : "ip-172-31-14-9.ec2.internal_1454130266936",
+    "SpecificationName" : "Java Management Extensions",
+    "SpecificationVersion" : "1.4",
+    "SpecificationVendor" : "Oracle Corporation",
+    "ImplementationName" : "JMX",
+    "ImplementationVersion" : "1.7.0_71-b14",
+    "ImplementationVendor" : "Oracle Corporation"
+  } ]
+}

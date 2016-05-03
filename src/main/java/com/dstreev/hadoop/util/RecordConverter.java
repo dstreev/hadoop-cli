@@ -25,17 +25,17 @@ public class RecordConverter {
     }
 
 
-    public Map<String, String> convert(Map<String, String> parent, String nodeStr, String key, TraversePath traversePath) throws IOException {
+    public Map<String, Object> convert(Map<String, Object> parent, String nodeStr, String key, TraversePath traversePath) throws IOException {
 
         JsonNode startNode = null;
 
         JsonNode root = mapper.readValue(nodeStr, JsonNode.class);
 
-        Map<String, String> rtn = null;
+        Map<String, Object> rtn = null;
         if (parent != null)
             rtn = parent;
         else
-            rtn = new LinkedHashMap<String, String>();
+            rtn = new LinkedHashMap<String, Object>();
 
         if (key != null) {
             startNode = root.get(key);
@@ -48,17 +48,17 @@ public class RecordConverter {
         return rtn;
     }
 
-    public Map<String, String> convert(Map<String, String> parent, JsonNode node, String key, TraversePath traversePath) throws IOException {
+    public Map<String, Object> convert(Map<String, Object> parent, JsonNode node, String key, TraversePath traversePath) throws IOException {
 
         JsonNode startNode = null;
 
         JsonNode root = node;
 
-        Map<String, String> rtn = null;
+        Map<String, Object> rtn = null;
         if (parent != null)
             rtn = parent;
         else
-            rtn = new LinkedHashMap<String, String>();
+            rtn = new LinkedHashMap<String, Object>();
 
         if (key != null) {
             startNode = root.get(key);
@@ -71,7 +71,7 @@ public class RecordConverter {
         return rtn;
     }
 
-    public static String mapToRecord(Map<String, String> map, boolean header, String inDelimiter) {
+    public static String mapToRecord(Map<String, Object> map, boolean header, String inDelimiter) {
         // Process Record.
         StringBuilder sb = new StringBuilder();
 
@@ -82,10 +82,10 @@ public class RecordConverter {
             delimiter = RecordConverter.delimiter;
         }
 
-        Iterator<Map.Entry<String, String>> entries = map.entrySet().iterator();
+        Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
         boolean init = false;
         while (entries.hasNext()) {
-            Map.Entry<String, String> entry = entries.next();
+            Map.Entry<String, Object> entry = entries.next();
             if (header) {
                 if (init)
                     sb.append(delimiter);
@@ -100,14 +100,14 @@ public class RecordConverter {
         return sb.toString();
     }
 
-    protected Map<String, String> buildInnerRecord(Map<String, String> record, StringBuilder treeHierarchy, String key, JsonNode
+    protected Map<String, Object> buildInnerRecord(Map<String, Object> record, StringBuilder treeHierarchy, String key, JsonNode
             node, TraversePath traversePath) {
 
-        Map<String, String> rtn = null;
+        Map<String, Object> rtn = null;
         if (record != null)
             rtn = record;
         else
-            rtn = new LinkedHashMap<String, String>();
+            rtn = new LinkedHashMap<String, Object>();
 
         if (node.isValueNode()) {
             rtn.put(key, node.asText());

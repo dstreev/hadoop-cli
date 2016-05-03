@@ -17,6 +17,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.instanceone.stemshell.Environment;
+import org.apache.hadoop.security.UserGroupInformation;
 
 public class HdfsConnect extends AbstractCommand {
 
@@ -48,6 +49,11 @@ public class HdfsConnect extends AbstractCommand {
                 if (f.exists()) {
                     config.addResource(new Path(f.getAbsolutePath()));
                 }
+            }
+
+            // hadoop.security.authentication
+            if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
+                UserGroupInformation.setConfiguration(config);
             }
 
             FileSystem hdfs = null;

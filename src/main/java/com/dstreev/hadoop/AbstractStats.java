@@ -4,21 +4,16 @@ import com.dstreev.hadoop.hdfs.shell.command.Constants;
 import com.dstreev.hadoop.hdfs.shell.command.Direction;
 import com.dstreev.hadoop.util.HdfsWriter;
 import com.dstreev.hadoop.util.RecordConverter;
-import com.dstreev.hadoop.yarn.YarnAppRecordConverter;
 import com.instanceone.hdfs.shell.command.HdfsAbstract;
 import com.instanceone.stemshell.Environment;
 import jline.console.ConsoleReader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,10 +37,12 @@ public abstract class AbstractStats extends HdfsAbstract {
 
     protected DateFormat dfFile = null;
 
-    protected Map<String, List<Map<String,String>>> records = new LinkedHashMap<String, List<Map<String,String>>>();
+    protected Map<String, List<Map<String, Object>>> records = new LinkedHashMap<String, List<Map<String, Object>>>();
     protected Boolean header = Boolean.FALSE;
 
     protected Long increment = 60l * 60l * 1000l; // 1 hour
+
+    protected String delimiter = "\u0001";
 
     /**
      * The earliest start time to get available jobs. Time since Epoch...
@@ -73,8 +70,8 @@ public abstract class AbstractStats extends HdfsAbstract {
         super(name, env);
     }
 
-    public List<Map<String, String>> getRecordList(String recordType) {
-        List<Map<String, String>> rtn = records.get(recordType);
+    public List<Map<String, Object>> getRecordList(String recordType) {
+        List<Map<String, Object>> rtn = records.get(recordType);
         return rtn;
     }
 
@@ -82,27 +79,27 @@ public abstract class AbstractStats extends HdfsAbstract {
         records.clear();
     }
 
-    public Map<String, List<Map<String, String>>> getRecords() {
+    public Map<String, List<Map<String, Object>>> getRecords() {
         return records;
     }
 
-    public void addRecord(String recordType, Map<String, String> record) {
-        List<Map<String, String>> list = null;
+    public void addRecord(String recordType, Map<String, Object> record) {
+        List<Map<String, Object>> list = null;
         if (records.containsKey(recordType)) {
             list = records.get(recordType);
         } else {
-            list = new ArrayList<Map<String,String>>();
+            list = new ArrayList<Map<String, Object>>();
             records.put(recordType, list);
         }
         list.add(record);
     }
 
-    public void addRecords(String recordType, List<Map<String, String>> inRecords) {
-        List<Map<String, String>> list = null;
+    public void addRecords(String recordType, List<Map<String, Object>> inRecords) {
+        List<Map<String, Object>> list = null;
         if (records.containsKey(recordType)) {
             list = records.get(recordType);
         } else {
-            list = new ArrayList<Map<String,String>>();
+            list = new ArrayList<Map<String, Object>>();
             records.put(recordType, list);
         }
         list.addAll(inRecords);
@@ -144,6 +141,10 @@ public abstract class AbstractStats extends HdfsAbstract {
             this.header = Boolean.TRUE;
         } else {
             this.header = Boolean.FALSE;
+        }
+
+        if (cmd.hasOption("delimiter")) {
+            this.delimiter = cmd.getOptionValue("delimiter");
         }
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -193,18 +194,19 @@ public abstract class AbstractStats extends HdfsAbstract {
 
     public abstract void process(CommandLine cmdln);
 
-    protected void print(String recordSet, List<Map<String, String>> records) {
-        System.out.println("Record set: " + recordSet);
+    protected void print(String recordSet, List<Map<String, Object>> records) {
+        //System.out.println("Record set: " + recordSet);
         int i = 0;
         StringBuilder sb = new StringBuilder();
-        for (Map<String, String> record: records) {
+        for (Map<String, Object> record : records) {
             i++;
             if (i % 8000 == 0)
                 System.out.println(".");
             else if (i % 100 == 0)
                 System.out.print(".");
 
-                String recordStr = RecordConverter.mapToRecord(record, header, null);
+            String recordStr = RecordConverter.mapToRecord(record, header, delimiter);
+
             if (header) {
                 System.out.println(recordStr);
                 // Terminate Loop.
@@ -224,18 +226,22 @@ public abstract class AbstractStats extends HdfsAbstract {
 
     }
 
-    protected List<String> getQueries(CommandLine cmd) {
-        List<String> rtn = new ArrayList<String>();
+    protected Map<String,String> getQueries(CommandLine cmd) {
+        Map<String,String> rtn = new LinkedHashMap<String,String>();
         Long begin = startTime;
         Long end = endTime;
 
         if (begin + increment < end) {
             while (begin < end) {
                 StringBuilder sb = new StringBuilder();
+                StringBuilder sb2 = new StringBuilder();
                 sb.append("finishedTimeBegin=").append(begin);
-                begin = begin + increment;
+                sb2.append("finishedTimeBegin=").append(new Date(begin));
+                begin = begin + increment - 1;
                 sb.append("&finishedTimeEnd=").append(begin);
-                rtn.add(sb.toString());
+                sb2.append("&finishedTimeEnd=").append(new Date(begin));
+                begin += 1;
+                rtn.put(sb.toString(),sb2.toString());
             }
         }
 
@@ -280,6 +286,7 @@ public abstract class AbstractStats extends HdfsAbstract {
                 .build();
         opts.addOption(startOption);
 
+
         Option endOption = Option.builder("e").required(false)
                 .argName("end")
                 .desc("End time for retrieval in 'yyyy-MM-dd HH:mm:ss'")
@@ -289,6 +296,15 @@ public abstract class AbstractStats extends HdfsAbstract {
                 .build();
         opts.addOption(endOption);
 
+        Option delimiterOption = Option.builder("d").required(false)
+                .argName("delimiter")
+                .desc("Record Delimiter (Cntrl-A is default).")
+                .hasArg(true)
+                .numberOfArgs(1)
+                .longOpt("delimiter")
+                .build();
+        opts.addOption(delimiterOption);
+
         Option headerOption = Option.builder("hdr").required(false)
                 .argName("header")
                 .desc("Print Record Header")
@@ -296,6 +312,12 @@ public abstract class AbstractStats extends HdfsAbstract {
                 .build();
         opts.addOption(headerOption);
 
+        Option currentOption = Option.builder("c").required(false)
+                .argName("current")
+                .desc("Get Current / Active Records")
+                .longOpt("current")
+                .build();
+        opts.addOption(currentOption);
 
         Option incOption = Option.builder("inc").required(false)
                 .argName("increment")

@@ -1,0 +1,28 @@
+{
+  "job": {
+    "failedMapAttempts": 0,
+    "avgShuffleTime": 0,
+    "successfulMapAttempts": 1,
+    "uberized": false,
+    "reducesTotal": 0,
+    "reducesCompleted": 0,
+    "killedMapAttempts": 0,
+    "failedReduceAttempts": 0,
+    "name": "oozie:launcher:T=hive:W=Hive QL - DIMA_Masters_Pos_n_Trans:A=step3:ID=0005312-160130000925352-oozie-oozi-W",
+    "avgMapTime": 74101,
+    "avgReduceTime": 0,
+    "state": "SUCCEEDED",
+    "avgMergeTime": 0,
+    "submitTime": 1461587936771,
+    "id": "job_1457452103658_20948",
+    "user": "wre",
+    "killedReduceAttempts": 0,
+    "queue": "default",
+    "successfulReduceAttempts": 0,
+    "startTime": 1461587943444,
+    "finishTime": 1461588020358,
+    "mapsTotal": 1,
+    "diagnostics": "",
+    "mapsCompleted": 1
+  }
+}

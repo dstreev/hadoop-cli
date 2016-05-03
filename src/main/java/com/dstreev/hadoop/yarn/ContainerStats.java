@@ -7,6 +7,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
@@ -50,11 +51,17 @@ public class ContainerStats extends AbstractStats {
 
         String rootPath = hostAndPort + "/ws/v1/cluster/apps";
 
-        List<String> queries = getQueries(cmdln);
+        Map<String, String> queries = getQueries(cmdln);
 
-        for (String query: queries) {
+        Iterator<Map.Entry<String, String>> iQ = queries.entrySet().iterator();
+
+        while (iQ.hasNext()) {
+
+            Map.Entry<String, String> entry = iQ.next();
+
+            String query = entry.getKey();
+            System.out.println("Query: " + entry.getValue());
             try {
-                System.out.println("Query: " + query);
                 URL appsUrl = new URL("http://" + rootPath + "?" + query);
 
                 URLConnection appsConnection = appsUrl.openConnection();
@@ -94,38 +101,39 @@ public class ContainerStats extends AbstractStats {
 
                 // Get Apps List and generate full item list.
 
-                List<Map<String,String>> apps = yarnRc.apps(appsJson);
+                List<Map<String, Object>> apps = yarnRc.apps(appsJson);
 
-                for (Map<String, String> appMap: apps) {
+                for (Map<String, Object> appMap : apps) {
 
                     addRecord("app", appMap);
-                    String appId = appMap.get("id");
+                    String appId = appMap.get("id").toString();
 
                     // App Attempts
                     URL tasksUrl = new URL("http://" + rootPath + "/" + appId + "/appattempts");
                     URLConnection tasksConnection = tasksUrl.openConnection();
                     String tasksJson = IOUtils.toString(tasksConnection.getInputStream());
 
-                    List<Map<String,String>> attemptsList = yarnRc.appAttempts(tasksJson, appId);
+                    List<Map<String, Object>> attemptsList = yarnRc.appAttempts(tasksJson, appId);
 
-                    for (Map<String,String> attemptMap: attemptsList) {
+                    for (Map<String, Object> attemptMap : attemptsList) {
                         addRecord("attempt", attemptMap);
                     }
 
                 }
-
-
-
-                Iterator<Map.Entry<String, List<Map<String, String>>>> rIter = getRecords().entrySet().iterator();
-                while (rIter.hasNext()) {
-                    Map.Entry<String, List<Map<String, String>>> recordSet = rIter.next();
-                    print(recordSet.getKey(), recordSet.getValue());
-                }
-
+            } catch (MalformedURLException ure) {
+                ure.printStackTrace();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+
+            Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
+            while (rIter.hasNext()) {
+                Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
+                print(recordSet.getKey(), recordSet.getValue());
+            }
+            clearCache();
         }
+
     }
 
     protected void getHelp() {

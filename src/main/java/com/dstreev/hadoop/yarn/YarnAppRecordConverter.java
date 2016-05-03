@@ -5,6 +5,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -14,10 +16,13 @@ public class YarnAppRecordConverter {
 
     private ObjectMapper mapper = null;
     private RecordConverter recordConverter = null;
+    private String timestamp = null;
 
     public YarnAppRecordConverter() {
         mapper = new ObjectMapper();
         recordConverter = new RecordConverter();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.timestamp = df.format(new Date());
     }
 
     /*
@@ -160,8 +165,8 @@ public class YarnAppRecordConverter {
 }
 }
  */
-    public List<Map<String,String>> apps(String appsJson) throws IOException {
-        List<Map<String,String>> rtn = new ArrayList<Map<String,String>>();
+    public List<Map<String, Object>> apps(String appsJson) throws IOException {
+        List<Map<String, Object>> rtn = new ArrayList<Map<String, Object>>();
         //System.out.println(jobsJson);
         JsonNode apps = mapper.readValue(appsJson, JsonNode.class);
 
@@ -178,7 +183,8 @@ public class YarnAppRecordConverter {
                         while (appIter.hasNext()) {
                             JsonNode appNode = appIter.next();
 
-                            Map<String, String> appMap = new LinkedHashMap<String, String>();
+                            Map<String, Object> appMap = new LinkedHashMap<String, Object>();
+                            appMap.put("reporting_ts", timestamp);
                             appMap = recordConverter.convert(appMap, appNode, null, null);
 
                             rtn.add(appMap);
@@ -189,38 +195,6 @@ public class YarnAppRecordConverter {
                 }
             }
         }
-        return rtn;
-    }
-
-    /*
-{
-   "app" : {
-      "finishedTime" : 1326824991300,
-      "amContainerLogs" : "http://host.domain.com:8042/node/containerlogs/container_1326821518301_0005_01_000001",
-      "trackingUI" : "History",
-      "state" : "FINISHED",
-      "user" : "user1",
-      "id" : "application_1326821518301_0005",
-      "clusterId" : 1326821518301,
-      "finalStatus" : "SUCCEEDED",
-      "amHostHttpAddress" : "host.domain.com:8042",
-      "progress" : 100,
-      "name" : "Sleep job",
-      "applicationType" : "Yarn",
-      "startedTime" : 1326824544552,
-      "elapsedTime" : 446748,
-      "diagnostics" : "",
-      "trackingUrl" : "http://host.domain.com:8088/proxy/application_1326821518301_0005/jobhistory/job/job_1326821518301_5_5",
-      "queue" : "a1",
-      "memorySeconds" : 151730,
-      "vcoreSeconds" : 103
-   }
-}
-     */
-    public Map<String, String> detail (String detailJson, String key) throws IOException {
-
-        Map<String, String> rtn = recordConverter.convert(null, detailJson, key, null);
-
         return rtn;
     }
 
@@ -240,8 +214,8 @@ public class YarnAppRecordConverter {
    }
 }
      */
-    public List<Map<String,String>> appAttempts(String attemptsJson, String appId) throws IOException {
-        List<Map<String,String>> rtn = new ArrayList<Map<String,String>>();
+    public List<Map<String, Object>> appAttempts(String attemptsJson, String appId) throws IOException {
+        List<Map<String, Object>> rtn = new ArrayList<Map<String, Object>>();
 
         //System.out.println(tasksJson);
         JsonNode jobs = mapper.readValue(attemptsJson, JsonNode.class);
@@ -256,7 +230,8 @@ public class YarnAppRecordConverter {
                         Iterator<JsonNode> attemptsIter = attemptsArrayNode.getElements();
                         while (attemptsIter.hasNext()) {
                             JsonNode attemptNode = attemptsIter.next();
-                            Map<String, String> attemptMap = new LinkedHashMap<String, String>();
+                            Map<String, Object> attemptMap = new LinkedHashMap<String, Object>();
+                            attemptMap.put("reporting_ts", timestamp);
                             attemptMap.put("appId", appId);
                             attemptMap = recordConverter.convert(attemptMap, attemptNode, null, null);
 

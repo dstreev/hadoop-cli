@@ -1,0 +1,850 @@
+{
+  "scheduler": {
+    "schedulerInfo": {
+      "capacity": 100,
+      "maxCapacity": 100,
+      "queueName": "root",
+      "queues": {
+        "queue": [
+          {
+            "absoluteCapacity": 2,
+            "absoluteMaxCapacity": 10,
+            "absoluteUsedCapacity": 0,
+            "capacity": 2,
+            "hideReservationQueues": false,
+            "maxCapacity": 10,
+            "nodeLabels": [
+              "*"
+            ],
+            "numApplications": 0,
+            "queueName": "interactive-sla",
+            "queues": {
+              "queue": [
+                {
+                  "aMResourceLimit": {
+                    "memory": 1439744,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 2,
+                  "absoluteMaxCapacity": 10,
+                  "absoluteUsedCapacity": 0,
+                  "capacity": 100,
+                  "hideReservationQueues": false,
+                  "maxApplications": 200,
+                  "maxApplicationsPerUser": 1000,
+                  "maxCapacity": 100,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 0,
+                  "numApplications": 0,
+                  "numContainers": 0,
+                  "numPendingApplications": 0,
+                  "queueName": "dart",
+                  "resourcesUsed": {
+                    "memory": 0,
+                    "vCores": 0
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 0,
+                  "userAMResourceLimit": {
+                    "memory": 1439744,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 5,
+                  "users": null
+                }
+              ]
+            },
+            "resourcesUsed": {
+              "memory": 0,
+              "vCores": 0
+            },
+            "state": "RUNNING",
+            "usedCapacity": 0
+          },
+          {
+            "aMResourceLimit": {
+              "memory": 821248,
+              "vCores": 1
+            },
+            "absoluteCapacity": 5.7,
+            "absoluteMaxCapacity": 20,
+            "absoluteUsedCapacity": 0.54631984,
+            "capacity": 5.7,
+            "hideReservationQueues": false,
+            "maxApplications": 569,
+            "maxApplicationsPerUser": 455,
+            "maxCapacity": 20,
+            "nodeLabels": [
+              "*"
+            ],
+            "numActiveApplications": 3,
+            "numApplications": 3,
+            "numContainers": 65,
+            "numPendingApplications": 0,
+            "queueName": "default",
+            "resourcesUsed": {
+              "memory": 393216,
+              "vCores": 65
+            },
+            "state": "RUNNING",
+            "type": [
+              "capacitySchedulerLeafQueueInfo"
+            ],
+            "usedCapacity": 9.584561,
+            "userAMResourceLimit": {
+              "memory": 657408,
+              "vCores": 1
+            },
+            "userLimit": 100,
+            "userLimitFactor": 0.8,
+            "users": {
+              "user": [
+                {
+                  "numActiveApplications": 1,
+                  "numPendingApplications": 0,
+                  "resourcesUsed": {
+                    "memory": 385024,
+                    "vCores": 63
+                  },
+                  "username": "dkain200"
+                },
+                {
+                  "numActiveApplications": 1,
+                  "numPendingApplications": 0,
+                  "resourcesUsed": {
+                    "memory": 4096,
+                    "vCores": 1
+                  },
+                  "username": "qtodd200"
+                },
+                {
+                  "numActiveApplications": 1,
+                  "numPendingApplications": 0,
+                  "resourcesUsed": {
+                    "memory": 4096,
+                    "vCores": 1
+                  },
+                  "username": "rvarma001c"
+                }
+              ]
+            }
+          },
+          {
+            "absoluteCapacity": 32.3,
+            "absoluteMaxCapacity": 70,
+            "absoluteUsedCapacity": 23.72792,
+            "capacity": 32.3,
+            "hideReservationQueues": false,
+            "maxCapacity": 70,
+            "nodeLabels": [
+              "*"
+            ],
+            "numApplications": 12,
+            "queueName": "interactive",
+            "queues": {
+              "queue": [
+                {
+                  "aMResourceLimit": {
+                    "memory": 1478656,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 4.736795,
+                  "absoluteMaxCapacity": 10.2655,
+                  "absoluteUsedCapacity": 0,
+                  "capacity": 14.665,
+                  "hideReservationQueues": false,
+                  "maxApplications": 473,
+                  "maxApplicationsPerUser": 946,
+                  "maxCapacity": 14.665,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 0,
+                  "numApplications": 0,
+                  "numContainers": -79,
+                  "numPendingApplications": 0,
+                  "queueName": "benchmark",
+                  "resourcesUsed": {
+                    "memory": -327680,
+                    "vCores": -79
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": -9.611278,
+                  "userAMResourceLimit": {
+                    "memory": 1363968,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 2,
+                  "users": null
+                },
+                {
+                  "aMResourceLimit": {
+                    "memory": 1062912,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 3.40765,
+                  "absoluteMaxCapacity": 7.3850007,
+                  "absoluteUsedCapacity": 0,
+                  "capacity": 10.55,
+                  "hideReservationQueues": false,
+                  "maxApplications": 340,
+                  "maxApplicationsPerUser": 1700,
+                  "maxCapacity": 10.55,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 0,
+                  "numApplications": 0,
+                  "numContainers": 0,
+                  "numPendingApplications": 0,
+                  "queueName": "e2e",
+                  "resourcesUsed": {
+                    "memory": 0,
+                    "vCores": 0
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 0,
+                  "userAMResourceLimit": {
+                    "memory": 2453504,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 5,
+                  "users": null
+                },
+                {
+                  "aMResourceLimit": {
+                    "memory": 1007616,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 1.577209,
+                  "absoluteMaxCapacity": 7,
+                  "absoluteUsedCapacity": 0,
+                  "capacity": 4.883,
+                  "hideReservationQueues": false,
+                  "maxApplications": 157,
+                  "maxApplicationsPerUser": 785,
+                  "maxCapacity": 10,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 0,
+                  "numApplications": 0,
+                  "numContainers": 0,
+                  "numPendingApplications": 0,
+                  "queueName": "smarthome",
+                  "resourcesUsed": {
+                    "memory": 0,
+                    "vCores": 0
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 0,
+                  "userAMResourceLimit": {
+                    "memory": 1136640,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 5,
+                  "users": null
+                },
+                {
+                  "aMResourceLimit": {
+                    "memory": 284672,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 1.9702998,
+                  "absoluteMaxCapacity": 70,
+                  "absoluteUsedCapacity": 0.7483443,
+                  "capacity": 6.1,
+                  "hideReservationQueues": false,
+                  "maxApplications": 197,
+                  "maxApplicationsPerUser": 197,
+                  "maxCapacity": 100,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 2,
+                  "numApplications": 2,
+                  "numContainers": 57,
+                  "numPendingApplications": 0,
+                  "queueName": "actian",
+                  "resourcesUsed": {
+                    "memory": 538624,
+                    "vCores": 57
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 37.98126,
+                  "userAMResourceLimit": {
+                    "memory": 284672,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 1,
+                  "users": {
+                    "user": [
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 24576,
+                          "vCores": 6
+                        },
+                        "username": "edpintevrp"
+                      },
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 514048,
+                          "vCores": 51
+                        },
+                        "username": "ssarka201"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "aMResourceLimit": {
+                    "memory": 2740224,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 19.030836,
+                  "absoluteMaxCapacity": 56,
+                  "absoluteUsedCapacity": 19.411425,
+                  "capacity": 58.919,
+                  "hideReservationQueues": false,
+                  "maxApplications": 1903,
+                  "maxApplicationsPerUser": 5709,
+                  "maxCapacity": 80,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 4,
+                  "numApplications": 4,
+                  "numContainers": 2079,
+                  "numPendingApplications": 0,
+                  "queueName": "datascience",
+                  "resourcesUsed": {
+                    "memory": 13971456,
+                    "vCores": 2079
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 101.999855,
+                  "userAMResourceLimit": {
+                    "memory": 8220672,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 3,
+                  "users": {
+                    "user": [
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 1249280,
+                          "vCores": 153
+                        },
+                        "username": "esoula200"
+                      },
+                      {
+                        "numActiveApplications": 3,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 12722176,
+                          "vCores": 1926
+                        },
+                        "username": "wwang200"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "aMResourceLimit": {
+                    "memory": 317440,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 1.577209,
+                  "absoluteMaxCapacity": 7,
+                  "absoluteUsedCapacity": 4.023418,
+                  "capacity": 4.883,
+                  "hideReservationQueues": false,
+                  "maxApplications": 157,
+                  "maxApplicationsPerUser": 785,
+                  "maxCapacity": 10,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 6,
+                  "numApplications": 6,
+                  "numContainers": 707,
+                  "numPendingApplications": 0,
+                  "queueName": "hworkshop",
+                  "resourcesUsed": {
+                    "memory": 2895872,
+                    "vCores": 707
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 255.0975,
+                  "userAMResourceLimit": {
+                    "memory": 1136640,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 5,
+                  "users": {
+                    "user": [
+                      {
+                        "numActiveApplications": 6,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 2895872,
+                          "vCores": 707
+                        },
+                        "username": "pghosh200"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "resourcesUsed": {
+              "memory": 17078272,
+              "vCores": 2764
+            },
+            "state": "RUNNING",
+            "usedCapacity": 73.46106
+          },
+          {
+            "absoluteCapacity": 23,
+            "absoluteMaxCapacity": 30.000002,
+            "absoluteUsedCapacity": 16.904615,
+            "capacity": 23,
+            "hideReservationQueues": false,
+            "maxCapacity": 30.000002,
+            "nodeLabels": [
+              "*"
+            ],
+            "numApplications": 13,
+            "queueName": "longbatch",
+            "queues": {
+              "queue": [
+                {
+                  "aMResourceLimit": {
+                    "memory": 1169408,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 8.1189995,
+                  "absoluteMaxCapacity": 10.59,
+                  "absoluteUsedCapacity": 2.614937,
+                  "capacity": 35.3,
+                  "hideReservationQueues": false,
+                  "maxApplications": 811,
+                  "maxApplicationsPerUser": 4055,
+                  "maxCapacity": 35.3,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 2,
+                  "numApplications": 2,
+                  "numContainers": 307,
+                  "numPendingApplications": 0,
+                  "queueName": "e2e-long",
+                  "resourcesUsed": {
+                    "memory": 1882112,
+                    "vCores": 307
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 32.20763,
+                  "userAMResourceLimit": {
+                    "memory": 5844992,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 5,
+                  "users": {
+                    "user": [
+                      {
+                        "numActiveApplications": 2,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 1882112,
+                          "vCores": 307
+                        },
+                        "username": "edpeanmimp"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "aMResourceLimit": {
+                    "memory": 2142208,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 14.881,
+                  "absoluteMaxCapacity": 30.000002,
+                  "absoluteUsedCapacity": 14.289677,
+                  "capacity": 64.7,
+                  "hideReservationQueues": false,
+                  "maxApplications": 1488,
+                  "maxApplicationsPerUser": 1339,
+                  "maxCapacity": 100,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 11,
+                  "numApplications": 11,
+                  "numContainers": 1217,
+                  "numPendingApplications": 0,
+                  "queueName": "ebi",
+                  "resourcesUsed": {
+                    "memory": 10285056,
+                    "vCores": 1217
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 96.02633,
+                  "userAMResourceLimit": {
+                    "memory": 1929216,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 0.9,
+                  "users": {
+                    "user": [
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 8192,
+                          "vCores": 2
+                        },
+                        "username": "ebunt001c"
+                      },
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 8192,
+                          "vCores": 1
+                        },
+                        "username": "ebdpebip"
+                      },
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 10240,
+                          "vCores": 2
+                        },
+                        "username": "alebou001c"
+                      },
+                      {
+                        "numActiveApplications": 2,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 45056,
+                          "vCores": 4
+                        },
+                        "username": "qili208"
+                      },
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 288768,
+                          "vCores": 21
+                        },
+                        "username": "qzhang201"
+                      },
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 124928,
+                          "vCores": 11
+                        },
+                        "username": "rkakar200"
+                      },
+                      {
+                        "numActiveApplications": 3,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 5216256,
+                          "vCores": 616
+                        },
+                        "username": "yzhang202"
+                      },
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 4583424,
+                          "vCores": 560
+                        },
+                        "username": "wwang200"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "resourcesUsed": {
+              "memory": 12167168,
+              "vCores": 1524
+            },
+            "state": "RUNNING",
+            "usedCapacity": 73.49833
+          },
+          {
+            "absoluteCapacity": 37,
+            "absoluteMaxCapacity": 70,
+            "absoluteUsedCapacity": 60.519146,
+            "capacity": 37,
+            "hideReservationQueues": false,
+            "maxCapacity": 70,
+            "nodeLabels": [
+              "*"
+            ],
+            "numApplications": 94,
+            "queueName": "shortbatch",
+            "queues": {
+              "queue": [
+                {
+                  "aMResourceLimit": {
+                    "memory": 980992,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 6.808,
+                  "absoluteMaxCapacity": 52.499996,
+                  "absoluteUsedCapacity": 0.25608742,
+                  "capacity": 18.4,
+                  "hideReservationQueues": false,
+                  "maxApplications": 680,
+                  "maxApplicationsPerUser": 3400,
+                  "maxCapacity": 75,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 3,
+                  "numApplications": 3,
+                  "numContainers": 24,
+                  "numPendingApplications": 0,
+                  "queueName": "p20",
+                  "resourcesUsed": {
+                    "memory": 184320,
+                    "vCores": 24
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 3.7615669,
+                  "userAMResourceLimit": {
+                    "memory": 4900864,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 5,
+                  "users": {
+                    "user": [
+                      {
+                        "numActiveApplications": 3,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 184320,
+                          "vCores": 24
+                        },
+                        "username": "edpintdatp"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "aMResourceLimit": {
+                    "memory": 1353728,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 9.398001,
+                  "absoluteMaxCapacity": 52.499996,
+                  "absoluteUsedCapacity": 1.0271951,
+                  "capacity": 25.400002,
+                  "hideReservationQueues": false,
+                  "maxApplications": 939,
+                  "maxApplicationsPerUser": 4695,
+                  "maxCapacity": 75,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 6,
+                  "numApplications": 6,
+                  "numContainers": 95,
+                  "numPendingApplications": 0,
+                  "queueName": "everest",
+                  "resourcesUsed": {
+                    "memory": 739328,
+                    "vCores": 95
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 10.929934,
+                  "userAMResourceLimit": {
+                    "memory": 6764544,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 5,
+                  "users": {
+                    "user": [
+                      {
+                        "numActiveApplications": 4,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 720896,
+                          "vCores": 91
+                        },
+                        "username": "edpintevrp"
+                      },
+                      {
+                        "numActiveApplications": 2,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 18432,
+                          "vCores": 4
+                        },
+                        "username": "ebdpebidip"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "aMResourceLimit": {
+                    "memory": 391168,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 1.998,
+                  "absoluteMaxCapacity": 52.499996,
+                  "absoluteUsedCapacity": 4.3933215,
+                  "capacity": 5.4,
+                  "hideReservationQueues": false,
+                  "maxApplications": 199,
+                  "maxApplicationsPerUser": 597,
+                  "maxCapacity": 75,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 3,
+                  "numApplications": 3,
+                  "numContainers": 387,
+                  "numPendingApplications": 0,
+                  "queueName": "meld-catchup",
+                  "resourcesUsed": {
+                    "memory": 3162112,
+                    "vCores": 387
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 219.88614,
+                  "userAMResourceLimit": {
+                    "memory": 864256,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 3,
+                  "users": {
+                    "user": [
+                      {
+                        "numActiveApplications": 3,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 3162112,
+                          "vCores": 387
+                        },
+                        "username": "ebpextcaplp"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "aMResourceLimit": {
+                    "memory": 7651328,
+                    "vCores": 1
+                  },
+                  "absoluteCapacity": 18.796001,
+                  "absoluteMaxCapacity": 70,
+                  "absoluteUsedCapacity": 54.842545,
+                  "capacity": 50.800003,
+                  "hideReservationQueues": false,
+                  "maxApplications": 1879,
+                  "maxApplicationsPerUser": 11274,
+                  "maxCapacity": 100,
+                  "nodeLabels": [
+                    "*"
+                  ],
+                  "numActiveApplications": 82,
+                  "numApplications": 82,
+                  "numContainers": 3246,
+                  "numPendingApplications": 0,
+                  "queueName": "meld",
+                  "resourcesUsed": {
+                    "memory": 39473152,
+                    "vCores": 3246
+                  },
+                  "state": "RUNNING",
+                  "type": "capacitySchedulerLeafQueueInfo",
+                  "usedCapacity": 291.77774,
+                  "userAMResourceLimit": {
+                    "memory": 16236544,
+                    "vCores": 1
+                  },
+                  "userLimit": 100,
+                  "userLimitFactor": 6,
+                  "users": {
+                    "user": [
+                      {
+                        "numActiveApplications": 1,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 16384,
+                          "vCores": 1
+                        },
+                        "username": "ebdpebip"
+                      },
+                      {
+                        "numActiveApplications": 81,
+                        "numPendingApplications": 0,
+                        "resourcesUsed": {
+                          "memory": 39161856,
+                          "vCores": 3173
+                        },
+                        "username": "edpintdatp"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "resourcesUsed": {
+              "memory": 43558912,
+              "vCores": 3752
+            },
+            "state": "RUNNING",
+            "usedCapacity": 163.56525
+          }
+        ]
+      },
+      "type": "capacityScheduler",
+      "usedCapacity": 101.698006
+    }
+  }
+}

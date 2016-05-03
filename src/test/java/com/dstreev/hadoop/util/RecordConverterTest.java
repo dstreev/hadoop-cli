@@ -24,7 +24,7 @@ public class RecordConverterTest {
 
         RecordConverter rc = new RecordConverter();
 
-        Map<String, String> mapOut = rc.convert(null, resourceJson, "job", null);
+        Map<String, Object> mapOut = rc.convert(null, resourceJson, "job", null);
 
         String header = rc.mapToRecord(mapOut, true, ",");
 
@@ -50,7 +50,7 @@ public class RecordConverterTest {
         TraverseBehavior tbcg = new TraverseBehavior(TraverseBehavior.TRAVERSE_MODE.FLATTEN, new JobCounterGroupParser());
         tp.addPath("jobCounters.counterGroup", tbcg);
 
-        Map<String, String> mapOut = rc.convert(null, resourceJson, "jobCounters", tp);
+        Map<String, Object> mapOut = rc.convert(null, resourceJson, "jobCounters", tp);
 
         String header = rc.mapToRecord(mapOut, true, ",");
 
@@ -76,7 +76,7 @@ public class RecordConverterTest {
         TraverseBehavior tbcg = new TraverseBehavior(TraverseBehavior.TRAVERSE_MODE.FLATTEN, new TaskCounterGroupParser());
         tp.addPath("jobTaskCounters.taskCounterGroup", tbcg);
 
-        Map<String, String> mapOut = rc.convert(null, resourceJson, "jobTaskCounters", tp);
+        Map<String, Object> mapOut = rc.convert(null, resourceJson, "jobTaskCounters", tp);
 
         String header = rc.mapToRecord(mapOut, true, ",");
 
@@ -102,7 +102,7 @@ public class RecordConverterTest {
         TraverseBehavior tbcg = new TraverseBehavior(TraverseBehavior.TRAVERSE_MODE.FLATTEN, new TaskCounterGroupParser());
         tp.addPath("jobTaskAttemptCounters.taskAttemptCounterGroup", tbcg);
 
-        Map<String, String> mapOut = rc.convert(null, resourceJson, "jobTaskAttemptCounters", tp);
+        Map<String, Object> mapOut = rc.convert(null, resourceJson, "jobTaskAttemptCounters", tp);
 
         String header = rc.mapToRecord(mapOut, true, ",");
 
