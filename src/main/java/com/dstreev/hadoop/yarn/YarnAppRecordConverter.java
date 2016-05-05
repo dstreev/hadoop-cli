@@ -21,7 +21,7 @@ public class YarnAppRecordConverter {
     public YarnAppRecordConverter() {
         mapper = new ObjectMapper();
         recordConverter = new RecordConverter();
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
         this.timestamp = df.format(new Date());
     }
 

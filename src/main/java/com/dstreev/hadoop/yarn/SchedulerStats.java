@@ -50,7 +50,7 @@ public class SchedulerStats extends AbstractStats {
     @Override
     public void process(CommandLine cmdln) {
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
         this.timestamp = df.format(new Date());
 
         String hostAndPort = configuration.get("yarn.resourcemanager.webapp.address");
