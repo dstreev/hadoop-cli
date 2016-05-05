@@ -132,7 +132,9 @@ public class NamenodeJmxParser {
 
         Map<String, Object> nnInfo = jjp.getJmxBeanContent(NamenodeJmxBean.NN_INFO_JMX_BEAN.getBeanName());
 
-        String[] fields = {"Version", "Used", "Free", "Safemode", "TotalBlocks", "TotalFiles", "NumberOfMissingBlocks", "NumberOfMissingBlocksWithReplicationFactorOne"};
+        String[] fields = {"Version", "Used", "Free", "Safemode", "TotalBlocks", "TotalFiles", "NumberOfMissingBlocks"};
+    // Doesn't exist in 2.2.x
+//                , "NumberOfMissingBlocksWithReplicationFactorOne"};
 
         Map<String,Object> fieldMap = mapToReducedMap(nnInfo, fields);
 

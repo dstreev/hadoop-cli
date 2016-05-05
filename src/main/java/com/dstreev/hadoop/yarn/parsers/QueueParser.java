@@ -46,11 +46,11 @@ public class QueueParser {
                 List<Map<String, Object>> qrList = rtn.get("queues");
                 if (qrList == null) {
                     qrList = new LinkedList<Map<String, Object>>();
-                    rtn.put("queue_util", qrList);
+                    rtn.put("queues", qrList);
                 }
                 qrList.add(item);
             } else {
-                List<Map<String, Object>> qpList = rtn.get("queuePaths");
+                List<Map<String, Object>> qpList = rtn.get("queue_paths");
                 if (qpList == null) {
                     qpList = new LinkedList<Map<String, Object>>();
                     rtn.put("queue_paths", qpList);
@@ -59,7 +59,7 @@ public class QueueParser {
             }
         }
 
-        rtn.put("Queue Usage", usageList);
+        rtn.put("queue_usage", usageList);
 
         return rtn;
     }

@@ -31,7 +31,9 @@ public class HdfsWriter {
             out.write(in);
             // Newline
 //            out.write("\n".getBytes());
+            out.flush();
             out.close();
+
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

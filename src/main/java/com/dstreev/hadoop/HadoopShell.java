@@ -70,12 +70,12 @@ public class HadoopShell extends com.instanceone.stemshell.Shell {
             cmd = parser.parse(options, arguments);
         } catch (ParseException pe) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("hdfs-cli", options);
+            formatter.printHelp("hadoop-cli", options);
         }
 
         if (cmd.hasOption("help")) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("hdfs-cli", options);
+            formatter.printHelp("hadoop-cli", options);
             System.exit(-1);
         }
 
@@ -95,7 +95,7 @@ public class HadoopShell extends com.instanceone.stemshell.Shell {
             cmd = parser.parse(options, arguments);
         } catch (ParseException pe) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("hdfs-cli", options);
+            formatter.printHelp("hadoop-cli", options);
         }
 
         autoConnect(reader);
