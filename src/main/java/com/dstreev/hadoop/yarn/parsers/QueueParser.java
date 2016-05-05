@@ -42,7 +42,7 @@ public class QueueParser {
         Map<String, List<Map<String, Object>>> rtn = new LinkedHashMap<>();
 
         for (Map<String, Object> item : queueList) {
-            if (item.containsKey("maxActiveApplications")) {
+            if (item.containsKey("maxApplications")) {
                 List<Map<String, Object>> qrList = rtn.get("queues");
                 if (qrList == null) {
                     qrList = new LinkedList<Map<String, Object>>();
