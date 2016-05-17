@@ -10,6 +10,9 @@ mkdir -p /usr/local/hadoop-cli/lib
 cp -f hadoopcli /usr/local/hadoop-cli/bin
 cp -f JCECheck /usr/local/hadoop-cli/bin
 
+# Cleanup previous installation
+rm -f /usr/local/hadoop-cli/lib/*.jar
+
 if [ -f ../target/hadoop-cli-full-bin.jar ]; then
     cp -f ../target/hadoop-cli-full-bin.jar /usr/local/hadoop-cli/lib
 fi

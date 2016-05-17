@@ -4,6 +4,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -110,7 +112,11 @@ public class RecordConverter {
             rtn = new LinkedHashMap<String, Object>();
 
         if (node.isValueNode()) {
-            rtn.put(key, node.asText());
+            try {
+                rtn.put(key, URLEncoder.encode(node.asText(),"UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         } else if (node.isArray()) {
             if (treeHierarchy == null) {
                 treeHierarchy = new StringBuilder();
