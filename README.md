@@ -30,6 +30,20 @@ Building on release [2.3.2-SNAPSHOT](https://github.com/dstreev/hdfs-cli) of `hd
 
 This project requires the artifacts from https://github.com/dstreev/stemshell , which is a forked enhancement that has added support for processing command line parameters and deals with quoted variables.
 
+Since we're now doing more in the interface and writing results to hdfs, we need to build binary compatible packages.  The default `mvn` profile is for Apache Hadoop 2.7.  There is a profile for Apache Hadoop 2.6.
+
+```
+# For 2.7
+mvn -DskipTests clean install -P 2.7
+```
+
+
+```
+# For 2.6
+mvn -DskipTests clean install -P 2.6
+```
+
+
 ### Basic Usage
 HADOOP-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
 then manage local/remote files and transfers.
@@ -110,6 +124,18 @@ The 'default' delimiter for all records is '\u0001' (Cntl-A)
   Fields: Timestamp, HostAndPort, State, WindowLenMs, Operation, User, Count
 
 [Hive Table DDL for NN Stats](./src/main/hive/nn_stats.ddl)
+
+### Job History Stats
+	
+Delivered - Docs to come
+
+### Scheduler Stats
+
+Delivered - Docs to come
+
+### Container Stats
+
+Delivered - Docs to come
 	
 ### Enhanced Directory Listing (lsp)
 
