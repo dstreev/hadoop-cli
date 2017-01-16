@@ -1,0 +1,34 @@
+<assembly>
+    <id>${hadoop.major}</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <!--fileSet>
+            <directory>${project.basedir}/src</directory>
+            <outputDirectory>/${project.name}/src</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+        </fileSet-->
+
+        <fileSet>
+            <directory>${project.basedir}/bin</directory>
+            <includes>
+                <include>hadoopcli</include>
+                <include>JCECheck</include>
+                <include>setup.sh</include>
+            </includes>
+            <outputDirectory>hadoop-cli-${hadoop.major}</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+        </fileSet>
+
+        <fileSet>
+            <directory>${project.basedir}/target</directory>
+            <includes>
+                <include>*full-bin.jar</include>
+            </includes>
+            <outputDirectory>hadoop-cli-${hadoop.major}</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+        </fileSet>
+    </fileSets>
+</assembly>

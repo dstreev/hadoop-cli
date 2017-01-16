@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dstreev.hadoop</groupId>
     <artifactId>hadoop-cli</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.7-SNAPSHOT</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
@@ -165,6 +165,24 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptor>src/main/assembly/assembly.xml</descriptor>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <!-- this is used for inheritance merges -->
+                        <phase>package</phase>
+                        <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
     <profiles>
@@ -174,7 +192,7 @@
             <!--<activeByDefault>true</activeByDefault>-->
             <!--</activation>-->
             <properties>
-                <hadoop.version>2.6.0.2.2.8.0-3150</hadoop.version>
+                <hadoop.version>2.6.0.2.2.9.9-2</hadoop.version>
                 <hadoop.major>2.6</hadoop.major>
             </properties>
         </profile>
@@ -184,7 +202,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <hadoop.version>2.7.1.2.4.2.0-258</hadoop.version>
+                <hadoop.version>2.7.3.2.5.3.0-37</hadoop.version>
                 <hadoop.major>2.7</hadoop.major>
             </properties>
         </profile>
