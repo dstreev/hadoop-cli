@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#cd `dirname $0`
+
+CMD_CP=/usr/local/hdfs-cli/lib/hdfs-cli-full-bin.jar
+
+CLI_CMD="java -cp ${CMD_CP} JCECheck"
+
+echo ${CLI_CMD}
+
+eval "${CLI_CMD}"
