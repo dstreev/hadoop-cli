@@ -1,17 +1,17 @@
 #!/bin/bash
 
-cd `dirname $0`
+APP_DIR `dirname $0`
 
 PRG_ARGS=
 CMD_CP=
 
 if [ -f ./hadoop-cli-full-bin.jar ]; then
     # Look in Current Directory
-    CMD_CP=./hadoop-cli-full-bin.jar
+    CMD_CP=$APP_DIR/hadoop-cli-full-bin.jar
     echo "Using bin from same directory"
-elif [ -f ../target/hadoop-cli-full-bin.jar ]; then
+elif [ -f $APP_DIR/../target/hadoop-cli-full-bin.jar ]; then
     # Look in ../target
-    CMD_CP=../target/hadoop-cli-full-bin.jar
+    CMD_CP=$APP_DIR/../target/hadoop-cli-full-bin.jar
     echo "Using bin from build directory"
 else
     # Look in /usr/local/hadoop-cli/lib
