@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_DIR `dirname $0`
+APP_DIR=`dirname $0`
 
 PRG_ARGS=
 CMD_CP=
@@ -36,24 +36,25 @@ while [ $# -gt 0 ]; do
       export HADOOP_CONF_DIR=$1;
       shift
       ;;
-    -i)
-      shift
-      PRG_ARGS="${PRG_ARGS} -i '$1'"
-      shift
-      ;;
-    --init)
-      shift
-      PRG_ARGS="${PRG_ARGS} -i '$1'"
-      shift
-      ;;
+#    -i)
+#      shift
+#      PRG_ARGS="${PRG_ARGS} -i '$1'"
+#      shift
+#      ;;
+#    --init)
+#      shift
+#      PRG_ARGS="${PRG_ARGS} -i '$1'"
+#      shift
+#      ;;
     *)
+      PRG_ARGS="${PRG_ARGS} $@"
       break;
   esac
 done
 
 CLI_CMD=""
 
-CLI_CMD="${CLI_CMD}java -cp ${CMD_CP} com.dstreev.hadoop.HadoopShell ${PRG_ARGS}"
+CLI_CMD="${CLI_CMD}java -cp ${CMD_CP} com.streever.hadoop.HadoopShell ${PRG_ARGS}"
 
 echo ${CLI_CMD}
 

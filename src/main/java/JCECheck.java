@@ -5,7 +5,7 @@ import java.security.Security;
 import java.util.Iterator;
 
 /**
- * Created by dstreev on 2015-09-29.
+ * Created by streever on 2015-09-29.
  */
 public class JCECheck {
     public static void main(final String[] args) {
