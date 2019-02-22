@@ -62,7 +62,9 @@ public class FSUtil {
 
             String lwd = ANSIStyle.style(localwd, ANSIStyle.FG_YELLOW);
 
-            env.setPrompt(" " + hwd + "\n " + lwd + "\n$ ");
+            String lclPrompt = ANSIStyle.style(env.getDefaultPrompt(), ANSIStyle.FG_RED);
+
+            env.setCurrentPrompt(ANSIStyle.style("REMOTE: ", ANSIStyle.FG_BLUE) + hwd + "\t\t" + ANSIStyle.style("LOCAL: ", ANSIStyle.FG_BLUE) + lwd + "\n" + lclPrompt);
 
         } catch (Exception e) {
             e.printStackTrace();

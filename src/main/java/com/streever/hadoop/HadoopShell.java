@@ -2,7 +2,6 @@
 
 package com.streever.hadoop;
 
-import com.streever.hadoop.hdfs.HDFSEnvironmentImpl;
 import com.streever.hadoop.hdfs.shell.command.*;
 import com.streever.hadoop.hdfs.util.HdfsLsPlus;
 import com.streever.hadoop.hdfs.util.HdfsNNStats;
@@ -11,6 +10,7 @@ import com.streever.hadoop.yarn.ContainerStats;
 import com.streever.hadoop.yarn.SchedulerStats;
 import com.streever.hadoop.hdfs.shell.command.LocalCat;
 import com.streever.hadoop.hdfs.shell.command.LocalHead;
+import com.streever.tools.stemshell.BasicEnvironmentImpl;
 import com.streever.tools.stemshell.Environment;
 import com.streever.tools.stemshell.commands.Env;
 import com.streever.tools.stemshell.commands.Exit;
@@ -53,6 +53,13 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 .hasArg(true).numberOfArgs(1)
                 .build();
         options.addOption(gatewayOption);
+
+        Option verboseOption = Option.builder("v").required(false)
+                .argName("verbose").desc("Verbose Commands")
+                .longOpt("verbose")
+                .hasArg(false)
+                .build();
+        options.addOption(verboseOption);
 
         Option usernameOption = Option.builder("u").required(false)
                 .argName("username").desc("Username to log into gateway")
@@ -106,6 +113,24 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
             state = Mode.PROXY;
             gatewayProxyURL = cmd.getOptionValue("gateway");
             System.out.println("Using Gateway Proxy: " + gatewayProxyURL);
+        }
+
+        Environment lclEnv = new BasicEnvironmentImpl();
+
+        setEnv(lclEnv);
+
+        switch (state) {
+            case CLI:
+                getEnv().setDefaultPrompt("hdfs-cli:$");
+                break;
+            case PROXY:
+                break;
+            default:
+        }
+
+
+        if (cmd.hasOption("verbose")) {
+            getEnv().setVerbose(Boolean.TRUE);
         }
         
         if (cmd.hasOption("help")) {
@@ -204,16 +229,14 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
     @Override
     public void initialize() throws Exception {
 
-
+        setBannerResource("/hadoop_banner.txt");
+        
         switch (state) {
             case PROXY:
 
             break;
             case CLI:
-
-                Environment cliEnv = new HDFSEnvironmentImpl();
-                setEnv(cliEnv);
-
+                
                 getEnv().addCommand(new HdfsCd("cd", getEnv()));
                 getEnv().addCommand(new HdfsPwd("pwd"));
 

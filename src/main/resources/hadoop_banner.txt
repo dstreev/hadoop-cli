@@ -1,0 +1,43 @@
+_______________________________________________________________________________________________________________
+
+                                            -::/-`     .:+syhddddhyo:.
+                                           ./s-   `/shNNds+/-....-:+ymms-
+                                           -:  `/dNds/.               .ommo`
+                                           `  +Nmo.                      :yNy-
+                                            :mNo`                          .omd+`
+                                        :ydmdho::-.`                         `+smh+`        ``
+                                     `+mNs.                                      -hN+     .hNmmh/
+                                .-:+oNNo`  .oyh+/:.          .+:`                  +Nh`  +Nh...sMs
+                         `:+ydmMNmmMMs`   /hod-             -s`                 `:oooNdhNd:`+-  yM:
+                     `:smNdy+:.``+Nh-    :o o.              -       ``.        `:ohMMNo:-:+/`   .Nm`
+                   :yNms:`     :mm:     `+  `      `             `omNNs`        `.:+yN`          yM:
+   .-`  :sdh     /mMy:       .hN+       :          o`           :hNhmMMo-`     :++hhoN-          :Ms
+-/s: `omyymh`  :mNs.        /Ns`                   d.          ` `.-+/`       :- y/  h-          `Nd
+-+: -mh.`mhN/ oMd.         oN/                     d+             ..          ` `+   y`           NN
+ /  hm` .Moy:hMs          oN:                      yh                           .   `+            NN
+ `  :N/`dd/yNMo          /M+                       /N.                              .            .Nd
+     :N-+yo:dy           oM/       ``              .N+                                           oMo
+      +mysydm`            sNo     :-                my                                          .NN.
+        .-oM+              :md- -y.                 dy                                         `dM/
+          sM:               `yNsd.                 `No              `:-`                      .dM/
+          sM:                `md`                  +N-              +`.:`                   `sNd-
+          +M+                /N-              `-/osMs     `         ` .MMdyo/-`         `.+hNd/
+          -My                sMo`         `:sdds+:..       -+/-`      oMMMMMNsmNmdhhhhdmmdy/.
+          +MN.                -hmo-`  `-ohds:`               `/Nd+`  `mMMMMM+-Mo`.---..`
+         :Mmdh                  .+yhddhs/`                    :MdyNs. yyyyo-:mh`
+       /dMs`.N+                                              `dmM/.yNdo+oosdd/
+     -dMs.   :N/                                             om`dN- `:osso/.
+     /Md      /N/              .            .               -N: .Nd
+     `hMo      :No             -:          `s              .mo   dN.   ________________________________________
+      `yMd:     -Ny            -NmddhhhddmNmy             -ms    hM.   |
+        :yMms:../Mh            :Mo`..smMms- `            /N+     yM:   |     Product: ${Implementation-Title}
+          `/ydmNMM/           `dN:  -MM-               `ym:      -Md   |     Version: ${Implementation-Version}
+               oMh           -mm-    dMo             :hNd:-----.-sMy   |  For Hadoop: ${Apache-Hadoop-Version}
+              .NM/           dM:     `dMs         .omNoosyhhhhhhhy/    |_______________________________________
+               oNMds/:.`    `NN.       sMh.     .hMh/
+                 ./oyhmNNmddNNo         :mNy:-:sNN:
+                        `.--.             :sddhs/`
+                       ______________________________________________________
+                       |                                                    |
+_______________________| Get it here: https://github.com/dstreev/hadoop-cli |__________________________________
+                       |____________________________________________________|

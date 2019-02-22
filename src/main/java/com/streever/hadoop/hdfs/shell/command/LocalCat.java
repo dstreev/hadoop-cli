@@ -35,7 +35,7 @@ public class LocalCat extends HdfsCommand {
 
     public void execute(Environment env, CommandLine cmd, ConsoleReader console) {
         FileSystem hdfs = this.local ? (FileSystem)env.getValue(Constants.LOCAL_FS) : (FileSystem)env.getValue(Constants.HDFS);
-        logv(cmd, "CWD: " + hdfs.getWorkingDirectory());
+        logv(env, "CWD: " + hdfs.getWorkingDirectory());
         
         if(cmd.getArgs().length == 1){
             Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
@@ -46,11 +46,11 @@ public class LocalCat extends HdfsCommand {
                 reader = new BufferedReader(isr);
                 String line = null;
                 for(int i = 0; (line = reader.readLine()) != null;i++ ){
-                    log(cmd, line);
+                    log(env, line);
                 }
             }
             catch (IOException e) {
-                log(cmd, "Error reading file '" + cmd.getArgs()[0] + "': " + e.getMessage());
+                log(env, "Error reading file '" + cmd.getArgs()[0] + "': " + e.getMessage());
             } finally{
                 try {
                     if(reader != null){

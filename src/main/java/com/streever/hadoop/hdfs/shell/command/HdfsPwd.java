@@ -20,10 +20,10 @@ public class HdfsPwd extends HdfsCommand {
         FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
         String wd = hdfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {
-            log(cmd, wd);
+            log(env, wd);
         }
         else {
-            log(cmd, wd.substring(env.getProperty(Constants.HDFS_URL).length()));
+            log(env, wd.substring(env.getProperty(Constants.HDFS_URL).length()));
         }
         FSUtil.prompt(env);
 

@@ -27,19 +27,19 @@ public class LocalRm extends HdfsCommand {
                             : (FileSystem) env.getValue(Constants.HDFS);
             String remoteFile = cmd.getArgs()[0];
 
-            logv(cmd, "HDFS file: " + remoteFile);
+            logv(env, "HDFS file: " + remoteFile);
             Path hdfsPath = new Path(hdfs.getWorkingDirectory(), remoteFile);
-            logv(cmd, "Remote path: " + hdfsPath);
+            logv(env, "Remote path: " + hdfsPath);
 
             boolean recursive = cmd.hasOption("r");
-            logv(cmd, "Deleting recursively...");
+            logv(env, "Deleting recursively...");
             hdfs.delete(hdfsPath, recursive);
 
             FSUtil.prompt(env);
 
         }
         catch (Throwable e) {
-            log(cmd, "Error: " + e.getMessage());
+            log(env, "Error: " + e.getMessage());
         }
 
     }

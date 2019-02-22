@@ -125,7 +125,7 @@ public class HdfsCommand extends HdfsAbstract {
 
         argv[0] = "-" + getName();
 
-        System.out.println("HDFS Command: " + Arrays.toString(argv));
+        logv(env, "HDFS Command: " + Arrays.toString(argv));
 
         try {
             res = ToolRunner.run(shell, argv);

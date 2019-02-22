@@ -33,16 +33,16 @@ public class LocalLs extends HdfsCommand {
             FileStatus[] files = localfs.listStatus(srcPath);
             for (FileStatus file : files) {
                 if (cmd.hasOption("l")) {
-                    log(cmd, longFormat(file));
+                    log(env, longFormat(file));
                 }
                 else {
-                    log(cmd, shortFormat(file));
+                    log(env, shortFormat(file));
                 }
             }
             FSUtil.prompt(env);
         }
         catch (IOException e) {
-            log(cmd, e.getMessage());
+            log(env, e.getMessage());
         }
     }
 

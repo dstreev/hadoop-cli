@@ -73,12 +73,12 @@ public class HdfsConnect extends AbstractCommand {
 
             FSUtil.prompt(env);
 
-            log(cmd, "Connected: " + hdfs.getUri());
-            logv(cmd, "HDFS CWD: " + hdfs.getWorkingDirectory());
-            logv(cmd, "Local CWD: " + local.getWorkingDirectory());
+            log(env, "Connected: " + hdfs.getUri());
+            logv(env, "HDFS CWD: " + hdfs.getWorkingDirectory());
+            logv(env, "Local CWD: " + local.getWorkingDirectory());
 
         } catch (IOException e) {
-            log(cmd, e.getMessage());
+            log(env, e.getMessage());
         }
     }
 

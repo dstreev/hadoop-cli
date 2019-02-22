@@ -25,30 +25,28 @@ public class HdfsCd extends HdfsCommand {
     public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FileSystem hdfs = null;
         try {
-            hdfs = (FileSystem)env.getValue(Constants.HDFS);
-            
+            hdfs = (FileSystem) env.getValue(Constants.HDFS);
+
             String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
-            logv(cmd, "CWD before: " + hdfs.getWorkingDirectory());
-            logv(cmd, "Requested CWD: " + dir);   
-            
+            logv(env, "CWD before: " + hdfs.getWorkingDirectory());
+            logv(env, "Requested CWD: " + dir);
+
             Path newPath = null;
-            if(dir.startsWith("/")){
+            if (dir.startsWith("/")) {
                 newPath = new Path(env.getProperty(Constants.HDFS_URL), dir);
-            } else{
+            } else {
                 newPath = new Path(hdfs.getWorkingDirectory(), dir);
             }
 
             Path qPath = newPath.makeQualified(hdfs);
-            logv(cmd, "" + newPath);
+            logv(env, "" + newPath);
             if (hdfs.getFileStatus(qPath).isDir() && hdfs.exists(qPath)) {
                 hdfs.setWorkingDirectory(qPath);
+            } else {
+                log(env, "No such directory: " + dir);
             }
-            else {
-                log(cmd, "No such directory: " + dir);
-            }
-            
-        }
-        catch (IOException e) {
+
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         } finally {
             FSUtil.prompt(env);
@@ -59,7 +57,5 @@ public class HdfsCd extends HdfsCommand {
     public Completer getCompleter() {
         return new FileSystemNameCompleter(this.env, false);
     }
-    
-    
-    
+
 }

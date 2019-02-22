@@ -36,7 +36,7 @@ public class LocalHead extends HdfsCommand {
     public void execute(Environment env, CommandLine cmd, ConsoleReader console) {
         FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
                         : (FileSystem) env.getValue(Constants.HDFS);
-        logv(cmd, "CWD: " + hdfs.getWorkingDirectory());
+        logv(env, "CWD: " + hdfs.getWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {
             int lineCount = Integer.parseInt(cmd.getOptionValue("n",
@@ -49,11 +49,11 @@ public class LocalHead extends HdfsCommand {
                 reader = new BufferedReader(isr);
                 String line = null;
                 for (int i = 0; ((i <= lineCount) && (line = reader.readLine()) != null); i++) {
-                    log(cmd, line);
+                    log(env, line);
                 }
             }
             catch (IOException e) {
-                log(cmd, "Error reading file '" + cmd.getArgs()[0]
+                log(env, "Error reading file '" + cmd.getArgs()[0]
                                 + "': " + e.getMessage());
             }
             finally {

@@ -33,18 +33,18 @@ public class LocalMkdir extends HdfsCommand {
     public void execute(Environment env, CommandLine cmd, ConsoleReader console) {
         FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
                         : (FileSystem) env.getValue(Constants.HDFS);
-        logv(cmd, "CWD: " + hdfs.getWorkingDirectory());
+        logv(env, "CWD: " + hdfs.getWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {
             Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
 
             try {
-                logv(cmd, "Create directory: " + path);
+                logv(env, "Create directory: " + path);
                 hdfs.mkdirs(path);
 
             }
             catch (IOException e) {
-                log(cmd, "Error creating directory '" + cmd.getArgs()[0]
+                log(env, "Error creating directory '" + cmd.getArgs()[0]
                                 + "': " + e.getMessage());
             }
         }
