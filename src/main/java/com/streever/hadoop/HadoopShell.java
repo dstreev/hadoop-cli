@@ -61,6 +61,13 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 .build();
         options.addOption(verboseOption);
 
+        Option debugOption = Option.builder("d").required(false)
+                .argName("debug").desc("Debu Commands")
+                .longOpt("debug")
+                .hasArg(false)
+                .build();
+        options.addOption(debugOption);
+
         Option usernameOption = Option.builder("u").required(false)
                 .argName("username").desc("Username to log into gateway")
                 .longOpt("username")
@@ -132,7 +139,11 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
         if (cmd.hasOption("verbose")) {
             getEnv().setVerbose(Boolean.TRUE);
         }
-        
+
+        if (cmd.hasOption("debug")) {
+            getEnv().setDebug(Boolean.TRUE);
+        }
+
         if (cmd.hasOption("help")) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("hadoop-cli", options);

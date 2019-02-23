@@ -27,10 +27,43 @@ public class FileSystemNameCompleter implements Completer {
         return target.substring(prefix.length());
     }
 
+    protected void logv(String log){
+        if(env.isVerbose()){
+            System.out.println(log);
+        }
+    }
+
+    protected void logd(String log){
+        if(env.isDebug()){
+            System.out.println(log);
+        }
+    }
+
     // TODO add ability to handle ~/ for local filesystems
     public int complete(String buffer, final int cursor,
                     final List<CharSequence> candidates) {
 
+        // Remove directives from buffer.
+        String checkBuffer = buffer;
+        logd(">>> Cursor: "+ cursor + " Candidates: " + candidates.toString());
+        
+        if (checkBuffer == null) {
+            logd("Buffer null Cursor: " + cursor);
+            checkBuffer = "./";
+        } else {
+            logd("Buffer: " + buffer + " Buffer Length: " + buffer.length() + " Cursor pos: " + cursor);
+
+            if (checkBuffer.startsWith("-")) {
+                // If the last item is a directive, remove it.
+                checkBuffer = "./";
+            } else if (checkBuffer.contains(":")) {  // In cases of chmod IE: dstreev:dstreev
+                checkBuffer = "./";
+            }
+
+        }
+
+        logd("Check Buffer: " + checkBuffer);
+        
         FileSystem fs;
 
         String prefix;
@@ -41,35 +74,33 @@ public class FileSystemNameCompleter implements Completer {
         }
         else {
             fs = (FileSystem) env.getValue(Constants.LOCAL_FS);
-            prefix = "file:" + (buffer != null && buffer.startsWith("/") ? "/" : "");
+            prefix = "file:" + (checkBuffer != null && checkBuffer.startsWith("/") ? "/" : "");
         }
         if(fs == null){
 //            System.out.println("Not connected.");
             return 0;
         }
-        // System.out.println(prefix);
+        logd("Prefix: " + prefix);
 
         Path basePath = fs.getWorkingDirectory();
-        // String curPath = strip(prefix, basePath.toString());
-        // System.out.println("curPath: " + curPath);
 
-        if (buffer == null) {
+        logd("Current Path: " + strip(prefix, basePath.toString()));
+
+        if (checkBuffer == null) {
             // System.out.println("Buffer was null!");
-            buffer = "./";
+            checkBuffer = "./";
         }
-//
-//         System.out.println("Prefix: " + prefix);
-//         System.out.println("Match: '" + buffer + "'");
-//         System.out.println("Base Path: " + basePath);
 
-        Path completionPath = buffer.startsWith("/") ? new Path(prefix, buffer)
-                        : new Path(basePath, buffer);
-        // System.out.println("Comp. Path: " + completionPath);
-        // System.out.println("Comp. Parent: " + completionPath.getParent());
-        Path completionDir = (completionPath.getParent() == null || buffer
+        Path completionPath = checkBuffer.startsWith("/") ? new Path(prefix, checkBuffer)
+                        : new Path(basePath, checkBuffer);
+
+        logd("Comp. Path: " + completionPath);
+        logd("Comp. Parent: " + completionPath.getParent());
+
+        Path completionDir = (completionPath.getParent() == null || checkBuffer
                         .endsWith("/")) ? completionPath : completionPath
                         .getParent();
-        // System.out.println("Comp. Dir: " + completionDir);
+        logd("Comp. Dir: " + completionDir);
         try {
             FileStatus[] entries = fs.listStatus(completionDir);
             // System.out.println("Possible matches:");
@@ -79,9 +110,19 @@ public class FileSystemNameCompleter implements Completer {
             // System.out.println("^ WOOP!");
             // }
             // }
-
-            return matchFiles(buffer, completionPath.toString(), entries,
+            int matchedIndex = matchFiles(checkBuffer, completionPath.toString(), entries,
                             candidates);
+            logd("MatchedIndex: " + matchedIndex);
+
+            // After we've handled candidate matches, we need to reset the index to
+            // the original so items like 'dstreev:dstreev' as a param for
+            // chmod aren't erased.
+            if (buffer != null && (buffer.contains(":") || buffer.startsWith("-"))) {
+                logd("Overwriting MatchedIndex with cursor: " + cursor);
+                matchedIndex = cursor;
+            }
+
+            return matchedIndex;
 
         }
         catch (IOException e) {
