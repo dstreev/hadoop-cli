@@ -62,7 +62,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
         options.addOption(verboseOption);
 
         Option debugOption = Option.builder("d").required(false)
-                .argName("debug").desc("Debu Commands")
+                .argName("debug").desc("Debug Commands")
                 .longOpt("debug")
                 .hasArg(false)
                 .build();
@@ -131,6 +131,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 getEnv().setDefaultPrompt("hdfs-cli:$");
                 break;
             case PROXY:
+                getEnv().setDefaultPrompt("hdfs-proxy-cli:$");
                 break;
             default:
         }
@@ -180,17 +181,18 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
     private void initialSet(String set, ConsoleReader reader) {
         System.out.println("-- Initializing with set: " + set);
 
-        File dir = new File(System.getProperty("user.home"), "."
-                + this.getName());
-        if (dir.exists() && dir.isFile()) {
-            throw new IllegalStateException(
-                    "Default configuration file exists and is not a directory: "
-                            + dir.getAbsolutePath());
-        } else if (!dir.exists()) {
-            dir.mkdir();
-        }
+//        File dir = new File(System.getProperty("user.home"), "."
+//                + this.getName());
+//        if (dir.exists() && dir.isFile()) {
+//            throw new IllegalStateException(
+//                    "Default configuration file exists and is not a directory: "
+//                            + dir.getAbsolutePath());
+//        } else if (!dir.exists()) {
+//            dir.mkdir();
+//        }
         // directory created, touch history file
-        File setFile = new File(dir, set);
+//        File setFile = new File(dir, set);
+        File setFile = new File(set);
         if (!setFile.exists()) {
             try {
                 if (!setFile.createNewFile()) {
@@ -198,7 +200,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                             "Unable to create set file: "
                                     + setFile.getAbsolutePath());
                 } else {
-                    System.out.println("New Initialization File create in: " + System.getProperty("user.home") + System.getProperty("file.separator") + this.getName() + System.getProperty("file.separator") + set + ". Add commands to this file to initialized the next session");
+                    System.out.println("New Initialization File " + set + " created. Add commands to this file and run with '-i' flag.");
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
@@ -290,6 +292,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 getEnv().addCommand(new HdfsCommand("rmdir", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsCommand("mv", getEnv(), Direction.REMOTE_REMOTE));
                 getEnv().addCommand(new HdfsCommand("cat", getEnv(), Direction.NONE));
+                getEnv().addCommand(new HdfsCommand("test", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsCommand("text", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsCommand("checksum", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsCommand("usage", getEnv()));

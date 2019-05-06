@@ -129,6 +129,14 @@ public class HdfsCommand extends HdfsAbstract {
 
         try {
             res = ToolRunner.run(shell, argv);
+            if (res != 0) {
+                StringBuilder sb = new StringBuilder("ERROR");
+                for (String arg: argv) {
+                    sb.append("\t");
+                    sb.append(arg);
+                }
+                this.loge(env, sb.toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
