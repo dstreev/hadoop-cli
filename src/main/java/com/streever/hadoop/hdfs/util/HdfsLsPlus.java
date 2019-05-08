@@ -280,7 +280,11 @@ public class HdfsLsPlus extends HdfsAbstract {
             if (count % 10000 == 0)
                 System.out.println("----------");
         } else {
-            log(env, getComment() + getSeparator() + line);
+            if (isAddComment() && getComment() != null) {
+                log(env, getComment() + getSeparator() + line);
+            } else {
+                log(env, line);
+            }
         }
     }
 
@@ -288,31 +292,37 @@ public class HdfsLsPlus extends HdfsAbstract {
         //
         currentDepth++;
         if (maxDepth == -1 || currentDepth <= (maxDepth + 1)) {
+
             FileStatus fileStatus = path.stat;
-            String[] parts = fileStatus.getPath().toUri().getPath().split("/");
-            String endPath = parts[parts.length-1];
-            boolean go = true;
+            try {
+                String[] parts = fileStatus.getPath().toUri().getPath().split("/");
+                String endPath = parts[parts.length - 1];
+                boolean go = true;
 
-            if (endPath.startsWith(".") && !isInvisible()) {
-                go = false;
-            }
-
-            if (go) {
-                if (fileStatus.isDirectory() && this.isRecursive()) {
-                    writeItem(path, fileStatus);
-                    PathData[] pathDatas = new PathData[0];
-                    try {
-                        pathDatas = path.getDirectoryContents();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    for (PathData intPd : pathDatas) {
-                        processPath(intPd);
-                    }
-                } else {
-                    // Go through contents.
-                    writeItem(path, fileStatus);
+                if (endPath.startsWith(".") && !isInvisible()) {
+                    go = false;
                 }
+
+                if (go) {
+                    if (fileStatus.isDirectory() && this.isRecursive()) {
+                        writeItem(path, fileStatus);
+                        PathData[] pathDatas = new PathData[0];
+                        try {
+                            pathDatas = path.getDirectoryContents();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        for (PathData intPd : pathDatas) {
+                            processPath(intPd);
+                        }
+                    } else {
+                        // Go through contents.
+                        writeItem(path, fileStatus);
+                    }
+                }
+            } catch (Throwable e) {
+                // Happens when path doesn't exist.
+                postItem("doesn't exist");
             }
         } else {
             logv(env, "Max Depth of: " + maxDepth + " Reached.  Sub-folder will not be traversed beyond this depth. Increase of set to -1 for unlimited depth");
