@@ -19,10 +19,7 @@ import com.streever.tools.stemshell.commands.HistoryCmd;
 import jline.console.ConsoleReader;
 import org.apache.commons.cli.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
 
@@ -46,6 +43,22 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 .hasArg(true).numberOfArgs(1)
                 .build();
         options.addOption(initOption);
+
+        // add f option
+        Option fileOption = Option.builder("f").required(false)
+                .argName("file run").desc("Run File and Exit")
+                .longOpt("file")
+                .hasArg(true).numberOfArgs(1)
+                .build();
+        options.addOption(fileOption);
+
+        // add stdin option
+        Option siOption = Option.builder("stdin").required(false)
+                .argName("stdin process").desc("Run Stdin pipe and Exit")
+                .longOpt("stdin")
+                .hasArg(false)
+                .build();
+        options.addOption(siOption);
 
         Option gatewayOption = Option.builder("g").required(false)
                 .argName("gateway").desc("Use Gateway(Knox Proxy)")
@@ -174,6 +187,34 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
 
         if (cmd.hasOption("init")) {
             initialSet(cmd.getOptionValue("init"), reader);
+        }
+
+        if (cmd.hasOption("run")) {
+            initialSet(cmd.getOptionValue("run"), reader);
+            processInput("exit", reader);
+        }
+
+        if (cmd.hasOption("stdin")) {
+            try {
+                File temp = File.createTempFile("hcli", "txt");
+                BufferedWriter tempFileWriter = new BufferedWriter(new FileWriter(temp));
+
+                try (InputStreamReader isr = new InputStreamReader(System.in)) {
+                    int ch;
+                    while ((ch = isr.read()) != -1)
+                        tempFileWriter.write(ch);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                tempFileWriter.close();
+
+                initialSet(temp.getAbsolutePath(), reader);
+                processInput("exit", reader);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
     }
