@@ -26,10 +26,7 @@ import java.math.RoundingMode;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.streever.hadoop.hdfs.util.HdfsLsPlus.PRINT_OPTION.*;
 
@@ -360,12 +357,6 @@ public class HdfsLsPlus extends HdfsAbstract {
         Option[] cmdOpts = cmd.getOptions();
         String[] cmdArgs = cmd.getArgs();
 
-        if (cmd.hasOption("maxDepth")) {
-            setMaxDepth(Integer.parseInt(cmd.getOptionValue("maxDepth")));
-        } else {
-            setMaxDepth(DEFAULT_DEPTH);
-        }
-
         if (cmd.hasOption("format")) {
             setFormat(cmd.getOptionValue("format"));
         } else {
@@ -383,6 +374,13 @@ public class HdfsLsPlus extends HdfsAbstract {
             setRecursive(false);
         }
 
+        if (cmd.hasOption("maxDepth")) {
+            setMaxDepth(Integer.parseInt(cmd.getOptionValue("maxDepth")));
+            setRecursive(true);
+        } else {
+            setMaxDepth(DEFAULT_DEPTH);
+        }
+
         if (cmd.hasOption("invisible")) {
             setInvisible(true);
         } else {
@@ -397,11 +395,13 @@ public class HdfsLsPlus extends HdfsAbstract {
             setNewLine(cmd.getOptionValue("newline"));
         }
 
-
+        String outputDir = null;
         String outputFile = null;
 
         if (cmd.hasOption("output")) {
-            outputFile = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+            outputDir = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+            outputFile = outputDir + "/" + UUID.randomUUID();
+            
             Path pof = new Path(outputFile);
             try {
                 if (fs.exists(pof))
@@ -509,8 +509,8 @@ public class HdfsLsPlus extends HdfsAbstract {
 
 
         Option outputOption = Option.builder("o").required(false)
-                .argName("output")
-                .desc("Output File (HDFS) (default System.out)")
+                .argName("output directory")
+                .desc("Output Directory (HDFS) (default System.out)")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .longOpt("output")

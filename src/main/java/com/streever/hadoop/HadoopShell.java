@@ -5,6 +5,7 @@ package com.streever.hadoop;
 import com.streever.hadoop.hdfs.shell.command.*;
 import com.streever.hadoop.hdfs.util.HdfsLsPlus;
 import com.streever.hadoop.hdfs.util.HdfsNNStats;
+import com.streever.hadoop.hdfs.util.HdfsSource;
 import com.streever.hadoop.mapreduce.JhsStats;
 import com.streever.hadoop.yarn.ContainerStats;
 import com.streever.hadoop.yarn.SchedulerStats;
@@ -45,12 +46,12 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
         options.addOption(initOption);
 
         // add f option
-        Option fileOption = Option.builder("f").required(false)
-                .argName("file run").desc("Run File and Exit")
-                .longOpt("file")
+        Option runOption = Option.builder("r").required(false)
+                .argName("run").desc("Run File and Exit")
+                .longOpt("run file")
                 .hasArg(true).numberOfArgs(1)
                 .build();
-        options.addOption(fileOption);
+        options.addOption(runOption);
 
         // add stdin option
         Option siOption = Option.builder("stdin").required(false)
@@ -185,12 +186,12 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
 
         autoConnect(reader);
 
-        if (cmd.hasOption("init")) {
-            initialSet(cmd.getOptionValue("init"), reader);
+        if (cmd.hasOption("i")) {
+            runFile(cmd.getOptionValue("i"), reader);
         }
 
-        if (cmd.hasOption("run")) {
-            initialSet(cmd.getOptionValue("run"), reader);
+        if (cmd.hasOption("r")) {
+            runFile(cmd.getOptionValue("r"), reader);
             processInput("exit", reader);
         }
 
@@ -208,7 +209,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 }
                 tempFileWriter.close();
 
-                initialSet(temp.getAbsolutePath(), reader);
+                runFile(temp.getAbsolutePath(), reader);
                 processInput("exit", reader);
 
             } catch (Exception e) {
@@ -219,39 +220,28 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
 
     }
 
-    private void initialSet(String set, ConsoleReader reader) {
-        System.out.println("-- Initializing with set: " + set);
+    public void runFile(String set, ConsoleReader reader) {
+        logv(getEnv(),"-- Running source file: " + set);
 
-//        File dir = new File(System.getProperty("user.home"), "."
-//                + this.getName());
-//        if (dir.exists() && dir.isFile()) {
-//            throw new IllegalStateException(
-//                    "Default configuration file exists and is not a directory: "
-//                            + dir.getAbsolutePath());
-//        } else if (!dir.exists()) {
-//            dir.mkdir();
-//        }
-        // directory created, touch history file
-//        File setFile = new File(dir, set);
-        File setFile = new File(set);
+        org.apache.hadoop.fs.FileSystem localfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.LOCAL_FS);
+//        org.apache.hadoop.fs.FileSystem hdfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.HDFS);
+
+        String localwd = localfs.getWorkingDirectory().toString();
+//        String hdfswd = hdfs.getWorkingDirectory().toString();
+
+        // Remove 'file:' from working directory.
+        String localFile = localwd.split(":")[1] + System.getProperty("file.separator") + set;
+
+        File setFile = new File(localFile);
+        
         if (!setFile.exists()) {
-            try {
-                if (!setFile.createNewFile()) {
-                    throw new IllegalStateException(
-                            "Unable to create set file: "
-                                    + setFile.getAbsolutePath());
-                } else {
-                    System.out.println("New Initialization File " + set + " created. Add commands to this file and run with '-i' flag.");
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
+            loge(getEnv(), "File not found: " + setFile.getAbsoluteFile());
         } else {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(setFile));
                 String line = null;
                 while ((line = br.readLine()) != null) {
-                    System.out.println(line);
+                    log(getEnv(), line);
                     String line2 = line.trim();
                     if (line2.length() > 0 && !line2.startsWith("#")) {
                         processInput(line2, reader);
@@ -273,10 +263,6 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-    private void runScript(String file, ConsoleReader reader) {
 
     }
 
@@ -353,6 +339,8 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 // HDFS Tools
                 getEnv().addCommand(new HdfsLsPlus("lsp", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsNNStats("nnstat", getEnv(), Direction.NONE));
+
+                getEnv().addCommand(new HdfsSource("source", getEnv(), this));
 
                 // MapReduce Tools
                 getEnv().addCommand(new JhsStats("jhsstat", getEnv(), Direction.NONE));
