@@ -223,15 +223,20 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
     public void runFile(String set, ConsoleReader reader) {
         logv(getEnv(),"-- Running source file: " + set);
 
-        org.apache.hadoop.fs.FileSystem localfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.LOCAL_FS);
+        String localFile = null;
+        
+        if (set.startsWith("/")) {
+            localFile = set;
+        } else {
+            org.apache.hadoop.fs.FileSystem localfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.LOCAL_FS);
 //        org.apache.hadoop.fs.FileSystem hdfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.HDFS);
 
-        String localwd = localfs.getWorkingDirectory().toString();
+            String localwd = localfs.getWorkingDirectory().toString();
 //        String hdfswd = hdfs.getWorkingDirectory().toString();
 
-        // Remove 'file:' from working directory.
-        String localFile = localwd.split(":")[1] + System.getProperty("file.separator") + set;
-
+            // Remove 'file:' from working directory.
+            localFile = localwd.split(":")[1] + System.getProperty("file.separator") + set;
+        }
         File setFile = new File(localFile);
         
         if (!setFile.exists()) {
