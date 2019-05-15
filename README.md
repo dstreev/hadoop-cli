@@ -7,7 +7,7 @@ simpler and more intuitive than the standard command-line tools that come with H
 
 [Pre-Built Distribution](https://github.com/dstreev/hadoop-cli/releases)
 
-Download the release files to a temp location.  As a root user, chmod +x the 3 shell script files then run the 'setup.sh'.  This will create and install the hdfscli application to your path.
+Download the release files to a temp location.  As a root user, chmod +x the 3 shell script files then run the 'setup.sh'.  This will create and install the hadoopcli application to your path.
 
 Try it out on a host with default configs:
 
