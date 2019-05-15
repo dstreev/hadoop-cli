@@ -321,6 +321,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 getEnv().addCommand(new HdfsCommand("cat", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsCommand("test", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsCommand("text", getEnv(), Direction.NONE));
+                getEnv().addCommand(new HdfsCommand("touch", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsCommand("checksum", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsCommand("usage", getEnv()));
 
