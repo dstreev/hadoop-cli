@@ -68,12 +68,12 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 .build();
         options.addOption(silentOption);
 
-        Option gatewayOption = Option.builder("g").required(false)
-                .argName("gateway").desc("Use Gateway(Knox Proxy)")
-                .longOpt("gateway")
-                .hasArg(true).numberOfArgs(1)
-                .build();
-        options.addOption(gatewayOption);
+//        Option gatewayOption = Option.builder("g").required(false)
+//                .argName("gateway").desc("Use Gateway(Knox Proxy)")
+//                .longOpt("gateway")
+//                .hasArg(true).numberOfArgs(1)
+//                .build();
+//        options.addOption(gatewayOption);
 
         Option verboseOption = Option.builder("v").required(false)
                 .argName("verbose").desc("Verbose Commands")
@@ -134,7 +134,8 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
             cmd = parser.parse(options, arguments);
         } catch (ParseException pe) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("hadoop-cli", options);
+            formatter.printHelp("hadoopcli", options);
+            System.exit(1);
         }
 
 

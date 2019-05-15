@@ -17,39 +17,150 @@ To use an alternate HADOOP_CONF_DIR:
 
     hadoopcli --config /var/hadoop/dev-cfg
 
-### Release Notes
+[Release Notes](./release_notes.md)
 
-#### 2.0.11-SNAPSHOT
+### Core Functions
 
-A lot of cumulative work has made it into this release.
+### CLI Help
+```
+usage: hadoopcli
+ -?,--help
+ -d,--debug                 Debug Commands
+ -i,--init <init set>       Initialize with set
+ -p,--password <password>   Password
+ -r,--run file <run>        Run File and Exit
+ -s,--silent                Suppress Banner
+ -stdin,--stdin             Run Stdin pipe and Exit
+ -u,--username <username>   Username to log into gateway
+ -v,--verbose               Verbose Commands
+```
 
-##### Command Line Enhancements:
-- 'silent' option added to suppress output.  Helpful when using the 'run' option.
-- 'run' option to 'run' a file with a list of commands.
-- 'stdin' option added so commands could be piped into the cli and run under the same session.
-- 'debug' and 'verbose' options added to increase visibility of actions being run.
+### File System Command Basics
 
-##### Functional Enhancements:
-Each function has a help option:
-`help <function>`
+The HadoopCli maintains a context to the local filesystem AND the target HDFS filesystem, once connected.  A 'path' context for HDFS is also managed and is treated as the 'current' working HDFS directory.
 
-###### Core HDFS Commands
-- `count`
-- `test`
+CLI commands against will consider the 'working' directory, unless the path element to the command starts with a '/'.
 
-###### lsp (ls plus)
-- filter support (regex using Java Pattern matching to find matching paths in search)
-- formatting options
-- output to hdfs option
-- control over recursiveness with 'depth' option
-- comment option to enhance output.  Nice to be able to carry extra metadata along in a pipeline.
+For example, notice how commands can be issued *without* a path element (unlike standard `hdfs dfs` commands).  The current HDFS working directory is assumed.
+
+Path *Completion* is also available (via tab, just like `bash`) and consider the path working directory as a reference.
+
+```
+Connected: hdfs://HOME90
+REMOTE: hdfs://HOME90/user/dstreev		LOCAL: file:/home/dstreev
+hdfs-cli:$ ls
+Found 17 items
+drwx------   - dstreev hadoop          0 2019-05-15 02:00 /user/dstreev/.Trash
+drwxr-xr-x   - dstreev hadoop          0 2019-05-06 09:34 /user/dstreev/.hiveJars
+drwxr-xr-x   - dstreev hadoop          0 2019-04-16 15:06 /user/dstreev/.sparkStaging
+drwx------   - dstreev hadoop          0 2019-05-14 10:56 /user/dstreev/.staging
+-rw-r--r--   3 dstreev hadoop        903 2019-03-07 13:50 /user/dstreev/000000_0
+drwxr-xr-x   - dstreev hadoop          0 2019-04-12 11:33 /user/dstreev/data
+drwxr-xr-x   - dstreev hadoop          0 2018-08-10 12:19 /user/dstreev/datasets
+-rw-r-----   3 dstreev hadoop          0 2019-05-15 11:48 /user/dstreev/hello.chuck
+-rw-r-----   3 dstreev hadoop          0 2019-05-15 11:49 /user/dstreev/hello.ted
+drwxr-x---   - dstreev hadoop          0 2019-05-04 16:20 /user/dstreev/hms_dump
+-rw-r--r--   3 dstreev hadoop        777 2018-12-28 10:26 /user/dstreev/kafka-phoenix-cc-trans.properties
+drwxr-xr-x   - dstreev hadoop          0 2019-04-03 16:37 /user/dstreev/mybase
+drwxr-xr-x   - dstreev hadoop          0 2019-04-03 16:47 /user/dstreev/myexttable
+drwxr-xr-x   - dstreev hadoop          0 2019-05-14 14:16 /user/dstreev/temp2
+drwxr-xr-x   - dstreev hadoop          0 2019-05-14 16:52 /user/dstreev/test
+drwxr-xr-x   - dstreev hadoop          0 2019-04-03 21:50 /user/dstreev/test_ext
+drwxr-x---   - dstreev hadoop          0 2019-05-08 08:30 /user/dstreev/testme
+REMOTE: hdfs://HOME90/user/dstreev		LOCAL: file:/home/dstreev
+hdfs-cli:$ cd datasets
+REMOTE: hdfs://HOME90/user/dstreev/datasets		LOCAL: file:/home/dstreev
+hdfs-cli:$ ls
+Found 2 items
+drwxr-xr-x   - dstreev hadoop          0 2019-01-31 14:17 /user/dstreev/datasets/external
+drwxr-xr-x   - hive    hadoop          0 2019-03-18 06:09 /user/dstreev/datasets/internal.db
+REMOTE: hdfs://HOME90/user/dstreev/datasets		LOCAL: file:/home/dstreev
+hdfs-cli:$
+```
+
+### Scripting Support
+
+Being able to maintain an HDFS context/session across multiple commands saves a huge amount of time because we don't need to suffer the overhead of starting the jvm and getting an HDFS session established.
+
+If you have 'more' than a few commands to run against HDFS, packaging those commands up and processing them at the same time can be a big deal.
+
+There are 3 ways to do this.
+
+##### 'init' startup option
+
+Create a text file with the commands you want to run.  One command per line.  And include that at startup.
+
+Create init.txt
+```
+ls
+count -h /user/dstreev
+du -h /hdp
+```
+
+Then initialize a 'hadoopcli' session with it:
+`hadoopcli -i init.txt`
+
+##### 'run' option
+
+Exactly the same as the 'init' option that will 'exit' after completion.
+
+##### 'stdin' option
+
+Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the same way it processes the 'run' option.
 
 
-#### 1.0.0-SNAPSHOT (in-progress)
+### Command Reference
 
-This release is the first for `hadoopcli` and is an extension to (replacement of) `hdfs-cli` found [here](https://github.com/dstreev/hdfs-cli)
+#### Common Commands
+| Command | Description |
+|---|:-----| 
+| help \[command\] |	display help information |
+| put |	upload local files to the remote HDFS |
+| get |	retrieve remote files from HDFS to Local Filesystem |
 
-Building on release [2.3.2-SNAPSHOT](https://github.com/dstreev/hdfs-cli) of `hdfscli`, this version starts to integrate with the`Job History Server`, `YARN` and `ATS`.  Hence to change from `hdfscli` to `hadoopcli`.
+#### Remote (HDFS) Commands
+
+| Command | Description |
+|---|:-----| 
+| cd | change current working directory |
+| copyFromLocal |   |
+| copyToLocal |   |
+| ls |  list directory contents |
+| rm |  delete files/directories |
+| pwd |  print working directory path |
+| cat |  print file contents |
+| chown | change ownership |
+| chmod | change permissions |
+| chgrp | change group |
+| head | print first few lines of a file |
+| mkdir | create directories |
+| count | Count the number of directories, files and bytes under the paths that match the specified file pattern. |
+| stat |  Print statistics about the file/directory at <path> in the specified format. |
+| tail |  Displays last kilobyte of the file to stdout. |
+| test |  Validate Path |
+| text | Takes a source file and outputs the file in text format. |
+| touch/touchz | Create a file of zero length. |
+| usage | Return the help for an individual command. |
+| createSnapshot | Create Snapshot |
+| deleteSnapshot | Delete Snapshot |
+| renameSnapshot | Rename Snapshot |
+
+#### Local (Local File System) Commands
+| Command | Description |
+|---|:-----|
+| lcd | change current working directory |
+| lls | list directory contents |
+| lrm |  delete files/directories |
+| lpwd | print working directory path |
+| lcat | print file contents |
+| lhead | print first few lines of a file |
+| lmkdir | create directories |
+
+#### Tools and Utilities
+| Command | Description |
+|---|:-----|
+| lsp | ls plus.  Includes Block information and locations. |     
+| nnstat | Namenode Statistics |
 
 
 ### Building
@@ -176,15 +287,23 @@ Use help to get the options:
     help lsp
 
 ```    
-usage: stats [OPTION ...] [ARGS ...]
+usage: lsp [OPTION ...] [ARGS ...]
 Options:
- -d,--maxDepth <maxDepth>      Depth of Recursion (default 5), use '-1'
-                               for unlimited
- -f,--format <output-format>   Comma separated list of one or more:
-                               permissions_long,replication,user,group,siz
-                               e,block_size,ratio,mod,access,path,datanode
-                               _info (default all of the above)
- -o,--output <output>          Output File (HDFS) (default System.out)
+ -c,--comment <comment>           Add comment to output
+ -d,--maxDepth <maxDepth>         Depth of Recursion (default 5), use '-1'
+                                  for unlimited
+ -f,--format <output-format>      Comma separated list of one or more:
+                                  permissions_long,replication,user,group,
+                                  size,block_size,ratio,mod,access,path,da
+                                  tanode_info (default all of the above)
+ -F,--filter <filter>             Regex Filter of Content
+ -i,--invisible                   Process Invisible Files/Directories
+ -n,--newline <newline>           New Line
+ -o,--output <output directory>   Output Directory (HDFS) (default
+                                  System.out)
+ -R,--recursive                   Process Path Recursively
+ -s,--separator <separator>       Field Separator
+ -v,--verbose                     show verbose output
 ```
 
 When not argument is specified, it will use the current directory.
@@ -213,47 +332,6 @@ With the file in HDFS, you can build a [hive table](./src/main/hive/lsp.ddl) on 
 - The ratio can be used to identify files that are below the block size (small files).
 - With the Datanode information, you can determine if a dataset is hot-spotted on a cluster.  All you need is a full list of hosts to join the results with.
 
-### Available Commands
-
-#### Common Commands
-	help		display help information
-	put			upload local files to the remote HDFS
-    get			(todo) retrieve remote files from HDFS to Local Filesystem
-
-#### Remote (HDFS) Commands
-	cd		 change current working directory
-	ls		 list directory contents
-	rm		 delete files/directories
-	pwd		 print working directory path
-	cat		 print file contents
-	chown	 change ownership
-	chmod	 change permissions
-	chgrp	 change group
-	head	 print first few lines of a file
-	mkdir	 create directories
-	count    Count the number of directories, files and bytes under the paths that match the specified file pattern.
-	stat     Print statistics about the file/directory at <path> in the specified format.
-	tail     Displays last kilobyte of the file to stdout.
-	text	 Takes a source file and outputs the file in text format.
-	touchz Create a file of zero length.
-	usage	 Return the help for an individual command.
-
-	createSnapshot	Create Snapshot
-	deleteSnapshot	Delete Snapshot
-	renameSnapshot	Rename Snapshot
-
-#### Local (Local File System) Commands
-	lcd		 change current working directory
-	lls		 list directory contents
-	lrm		 delete files/directories
-	lpwd	 print working directory path
-	lcat	 print file contents
-	lhead	 print first few lines of a file
-	lmkdir	 create directories
-
-#### Tools and Utilities
-    lsp     ls plus.  Includes Block information and locations.     
-    nnstat  Namenode Statistics
 
 ### Known Bugs/Limitations
 
