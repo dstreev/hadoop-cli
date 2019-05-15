@@ -73,7 +73,9 @@ public class HdfsConnect extends AbstractCommand {
 
             FSUtil.prompt(env);
 
-            log(env, "Connected: " + hdfs.getUri());
+            if (!env.isSilent())
+                log(env, "Connected: " + hdfs.getUri());
+            
             logv(env, "HDFS CWD: " + hdfs.getWorkingDirectory());
             logv(env, "Local CWD: " + local.getWorkingDirectory());
 

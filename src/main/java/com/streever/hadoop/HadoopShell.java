@@ -61,6 +61,13 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 .build();
         options.addOption(siOption);
 
+        Option silentOption = Option.builder("s").required(false)
+                .argName("silent").desc("Suppress Banner")
+                .longOpt("silent")
+                .hasArg(false)
+                .build();
+        options.addOption(silentOption);
+
         Option gatewayOption = Option.builder("g").required(false)
                 .argName("gateway").desc("Use Gateway(Knox Proxy)")
                 .longOpt("gateway")
@@ -130,10 +137,11 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
             formatter.printHelp("hadoop-cli", options);
         }
 
+
         if (cmd.hasOption("gateway")) {
             state = Mode.PROXY;
             gatewayProxyURL = cmd.getOptionValue("gateway");
-            System.out.println("Using Gateway Proxy: " + gatewayProxyURL);
+            logv(getEnv(), "Using Gateway Proxy: " + gatewayProxyURL);
         }
 
         Environment lclEnv = new BasicEnvironmentImpl();
@@ -150,6 +158,9 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
             default:
         }
 
+        if (cmd.hasOption("s")) {
+            getEnv().setSilent(true);
+        }
 
         if (cmd.hasOption("verbose")) {
             getEnv().setVerbose(Boolean.TRUE);
@@ -246,7 +257,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 BufferedReader br = new BufferedReader(new FileReader(setFile));
                 String line = null;
                 while ((line = br.readLine()) != null) {
-                    log(getEnv(), line);
+                    logv(getEnv(), line);
                     String line2 = line.trim();
                     if (line2.length() > 0 && !line2.startsWith("#")) {
                         processInput(line2, reader);

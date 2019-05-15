@@ -47,7 +47,7 @@ public class HdfsCommand extends HdfsAbstract {
         FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
         if (hdfs == null) {
-            System.out.println("Please connect first");
+            loge(env, "Please connect first");
         }
         conf.set("fs.defaultFS", hdfs_uri);
 

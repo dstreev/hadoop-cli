@@ -8,18 +8,18 @@ CMD_CP=
 if [ -f ./hadoop-cli-full-bin.jar ]; then
     # Look in Current Directory
     CMD_CP=$APP_DIR/hadoop-cli-full-bin.jar
-    echo "Using bin from same directory"
+    #echo "Using bin from same directory"
 elif [ -f $APP_DIR/../target/hadoop-cli-full-bin.jar ]; then
     # Look in ../target
     CMD_CP=$APP_DIR/../target/hadoop-cli-full-bin.jar
-    echo "Using bin from build directory"
+    #echo "Using bin from build directory"
 else
     # Look in /usr/local/hadoop-cli/lib
     if [ -f /usr/local/hadoop-cli/lib/hadoop-cli-full-bin.jar ]; then
         CMD_CP=/usr/local/hadoop-cli/lib/hadoop-cli-full-bin.jar
-        echo "Using bin from installation directory"
+        #echo "Using bin from installation directory"
     else
-        echo "Couldn't locate Hadoop Cli Library"
+        #echo "Couldn't locate Hadoop Cli Library"
         exit 1
     fi
 fi
@@ -56,6 +56,6 @@ CLI_CMD=""
 
 CLI_CMD="${CLI_CMD}java -cp ${CMD_CP} com.streever.hadoop.HadoopShell ${PRG_ARGS}"
 
-echo ${CLI_CMD}
+#echo ${CLI_CMD}
 
 eval "${CLI_CMD}"
