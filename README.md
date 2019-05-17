@@ -7,9 +7,14 @@ simpler and more intuitive than the standard command-line tools that come with H
 
 [Pre-Built Distribution](https://github.com/dstreev/hadoop-cli/releases)
 
-Download the release files to a temp location.  As a root user, chmod +x the 3 shell script files then run the 'setup.sh'.  This will create and install the hadoopcli application to your path.
+1. Download the release 'tar.gz' file to a temp location.
+2. Untar the file (tar.gz).  
+3. As a root user, chmod +x the 3 shell script files.
+3. Run the 'setup.sh'.  
 
-Try it out on a host with default configs:
+This will create and install the `hadoopcli` application to your path.
+
+Try it out on a host with default configs (if kerberized, get a ticket first):
 
     hadoopcli
 
