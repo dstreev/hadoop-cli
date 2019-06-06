@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 APP_DIR=`dirname $0`
 
@@ -23,8 +23,6 @@ else
         exit 1
     fi
 fi
-
-AUTO=false
 
 # Set the default.
 export HADOOP_CONF_DIR="/etc/hadoop/conf";
