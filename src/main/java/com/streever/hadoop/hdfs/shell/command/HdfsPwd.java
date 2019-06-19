@@ -36,7 +36,7 @@ public class HdfsPwd extends HdfsCommand {
         super(name);
     }
 
-    public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
         String wd = hdfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {
@@ -46,7 +46,7 @@ public class HdfsPwd extends HdfsCommand {
             log(env, wd.substring(env.getProperty(Constants.HDFS_URL).length()));
         }
         FSUtil.prompt(env);
-
+        return CODE_SUCCESS;
     }
 
     @Override

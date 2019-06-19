@@ -42,8 +42,9 @@ public class HdfsCd extends HdfsCommand {
         this.env = env;
     }
 
-    public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FileSystem hdfs = null;
+        int rtn = CODE_SUCCESS;
         try {
             hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
@@ -68,9 +69,11 @@ public class HdfsCd extends HdfsCommand {
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
+            rtn = CODE_CMD_ERROR;
         } finally {
             FSUtil.prompt(env);
         }
+        return rtn;
     }
 
     @Override

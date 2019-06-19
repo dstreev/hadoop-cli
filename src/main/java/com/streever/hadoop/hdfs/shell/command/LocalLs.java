@@ -46,7 +46,7 @@ public class LocalLs extends HdfsCommand {
         super(name, env);
     }
 
-    public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
             FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
             Path srcPath = cmd.getArgs().length == 0 ? localfs.getWorkingDirectory() : new Path(localfs.getWorkingDirectory(), cmd.getArgs()[0]);
@@ -64,6 +64,7 @@ public class LocalLs extends HdfsCommand {
         catch (IOException e) {
             log(env, e.getMessage());
         }
+        return 0;
     }
 
 

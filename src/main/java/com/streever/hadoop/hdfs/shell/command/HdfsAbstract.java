@@ -29,6 +29,18 @@ import jline.console.completer.Completer;
 import org.apache.hadoop.fs.FileSystem;
 
 public abstract class HdfsAbstract extends AbstractCommand {
+
+    public int CODE_BAD_DATE = -321;
+    public int CODE_SUCCESS = 0;
+    public int CODE_LOCAL_FS_ISSUE = -123;
+    public int CODE_NOT_CONNECTED = -10;
+    public int CODE_CONNECTION_ISSUE = -11;
+    public int CODE_CMD_ERROR = -1;
+    public int CODE_PATH_ERROR = -20;
+    public int CODE_FS_CLOSE_ISSUE = -100;
+    public int CODE_STATS_ISSUE = -200;
+    public int CODE_NOT_FOUND = -99;
+    
     protected Environment env;
 
     enum Side {

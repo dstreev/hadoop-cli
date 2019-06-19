@@ -57,7 +57,7 @@ public class HdfsCommand extends HdfsAbstract {
         super(name,env);
     }
 
-    public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FsShell shell = new FsShell();
 
         Configuration conf = (Configuration)env.getValue(Constants.CFG);
@@ -73,7 +73,7 @@ public class HdfsCommand extends HdfsAbstract {
 
         conf.setQuietMode(false);
         shell.setConf(conf);
-        int res;
+        int res = CODE_SUCCESS;
         String[] argv = null;
 
         Option[] cmdOpts = cmd.getOptions();
@@ -149,14 +149,14 @@ public class HdfsCommand extends HdfsAbstract {
 
         try {
             res = ToolRunner.run(shell, argv);
-            if (res != 0) {
-                StringBuilder sb = new StringBuilder("ERROR");
-                for (String arg: argv) {
-                    sb.append("\t");
-                    sb.append(arg);
-                }
-                this.loge(env, sb.toString());
-            }
+//            if (res != 0) {
+//                StringBuilder sb = new StringBuilder("ERROR");
+//                for (String arg: argv) {
+//                    sb.append("\t");
+//                    sb.append(arg);
+//                }
+//                this.loge(env, sb.toString());
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -166,6 +166,7 @@ public class HdfsCommand extends HdfsAbstract {
                 e.printStackTrace();
             }
         }
+        return res;
     }
 
     @Override

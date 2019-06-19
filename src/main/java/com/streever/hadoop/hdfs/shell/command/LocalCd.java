@@ -42,7 +42,7 @@ public class LocalCd extends HdfsCommand {
 //        this.env = env;
     }
 
-    public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
 
             FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
@@ -70,8 +70,9 @@ public class LocalCd extends HdfsCommand {
         }
         catch (IOException e) {
             log(env, e.getMessage());
+            return CODE_LOCAL_FS_ISSUE;
         }
-
+        return CODE_SUCCESS;
     }
 
     @Override

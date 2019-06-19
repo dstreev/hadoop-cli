@@ -55,7 +55,7 @@ public class HdfsSource  extends HdfsAbstract {
     }
 
     @Override
-    public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
 
         logv(env, "Beginning 'source' collection.");
 
@@ -68,7 +68,7 @@ public class HdfsSource  extends HdfsAbstract {
 
         if (fs == null) {
             log(env, "Please connect first");
-            return;
+            return CODE_NOT_CONNECTED;
         }
 
         URI nnURI = fs.getUri();
@@ -77,7 +77,7 @@ public class HdfsSource  extends HdfsAbstract {
             dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+            return CODE_CONNECTION_ISSUE;
         }
 
         Option[] cmdOpts = cmd.getOptions();
@@ -89,7 +89,7 @@ public class HdfsSource  extends HdfsAbstract {
 
         logv(env,"'lsp' complete.");
 
-
+        return CODE_SUCCESS;
     }
 
     private void runSource(String sourceFile, ConsoleReader reader) {

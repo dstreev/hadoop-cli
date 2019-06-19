@@ -60,7 +60,7 @@ public class HdfsRepair extends HdfsAbstract {
     }
 
     @Override
-    public void execute(Environment environment, CommandLine commandLine, ConsoleReader consoleReader) {
+    public int execute(Environment environment, CommandLine commandLine, ConsoleReader consoleReader) {
         System.out.println("Not implemented yet... :( ");
         /*
 
@@ -76,7 +76,7 @@ public class HdfsRepair extends HdfsAbstract {
 
 
          */
-
+         return CODE_SUCCESS;
     }
 
     @Override

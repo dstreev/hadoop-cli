@@ -101,10 +101,14 @@ public class HdfsLsPlus extends HdfsAbstract {
     private static String DEFAULT_NEWLINE = "\n";
     private String separator = DEFAULT_SEPARATOR;
     private String newLine = DEFAULT_NEWLINE;
-    private int currentDepth = 0;
+//    private int currentDepth = 0;
     private boolean recursive = false;
     private boolean invisible = false;
     private boolean addComment = false;
+    private boolean showParent = false;
+    private boolean test = false;
+    // Used to shortcut 'test' and return when match located.
+    private boolean testFound = false;
     private Pattern pattern = null;
     private String comment = null;
     private int maxDepth = DEFAULT_DEPTH;
@@ -174,6 +178,8 @@ public class HdfsLsPlus extends HdfsAbstract {
 
     public void setAddComment(boolean addComment) {
         this.addComment = addComment;
+        if (!addComment)
+            this.comment = null;
     }
 
     public String getComment() {
@@ -196,6 +202,25 @@ public class HdfsLsPlus extends HdfsAbstract {
         this.maxDepth = maxDepth;
     }
 
+    public boolean isTest() { return test; }
+
+    public void setTest(boolean test) { this.test = test; }
+
+    public boolean isTestFound() {
+        return testFound;
+    }
+
+    public void setTestFound(boolean testFound) {
+        this.testFound = testFound;
+    }
+
+    public boolean isShowParent() {
+        return showParent;
+    }
+
+    public void setShowParent(boolean showParent) {
+        this.showParent = showParent;
+    }
 //    public void setRecurse(Boolean recurse) {
 //        this.recurse = recurse;
 //    }
@@ -280,7 +305,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                     sb1.append("none").append(getSeparator());
                     sb1.append("none").append(getSeparator());
                     sb1.append("na");
-                    postItem(sb1.append(getNewLine()).toString());
+                    postItem(sb1.toString());
 
                 } else {
                     for (LocatedBlock block : blocks.getLocatedBlocks()) {
@@ -294,12 +319,12 @@ public class HdfsLsPlus extends HdfsAbstract {
                             sb1.append(dni.getIpAddr()).append(getSeparator());
                             sb1.append(dni.getHostName()).append(getSeparator());
                             sb1.append(block.getBlock().getBlockName());
-                            postItem(sb1.append(getNewLine()).toString());
+                            postItem(sb1.toString());
                         }
                     }
                 }
             } else {
-                postItem(sb.append(getNewLine()).toString());
+                postItem(sb.toString());
             }
 
         } catch (IOException e) {
@@ -347,9 +372,12 @@ public class HdfsLsPlus extends HdfsAbstract {
         }
     }
 
-    private void processPath(PathData path) {
+    private boolean processPath(PathData path, int currentDepth) {
         //
-        currentDepth++;
+//        currentDepth++;
+        boolean rtn = true;
+        boolean lclTestFound = false;
+
         if (maxDepth == -1 || currentDepth <= (maxDepth + 1)) {
 
             FileStatus fileStatus = path.stat;
@@ -362,7 +390,9 @@ public class HdfsLsPlus extends HdfsAbstract {
                     go = false;
                 }
 
-                if (go) {
+                if (go
+//                        && !isTestFound()
+                ) {
                     if (fileStatus.isDirectory() && currentDepth == 1) {
                         PathData[] pathDatas = new PathData[0];
                         try {
@@ -371,27 +401,70 @@ public class HdfsLsPlus extends HdfsAbstract {
                             e.printStackTrace();
                         }
                         for (PathData intPd : pathDatas) {
-                            processPath(intPd);
+                            if (!processPath(intPd, currentDepth + 1)) {
+                                if (isTest()) {
+                                    if (isAddComment() && isShowParent()) {
+                                        writeItem(path, fileStatus);
+                                    }
+                                } else {
+                                    writeItem(path, fileStatus);
+                                }
+                            }
                         }
                     } else if (fileStatus.isDirectory() && this.isRecursive()) {
-                        if (doesMatch(fileStatus)) {
+                        if (isTest()) {
+                            if (doesMatch(fileStatus)) {
+                                setTestFound(true);
+                                lclTestFound = true;
+                                if (isAddComment() && !isShowParent()) {
+                                    writeItem(path, fileStatus);
+                                }
+                                return false;
+                            }
+                        } else if (doesMatch(fileStatus)) {
                             writeItem(path, fileStatus);
                         }
-                        PathData[] pathDatas = new PathData[0];
-                        try {
-                            pathDatas = path.getDirectoryContents();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        for (PathData intPd : pathDatas) {
-                            processPath(intPd);
+                        // If we testFound a match, no need to go further.
+                        if (!lclTestFound) {
+                            PathData[] pathDatas = new PathData[0];
+                            try {
+                                pathDatas = path.getDirectoryContents();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            for (PathData intPd : pathDatas) {
+                                if (!processPath(intPd, currentDepth + 1)) {
+                                    if (isTest()) {
+                                        if (isAddComment() && isShowParent()) {
+                                            writeItem(path, fileStatus);
+                                        }
+                                    } else {
+                                        writeItem(path, fileStatus);
+                                    }
+                                    break;
+                                }
+
+//                                if (!processPath(intPd)) {
+//                                    writeItem(path, fileStatus);
+//                                }
+                            }
                         }
                     } else {
                         // Go through contents.
-                        if (doesMatch(fileStatus)) {
+                        if (isTest()) {
+                            if (doesMatch(fileStatus)) {
+                                setTestFound(true);
+                                if (isAddComment() && !isShowParent()) {
+                                    writeItem(path, fileStatus);
+                                }
+                                return false;
+//                                if (isAddComment()) {
+//                                    writeItem(path, fileStatus);
+//                                }
+                            }
+                        } else if (doesMatch(fileStatus)) {
                             writeItem(path, fileStatus);
                         }
-
                     }
                 }
             } catch (Throwable e) {
@@ -401,14 +474,18 @@ public class HdfsLsPlus extends HdfsAbstract {
         } else {
             logv(env, "Max Depth of: " + maxDepth + " Reached.  Sub-folder will not be traversed beyond this depth. Increase of set to -1 for unlimited depth");
         }
-        currentDepth--;
+//        currentDepth--;
+        return rtn;
     }
 
     @Override
-    public void execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+    public int execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
         // reset counter.
         count = 0;
         logv(env, "Beginning 'lsp' collection.");
+
+        // Reset
+        setTestFound(false);
 
         // Get the Filesystem
         configuration = (Configuration) env.getValue(Constants.CFG);
@@ -419,7 +496,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         if (fs == null) {
             log(env, "Please connect first");
-            return;
+            return CODE_NOT_CONNECTED;
         }
 
         URI nnURI = fs.getUri();
@@ -428,7 +505,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+            return CODE_CONNECTION_ISSUE;
         }
 
         Option[] cmdOpts = cmd.getOptions();
@@ -450,12 +527,26 @@ public class HdfsLsPlus extends HdfsAbstract {
         if (cmd.hasOption("comment")) {
             setComment(cmd.getOptionValue("comment"));
             setAddComment(true);
+        } else {
+            setAddComment(false);
         }
 
         if (cmd.hasOption("recursive")) {
             setRecursive(true);
         } else {
             setRecursive(false);
+        }
+
+        if (cmd.hasOption("test")) {
+            setTest(true);
+        } else {
+            setTest(false);
+        }
+
+        if (cmd.hasOption("show-parent") && isTest()) {
+            setShowParent(true);
+        } else {
+            setShowParent(false);
         }
 
         if (cmd.hasOption("maxDepth")) {
@@ -473,10 +564,14 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         if (cmd.hasOption("separator")) {
             setSeparator(cmd.getOptionValue("separator"));
+        } else {
+            setSeparator(DEFAULT_SEPARATOR);
         }
 
         if (cmd.hasOption("newline")) {
             setNewLine(cmd.getOptionValue("newline"));
+        } else {
+            setNewLine(DEFAULT_NEWLINE);
         }
 
         String outputDir = null;
@@ -506,29 +601,39 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         }
 
-        currentDepth = 0;
+//        currentDepth = 0;
 
         PathData targetPathData = null;
         try {
             targetPathData = new PathData(targetPath, configuration);
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+            return CODE_PATH_ERROR;
         }
 
-        processPath(targetPathData);
+        boolean rtn = processPath(targetPathData, 1);
 
-        if (outFS != null)
+        if (outFS != null) {
             try {
                 outFS.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                return CODE_FS_CLOSE_ISSUE;
             } finally {
                 outFS = null;
             }
+        }
 
         logv(env, "'lsp' complete.");
 
+        if (isTest()) {
+            if (isTestFound()) {
+                return CODE_SUCCESS;
+            } else {
+                return CODE_NOT_FOUND;
+            }
+        }
+        return CODE_SUCCESS;
     }
 
     @Override
@@ -618,6 +723,22 @@ public class HdfsLsPlus extends HdfsAbstract {
                 .longOpt("comment")
                 .build();
         opts.addOption(commentOption);
+
+        Option testOption = Option.builder("t").required(false)
+                .argName("test")
+                .desc("Test for existence")
+                .hasArg(false)
+                .longOpt("test")
+                .build();
+        opts.addOption(testOption);
+
+        Option parentOption = Option.builder("sp").required(false)
+                .argName("Show parent")
+                .desc("For Test, show parent")
+                .hasArg(false)
+                .longOpt("show-parent")
+                .build();
+        opts.addOption(parentOption);
 
         return opts;
     }

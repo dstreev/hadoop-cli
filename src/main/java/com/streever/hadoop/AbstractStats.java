@@ -131,12 +131,12 @@ public abstract class AbstractStats extends HdfsAbstract {
     }
 
     @Override
-    public final void execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+    public final int execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
         if (cmd.hasOption("help")) {
             getHelp();
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("hadoop-cli <stats>", getOptions());
-            return;
+            return 0;
         }
 
         // Get the Filesystem
@@ -182,7 +182,7 @@ public abstract class AbstractStats extends HdfsAbstract {
                     startDate = df.parse(cmd.getOptionValue("start"));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    return;
+                    return CODE_BAD_DATE; // Bad Date
                 }
                 startTime = startDate.getTime();
             } else {
@@ -199,7 +199,7 @@ public abstract class AbstractStats extends HdfsAbstract {
                     endDate = df.parse(cmd.getOptionValue("end"));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    return;
+                    return CODE_BAD_DATE; // Bad Date
                 }
                 endTime = endDate.getTime();
             } else {
@@ -220,8 +220,9 @@ public abstract class AbstractStats extends HdfsAbstract {
             clearCache();
         } catch (Throwable t) {
             t.printStackTrace();
-            throw t;
+            return CODE_STATS_ISSUE;
         }
+        return CODE_SUCCESS;
     }
 
     public abstract void process(CommandLine cmdln);

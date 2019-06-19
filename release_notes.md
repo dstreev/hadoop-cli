@@ -28,6 +28,6 @@ Each function has a help option:
 
 ### 1.0.0-SNAPSHOT (in-progress)
 
-This release is the first for `hadoopcli` and is an extension to (replacement of) `hdfs-cli` found [here](https://github.com/dstreev/hdfs-cli)
+This release is the first for `hadoopcli` and is an extension to (replacement of) `hdfs-cli` testFound [here](https://github.com/dstreev/hdfs-cli)
 
 Building on release [2.3.2-SNAPSHOT](https://github.com/dstreev/hdfs-cli) of `hdfscli`, this version starts to integrate with the`Job History Server`, `YARN` and `ATS`.  Hence to change from `hdfscli` to `hadoopcli`.

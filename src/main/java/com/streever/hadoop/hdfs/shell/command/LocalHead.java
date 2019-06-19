@@ -56,7 +56,8 @@ public class LocalHead extends HdfsCommand {
         this.local = local;
     }
 
-    public void execute(Environment env, CommandLine cmd, ConsoleReader console) {
+    public int execute(Environment env, CommandLine cmd, ConsoleReader console) {
+        int rtn = CODE_SUCCESS;
         FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
                         : (FileSystem) env.getValue(Constants.HDFS);
         logv(env, "CWD: " + hdfs.getWorkingDirectory());
@@ -78,6 +79,7 @@ public class LocalHead extends HdfsCommand {
             catch (IOException e) {
                 log(env, "Error reading file '" + cmd.getArgs()[0]
                                 + "': " + e.getMessage());
+                rtn = CODE_CMD_ERROR;
             }
             finally {
                 try {
@@ -94,6 +96,7 @@ public class LocalHead extends HdfsCommand {
             // usage();
         }
         FSUtil.prompt(env);
+        return rtn;
     }
 
     @Override

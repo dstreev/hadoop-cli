@@ -56,7 +56,7 @@ public class LocalCat extends HdfsCommand {
         this.local = local;
     }
 
-    public void execute(Environment env, CommandLine cmd, ConsoleReader console) {
+    public int execute(Environment env, CommandLine cmd, ConsoleReader console) {
         FileSystem hdfs = this.local ? (FileSystem)env.getValue(Constants.LOCAL_FS) : (FileSystem)env.getValue(Constants.HDFS);
         logv(env, "CWD: " + hdfs.getWorkingDirectory());
         
@@ -88,6 +88,7 @@ public class LocalCat extends HdfsCommand {
 //            usage();
         }
         FSUtil.prompt(env);
+        return 0;
     }
     
     @Override

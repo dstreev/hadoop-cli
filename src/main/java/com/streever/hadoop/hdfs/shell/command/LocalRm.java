@@ -44,7 +44,8 @@ public class LocalRm extends HdfsCommand {
         this.local = local;
     }
 
-    public void execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+        int rtn = CODE_SUCCESS;
         try {
             FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
                             : (FileSystem) env.getValue(Constants.HDFS);
@@ -63,8 +64,9 @@ public class LocalRm extends HdfsCommand {
         }
         catch (Throwable e) {
             log(env, "Error: " + e.getMessage());
+            return CODE_CMD_ERROR;
         }
-
+        return rtn;
     }
 
     @Override
