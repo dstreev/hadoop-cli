@@ -68,7 +68,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     // TODO: Extended ACL's
-    private static String DEFAULT_FORMAT = "permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,datanode_info";
+    private static String DEFAULT_FORMAT = "permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,datanode_info,level";
 
     enum PRINT_OPTION {
         PERMISSIONS_LONG,
@@ -82,26 +82,31 @@ public class HdfsLsPlus extends HdfsAbstract {
         MOD,
         ACCESS,
         PATH,
-        DATANODE_INFO
+        DATANODE_INFO,
+        LEVEL
     }
 
     // default
-    private PRINT_OPTION[] print_options = new PRINT_OPTION[]{PERMISSIONS_LONG, PATH, REPLICATION,
-            USER,
-            GROUP,
-            SIZE,
-            BLOCK_SIZE,
-            RATIO,
-            MOD,
-            ACCESS,
-            DATANODE_INFO};
+    private PRINT_OPTION[] print_options =
+            new PRINT_OPTION[]{PERMISSIONS_LONG,
+                    PATH,
+                    REPLICATION,
+                    USER,
+                    GROUP,
+                    SIZE,
+                    BLOCK_SIZE,
+                    RATIO,
+                    MOD,
+                    ACCESS,
+                    DATANODE_INFO,
+                    LEVEL};
 
     private static int DEFAULT_DEPTH = 5;
     private static String DEFAULT_SEPARATOR = "\t";
     private static String DEFAULT_NEWLINE = "\n";
     private String separator = DEFAULT_SEPARATOR;
     private String newLine = DEFAULT_NEWLINE;
-//    private int currentDepth = 0;
+    //    private int currentDepth = 0;
     private boolean recursive = false;
     private boolean invisible = false;
     private boolean addComment = false;
@@ -202,9 +207,13 @@ public class HdfsLsPlus extends HdfsAbstract {
         this.maxDepth = maxDepth;
     }
 
-    public boolean isTest() { return test; }
+    public boolean isTest() {
+        return test;
+    }
 
-    public void setTest(boolean test) { this.test = test; }
+    public void setTest(boolean test) {
+        this.test = test;
+    }
 
     public boolean isTestFound() {
         return testFound;
@@ -239,7 +248,7 @@ public class HdfsLsPlus extends HdfsAbstract {
         print_options = options_list.toArray(print_options);
     }
 
-    private void writeItem(PathData item, FileStatus itemStatus) {
+    private void writeItem(PathData item, FileStatus itemStatus, int level) {
         try {
             StringBuilder sb = new StringBuilder();
 
@@ -292,6 +301,9 @@ public class HdfsLsPlus extends HdfsAbstract {
                         break;
                     case PATH:
                         sb.append(item.toString());
+                        break;
+                    case LEVEL:
+                        sb.append(level);
                         break;
                 }
             }
@@ -373,10 +385,8 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
     private boolean processPath(PathData path, int currentDepth) {
-        //
-//        currentDepth++;
         boolean rtn = true;
-        boolean lclTestFound = false;
+        boolean subTestMatch = false;
 
         if (maxDepth == -1 || currentDepth <= (maxDepth + 1)) {
 
@@ -386,86 +396,69 @@ public class HdfsLsPlus extends HdfsAbstract {
                 String endPath = parts[parts.length - 1];
                 boolean go = true;
 
-                if (endPath.startsWith(".") && !isInvisible()) {
-                    go = false;
-                }
+//                if (endPath.startsWith(".") && !isInvisible()) {
+//                    go = false;
+//                    rtn = false;
+//                }
 
-                if (go
-//                        && !isTestFound()
-                ) {
-                    if (fileStatus.isDirectory() && currentDepth == 1) {
+                if (!(endPath.startsWith(".") && isInvisible())) {
+                    if (fileStatus.isDirectory()) {
                         PathData[] pathDatas = new PathData[0];
                         try {
                             pathDatas = path.getDirectoryContents();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        for (PathData intPd : pathDatas) {
-                            if (!processPath(intPd, currentDepth + 1)) {
-                                if (isTest()) {
-                                    if (isAddComment() && isShowParent()) {
-                                        writeItem(path, fileStatus);
-                                    }
-                                } else {
-                                    writeItem(path, fileStatus);
-                                }
-                            }
-                        }
-                    } else if (fileStatus.isDirectory() && this.isRecursive()) {
-                        if (isTest()) {
-                            if (doesMatch(fileStatus)) {
-                                setTestFound(true);
-                                lclTestFound = true;
-                                if (isAddComment() && !isShowParent()) {
-                                    writeItem(path, fileStatus);
-                                }
-                                return false;
-                            }
-                        } else if (doesMatch(fileStatus)) {
-                            writeItem(path, fileStatus);
-                        }
-                        // If we testFound a match, no need to go further.
-                        if (!lclTestFound) {
-                            PathData[] pathDatas = new PathData[0];
-                            try {
-                                pathDatas = path.getDirectoryContents();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            for (PathData intPd : pathDatas) {
-                                if (!processPath(intPd, currentDepth + 1)) {
-                                    if (isTest()) {
-                                        if (isAddComment() && isShowParent()) {
-                                            writeItem(path, fileStatus);
-                                        }
-                                    } else {
-                                        writeItem(path, fileStatus);
-                                    }
-                                    break;
-                                }
 
-//                                if (!processPath(intPd)) {
-//                                    writeItem(path, fileStatus);
-//                                }
+                        for (PathData intPd : pathDatas) {
+                            if ((intPd.stat.isDirectory() && isRecursive()) || !intPd.stat.isDirectory()) {
+                                if (processPath(intPd, currentDepth + 1)) {
+                                    if (isTest()) {
+                                        // Test Found an Item, so we need to break
+                                        subTestMatch = true;
+                                        if (!intPd.stat.isDirectory()) {
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                         }
+
+                        if (doesMatch(fileStatus)) {
+                            if (!isTest()) {
+                                writeItem(path, fileStatus, currentDepth);
+                            } else {
+                                setTestFound(true);
+                                if (isAddComment()) {
+                                    if (!isShowParent()) {
+                                        writeItem(path, fileStatus, currentDepth);
+                                    }
+                                }
+                            }
+                        } else if (isTest() && isAddComment() && isShowParent() && subTestMatch) {
+                            writeItem(path, fileStatus, currentDepth);
+                            rtn = false;
+                        } else {
+                            rtn = false;
+                        }
+
                     } else {
                         // Go through contents.
-                        if (isTest()) {
-                            if (doesMatch(fileStatus)) {
+                        if (doesMatch(fileStatus)) {
+                            if (!isTest()) {
+                                writeItem(path, fileStatus, currentDepth);
+                            } else {
                                 setTestFound(true);
                                 if (isAddComment() && !isShowParent()) {
-                                    writeItem(path, fileStatus);
+                                    writeItem(path, fileStatus, currentDepth);
                                 }
-                                return false;
-//                                if (isAddComment()) {
-//                                    writeItem(path, fileStatus);
-//                                }
                             }
-                        } else if (doesMatch(fileStatus)) {
-                            writeItem(path, fileStatus);
+                        } else if (isTest()) {
+                            rtn = false;
                         }
                     }
+                } else {
+                    rtn = false;
                 }
             } catch (Throwable e) {
                 // Happens when path doesn't exist.
@@ -473,8 +466,8 @@ public class HdfsLsPlus extends HdfsAbstract {
             }
         } else {
             logv(env, "Max Depth of: " + maxDepth + " Reached.  Sub-folder will not be traversed beyond this depth. Increase of set to -1 for unlimited depth");
+            rtn = false;
         }
-//        currentDepth--;
         return rtn;
     }
 
@@ -611,7 +604,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             return CODE_PATH_ERROR;
         }
 
-        boolean rtn = processPath(targetPathData, 1);
+        processPath(targetPathData, 1);
 
         if (outFS != null) {
             try {
