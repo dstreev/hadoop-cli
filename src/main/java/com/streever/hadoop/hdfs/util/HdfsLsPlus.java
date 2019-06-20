@@ -435,7 +435,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                                     }
                                 }
                             }
-                        } else if (isTest() && isAddComment() && isShowParent() && subTestMatch) {
+                        } else if (isTest() && (isAddComment() || isShowParent()) && subTestMatch) {
                             writeItem(path, fileStatus, currentDepth);
                             rtn = false;
                         } else {
