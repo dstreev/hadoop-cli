@@ -5,17 +5,17 @@ APP_DIR=`dirname $0`
 PRG_ARGS=
 CMD_CP=
 
-if [ -f ./hadoop-cli-full-bin.jar ]; then
+if [[ -f ./hadoop-cli-full-bin.jar ]]; then
     # Look in Current Directory
     CMD_CP=$APP_DIR/hadoop-cli-full-bin.jar
     #echo "Using bin from same directory"
-elif [ -f $APP_DIR/../target/hadoop-cli-full-bin.jar ]; then
+elif [[ -f $APP_DIR/../target/hadoop-cli-full-bin.jar ]]; then
     # Look in ../target
     CMD_CP=$APP_DIR/../target/hadoop-cli-full-bin.jar
     #echo "Using bin from build directory"
 else
     # Look in /usr/local/hadoop-cli/lib
-    if [ -f /usr/local/hadoop-cli/lib/hadoop-cli-full-bin.jar ]; then
+    if [[ -f /usr/local/hadoop-cli/lib/hadoop-cli-full-bin.jar ]]; then
         CMD_CP=/usr/local/hadoop-cli/lib/hadoop-cli-full-bin.jar
         #echo "Using bin from installation directory"
     else
@@ -25,35 +25,52 @@ else
 fi
 
 # Set the default.
-export HADOOP_CONF_DIR="/etc/hadoop/conf";
+export HADOOP_CONF_DIR="/etc/hadoop/conf"
 
-while [ $# -gt 0 ]; do
+AUX_LIBS_DIR=${HADOOP_CLI_AUX_LIBS:-${HOME}/.hadoopcli/aux_libs}
+
+SHOW_CP=
+
+if [[ ! -d ${AUX_LIBS_DIR} ]]; then
+    mkdir -p ${AUX_LIBS_DIR}
+fi
+
+while [[ $# -gt 0 ]]; do
   case "$1" in
     --config)
       shift
-      export HADOOP_CONF_DIR=$1;
+      export HADOOP_CONF_DIR=$1
       shift
       ;;
-#    -i)
-#      shift
-#      PRG_ARGS="${PRG_ARGS} -i '$1'"
-#      shift
-#      ;;
-#    --init)
-#      shift
-#      PRG_ARGS="${PRG_ARGS} -i '$1'"
-#      shift
-#      ;;
+    --aux-libs)
+      shift
+      export AUX_LIBS_DIR=$1
+      shift
+      ;;
+    --show-cp)
+      shift
+      SHOW_CP="true"
+      ;;
     *)
       PRG_ARGS="${PRG_ARGS} $@"
       break;
   esac
 done
 
+if [[ ! -d ${AUX_LIBS_DIR} ]]; then
+    mkdir -p ${AUX_LIBS_DIR}
+fi
+
+for jarFile in `ls -d ${AUX_LIBS_DIR}/*.jar 2> /dev/null`; do
+    CMD_CP=${CMD_CP}:$jarFile
+done
+
 CLI_CMD=""
 
-CLI_CMD="${CLI_CMD}java -cp ${CMD_CP} com.streever.hadoop.HadoopShell ${PRG_ARGS}"
+if [[ "${SHOW_CP}x" != "x" ]]; then
+    echo "Classpath: ${CMD_CP}"
+fi
 
-#echo ${CLI_CMD}
+CLI_CMD="${CLI_CMD}java -cp ${CMD_CP} com.streever.hadoop.HadoopShell ${PRG_ARGS}"
 
 eval "${CLI_CMD}"
