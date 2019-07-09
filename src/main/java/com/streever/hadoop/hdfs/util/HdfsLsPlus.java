@@ -69,6 +69,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
     // TODO: Extended ACL's
     private static String DEFAULT_FORMAT = "permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,datanode_info,level";
+    private static String DEFAULT_FILTER_FORMAT = "path";
 
     enum PRINT_OPTION {
         PERMISSIONS_LONG,
@@ -81,7 +82,9 @@ public class HdfsLsPlus extends HdfsAbstract {
         RATIO,
         MOD,
         ACCESS,
+        PARENT,
         PATH,
+        FILE,
         DATANODE_INFO,
         LEVEL
     }
@@ -101,6 +104,10 @@ public class HdfsLsPlus extends HdfsAbstract {
                     DATANODE_INFO,
                     LEVEL};
 
+    private PRINT_OPTION[] filter_options =
+            new PRINT_OPTION[]{
+                    PATH};
+
     private static int DEFAULT_DEPTH = 5;
     private static String DEFAULT_SEPARATOR = "\t";
     private static String DEFAULT_NEWLINE = "\n";
@@ -115,10 +122,14 @@ public class HdfsLsPlus extends HdfsAbstract {
     // Used to shortcut 'test' and return when match located.
     private boolean testFound = false;
     private Pattern pattern = null;
+
+    //    private PRINT_OPTION filterElement = PATH;
+    private boolean invert = false;
     private String comment = null;
     private int maxDepth = DEFAULT_DEPTH;
     //    private Boolean recurse = Boolean.TRUE;
     private String format = DEFAULT_FORMAT;
+    private String filterFormat = DEFAULT_FILTER_FORMAT;
     private Configuration configuration = null;
     private DFSClient dfsClient = null;
     private FSDataOutputStream outFS = null;
@@ -203,6 +214,14 @@ public class HdfsLsPlus extends HdfsAbstract {
         this.pattern = pattern;
     }
 
+    public boolean isInvert() {
+        return invert;
+    }
+
+    public void setInvert(boolean invert) {
+        this.invert = invert;
+    }
+
     public void setMaxDepth(int maxDepth) {
         this.maxDepth = maxDepth;
     }
@@ -248,11 +267,40 @@ public class HdfsLsPlus extends HdfsAbstract {
         print_options = options_list.toArray(print_options);
     }
 
+    public void setFilterFormat(String format) {
+        this.filterFormat = format;
+        String[] strOptions = this.filterFormat.split(",");
+        List<PRINT_OPTION> options_list = new ArrayList<>();
+        for (String strOption : strOptions) {
+            PRINT_OPTION in = PRINT_OPTION.valueOf(strOption.toUpperCase());
+            if (in != null) {
+                options_list.add(in);
+            }
+        }
+        filter_options = new PRINT_OPTION[strOptions.length];
+        filter_options = options_list.toArray(filter_options);
+
+    }
+
+    //    public static boolean contains(int[] arr, int item) {
+//        int index = Arrays.binarySearch(arr, item);
+//        return index >= 0;
+//    }
+    public static boolean contains(PRINT_OPTION[] arr, PRINT_OPTION item) {
+        return Arrays.stream(arr).anyMatch(item::equals);
+    }
+
+
     private void writeItem(PathData item, FileStatus itemStatus, int level) {
         try {
             StringBuilder sb = new StringBuilder();
 
             boolean in = false;
+            // Skip directories when PARENT is specified and is a directory.
+            if (contains(print_options, PARENT) && itemStatus.isDirectory()) {
+                return;
+            }
+
             for (PRINT_OPTION option : print_options) {
                 if (in && option != DATANODE_INFO)
                     sb.append(getSeparator());
@@ -299,8 +347,17 @@ public class HdfsLsPlus extends HdfsAbstract {
                     case ACCESS:
                         sb.append(df.format(new Date(itemStatus.getAccessTime())));
                         break;
+                    case PARENT:
+                        sb.append(item.path.getParent().toString());
+                        break;
                     case PATH:
                         sb.append(item.toString());
+                        break;
+                    case FILE:
+                        if (!itemStatus.isDirectory())
+                            sb.append(item.path.getName());
+                        else
+                            sb.append(".");
                         break;
                     case LEVEL:
                         sb.append(level);
@@ -374,11 +431,83 @@ public class HdfsLsPlus extends HdfsAbstract {
         }
     }
 
-    protected boolean doesMatch(FileStatus fileStatus) {
+    protected boolean doesMatch(PathData item, FileStatus itemStatus) {
         if (getPattern() != null) {
-            String check = fileStatus.getPath().toString();
+            StringBuilder sb = new StringBuilder();
+
+            boolean in = false;
+            // Skip directories when PARENT is specified and is a directory.
+            if (contains(filter_options, PARENT) && itemStatus.isDirectory()) {
+                return false;
+            }
+
+            for (PRINT_OPTION option : filter_options) {
+                if (in && option != DATANODE_INFO)
+                    sb.append(getSeparator());
+                in = true;
+                switch (option) {
+                    case PERMISSIONS_SHORT:
+                        if (itemStatus.isDirectory())
+                            sb.append("1");
+                        else
+                            sb.append("0");
+                        sb.append(itemStatus.getPermission().toOctal());
+                        break;
+                    case PERMISSIONS_LONG:
+                        if (itemStatus.isDirectory()) {
+                            sb.append("d");
+                        }
+                        sb.append(itemStatus.getPermission());
+                        break;
+                    case REPLICATION:
+                        sb.append(itemStatus.getReplication());
+                        break;
+                    case USER:
+                        sb.append(itemStatus.getOwner());
+                        break;
+                    case GROUP:
+                        sb.append(itemStatus.getGroup());
+                        break;
+                    case SIZE:
+                        sb.append(itemStatus.getLen());
+                        break;
+                    case BLOCK_SIZE:
+                        sb.append(itemStatus.getBlockSize());
+                        break;
+                    case RATIO:
+                        if (!itemStatus.isDirectory()) {
+                            Double blockRatio = (double) itemStatus.getLen() / itemStatus.getBlockSize();
+                            BigDecimal ratioBD = new BigDecimal(blockRatio, mc);
+                            sb.append(ratioBD.toString());
+                        }
+                        break;
+                    case MOD:
+                        sb.append(df.format(new Date(itemStatus.getModificationTime())));
+                        break;
+                    case ACCESS:
+                        sb.append(df.format(new Date(itemStatus.getAccessTime())));
+                        break;
+                    case PARENT:
+                        sb.append(item.path.getParent().toString());
+                        break;
+                    case PATH:
+                        sb.append(item.toString());
+                        break;
+                    case FILE:
+                        if (!itemStatus.isDirectory())
+                            sb.append(item.path.getName());
+                        else
+                            sb.append(".");
+                        break;
+                }
+            }
+            String check = sb.toString();
             Matcher matcher = getPattern().matcher(check);
-            return matcher.matches();
+            if (isInvert()) {
+                return !matcher.matches();
+            } else {
+                return matcher.matches();
+            }
         } else {
             return true;
         }
@@ -424,7 +553,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                             }
                         }
 
-                        if (doesMatch(fileStatus)) {
+                        if (doesMatch(path, fileStatus)) {
                             if (!isTest()) {
                                 writeItem(path, fileStatus, currentDepth);
                             } else {
@@ -444,7 +573,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
                     } else {
                         // Go through contents.
-                        if (doesMatch(fileStatus)) {
+                        if (doesMatch(path, fileStatus)) {
                             if (!isTest()) {
                                 writeItem(path, fileStatus, currentDepth);
                             } else {
@@ -504,11 +633,23 @@ public class HdfsLsPlus extends HdfsAbstract {
         Option[] cmdOpts = cmd.getOptions();
         String[] cmdArgs = cmd.getArgs();
 
+        if (cmd.hasOption("invert")) {
+            setInvert(true);
+        } else {
+            setInvert(false);
+        }
+
         if (cmd.hasOption("filter")) {
             String filter = cmd.getOptionValue("filter");
             setPattern(Pattern.compile(filter));
         } else {
             setPattern(null);
+        }
+
+        if (cmd.hasOption("filter-element")) {
+            setFilterFormat(cmd.getOptionValue("filter-element"));
+        } else {
+            setFilterFormat("path"); // default
         }
 
         if (cmd.hasOption("format")) {
@@ -637,7 +778,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         Option formatOption = Option.builder("f").required(false)
                 .argName("output-format")
-                .desc("Comma separated list of one or more: permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,datanode_info (default all of the above)")
+                .desc("Comma separated list of one or more: permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,file,datanode_info (default all of the above)")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .valueSeparator(',')
@@ -679,6 +820,23 @@ public class HdfsLsPlus extends HdfsAbstract {
                 .longOpt("filter")
                 .build();
         opts.addOption(filterOption);
+
+        Option filterElementOption = Option.builder("Fe").required(false)
+                .argName("filter element")
+                .desc("Filter on 'element'.  One of '--format'")
+                .hasArg(true)
+                .numberOfArgs(1)
+                .longOpt("filter-element")
+                .build();
+        opts.addOption(filterElementOption);
+
+        Option invertOption = Option.builder("v").required(false)
+                .argName("invert")
+                .desc("Invert Regex Filter of Content")
+                .hasArg(false)
+                .longOpt("invert")
+                .build();
+        opts.addOption(invertOption);
 
         Option sepOption = Option.builder("s").required(false)
                 .argName("separator")

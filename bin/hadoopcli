@@ -30,6 +30,8 @@ export HADOOP_CONF_DIR="/etc/hadoop/conf"
 AUX_LIBS_DIR=${HADOOP_CLI_AUX_LIBS:-${HOME}/.hadoopcli/aux_libs}
 
 SHOW_CP=
+CMD_DIRECTIVE=
+CMD_ARGS=
 
 if [[ ! -d ${AUX_LIBS_DIR} ]]; then
     mkdir -p ${AUX_LIBS_DIR}
@@ -50,6 +52,15 @@ while [[ $# -gt 0 ]]; do
     --show-cp)
       shift
       SHOW_CP="true"
+      ;;
+    -s|--silent)
+      shift
+      PRG_ARGS="${PRG_ARGS} -s"
+      ;;
+    -e|--execute)
+      shift
+      PRG_ARGS="${PRG_ARGS} -e \"$1\""
+      shift
       ;;
     *)
       PRG_ARGS="${PRG_ARGS} $@"

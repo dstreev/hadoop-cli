@@ -729,13 +729,20 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 .build();
         options.addOption(initOption);
 
-        // add f option
-        Option runOption = Option.builder("r").required(false)
-                .argName("run").desc("Run File and Exit")
-                .longOpt("run file")
+        Option executeOption = Option.builder("e").required(false)
+                .argName("execute").desc("Execute Command")
+                .longOpt("execute command")
                 .hasArg(true).numberOfArgs(1)
                 .build();
-        options.addOption(runOption);
+        options.addOption(executeOption);
+
+        // add f option
+        Option fileOption = Option.builder("f").required(false)
+                .argName("file").desc("Run File and Exit")
+                .longOpt("exec file")
+                .hasArg(true).numberOfArgs(1)
+                .build();
+        options.addOption(fileOption);
 
         // add stdin option
         Option siOption = Option.builder("stdin").required(false)
@@ -887,8 +894,13 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
             runFile(cmd.getOptionValue("i"), reader);
         }
 
-        if (cmd.hasOption("r")) {
-            runFile(cmd.getOptionValue("r"), reader);
+        if (cmd.hasOption("e")) {
+            processInput(cmd.getOptionValue("e"), reader);
+            processInput("exit", reader);
+        }
+
+        if (cmd.hasOption("f")) {
+            runFile(cmd.getOptionValue("f"), reader);
             processInput("exit", reader);
         }
 
