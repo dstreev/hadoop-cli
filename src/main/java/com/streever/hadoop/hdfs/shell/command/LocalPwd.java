@@ -22,6 +22,7 @@
  */
 package com.streever.hadoop.hdfs.shell.command;
 
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
@@ -36,7 +37,7 @@ public class LocalPwd extends HdfsCommand {
         super(name);
     }
 
-    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
         
         String wd = localfs.getWorkingDirectory().toString();
@@ -48,7 +49,7 @@ public class LocalPwd extends HdfsCommand {
             log(env, wd.substring(5));
         }
         FSUtil.prompt(env);
-        return CODE_SUCCESS;
+        return CommandReturn.GOOD;
     }
     
     @Override

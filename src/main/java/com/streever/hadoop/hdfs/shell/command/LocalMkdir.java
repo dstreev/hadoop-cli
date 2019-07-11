@@ -25,6 +25,7 @@ package com.streever.hadoop.hdfs.shell.command;
 
 import java.io.IOException;
 
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 
@@ -53,7 +54,7 @@ public class LocalMkdir extends HdfsCommand {
         this.local = local;
     }
 
-    public int execute(Environment env, CommandLine cmd, ConsoleReader console) {
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader console) {
         FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
                         : (FileSystem) env.getValue(Constants.HDFS);
         logv(env, "CWD: " + hdfs.getWorkingDirectory());
@@ -74,7 +75,7 @@ public class LocalMkdir extends HdfsCommand {
         else {
         }
         FSUtil.prompt(env);
-        return 0;
+        return CommandReturn.GOOD;
     }
 
     @Override

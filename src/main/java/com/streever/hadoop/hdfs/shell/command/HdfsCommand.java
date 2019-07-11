@@ -23,6 +23,7 @@
 package com.streever.hadoop.hdfs.shell.command;
 
 import com.streever.tools.stemshell.Environment;
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -57,8 +58,9 @@ public class HdfsCommand extends HdfsAbstract {
         super(name,env);
     }
 
-    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FsShell shell = new FsShell();
+        CommandReturn cr = CommandReturn.GOOD;
 
         Configuration conf = (Configuration)env.getValue(Constants.CFG);
 
@@ -149,14 +151,15 @@ public class HdfsCommand extends HdfsAbstract {
 
         try {
             res = ToolRunner.run(shell, argv);
-//            if (res != 0) {
-//                StringBuilder sb = new StringBuilder("ERROR");
-//                for (String arg: argv) {
-//                    sb.append("\t");
-//                    sb.append(arg);
-//                }
+            if (res != 0) {
+                StringBuilder sb = new StringBuilder("ERROR");
+                for (String arg: argv) {
+                    sb.append("\t");
+                    sb.append(arg);
+                }
+                cr = new CommandReturn(res, sb.toString());
 //                this.loge(env, sb.toString());
-//            }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -166,7 +169,7 @@ public class HdfsCommand extends HdfsAbstract {
                 e.printStackTrace();
             }
         }
-        return res;
+        return cr;
     }
 
     @Override

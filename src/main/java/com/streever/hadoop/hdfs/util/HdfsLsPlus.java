@@ -27,6 +27,7 @@ import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.streever.tools.stemshell.Environment;
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -601,10 +602,11 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
     @Override
-    public int execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+    public CommandReturn execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
         // reset counter.
         count = 0;
         logv(env, "Beginning 'lsp' collection.");
+        CommandReturn cr = CommandReturn.GOOD;
 
         // Reset
         setTestFound(false);
@@ -617,8 +619,8 @@ public class HdfsLsPlus extends HdfsAbstract {
         fs = (FileSystem) env.getValue(Constants.HDFS);
 
         if (fs == null) {
-            log(env, "Please connect first");
-            return CODE_NOT_CONNECTED;
+//            log(env, "Please connect first");
+            return new CommandReturn(CODE_NOT_CONNECTED, "Connect First");
         }
 
         URI nnURI = fs.getUri();
@@ -626,8 +628,8 @@ public class HdfsLsPlus extends HdfsAbstract {
         try {
             dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
-            e.printStackTrace();
-            return CODE_CONNECTION_ISSUE;
+//            e.printStackTrace();
+            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
         }
 
         Option[] cmdOpts = cmd.getOptions();
@@ -741,8 +743,8 @@ public class HdfsLsPlus extends HdfsAbstract {
         try {
             targetPathData = new PathData(targetPath, configuration);
         } catch (IOException e) {
-            e.printStackTrace();
-            return CODE_PATH_ERROR;
+//            e.printStackTrace();
+            return new CommandReturn(CODE_PATH_ERROR, "Error in Path");
         }
 
         processPath(targetPathData, 1);
@@ -751,8 +753,8 @@ public class HdfsLsPlus extends HdfsAbstract {
             try {
                 outFS.close();
             } catch (IOException e) {
-                e.printStackTrace();
-                return CODE_FS_CLOSE_ISSUE;
+//                e.printStackTrace();
+                return new CommandReturn(CODE_FS_CLOSE_ISSUE, e.getMessage());
             } finally {
                 outFS = null;
             }
@@ -762,12 +764,12 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         if (isTest()) {
             if (isTestFound()) {
-                return CODE_SUCCESS;
+                return cr;
             } else {
-                return CODE_NOT_FOUND;
+                return new CommandReturn(CODE_NOT_FOUND, "");
             }
         }
-        return CODE_SUCCESS;
+        return cr;
     }
 
     @Override

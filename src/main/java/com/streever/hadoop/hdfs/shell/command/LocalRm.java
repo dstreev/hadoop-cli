@@ -23,6 +23,7 @@
 
 package com.streever.hadoop.hdfs.shell.command;
 
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
@@ -44,8 +45,8 @@ public class LocalRm extends HdfsCommand {
         this.local = local;
     }
 
-    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
-        int rtn = CODE_SUCCESS;
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+        CommandReturn cr = CommandReturn.GOOD;
         try {
             FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
                             : (FileSystem) env.getValue(Constants.HDFS);
@@ -63,10 +64,9 @@ public class LocalRm extends HdfsCommand {
 
         }
         catch (Throwable e) {
-            log(env, "Error: " + e.getMessage());
-            return CODE_CMD_ERROR;
+            return new CommandReturn(CODE_CMD_ERROR, e.getMessage());
         }
-        return rtn;
+        return cr;
     }
 
     @Override

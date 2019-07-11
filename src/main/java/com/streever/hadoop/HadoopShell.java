@@ -697,6 +697,7 @@ import com.streever.hadoop.hdfs.shell.command.LocalCat;
 import com.streever.hadoop.hdfs.shell.command.LocalHead;
 import com.streever.tools.stemshell.BasicEnvironmentImpl;
 import com.streever.tools.stemshell.Environment;
+import com.streever.tools.stemshell.command.CommandReturn;
 import com.streever.tools.stemshell.commands.Env;
 import com.streever.tools.stemshell.commands.Exit;
 import com.streever.tools.stemshell.commands.Help;
@@ -958,7 +959,10 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                     logv(getEnv(), line);
                     String line2 = line.trim();
                     if (line2.length() > 0 && !line2.startsWith("#")) {
-                        processInput(line2, reader);
+                        CommandReturn cr = processInput(line2, reader);
+                        // Handled at process level to extract details from processor
+                        //                        if (res != 0)
+//                            loge(getEnv(), "Non-Zero Return Code: " + Integer.toString(res));
                     }
                 }
             } catch (Exception e) {

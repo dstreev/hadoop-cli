@@ -27,6 +27,7 @@ import static com.streever.hadoop.hdfs.shell.command.FSUtil.shortFormat;
 
 import java.io.IOException;
 
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 
@@ -46,7 +47,7 @@ public class LocalLs extends HdfsCommand {
         super(name, env);
     }
 
-    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
             FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
             Path srcPath = cmd.getArgs().length == 0 ? localfs.getWorkingDirectory() : new Path(localfs.getWorkingDirectory(), cmd.getArgs()[0]);
@@ -64,7 +65,7 @@ public class LocalLs extends HdfsCommand {
         catch (IOException e) {
             log(env, e.getMessage());
         }
-        return 0;
+        return CommandReturn.GOOD;
     }
 
 

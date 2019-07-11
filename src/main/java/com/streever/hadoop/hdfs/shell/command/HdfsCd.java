@@ -24,6 +24,7 @@ package com.streever.hadoop.hdfs.shell.command;
 
 import java.io.IOException;
 
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 
@@ -42,9 +43,9 @@ public class HdfsCd extends HdfsCommand {
         this.env = env;
     }
 
-    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FileSystem hdfs = null;
-        int rtn = CODE_SUCCESS;
+        CommandReturn cr = CommandReturn.GOOD;
         try {
             hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
@@ -68,12 +69,11 @@ public class HdfsCd extends HdfsCommand {
             }
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-            rtn = CODE_CMD_ERROR;
+            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
         } finally {
             FSUtil.prompt(env);
         }
-        return rtn;
+        return cr;
     }
 
     @Override

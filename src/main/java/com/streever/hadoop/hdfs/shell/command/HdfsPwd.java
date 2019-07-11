@@ -22,6 +22,7 @@
  */
 package com.streever.hadoop.hdfs.shell.command;
 
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 
 import org.apache.commons.cli.CommandLine;
@@ -36,7 +37,7 @@ public class HdfsPwd extends HdfsCommand {
         super(name);
     }
 
-    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
         String wd = hdfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {
@@ -46,7 +47,7 @@ public class HdfsPwd extends HdfsCommand {
             log(env, wd.substring(env.getProperty(Constants.HDFS_URL).length()));
         }
         FSUtil.prompt(env);
-        return CODE_SUCCESS;
+        return CommandReturn.GOOD;
     }
 
     @Override

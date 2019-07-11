@@ -27,6 +27,7 @@ import com.streever.hadoop.HadoopShell;
 import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.streever.tools.stemshell.Environment;
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -55,7 +56,7 @@ public class HdfsSource  extends HdfsAbstract {
     }
 
     @Override
-    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
 
         logv(env, "Beginning 'source' collection.");
 
@@ -68,7 +69,7 @@ public class HdfsSource  extends HdfsAbstract {
 
         if (fs == null) {
             log(env, "Please connect first");
-            return CODE_NOT_CONNECTED;
+            return new CommandReturn(CODE_NOT_CONNECTED, "Not connected. Connect first.");
         }
 
         URI nnURI = fs.getUri();
@@ -77,7 +78,7 @@ public class HdfsSource  extends HdfsAbstract {
             dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
             e.printStackTrace();
-            return CODE_CONNECTION_ISSUE;
+            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
         }
 
         Option[] cmdOpts = cmd.getOptions();
@@ -89,7 +90,7 @@ public class HdfsSource  extends HdfsAbstract {
 
         logv(env,"'lsp' complete.");
 
-        return CODE_SUCCESS;
+        return CommandReturn.GOOD;
     }
 
     private void runSource(String sourceFile, ConsoleReader reader) {

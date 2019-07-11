@@ -29,6 +29,7 @@ import com.streever.hadoop.util.HdfsWriter;
 import com.streever.hadoop.util.RecordConverter;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.streever.tools.stemshell.Environment;
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -131,12 +132,12 @@ public abstract class AbstractStats extends HdfsAbstract {
     }
 
     @Override
-    public final int execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+    public final CommandReturn execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
         if (cmd.hasOption("help")) {
             getHelp();
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("hadoop-cli <stats>", getOptions());
-            return 0;
+            return CommandReturn.GOOD;
         }
 
         // Get the Filesystem
@@ -182,7 +183,7 @@ public abstract class AbstractStats extends HdfsAbstract {
                     startDate = df.parse(cmd.getOptionValue("start"));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    return CODE_BAD_DATE; // Bad Date
+                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
                 }
                 startTime = startDate.getTime();
             } else {
@@ -199,7 +200,7 @@ public abstract class AbstractStats extends HdfsAbstract {
                     endDate = df.parse(cmd.getOptionValue("end"));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    return CODE_BAD_DATE; // Bad Date
+                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
                 }
                 endTime = endDate.getTime();
             } else {
@@ -220,9 +221,9 @@ public abstract class AbstractStats extends HdfsAbstract {
             clearCache();
         } catch (Throwable t) {
             t.printStackTrace();
-            return CODE_STATS_ISSUE;
+            return new CommandReturn(CODE_STATS_ISSUE, t.getMessage());
         }
-        return CODE_SUCCESS;
+        return CommandReturn.GOOD;
     }
 
     public abstract void process(CommandLine cmdln);

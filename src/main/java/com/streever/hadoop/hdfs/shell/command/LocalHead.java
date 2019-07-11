@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 
@@ -56,8 +57,9 @@ public class LocalHead extends HdfsCommand {
         this.local = local;
     }
 
-    public int execute(Environment env, CommandLine cmd, ConsoleReader console) {
-        int rtn = CODE_SUCCESS;
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader console) {
+        CommandReturn cr = CommandReturn.GOOD;
+//        int rtn = CODE_SUCCESS;
         FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
                         : (FileSystem) env.getValue(Constants.HDFS);
         logv(env, "CWD: " + hdfs.getWorkingDirectory());
@@ -77,9 +79,11 @@ public class LocalHead extends HdfsCommand {
                 }
             }
             catch (IOException e) {
-                log(env, "Error reading file '" + cmd.getArgs()[0]
+//                log(env, "Error reading file '" + cmd.getArgs()[0]
+//                                + "': " + e.getMessage());
+                cr = new CommandReturn(CODE_CMD_ERROR, "Error reading file '" + cmd.getArgs()[0]
                                 + "': " + e.getMessage());
-                rtn = CODE_CMD_ERROR;
+//                rtn = CODE_CMD_ERROR;
             }
             finally {
                 try {
@@ -96,7 +100,7 @@ public class LocalHead extends HdfsCommand {
             // usage();
         }
         FSUtil.prompt(env);
-        return rtn;
+        return cr;
     }
 
     @Override

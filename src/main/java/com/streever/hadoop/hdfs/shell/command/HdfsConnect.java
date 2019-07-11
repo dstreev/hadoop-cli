@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.streever.tools.stemshell.command.AbstractCommand;
+import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
@@ -49,7 +50,7 @@ public class HdfsConnect extends AbstractCommand {
         this.completer = completer;
     }
 
-    public int execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
             // Get a value that over rides the default, if nothing then use default.
 // Requires Java 1.8...
@@ -102,7 +103,7 @@ public class HdfsConnect extends AbstractCommand {
         } catch (IOException e) {
             log(env, e.getMessage());
         }
-        return 0;
+        return CommandReturn.GOOD;
     }
 
     @Override
