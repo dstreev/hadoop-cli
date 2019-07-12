@@ -522,8 +522,12 @@ public class HdfsLsPlus extends HdfsAbstract {
 
             FileStatus fileStatus = path.stat;
             try {
-                String[] parts = fileStatus.getPath().toUri().getPath().split("/");
-                String endPath = parts[parts.length - 1];
+                String[] parts = null;
+                String endPath = null;
+                parts = fileStatus.getPath().toUri().getPath().split("/");
+                if (parts.length > 0) {
+                    endPath = parts[parts.length - 1];
+                }
                 boolean go = true;
 
 //                if (endPath.startsWith(".") && !isInvisible()) {
@@ -531,7 +535,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 //                    rtn = false;
 //                }
 
-                if (!(endPath.startsWith(".") && isInvisible())) {
+                if (endPath == null || (!(endPath.startsWith(".") && isInvisible()))) {
                     if (fileStatus.isDirectory()) {
                         PathData[] pathDatas = new PathData[0];
                         try {

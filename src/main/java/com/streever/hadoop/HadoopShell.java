@@ -813,9 +813,9 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
     }
 
     @Override
-    protected void preProcessInitializationArguments(String[] arguments) {
-        super.preProcessInitializationArguments(arguments);
-
+    protected boolean preProcessInitializationArguments(String[] arguments) {
+//        super.preProcessInitializationArguments(arguments);
+        boolean rtn = Boolean.TRUE;
         // create Options object
         Options options = getOptions();
 
@@ -868,13 +868,13 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
             formatter.printHelp("hadoopcli", options);
             System.exit(-1);
         }
-
+        return rtn;
     }
 
     @Override
-    protected void postProcessInitializationArguments(String[] arguments, ConsoleReader reader) {
-        super.postProcessInitializationArguments(arguments, reader);
-
+    protected boolean postProcessInitializationArguments(String[] arguments, ConsoleReader reader) {
+//        super.postProcessInitializationArguments(arguments, reader);
+        boolean rtn = Boolean.TRUE;
         // create Options object
         Options options = getOptions();
 
@@ -889,7 +889,10 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
             System.exit(-1);
         }
 
-        autoConnect(reader);
+        if (!autoConnect(reader)) {
+            loge(getEnv(), "Failed to Connect");
+            rtn = Boolean.FALSE;
+        }
 
         if (cmd.hasOption("i")) {
             runFile(cmd.getOptionValue("i"), reader);
@@ -927,7 +930,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
             }
 
         }
-
+        return rtn;
     }
 
     public void runFile(String set, ConsoleReader reader) {
@@ -973,15 +976,25 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
 
     }
 
-    private void autoConnect(ConsoleReader reader) {
+    private boolean autoConnect(ConsoleReader reader) {
+        CommandReturn crTest = null;
+        boolean rtn = true;
         try {
             String userHome = System.getProperty("user.name");
-            processInput("connect", reader);
-            processInput("cd /user/" + userHome, reader);
+            crTest = processInput("connect", reader);
+            if (crTest.isError()) {
+                rtn = false;
+                loge(getEnv(), crTest.getSummary());
+            }
+            crTest = processInput("cd /user/" + userHome, reader);
+            if (crTest.isError()) {
+                rtn = false;
+                loge(getEnv(), crTest.getSummary());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return rtn;
     }
 
     @Override

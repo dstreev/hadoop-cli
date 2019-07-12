@@ -75,7 +75,7 @@ public class HdfsConnect extends AbstractCommand {
             if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
                 UserGroupInformation.setConfiguration(config);
             }
-
+             
             FileSystem hdfs = null;
             try {
                 hdfs = FileSystem.get(config);
@@ -95,7 +95,7 @@ public class HdfsConnect extends AbstractCommand {
             FSUtil.prompt(env);
 
             if (!env.isSilent())
-                log(env, "Connected: " + hdfs.getUri());
+                log(env, "Connecting: " + hdfs.getUri());
             
             logv(env, "HDFS CWD: " + hdfs.getWorkingDirectory());
             logv(env, "Local CWD: " + local.getWorkingDirectory());
