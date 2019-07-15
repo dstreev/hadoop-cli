@@ -64,7 +64,7 @@ public class HdfsCommand extends HdfsAbstract {
 
         Configuration conf = (Configuration)env.getValue(Constants.CFG);
 
-        String hdfs_uri = (String)env.getProperty(Constants.HDFS_URL);
+        String hdfs_uri = (String)env.getProperties().getProperty(Constants.HDFS_URL);
 
         FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
 

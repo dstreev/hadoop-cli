@@ -24,6 +24,7 @@ package com.streever.hadoop.hdfs.shell.command;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 
 import com.streever.tools.stemshell.command.AbstractCommand;
 import com.streever.tools.stemshell.command.CommandReturn;
@@ -40,6 +41,8 @@ import com.streever.tools.stemshell.Environment;
 import org.apache.hadoop.security.UserGroupInformation;
 
 public class HdfsConnect extends AbstractCommand {
+
+    public static final String CURRENT_USER_PROP = "current.user";
 
     public static final String HADOOP_CONF_DIR = "HADOOP_CONF_DIR";
     private static final String[] HADOOP_CONF_FILES = {"core-site.xml", "hdfs-site.xml", "mapred-site.xml", "yarn-site.xml"};
@@ -74,8 +77,19 @@ public class HdfsConnect extends AbstractCommand {
             // hadoop.security.authentication
             if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
                 UserGroupInformation.setConfiguration(config);
+                env.getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
+//                log(env, UserGroupInformation.getCurrentUser().getUserName());
+//                log(env, UserGroupInformation.getCurrentUser().getShortUserName());
             }
-             
+
+            Enumeration e = env.getProperties().propertyNames();
+
+            while (e.hasMoreElements()) {
+                String key = (String) e.nextElement();
+                String value = env.getProperties().getProperty(key);
+                config.set(key, value);
+            }
+
             FileSystem hdfs = null;
             try {
                 hdfs = FileSystem.get(config);
@@ -90,7 +104,7 @@ public class HdfsConnect extends AbstractCommand {
 
             FileSystem local = FileSystem.getLocal(new Configuration());
             env.setValue(Constants.LOCAL_FS, local);
-            env.setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
+            env.getProperties().setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
 
             FSUtil.prompt(env);
 

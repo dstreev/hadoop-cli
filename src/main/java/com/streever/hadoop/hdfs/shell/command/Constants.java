@@ -29,5 +29,7 @@ public interface Constants {
     String HDFS = "hdfs.fs";
     String LOCAL_FS = "local.fs";
     String CFG = "config";
+    String CONNECT_PROTOCOL = "connect.protocol";
+    String WEBHDFS = "webhdfs.fs";
 
 }

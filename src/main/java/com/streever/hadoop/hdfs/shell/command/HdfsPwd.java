@@ -44,7 +44,7 @@ public class HdfsPwd extends HdfsCommand {
             log(env, wd);
         }
         else {
-            log(env, wd.substring(env.getProperty(Constants.HDFS_URL).length()));
+            log(env, wd.substring(env.getProperties().getProperty(Constants.HDFS_URL).length()));
         }
         FSUtil.prompt(env);
         return CommandReturn.GOOD;

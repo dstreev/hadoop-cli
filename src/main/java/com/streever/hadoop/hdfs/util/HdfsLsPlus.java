@@ -411,7 +411,9 @@ public class HdfsLsPlus extends HdfsAbstract {
                     sb.append(line);
                     outFS.write(sb.toString().getBytes());
                 } else {
-                    outFS.write(line.getBytes());
+                    StringBuilder sb = new StringBuilder(line);
+                    sb.append("\n");
+                    outFS.write(sb.toString().getBytes());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -612,13 +614,20 @@ public class HdfsLsPlus extends HdfsAbstract {
         logv(env, "Beginning 'lsp' collection.");
         CommandReturn cr = CommandReturn.GOOD;
 
+        // Check connect protocol
+        if (!environment.getProperties().getProperty(Constants.CONNECT_PROTOCOL).equalsIgnoreCase(Constants.HDFS)) {
+            loge(environment, "This function is only available when connecting via 'hdfs'");
+            cr = new CommandReturn(-1, "Not available with this protocol");
+            return cr;
+        }
+
         // Reset
         setTestFound(false);
 
         // Get the Filesystem
         configuration = (Configuration) env.getValue(Constants.CFG);
 
-        String hdfs_uri = (String) env.getProperty(Constants.HDFS_URL);
+        String hdfs_uri = (String) env.getProperties().getProperty(Constants.HDFS_URL);
 
         fs = (FileSystem) env.getValue(Constants.HDFS);
 
@@ -717,9 +726,21 @@ public class HdfsLsPlus extends HdfsAbstract {
         String outputDir = null;
         String outputFile = null;
 
+        String targetPath = null;
+        if (cmdArgs.length > 0) {
+            String pathIn = cmdArgs[0];
+            targetPath = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), pathIn);
+        } else {
+            targetPath = fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length());
+
+        }
+
         if (cmd.hasOption("output")) {
-            outputDir = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
-            outputFile = outputDir + "/" + UUID.randomUUID();
+            outputDir = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+//            Date now = new Date();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+            String encodeTargetPath = targetPath.replace('/','_');
+            outputFile = outputDir + "/" + df.format(new Date()) + "-" + encodeTargetPath;
 
             Path pof = new Path(outputFile);
             try {
@@ -732,16 +753,6 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         }
 
-        String targetPath = null;
-        if (cmdArgs.length > 0) {
-            String pathIn = cmdArgs[0];
-            targetPath = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperty(Constants.HDFS_URL)).length()), pathIn);
-        } else {
-            targetPath = fs.getWorkingDirectory().toString().substring(((String) env.getProperty(Constants.HDFS_URL)).length());
-
-        }
-
-//        currentDepth = 0;
 
         PathData targetPathData = null;
         try {

@@ -112,7 +112,7 @@ public abstract class HdfsAbstract extends AbstractCommand {
                     case REMOTE_LOCAL:
                     case REMOTE_REMOTE:
                     case NONE:
-                        rtn = buildPath2(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperty(Constants.HDFS_URL)).length()), in);
+                        rtn = buildPath2(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
                         break;
                     case LOCAL_REMOTE:
                         rtn = buildPath2(localfs.getWorkingDirectory().toString().substring(5), in);
@@ -131,7 +131,7 @@ public abstract class HdfsAbstract extends AbstractCommand {
                         break;
                     case LOCAL_REMOTE:
                     case REMOTE_REMOTE:
-                        rtn = buildPath2(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperty(Constants.HDFS_URL)).length()), in);
+                        rtn = buildPath2(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
                         break;
                     case NONE:
                         break;

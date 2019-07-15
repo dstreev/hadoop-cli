@@ -55,7 +55,7 @@ public class HdfsCd extends HdfsCommand {
 
             Path newPath = null;
             if (dir.startsWith("/")) {
-                newPath = new Path(env.getProperty(Constants.HDFS_URL), dir);
+                newPath = new Path(env.getProperties().getProperty(Constants.HDFS_URL), dir);
             } else {
                 newPath = new Path(hdfs.getWorkingDirectory(), dir);
             }
