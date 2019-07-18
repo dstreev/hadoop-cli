@@ -5,7 +5,7 @@ APP_DIR=`dirname $0`
 PRG_ARGS=
 CMD_CP=
 
-if [[ -f ./hadoop-cli-full-bin.jar ]]; then
+if [[ -f $APP_DIR/hadoop-cli-full-bin.jar ]]; then
     # Look in Current Directory
     CMD_CP=$APP_DIR/hadoop-cli-full-bin.jar
     #echo "Using bin from same directory"
