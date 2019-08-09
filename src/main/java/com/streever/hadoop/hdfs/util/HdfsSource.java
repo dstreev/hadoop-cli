@@ -63,7 +63,7 @@ public class HdfsSource  extends HdfsAbstract {
         // Get the Filesystem
         configuration = (Configuration) env.getValue(Constants.CFG);
 
-        String hdfs_uri = (String) env.getProperty(Constants.HDFS_URL);
+        String hdfs_uri = (String) env.getProperties().getProperty(Constants.HDFS_URL);
 
         fs = (FileSystem) env.getValue(Constants.HDFS);
 
@@ -88,7 +88,7 @@ public class HdfsSource  extends HdfsAbstract {
             runSource(cmd.getOptionValue("lf"), reader);
         }
 
-        logv(env,"'lsp' complete.");
+        logv(env,"'Source' complete.");
 
         return CommandReturn.GOOD;
     }

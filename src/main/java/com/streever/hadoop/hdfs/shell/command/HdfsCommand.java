@@ -64,7 +64,7 @@ public class HdfsCommand extends HdfsAbstract {
 
         Configuration conf = (Configuration)env.getValue(Constants.CFG);
 
-        String hdfs_uri = (String)env.getProperty(Constants.HDFS_URL);
+        String hdfs_uri = (String)env.getProperties().getProperty(Constants.HDFS_URL);
 
         FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
@@ -88,7 +88,7 @@ public class HdfsCommand extends HdfsAbstract {
         String leftPath = null;
         String rightPath = null;
 
-        switch (directionContext) {
+        switch (pathDirectives.getDirection()) {
             case REMOTE_LOCAL:
                 pathCount += 2; // Source and Destination Path Elements.
                 break;
@@ -104,9 +104,9 @@ public class HdfsCommand extends HdfsAbstract {
                 pathCount += 1;
         }
 
-        leftPath = buildPath(Side.LEFT, cmdArgs, directionContext);
-        if (directionContext != Direction.NONE) {
-            rightPath = buildPath(Side.RIGHT, cmdArgs, directionContext);
+        leftPath = pathBuilder.buildPath(Side.LEFT, cmdArgs);
+        if (pathDirectives.getDirection() != Direction.NONE) {
+            rightPath = pathBuilder.buildPath(Side.RIGHT, cmdArgs);
         }
 
         String[] newCmdArgs = new String[pathCount];
@@ -117,7 +117,7 @@ public class HdfsCommand extends HdfsAbstract {
             newCmdArgs[0] = leftPath;
         }
 
-        argv = new String[cmdOpts.length + newCmdArgs.length + 1 + directives];
+        argv = new String[cmdOpts.length + newCmdArgs.length + 1 + pathDirectives.getDirectives()];
 
         int pos = 1;
 
@@ -125,8 +125,8 @@ public class HdfsCommand extends HdfsAbstract {
             argv[pos++] = "-" + opt.getOpt();
         }
 
-        if (directivesBefore) {
-            for (int i = 0; i < directives; i++) {
+        if (pathDirectives.isBefore()) {
+            for (int i = 0; i < pathDirectives.getDirectives(); i++) {
                 argv[pos++] = cmdArgs[i];
             }
         }
@@ -135,8 +135,8 @@ public class HdfsCommand extends HdfsAbstract {
             argv[pos++] = arg;
         }
 
-        if (!directivesBefore) {
-            for (int i = directives; i > 0; i--) {
+        if (!pathDirectives.isBefore()) {
+            for (int i = pathDirectives.getDirectives(); i > 0; i--) {
                 try {
                     argv[pos++] = cmdArgs[cmdArgs.length - (i)];
                 } catch (Exception e) {

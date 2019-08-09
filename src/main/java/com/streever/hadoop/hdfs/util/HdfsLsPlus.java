@@ -26,6 +26,7 @@ package com.streever.hadoop.hdfs.util;
 import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
+import com.streever.hadoop.hdfs.shell.command.PathBuilder;
 import com.streever.tools.stemshell.Environment;
 import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
@@ -136,6 +137,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     private FSDataOutputStream outFS = null;
     private static MathContext mc = new MathContext(4, RoundingMode.HALF_UP);
     private int count = 0;
+    private PathBuilder pathBuilder;
 
     public HdfsLsPlus(String name) {
         super(name);
@@ -618,7 +620,7 @@ public class HdfsLsPlus extends HdfsAbstract {
         // Get the Filesystem
         configuration = (Configuration) env.getValue(Constants.CFG);
 
-        String hdfs_uri = (String) env.getProperty(Constants.HDFS_URL);
+        String hdfs_uri = (String) env.getProperties().getProperty(Constants.HDFS_URL);
 
         fs = (FileSystem) env.getValue(Constants.HDFS);
 
@@ -718,7 +720,7 @@ public class HdfsLsPlus extends HdfsAbstract {
         String outputFile = null;
 
         if (cmd.hasOption("output")) {
-            outputDir = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+            outputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
             outputFile = outputDir + "/" + UUID.randomUUID();
 
             Path pof = new Path(outputFile);
@@ -735,9 +737,9 @@ public class HdfsLsPlus extends HdfsAbstract {
         String targetPath = null;
         if (cmdArgs.length > 0) {
             String pathIn = cmdArgs[0];
-            targetPath = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperty(Constants.HDFS_URL)).length()), pathIn);
+            targetPath = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), pathIn);
         } else {
-            targetPath = fs.getWorkingDirectory().toString().substring(((String) env.getProperty(Constants.HDFS_URL)).length());
+            targetPath = fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length());
 
         }
 

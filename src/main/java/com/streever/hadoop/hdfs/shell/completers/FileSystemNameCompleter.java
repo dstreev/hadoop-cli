@@ -93,7 +93,7 @@ public class FileSystemNameCompleter implements Completer {
 
         if (!this.local) {
             fs = (FileSystem) env.getValue(Constants.HDFS);
-            prefix = env.getProperty(Constants.HDFS_URL);
+            prefix = env.getProperties().getProperty(Constants.HDFS_URL);
         }
         else {
             fs = (FileSystem) env.getValue(Constants.LOCAL_FS);

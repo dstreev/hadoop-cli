@@ -50,12 +50,15 @@ public class HdfsCd extends HdfsCommand {
             hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
             String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
+            if (dir.startsWith("\"") & dir.endsWith("\"")) {
+                dir = dir.substring(1, dir.length()-1);
+            }
             logv(env, "CWD before: " + hdfs.getWorkingDirectory());
             logv(env, "Requested CWD: " + dir);
 
             Path newPath = null;
             if (dir.startsWith("/")) {
-                newPath = new Path(env.getProperty(Constants.HDFS_URL), dir);
+                newPath = new Path(env.getProperties().getProperty(Constants.HDFS_URL), dir);
             } else {
                 newPath = new Path(hdfs.getWorkingDirectory(), dir);
             }

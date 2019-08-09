@@ -90,7 +90,7 @@ public class HdfsConnect extends AbstractCommand {
 
             FileSystem local = FileSystem.getLocal(new Configuration());
             env.setValue(Constants.LOCAL_FS, local);
-            env.setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
+            env.getProperties().setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
 
             FSUtil.prompt(env);
 

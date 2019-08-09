@@ -713,6 +713,7 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
         if (localInstance == null) {
             localInstance = new HadoopSession();
         }
+        return localInstance;
     }
 
     private enum Mode { CLI, PROXY }
@@ -1069,7 +1070,7 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
                 getEnv().addCommand(new HdfsLsPlus("lsp", getEnv(), Direction.NONE));
                 getEnv().addCommand(new HdfsNNStats("nnstat", getEnv(), Direction.NONE));
 
-                getEnv().addCommand(new HdfsSource("source", getEnv(), this));
+//                getEnv().addCommand(new HdfsSource("source", getEnv(), this));
 
                 // MapReduce Tools
                 getEnv().addCommand(new JhsStats("jhsstat", getEnv(), Direction.NONE));
