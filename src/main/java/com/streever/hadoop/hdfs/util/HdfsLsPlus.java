@@ -26,6 +26,7 @@ package com.streever.hadoop.hdfs.util;
 import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
+import com.streever.hadoop.hdfs.shell.command.PathBuilder;
 import com.streever.tools.stemshell.Environment;
 import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
@@ -136,6 +137,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     private FSDataOutputStream outFS = null;
     private static MathContext mc = new MathContext(4, RoundingMode.HALF_UP);
     private int count = 0;
+    private PathBuilder pathBuilder;
 
     public HdfsLsPlus(String name) {
         super(name);
@@ -729,18 +731,14 @@ public class HdfsLsPlus extends HdfsAbstract {
         String targetPath = null;
         if (cmdArgs.length > 0) {
             String pathIn = cmdArgs[0];
-            targetPath = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), pathIn);
+            targetPath = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), pathIn);
         } else {
             targetPath = fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length());
-
         }
 
         if (cmd.hasOption("output")) {
-            outputDir = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
-//            Date now = new Date();
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-            String encodeTargetPath = targetPath.replace('/','_');
-            outputFile = outputDir + "/" + df.format(new Date()) + "-" + encodeTargetPath;
+            outputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+            outputFile = outputDir + "/" + UUID.randomUUID();
 
             Path pof = new Path(outputFile);
             try {
@@ -750,15 +748,12 @@ public class HdfsLsPlus extends HdfsAbstract {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
-
 
         PathData targetPathData = null;
         try {
             targetPathData = new PathData(targetPath, configuration);
         } catch (IOException e) {
-//            e.printStackTrace();
             return new CommandReturn(CODE_PATH_ERROR, "Error in Path");
         }
 
@@ -768,7 +763,6 @@ public class HdfsLsPlus extends HdfsAbstract {
             try {
                 outFS.close();
             } catch (IOException e) {
-//                e.printStackTrace();
                 return new CommandReturn(CODE_FS_CLOSE_ISSUE, e.getMessage());
             } finally {
                 outFS = null;

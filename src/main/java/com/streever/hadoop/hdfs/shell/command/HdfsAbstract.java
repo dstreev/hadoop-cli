@@ -27,6 +27,7 @@ import com.streever.tools.stemshell.Environment;
 import com.streever.tools.stemshell.command.AbstractCommand;
 import jline.console.completer.Completer;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 
 public abstract class HdfsAbstract extends AbstractCommand {
 
@@ -42,16 +43,9 @@ public abstract class HdfsAbstract extends AbstractCommand {
     public int CODE_NOT_FOUND = -99;
     
     protected Environment env;
-
-    enum Side {
-        LEFT,RIGHT
-    }
-
-    protected Direction directionContext = null;
-
-    protected int directives = 0;
-    protected boolean directivesBefore = true;
-    protected boolean directivesOptional = false;
+    
+    protected PathBuilder pathBuilder;
+    protected PathDirectives pathDirectives;
 
     public HdfsAbstract(String name) {
         super(name);
@@ -59,24 +53,23 @@ public abstract class HdfsAbstract extends AbstractCommand {
 
     public HdfsAbstract(String name, Environment env, Direction directionContext ) {
         super(name);
+        pathDirectives = new PathDirectives(directionContext);
+        pathBuilder = new PathBuilder(env, pathDirectives);
         this.env = env;
-        this.directionContext = directionContext;
     }
 
     public HdfsAbstract(String name, Environment env, Direction directionContext, int directives ) {
         super(name);
         this.env = env;
-        this.directionContext = directionContext;
-        this.directives = directives;
+        pathDirectives = new PathDirectives(directionContext, directives);
+        pathBuilder = new PathBuilder(env, pathDirectives);
     }
 
     public HdfsAbstract(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
         super(name);
         this.env = env;
-        this.directionContext = directionContext;
-        this.directives = directives;
-        this.directivesBefore = directivesBefore;
-        this.directivesOptional = directivesOptional;
+        pathDirectives = new PathDirectives(directionContext, directives, directivesBefore, directivesOptional);
+        pathBuilder = new PathBuilder(env, pathDirectives);
     }
 
     public HdfsAbstract(String name, Environment env) {
@@ -84,82 +77,8 @@ public abstract class HdfsAbstract extends AbstractCommand {
         this.env = env;
     }
 
-    protected String buildPath(Side side, String[] args, Direction context) {
-        String rtn = null;
-
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
-
-        String in = null;
-
-        switch (side) {
-            case LEFT:
-                if (args.length > 0)
-                    if (directivesBefore) {
-                        in = args[directives];
-                    } else {
-                        if (directivesOptional) {
-                            if (args.length > directives) {
-                                in = args[args.length-(directives+1)];
-                            } else {
-                                // in is null
-                            }
-                        } else {
-                            in = args[args.length-(directives+1)];
-                        }
-                    }
-                switch (context) {
-                    case REMOTE_LOCAL:
-                    case REMOTE_REMOTE:
-                    case NONE:
-                        rtn = buildPath2(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
-                        break;
-                    case LOCAL_REMOTE:
-                        rtn = buildPath2(localfs.getWorkingDirectory().toString().substring(5), in);
-                        break;
-                }
-                break;
-            case RIGHT:
-                if (args.length > 1)
-                    if (directivesBefore)
-                        in = args[directives + 1];
-                    else
-                        in = args[args.length-(directives+1)];
-                switch (context) {
-                    case REMOTE_LOCAL:
-                        rtn = buildPath2(localfs.getWorkingDirectory().toString().substring(5), in);
-                        break;
-                    case LOCAL_REMOTE:
-                    case REMOTE_REMOTE:
-                        rtn = buildPath2(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
-                        break;
-                    case NONE:
-                        break;
-                }
-                break;
-        }
-        if (rtn != null && rtn.contains(" ")) {
-            rtn = "'" + rtn + "'";
-        }
-        return rtn;
-    }
-
-    protected String buildPath2(String current, String input) {
-        if (input != null) {
-            if (input.startsWith("/"))
-                return input;
-            else
-                return current + "/" + input;
-        } else {
-            return current;
-        }
-    }
-
-
     @Override
     public Completer getCompleter() {
         return new FileSystemNameCompleter(this.env, false);
     }
-
-
 }

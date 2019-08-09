@@ -88,7 +88,7 @@ public class HdfsSource  extends HdfsAbstract {
             runSource(cmd.getOptionValue("lf"), reader);
         }
 
-        logv(env,"'lsp' complete.");
+        logv(env,"'Source' complete.");
 
         return CommandReturn.GOOD;
     }

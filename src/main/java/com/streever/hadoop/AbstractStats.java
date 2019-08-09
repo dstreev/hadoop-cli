@@ -159,7 +159,7 @@ public abstract class AbstractStats extends HdfsAbstract {
 
             if (cmd.hasOption("output")) {
                 // Get a handle to the FileSystem if we intent to write our results to the HDFS.
-                baseOutputDir = buildPath2(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+                baseOutputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
             } else {
                 baseOutputDir = null;
             }
