@@ -1,6 +1,15 @@
 #!/usr/bin/env sh
 
 APP_DIR=`dirname $0`
+CURR_DIR=`pwd`
+
+if [[ -f ./hadoopcli && "${APP_DIR}" != "${CURR_DIR}" && "${APP_DIR}" != "." ]]; then
+  echo "Appears you are referencing a previously installed 'hadoopcli' while "
+  echo "  in the installation directory of 'hadoopcli'."
+  echo "Change directories and run 'hadoopcli' to run installed version OR "
+  echo "Run current directories 'hadoopcli' via './hadoopcli'"
+  exit -1
+fi
 
 PRG_ARGS=
 CMD_CP=
