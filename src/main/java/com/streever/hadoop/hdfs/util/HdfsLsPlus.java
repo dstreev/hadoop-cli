@@ -121,6 +121,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     private boolean invisible = false;
     private boolean addComment = false;
     private boolean showParent = false;
+    private boolean dirOnly = false;
     private boolean test = false;
     // Used to shortcut 'test' and return when match located.
     private boolean testFound = false;
@@ -234,6 +235,14 @@ public class HdfsLsPlus extends HdfsAbstract {
         this.invert = invert;
     }
 
+    public boolean isDirOnly() {
+        return dirOnly;
+    }
+
+    public void setDirOnly(boolean dirOnly) {
+        this.dirOnly = dirOnly;
+    }
+
     public void setMaxDepth(int maxDepth) {
         this.maxDepth = maxDepth;
     }
@@ -304,6 +313,11 @@ public class HdfsLsPlus extends HdfsAbstract {
 
 
     private void writeItem(PathData item, FileStatus itemStatus, int level) {
+
+        // Don't write files when -do specified.
+        if (itemStatus.isFile() && isDirOnly())
+            return;
+
         try {
             StringBuilder sb = new StringBuilder();
 
@@ -372,7 +386,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                                     sb.append(".");
                                 } else {
                                     sb.append(parts[i]);
-                                    if (i < parts.length-1 || itemStatus.isDirectory())
+                                    if (i < parts.length - 1 || itemStatus.isDirectory())
                                         sb.append("/");
                                 }
                             }
@@ -552,6 +566,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             return true;
         }
     }
+
     private boolean processPath(PathData path, int currentDepth) {
         boolean rtn = true;
         boolean subTestMatch = false;
@@ -623,7 +638,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                                             }
                                         }
                                     }
-                                     if (processPath(intPdR, currentDepth + 1)) {
+                                    if (processPath(intPdR, currentDepth + 1)) {
                                         if (isTest()) {
                                             // Test Found an Item, so we need to break
                                             subTestMatch = true;
@@ -643,6 +658,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                     if (doesMatch(path, fileStatus)) {
                         if (!isTest()) {
                             writeItem(path, fileStatus, currentDepth);
+
                         } else {
                             setTestFound(true);
                             if (isAddComment() && !isShowParent()) {
@@ -666,7 +682,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
     protected void processCommandLine(CommandLine commandLine) {
         super.processCommandLine(commandLine);
-        
+
         if (commandLine.hasOption("invert")) {
             setInvert(true);
         } else {
@@ -679,7 +695,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             if (filter.startsWith("\"") || filter.startsWith("'")) {
                 if (filter.endsWith("\"") || filter.endsWith("'")) {
                     // Strip quotes.
-                    adjustedFilter = filter.substring(1, filter.length()-1);
+                    adjustedFilter = filter.substring(1, filter.length() - 1);
                 }
             }
             if (adjustedFilter == null)
@@ -688,6 +704,12 @@ public class HdfsLsPlus extends HdfsAbstract {
             setPattern(Pattern.compile(adjustedFilter));
         } else {
             setPattern(null);
+        }
+
+        if (commandLine.hasOption("dir-only")) {
+            setDirOnly(true);
+        } else {
+            setDirOnly(false);
         }
 
         if (commandLine.hasOption("relative")) {
@@ -881,6 +903,14 @@ public class HdfsLsPlus extends HdfsAbstract {
                 .longOpt("recursive")
                 .build();
         opts.addOption(recursiveOption);
+
+        Option dirOnlyOption = Option.builder("do").required(false)
+                .argName("dir-only")
+                .desc("Show Directories Only")
+                .hasArg(false)
+                .longOpt("dir-only")
+                .build();
+        opts.addOption(dirOnlyOption);
 
         Option relativeOutputOption = Option.builder("r").required(false)
                 .argName("relative")
