@@ -604,7 +604,26 @@ public class HdfsLsPlus extends HdfsAbstract {
                                     e.printStackTrace();
                                 }
                                 for (PathData intPdR : pathDataR) {
-                                    if (processPath(intPdR, currentDepth + 1)) {
+                                    FileStatus subPathStatusR = intPdR.stat;
+                                    String[] subPartsR = null;
+                                    String subEndPathR = null;
+                                    subPartsR = subPathStatusR.getPath().toUri().getPath().split("/");
+                                    if (subPartsR.length > 0) {
+                                        subEndPathR = subPartsR[subPartsR.length - 1];
+                                    }
+                                    if (subEndPathR == null || checkVisible(subEndPathR)) {
+                                        if (doesMatch(intPdR, subPathStatusR)) {
+                                            if (!isTest()) {
+                                                writeItem(intPdR, subPathStatusR, currentDepth);
+                                            } else {
+                                                setTestFound(true);
+                                                if (isAddComment() && !isShowParent()) {
+                                                    writeItem(intPdR, subPathStatusR, currentDepth);
+                                                }
+                                            }
+                                        }
+                                    }
+                                     if (processPath(intPdR, currentDepth + 1)) {
                                         if (isTest()) {
                                             // Test Found an Item, so we need to break
                                             subTestMatch = true;
@@ -656,7 +675,17 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         if (commandLine.hasOption("filter")) {
             String filter = commandLine.getOptionValue("filter");
-            setPattern(Pattern.compile(filter));
+            String adjustedFilter = null;
+            if (filter.startsWith("\"") || filter.startsWith("'")) {
+                if (filter.endsWith("\"") || filter.endsWith("'")) {
+                    // Strip quotes.
+                    adjustedFilter = filter.substring(1, filter.length()-1);
+                }
+            }
+            if (adjustedFilter == null)
+                adjustedFilter = filter;
+            logv(env, "Adjusted Filter: " + adjustedFilter);
+            setPattern(Pattern.compile(adjustedFilter));
         } else {
             setPattern(null);
         }
@@ -882,7 +911,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         Option filterOption = Option.builder("F").required(false)
                 .argName("filter")
-                .desc("Regex Filter of Content")
+                .desc("Regex Filter of Content. Can be 'Quoted'")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .longOpt("filter")

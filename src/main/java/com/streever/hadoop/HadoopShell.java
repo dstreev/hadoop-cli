@@ -695,6 +695,7 @@ import com.streever.hadoop.yarn.ContainerStats;
 import com.streever.hadoop.yarn.SchedulerStats;
 import com.streever.tools.stemshell.BasicEnvironmentImpl;
 import com.streever.tools.stemshell.Environment;
+import com.streever.tools.stemshell.command.Command;
 import com.streever.tools.stemshell.command.CommandReturn;
 import com.streever.tools.stemshell.commands.Env;
 import com.streever.tools.stemshell.commands.Exit;
@@ -705,6 +706,7 @@ import org.apache.commons.cli.*;
 import org.apache.hadoop.fs.FileSystem;
 
 import java.io.*;
+import java.util.concurrent.*;
 
 public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
 
@@ -978,7 +980,31 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 loge(getEnv(), crTest.getSummary());
             }
             String userHome = getEnv().getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
-            crTest = processInput("cd /user/" + userHome, reader);
+
+            ExecutorService executor = Executors.newCachedThreadPool();
+            Callable<Object> task = new Callable<Object>() {
+                public Object call() {
+                    return processInput("cd /user/" + userHome, reader);
+                }
+            };
+            Future<Object> future = executor.submit(task);
+            try {
+                Object result = future.get(5, TimeUnit.SECONDS);
+                crTest = (CommandReturn)result;
+            } catch (TimeoutException ex) {
+                loge(getEnv(), "Login Timeout.  Check for a valid Kerberos Ticket.");
+                processInput("exit", reader);
+                // handle the timeout
+            } catch (InterruptedException e) {
+                // handle the interrupts
+            } catch (ExecutionException e) {
+                // handle other exceptions
+            } finally {
+                future.cancel(true); // may or may not desire this
+            }
+
+//            crTest = processInput("cd /user/" + userHome, reader);
+            
             if (crTest.isError()) {
                 rtn = false;
                 loge(getEnv(), crTest.getSummary());
