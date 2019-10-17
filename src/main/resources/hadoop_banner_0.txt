@@ -35,4 +35,5 @@
                                                                  Product: ${Implementation-Title}
   Get it here: https://github.com/dstreev/hadoop-cli             Version: ${Implementation-Version}
                                                               For Hadoop: ${Apache-Hadoop-Version}
+                                                         Build Timestamp: ${Build-Timestamp}
 ======================================================================================================

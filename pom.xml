@@ -141,6 +141,7 @@
                         </manifest>
                         <manifestEntries>
                             <Apache-Hadoop-Version>${hadoop.major}</Apache-Hadoop-Version>
+                            <Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
                         </manifestEntries>
                     </archive>
                 </configuration>
