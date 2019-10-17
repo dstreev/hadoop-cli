@@ -132,7 +132,7 @@ public abstract class AbstractStats extends HdfsAbstract {
     }
 
     @Override
-    public final CommandReturn execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+    public final CommandReturn implementation(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
         if (cmd.hasOption("help")) {
             getHelp();
             HelpFormatter formatter = new HelpFormatter();

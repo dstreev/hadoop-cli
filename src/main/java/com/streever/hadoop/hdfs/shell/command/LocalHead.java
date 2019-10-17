@@ -57,7 +57,7 @@ public class LocalHead extends HdfsCommand {
         this.local = local;
     }
 
-    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader console) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader console) {
         CommandReturn cr = CommandReturn.GOOD;
 //        int rtn = CODE_SUCCESS;
         FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)

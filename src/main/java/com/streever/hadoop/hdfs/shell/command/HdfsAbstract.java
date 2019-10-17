@@ -25,7 +25,12 @@ package com.streever.hadoop.hdfs.shell.command;
 import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.streever.tools.stemshell.Environment;
 import com.streever.tools.stemshell.command.AbstractCommand;
+import com.streever.tools.stemshell.command.CommandReturn;
+import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
@@ -77,6 +82,18 @@ public abstract class HdfsAbstract extends AbstractCommand {
         this.env = env;
     }
 
+    @Override
+    public Options getOptions() {
+        Options options = super.getOptions();
+
+
+        return options;
+    }
+
+    protected void processCommandLine(CommandLine commandLine) {
+        super.processCommandLine(commandLine);
+    }
+    
     @Override
     public Completer getCompleter() {
         return new FileSystemNameCompleter(this.env, false);

@@ -37,7 +37,7 @@ public class HdfsPwd extends HdfsCommand {
         super(name);
     }
 
-    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
         FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
         String wd = hdfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {

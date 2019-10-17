@@ -39,7 +39,7 @@ import java.util.Arrays;
 public class HdfsCommand extends HdfsAbstract {
 
     public HdfsCommand(String name) {
-        super(name);
+        this(name, null, Direction.NONE);
     }
 
     public HdfsCommand(String name, Environment env, Direction directionContext ) {
@@ -55,10 +55,10 @@ public class HdfsCommand extends HdfsAbstract {
     }
 
     public HdfsCommand(String name, Environment env) {
-        super(name,env);
+        this(name,env, Direction.NONE);
     }
 
-    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
         FsShell shell = new FsShell();
         CommandReturn cr = CommandReturn.GOOD;
 
@@ -197,10 +197,10 @@ public class HdfsCommand extends HdfsAbstract {
         return opts;
     }
 
-//    @Override
-//    public Completer getCompleter() {
-//        return new FileSystemNameCompleter(this.env, false);
-//    }
-
+    @Override
+    protected void processCommandLine(CommandLine commandLine) {
+       super.processCommandLine(commandLine);
+    }
+    
 
 }

@@ -117,6 +117,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     private String newLine = DEFAULT_NEWLINE;
     //    private int currentDepth = 0;
     private boolean recursive = false;
+    private boolean relative = false;
     private boolean invisible = false;
     private boolean addComment = false;
     private boolean showParent = false;
@@ -165,6 +166,14 @@ public class HdfsLsPlus extends HdfsAbstract {
 
     public void setRecursive(boolean recursive) {
         this.recursive = recursive;
+    }
+
+    public boolean isRelative() {
+        return relative;
+    }
+
+    public void setRelative(boolean relative) {
+        this.relative = relative;
     }
 
     public boolean isInvisible() {
@@ -354,7 +363,21 @@ public class HdfsLsPlus extends HdfsAbstract {
                         sb.append(item.path.getParent().toString());
                         break;
                     case PATH:
-                        sb.append(item.toString());
+                        if (!isRelative()) {
+                            sb.append(item.toString());
+                        } else {
+                            String[] parts = itemStatus.getPath().toUri().getPath().split("/");
+                            for (int i = parts.length - level; i < parts.length; i++) {
+                                if (parts[i].trim().length() == 0) {
+                                    sb.append(".");
+                                } else {
+                                    sb.append(parts[i]);
+                                    if (i < parts.length-1 || itemStatus.isDirectory())
+                                        sb.append("/");
+                                }
+                            }
+
+                        }
                         break;
                     case FILE:
                         if (!itemStatus.isDirectory())
@@ -518,6 +541,17 @@ public class HdfsLsPlus extends HdfsAbstract {
         }
     }
 
+    protected boolean checkVisible(String path) {
+        // Filter out invisibles
+        if (path.startsWith(".")) { // removed this because it was actually a file.. || path.trim().length() == 0) {
+            if (isInvisible()) {
+                return true;
+            } else
+                return false;
+        } else {
+            return true;
+        }
+    }
     private boolean processPath(PathData path, int currentDepth) {
         boolean rtn = true;
         boolean subTestMatch = false;
@@ -534,69 +568,71 @@ public class HdfsLsPlus extends HdfsAbstract {
                 }
                 boolean go = true;
 
-//                if (endPath.startsWith(".") && !isInvisible()) {
-//                    go = false;
-//                    rtn = false;
-//                }
+                if (fileStatus.isDirectory()) {
+                    PathData[] pathDatas = new PathData[0];
+                    try {
+                        pathDatas = path.getDirectoryContents();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-                if (endPath == null || (!(endPath.startsWith(".") && isInvisible()))) {
-                    if (fileStatus.isDirectory()) {
-                        PathData[] pathDatas = new PathData[0];
-                        try {
-                            pathDatas = path.getDirectoryContents();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    for (PathData intPd : pathDatas) {
+                        FileStatus subPathStatus = intPd.stat;
+                        String[] subParts = null;
+                        String subEndPath = null;
+                        subParts = subPathStatus.getPath().toUri().getPath().split("/");
+                        if (subParts.length > 0) {
+                            subEndPath = subParts[subParts.length - 1];
                         }
+                        if (subEndPath == null || checkVisible(subEndPath)) {
+                            if (doesMatch(intPd, subPathStatus)) {
+                                if (!isTest()) {
+                                    writeItem(intPd, subPathStatus, currentDepth);
+                                } else {
+                                    setTestFound(true);
+                                    if (isAddComment() && !isShowParent()) {
+                                        writeItem(intPd, subPathStatus, currentDepth);
+                                    }
+                                }
+                            }
 
-                        for (PathData intPd : pathDatas) {
-                            if ((intPd.stat.isDirectory() && isRecursive()) || !intPd.stat.isDirectory()) {
-                                if (processPath(intPd, currentDepth + 1)) {
-                                    if (isTest()) {
-                                        // Test Found an Item, so we need to break
-                                        subTestMatch = true;
-                                        if (!intPd.stat.isDirectory()) {
-                                            break;
+                            if (intPd.stat.isDirectory() && isRecursive()) {
+                                PathData[] pathDataR = new PathData[0];
+                                try {
+                                    pathDataR = intPd.getDirectoryContents();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                for (PathData intPdR : pathDataR) {
+                                    if (processPath(intPdR, currentDepth + 1)) {
+                                        if (isTest()) {
+                                            // Test Found an Item, so we need to break
+                                            subTestMatch = true;
+                                            if (!intPd.stat.isDirectory()) {
+                                                break;
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-
-                        if (doesMatch(path, fileStatus)) {
-                            if (!isTest()) {
-                                writeItem(path, fileStatus, currentDepth);
-                            } else {
-                                setTestFound(true);
-                                if (isAddComment()) {
-                                    if (!isShowParent()) {
-                                        writeItem(path, fileStatus, currentDepth);
-                                    }
-                                }
-                            }
-                        } else if (isTest() && (isAddComment() || isShowParent()) && subTestMatch) {
-                            writeItem(path, fileStatus, currentDepth);
-                            rtn = false;
-                        } else {
-                            rtn = false;
-                        }
-
-                    } else {
-                        // Go through contents.
-                        if (doesMatch(path, fileStatus)) {
-                            if (!isTest()) {
-                                writeItem(path, fileStatus, currentDepth);
-                            } else {
-                                setTestFound(true);
-                                if (isAddComment() && !isShowParent()) {
-                                    writeItem(path, fileStatus, currentDepth);
-                                }
-                            }
-                        } else if (isTest()) {
-                            rtn = false;
-                        }
                     }
+
+
                 } else {
-                    rtn = false;
+                    // Go through contents.
+                    if (doesMatch(path, fileStatus)) {
+                        if (!isTest()) {
+                            writeItem(path, fileStatus, currentDepth);
+                        } else {
+                            setTestFound(true);
+                            if (isAddComment() && !isShowParent()) {
+                                writeItem(path, fileStatus, currentDepth);
+                            }
+                        }
+                    } else if (isTest()) {
+                        rtn = false;
+                    }
                 }
             } catch (Throwable e) {
                 // Happens when path doesn't exist.
@@ -609,8 +645,93 @@ public class HdfsLsPlus extends HdfsAbstract {
         return rtn;
     }
 
+    protected void processCommandLine(CommandLine commandLine) {
+        super.processCommandLine(commandLine);
+        
+        if (commandLine.hasOption("invert")) {
+            setInvert(true);
+        } else {
+            setInvert(false);
+        }
+
+        if (commandLine.hasOption("filter")) {
+            String filter = commandLine.getOptionValue("filter");
+            setPattern(Pattern.compile(filter));
+        } else {
+            setPattern(null);
+        }
+
+        if (commandLine.hasOption("relative")) {
+            setRelative(true);
+        } else {
+            setRelative(false);
+        }
+
+        if (commandLine.hasOption("filter-element")) {
+            setFilterFormat(commandLine.getOptionValue("filter-element"));
+        } else {
+            setFilterFormat("path"); // default
+        }
+
+        if (commandLine.hasOption("format")) {
+            setFormat(commandLine.getOptionValue("format"));
+        } else {
+            setFormat(DEFAULT_FORMAT);
+        }
+
+        if (commandLine.hasOption("comment")) {
+            setComment(commandLine.getOptionValue("comment"));
+            setAddComment(true);
+        } else {
+            setAddComment(false);
+        }
+
+        if (commandLine.hasOption("recursive")) {
+            setRecursive(true);
+        } else {
+            setRecursive(false);
+        }
+
+        if (commandLine.hasOption("test")) {
+            setTest(true);
+        } else {
+            setTest(false);
+        }
+
+        if (commandLine.hasOption("show-parent") && isTest()) {
+            setShowParent(true);
+        } else {
+            setShowParent(false);
+        }
+
+        if (commandLine.hasOption("maxDepth")) {
+            setMaxDepth(Integer.parseInt(commandLine.getOptionValue("maxDepth")));
+            setRecursive(true);
+        } else {
+            setMaxDepth(DEFAULT_DEPTH);
+        }
+
+        if (commandLine.hasOption("invisible")) {
+            setInvisible(true);
+        } else {
+            setInvisible(false);
+        }
+
+        if (commandLine.hasOption("separator")) {
+            setSeparator(commandLine.getOptionValue("separator"));
+        } else {
+            setSeparator(DEFAULT_SEPARATOR);
+        }
+
+        if (commandLine.hasOption("newline")) {
+            setNewLine(commandLine.getOptionValue("newline"));
+        } else {
+            setNewLine(DEFAULT_NEWLINE);
+        }
+    }
+
     @Override
-    public CommandReturn execute(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+    public CommandReturn implementation(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
         // reset counter.
         count = 0;
         logv(env, "Beginning 'lsp' collection.");
@@ -647,83 +768,10 @@ public class HdfsLsPlus extends HdfsAbstract {
             return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
         }
 
-        Option[] cmdOpts = cmd.getOptions();
+//        Option[] cmdOpts = cmd.getOptions();
         String[] cmdArgs = cmd.getArgs();
 
-        if (cmd.hasOption("invert")) {
-            setInvert(true);
-        } else {
-            setInvert(false);
-        }
-
-        if (cmd.hasOption("filter")) {
-            String filter = cmd.getOptionValue("filter");
-            setPattern(Pattern.compile(filter));
-        } else {
-            setPattern(null);
-        }
-
-        if (cmd.hasOption("filter-element")) {
-            setFilterFormat(cmd.getOptionValue("filter-element"));
-        } else {
-            setFilterFormat("path"); // default
-        }
-
-        if (cmd.hasOption("format")) {
-            setFormat(cmd.getOptionValue("format"));
-        } else {
-            setFormat(DEFAULT_FORMAT);
-        }
-
-        if (cmd.hasOption("comment")) {
-            setComment(cmd.getOptionValue("comment"));
-            setAddComment(true);
-        } else {
-            setAddComment(false);
-        }
-
-        if (cmd.hasOption("recursive")) {
-            setRecursive(true);
-        } else {
-            setRecursive(false);
-        }
-
-        if (cmd.hasOption("test")) {
-            setTest(true);
-        } else {
-            setTest(false);
-        }
-
-        if (cmd.hasOption("show-parent") && isTest()) {
-            setShowParent(true);
-        } else {
-            setShowParent(false);
-        }
-
-        if (cmd.hasOption("maxDepth")) {
-            setMaxDepth(Integer.parseInt(cmd.getOptionValue("maxDepth")));
-            setRecursive(true);
-        } else {
-            setMaxDepth(DEFAULT_DEPTH);
-        }
-
-        if (cmd.hasOption("invisible")) {
-            setInvisible(true);
-        } else {
-            setInvisible(false);
-        }
-
-        if (cmd.hasOption("separator")) {
-            setSeparator(cmd.getOptionValue("separator"));
-        } else {
-            setSeparator(DEFAULT_SEPARATOR);
-        }
-
-        if (cmd.hasOption("newline")) {
-            setNewLine(cmd.getOptionValue("newline"));
-        } else {
-            setNewLine(DEFAULT_NEWLINE);
-        }
+        processCommandLine(cmd);
 
         String outputDir = null;
         String outputFile = null;
@@ -804,6 +852,15 @@ public class HdfsLsPlus extends HdfsAbstract {
                 .longOpt("recursive")
                 .build();
         opts.addOption(recursiveOption);
+
+        Option relativeOutputOption = Option.builder("r").required(false)
+                .argName("relative")
+                .desc("Show Relative Path Output")
+                .hasArg(false)
+                .longOpt("relative")
+                .build();
+        opts.addOption(relativeOutputOption);
+
 
         Option invisibleOption = Option.builder("i").required(false)
                 .argName("invisible")

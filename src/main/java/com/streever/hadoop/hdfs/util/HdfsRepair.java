@@ -61,7 +61,7 @@ public class HdfsRepair extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn execute(Environment environment, CommandLine commandLine, ConsoleReader consoleReader) {
+    public CommandReturn implementation(Environment environment, CommandLine commandLine, ConsoleReader consoleReader) {
         System.out.println("Not implemented yet... :( ");
         /*
 

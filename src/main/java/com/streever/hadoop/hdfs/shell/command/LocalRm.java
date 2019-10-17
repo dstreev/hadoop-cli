@@ -45,7 +45,7 @@ public class LocalRm extends HdfsCommand {
         this.local = local;
     }
 
-    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
         CommandReturn cr = CommandReturn.GOOD;
         try {
             FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)

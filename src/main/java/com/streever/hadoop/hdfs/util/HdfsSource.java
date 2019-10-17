@@ -56,7 +56,7 @@ public class HdfsSource  extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
 
         logv(env, "Beginning 'source' collection.");
 

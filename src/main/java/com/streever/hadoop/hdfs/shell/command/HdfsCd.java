@@ -43,7 +43,7 @@ public class HdfsCd extends HdfsCommand {
         this.env = env;
     }
 
-    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
         FileSystem hdfs = null;
         CommandReturn cr = CommandReturn.GOOD;
         try {

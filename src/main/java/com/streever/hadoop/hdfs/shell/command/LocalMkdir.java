@@ -54,7 +54,7 @@ public class LocalMkdir extends HdfsCommand {
         this.local = local;
     }
 
-    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader console) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader console) {
         FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
                         : (FileSystem) env.getValue(Constants.HDFS);
         logv(env, "CWD: " + hdfs.getWorkingDirectory());

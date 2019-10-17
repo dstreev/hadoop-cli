@@ -22,63 +22,78 @@
  */
 package com.streever.hadoop.hdfs.shell.command;
 
-import java.io.IOException;
-
+import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.streever.tools.stemshell.Environment;
 import com.streever.tools.stemshell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
-import com.streever.tools.stemshell.Environment;
+import java.io.IOException;
+/*
+This will wrap other functions by looping through the target directory and applying the
+function to each directory.
 
-public class LocalCd extends HdfsCommand {
+For example: Current directory is /user/dstreev.  Which has 4 sub-directories: data, temp, working, and checking
+
+scan ls
+
+would do an 'ls' operation on each of the sub-directories.
+
+ */
+public class HdfsScan extends HdfsCommand {
     private Environment env;
 
-    public LocalCd(String name, Environment env) {
-        super(name,env);
-//        this.env = env;
+    public HdfsScan(String name, Environment env) {
+        super(name, env);
+        this.env = env;
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
+        FileSystem hdfs = null;
+        CommandReturn cr = CommandReturn.GOOD;
         try {
+            hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
-            FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
-            String dir = cmd.getArgs().length == 0 ? System
-                            .getProperty("user.home") : cmd.getArgs()[0];
-            logv(env, "Change Dir to: " + dir);
-            logv(env, "CWD: " + localfs.getWorkingDirectory());
+            // Run lsp -f path for a list of paths in current directory.
+
+
+            String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
+            if (dir.startsWith("\"") & dir.endsWith("\"")) {
+                dir = dir.substring(1, dir.length()-1);
+            }
+            logv(env, "CWD before: " + hdfs.getWorkingDirectory());
+            logv(env, "Requested CWD: " + dir);
+
+
             Path newPath = null;
-            if (dir.startsWith("~/")) {
-                dir = System.getProperty("user.home") + dir.substring(1);
+            if (dir.startsWith("/")) {
+                newPath = new Path(env.getProperties().getProperty(Constants.HDFS_URL), dir);
+            } else {
+                newPath = new Path(hdfs.getWorkingDirectory(), dir);
             }
-            logv(env,"Dir: " + dir);
-            newPath = new Path(dir);
 
-            Path qPath = localfs.makeQualified(newPath);
-            logv(env, "Qual Path: " + qPath);
-
-            if (localfs.getFileStatus(qPath).isDir() && localfs.exists(qPath)) {
-                localfs.setWorkingDirectory(qPath);
-            }
-            else {
+            Path qPath = newPath.makeQualified(hdfs);
+            logv(env, "" + newPath);
+            if (hdfs.getFileStatus(qPath).isDir() && hdfs.exists(qPath)) {
+                hdfs.setWorkingDirectory(qPath);
+            } else {
                 log(env, "No such directory: " + dir);
             }
+
+        } catch (IOException e) {
+            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
+        } finally {
             FSUtil.prompt(env);
         }
-        catch (IOException e) {
-            log(env, e.getMessage());
-            return new CommandReturn(CODE_LOCAL_FS_ISSUE, e.getMessage());
-        }
-        return CommandReturn.GOOD;
+        return cr;
     }
 
     @Override
     public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, true);
+        return new FileSystemNameCompleter(this.env, false);
     }
 
 }

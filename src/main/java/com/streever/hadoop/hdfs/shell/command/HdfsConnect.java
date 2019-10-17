@@ -53,7 +53,7 @@ public class HdfsConnect extends AbstractCommand {
         this.completer = completer;
     }
 
-    public CommandReturn execute(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
         try {
             // Get a value that over rides the default, if nothing then use default.
 // Requires Java 1.8...
