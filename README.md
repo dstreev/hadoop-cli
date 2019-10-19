@@ -7,10 +7,17 @@ simpler and more intuitive than the standard command-line tools that come with H
 
 [Pre-Built Distribution](https://github.com/dstreev/hadoop-cli/releases)
 
-1. Download the release 'tar.gz' file to a temp location.
-2. Untar the file (tar.gz).  
-3. As a root user, chmod +x the 3 shell script files.
-3. Run the 'setup.sh'.  
+* Download the release 'tar.gz' file to a temp location.
+* Untar the file (tar.gz).
+```
+tar xzvf <release>.tar.gz
+cd hadoop-cli-<version>
+```  
+* As a root user, chmod +x the 3 shell script files.
+* Run the 'setup.sh'.
+```
+./setup
+```  
 
 This will create and install the `hadoopcli` application to your path.
 
@@ -22,22 +29,24 @@ To use an alternate HADOOP_CONF_DIR:
 
     hadoopcli --config /var/hadoop/dev-cfg
 
-[Release Notes](./release_notes.md)
+### [Release Notes](./release_notes.md)
 
 ### Core Functions
 
 ### CLI Help
+
 ```
 usage: hadoopcli
- -?,--help
- -d,--debug                 Debug Commands
- -i,--init <init set>       Initialize with set
- -p,--password <password>   Password
- -r,--run file <run>        Run File and Exit
- -s,--silent                Suppress Banner
- -stdin,--stdin             Run Stdin pipe and Exit
- -u,--username <username>   Username to log into gateway
- -v,--verbose               Verbose Commands
+ -d,--debug                               Debug Commands
+ -e,--execute <command [args]>            Execute Command
+ -f,--file <file to exec>                 Run File and Exit
+ -h,--help
+ -i,--init <init set>                     Initialize with set
+ -p,--password <password>                 Password
+ -s,--silent                              Suppress Banner
+ -stdin,--stdin                           Run Stdin pipe and Exit
+ -u,--username <username>                 Username to log into gateway
+ -v,--verbose                             Verbose Commands
 ```
 
 ### File System Command Basics
@@ -91,11 +100,12 @@ If you have 'more' than a few commands to run against HDFS, packaging those comm
 
 There are 3 ways to do this.
 
-##### 'init' startup option
+##### 'init' startup option `-i <file>`
 
 Create a text file with the commands you want to run.  One command per line.  And include that at startup.
 
 Create init.txt
+
 ```
 ls
 count -h /user/dstreev
@@ -103,25 +113,27 @@ du -h /hdp
 ```
 
 Then initialize a 'hadoopcli' session with it:
-`hadoopcli -i init.txt`
 
-##### 'run' option
+```
+hadoopcli -i init.txt
+```
+
+##### 'execute' option `-e <command>`
 
 Exactly the same as the 'init' option that will 'exit' after completion.
 
-##### 'stdin' option
+##### 'stdin' option `-stdin`
 
 Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the same way it processes the 'run' option.
 
-
 ### Command Reference
 
-#### Common Commands
+#### Help Commands
+
 | Command | Description |
-|---|:-----| 
+|---|:-----|
+| help | List all available commands |
 | help \[command\] |	display help information |
-| put |	upload local files to the remote HDFS |
-| get |	retrieve remote files from HDFS to Local Filesystem |
 
 #### Remote (HDFS) Commands
 
@@ -151,6 +163,7 @@ Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the
 | renameSnapshot | Rename Snapshot |
 
 #### Local (Local File System) Commands
+
 | Command | Description |
 |---|:-----|
 | lcd | change current working directory |
@@ -162,29 +175,32 @@ Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the
 | lmkdir | create directories |
 
 #### Tools and Utilities
+
 | Command | Description |
 |---|:-----|
-| lsp | ls plus.  Includes Block information and locations. |     
-| nnstat | Namenode Statistics |
-
+| [lsp](./lsp.md) | ls plus.  Includes Block information and locations. |     
+| [nnstats](./nnstats.md) | Namenode Stats |
 
 ### Building
 
 This project requires the artifacts from https://github.com/dstreev/stemshell , which is a forked enhancement that has added support for processing command line parameters and deals with quoted variables.
 
-Since we're now doing more in the interface and writing results to hdfs, we need to build binary compatible packages.  The default `mvn` profile is for Apache Hadoop 2.7.  There is a profile for Apache Hadoop 2.6.
+Since we're now doing more in the interface and writing results to hdfs, we need to build binary compatible packages.  The default `mvn` profile is for Apache Hadoop 3.1.  There is a profile for Apache Hadoop 2.6 and 2.7.
+
+```
+# For 3.1
+mvn -DskipTests clean install package
+```
 
 ```
 # For 2.7
 mvn -DskipTests clean install -P 2.7
 ```
 
-
 ```
 # For 2.6
 mvn -DskipTests clean install -P 2.6
 ```
-
 
 ### Basic Usage
 HADOOP-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
@@ -192,13 +208,17 @@ then manage local/remote files and transfers.
 
 To start HADOOP-CLI, run the following command:
 
-	java -jar hadoop-cli-full-bin.jar
+```
+java -jar hadoop-cli-full-bin.jar
+```
 		
 ### Command Documentation
 
 Help for any command can be obtained by executing the `help` command:
 
-	help pwd
+```
+help pwd
+```
 
 Note that currently, documentation may be limited.
 
@@ -224,8 +244,10 @@ The `--config` option takes 1 parameter, a local directory.  This directory shou
 
 Example Connection parameters.
 
-    # Use the hadoop files in the input directory to configure and connect to HDFS.
-    hadoopcli --config ../mydir
+``` bash
+# Use the hadoop files in the input directory to configure and connect to HDFS.
+hadoopcli --config ../mydir
+```
 
 This can be used in conjunction with the 'Startup' Init option below to run a set of commands automatically after the connection is made.  The 'connect' option should NOT be used in the initialization script.
 
@@ -235,37 +257,22 @@ Using the option '-i <filename>' when launching the CLI, it will run all the com
 
 The file needs to be location in the $HOME/.hadoop-cli directory.  For example:
 
-	# If you're using the helper shell script
-	hadoopcli -i test
+``` bash
+# If you're using the helper shell script
+hadoopcli -i test
 	
-	# If you're using the java command
-	java -jar hadoop-cli-full-bin.jar -i test
-	
+# If you're using the java command
+java -jar hadoop-cli-full-bin.jar -i test
+```
 
 Will initialize the session with the command(s) in $HOME/.hadoop-cli/test. One command per line.
 
 The contents could be any set of valid commands that you would use in the cli. For example:
 
-	cd user/dstreev
+```
+cd user/dstreev
+```
 
-### NN Stats
-
-Collect Namenode stats from the available Namenode JMX url's.
-
-3 Type of stats are current collected and written to hdfs (with -o option) or to screen (no option specified)
-
-The 'default' delimiter for all records is '\u0001' (Cntl-A)
-
->> Namenode Information: (optionally written to the directory 'nn_info')
-  Fields: Timestamp, HostAndPort, State, Version, Used, Free, Safemode, TotalBlocks, TotalFiles, NumberOfMissingBlocks, NumberOfMissingBlocksWithReplicationFactorOne
-
->> Filesystem State: (optionally written to the directory 'fs_state')
-  Fields: Timestamp, HostAndPort, State, CapacityUsed, CapacityRemaining, BlocksTotal, PendingReplicationBlocks, UnderReplicatedBlocks, ScheduledReplicationBlocks, PendingDeletionBlocks, FSState, NumLiveDataNodes, NumDeadDataNodes, NumDecomLiveDataNodes, NumDecomDeadDataNodes, VolumeFailuresTotal
-
->> Top User Operations: (optionally written to the directory 'top_user_ops')
-  Fields: Timestamp, HostAndPort, State, WindowLenMs, Operation, User, Count
-
-[Hive Table DDL for NN Stats](./src/main/hive/nn_stats.ddl)
 
 ### Job History Stats
 	
@@ -279,79 +286,9 @@ Delivered - Docs to come
 
 Delivered - Docs to come
 	
-### Enhanced Directory Listing (lsp)
-
-Like 'ls', you can fetch many details about a file.  But with this, you can also add information about the file that includes:
-- Block Size
-- Access Time
-- Ratio of File Size to Block
-- Datanode information for the files blocks (Host and Block Id)
-
-Use help to get the options:
-    
-    help lsp
-
-```    
-usage: lsp [OPTION ...] [ARGS ...]
-Options:
- -c,--comment <comment>           Add comment to output
- -d,--maxDepth <maxDepth>         Depth of Recursion (default 5), use '-1'
-                                  for unlimited
- -f,--format <output-format>      Comma separated list of one or more:
-                                  permissions_long,replication,user,group,
-                                  size,block_size,ratio,mod,access,path,da
-                                  tanode_info (default all of the above)
- -F,--filter <filter>             Regex Filter of Content
- -i,--invisible                   Process Invisible Files/Directories
- -n,--newline <newline>           New Line
- -o,--output <output directory>   Output Directory (HDFS) (default
-                                  System.out)
- -R,--recursive                   Process Path Recursively
- -s,--separator <separator>       Field Separator
- -v,--verbose                     show verbose output
-```
-
-When not argument is specified, it will use the current directory.
-
-Examples:
-    
-    # Using the default format, output a listing to the files in `/user/dstreev/perf` to `/tmp/test.out`
-    lsp -o /tmp/test.out /user/dstreev/perf
-
-Output with the default format of:
-
-    permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,datanode_info
-    
-```
-   rw-------,3,dstreev,hdfs,429496700,134217728,3.200,2015-10-24 12:26:39.689,2015-10-24 12:23:27.406,/user/dstreev/perf/teragen_27/part-m-00004,10.0.0.166,d2.hdp.local,blk_1073747900
-   rw-------,3,dstreev,hdfs,429496700,134217728,3.200,2015-10-24 12:26:39.689,2015-10-24 12:23:27.406,/user/dstreev/perf/teragen_27/part-m-00004,10.0.0.167,d3.hdp.local,blk_1073747900
-   rw-------,3,dstreev,hdfs,33,134217728,2.459E-7,2015-10-24 12:27:09.134,2015-10-24 12:27:06.560,/user/dstreev/perf/terasort_27/_partition.lst,10.0.0.166,d2.hdp.local,blk_1073747909
-   rw-------,3,dstreev,hdfs,33,134217728,2.459E-7,2015-10-24 12:27:09.134,2015-10-24 12:27:06.560,/user/dstreev/perf/terasort_27/_partition.lst,10.0.0.167,d3.hdp.local,blk_1073747909
-   rw-------,1,dstreev,hdfs,543201700,134217728,4.047,2015-10-24 12:29:28.706,2015-10-24 12:29:20.882,/user/dstreev/perf/terasort_27/part-r-00002,10.0.0.167,d3.hdp.local,blk_1073747920
-   rw-------,1,dstreev,hdfs,543201700,134217728,4.047,2015-10-24 12:29:28.706,2015-10-24 12:29:20.882,/user/dstreev/perf/terasort_27/part-r-00002,10.0.0.167,d3.hdp.local,blk_1073747921
-```
-
-With the file in HDFS, you can build a [hive table](./src/main/hive/lsp.ddl) on top of it to do some analysis.  One of the reasons I created this was to be able to review a directory used by some process and get a baring on the file construction and distribution across the cluster.  
-
-#### Use Cases
-- The ratio can be used to identify files that are below the block size (small files).
-- With the Datanode information, you can determine if a dataset is hot-spotted on a cluster.  All you need is a full list of hosts to join the results with.
-
-
-### Known Bugs/Limitations
-
-* No support for paths containing spaces
-* No support for Windows XP
-* Path Completion for chown, chmod, chgrp, rm is broken
-
 ### Road Map
 
-- Support input variables
-- Expand to support Extended ACL's (get/set)
-- Add Support for setrep
-- HA Commands
-	- NN and RM
-	
+See [Issues](./ISSUES)	
 
 
 

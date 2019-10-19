@@ -591,6 +591,8 @@ public class HdfsLsPlus extends HdfsAbstract {
                         e.printStackTrace();
                     }
 
+                    currentDepth++;
+
                     for (PathData intPd : pathDatas) {
                         FileStatus subPathStatus = intPd.stat;
                         String[] subParts = null;
@@ -618,6 +620,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
+                                currentDepth++;
                                 for (PathData intPdR : pathDataR) {
                                     FileStatus subPathStatusR = intPdR.stat;
                                     String[] subPartsR = null;

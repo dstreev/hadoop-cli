@@ -1,24 +1,38 @@
 ## Release Notes
 
+### 2.0.19-SNAPSHOT
+
+Been a while since I've updated this.  Lots of fixes and enhancements.  Review the issues below for details:
+
+[ISSUE 6](./ISSUES/6)
+[ISSUE 7](./ISSUES/7)
+[ISSUE 8](./ISSUES/8)
+[ISSUE 9](./ISSUES/9)
+[ISSUE 10](./ISSUES/10)
+
 ### 2.0.11-SNAPSHOT
 
 A lot of cumulative work has made it into this release.
 
 #### Command Line Enhancements:
+
 - 'silent' option added to suppress output.  Helpful when using the 'run' option.
 - 'run' option to 'run' a file with a list of commands.
 - 'stdin' option added so commands could be piped into the cli and run under the same session.
 - 'debug' and 'verbose' options added to increase visibility of actions being run.
 
 #### Functional Enhancements:
+
 Each function has a help option:
 `help <function>`
 
 ##### Core HDFS Commands (added)
+
 - `count`
 - `test`
 
 ##### lsp (ls plus)
+
 - filter support (regex using Java Pattern matching to find matching paths in search)
 - formatting options
 - output to hdfs option
