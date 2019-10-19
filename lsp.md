@@ -6,7 +6,7 @@ Like 'ls', you can fetch many details about a file.  But with this, you can also
 - Ratio of File Size to Block
 - Datanode information for the files blocks (Host and Block Id)
 
-`lsp` can be used to search hdfs, similar to the `find` linux program.  Although the syntax is a bit different.  The options `-F`,`-Fe`, and `-i`. 
+`lsp` can be used to search hdfs, similar to the `find` linux program.  Although the syntax is a bit different.  Use options `-F`,`-Fe`, and `-i`. 
 
 `lsp` can be used to output a formatted row for files and directories using the `-f` option.  When the `datanode_info` option is specified, the output will contain details for each replicated block of a file.
 
