@@ -799,7 +799,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
         // Need to add mechanism to pull gateway url from file.
         // Need to save last state to file for sign in (minus password) in next session.
 
-        Option helpOption = Option.builder("?").required(false)
+        Option helpOption = Option.builder("h").required(false)
                 .longOpt("help")
                 .build();
         options.addOption(helpOption);

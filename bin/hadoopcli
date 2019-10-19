@@ -41,6 +41,7 @@ AUX_LIBS_DIR=${HADOOP_CLI_AUX_LIBS:-${HOME}/.hadoopcli/aux_libs}
 SHOW_CP=
 CMD_DIRECTIVE=
 CMD_ARGS=
+VERBOSE=
 
 if [[ ! -d ${AUX_LIBS_DIR} ]]; then
     mkdir -p ${AUX_LIBS_DIR}
@@ -48,6 +49,28 @@ fi
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    -i|--init)
+      shift
+      PRG_ARGS="${PRG_ARGS} -i \"${1}\""
+      shift
+      ;;
+    -f|--file)
+      shift
+      PRG_ARGS="${PRG_ARGS} -f \"${1}\""
+      shift
+      ;;
+    -d|--debug)
+      shift
+      PRG_ARGS="${PRG_ARGS} -d"
+      ;;
+    -stdin)
+      shift
+      PRG_ARGS="${PRG_ARGS} -stdin"
+      ;;
+    -h|--help)
+      shift
+      PRG_ARGS="${PRG_ARGS} -h"
+      ;;
     --config)
       shift
       export HADOOP_CONF_DIR=$1
@@ -66,9 +89,14 @@ while [[ $# -gt 0 ]]; do
       shift
       PRG_ARGS="${PRG_ARGS} -s"
       ;;
+    -v|--verbose)
+      shift
+      PRG_ARGS="${PRG_ARGS} -v"
+      VERBOSE="true"
+      ;;
     -e|--execute)
       shift
-      PRG_ARGS="${PRG_ARGS} -e \"$1\""
+      PRG_ARGS="${PRG_ARGS} -e \"${1}\""
       shift
       ;;
     *)
@@ -76,6 +104,8 @@ while [[ $# -gt 0 ]]; do
       break;
   esac
 done
+
+#echo "Program Args: ${PRG_ARGS}"
 
 if [[ ! -d ${AUX_LIBS_DIR} ]]; then
     mkdir -p ${AUX_LIBS_DIR}
@@ -86,6 +116,10 @@ for jarFile in `ls -d ${AUX_LIBS_DIR}/*.jar 2> /dev/null`; do
 done
 
 CLI_CMD=""
+
+if [[ "${VERBOSE}x" != "x" ]]; then
+    echo "Passing app Params: ${PRG_ARGS}"
+fi
 
 if [[ "${SHOW_CP}x" != "x" ]]; then
     echo "Classpath: ${CMD_CP}"

@@ -35,7 +35,7 @@
         <junit.version>4.11</junit.version>
         <jackson.parser>2.7.3</jackson.parser>
         <commons-io.version>2.4</commons-io.version>
-        <stem-shell.version>1.0.6-SNAPSHOT</stem-shell.version>
+        <stem-shell.version>1.0.7-SNAPSHOT</stem-shell.version>
     </properties>
     <repositories>
         <repository>
