@@ -176,10 +176,8 @@ Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the
 
 #### Tools and Utilities
 
-| Command | Description |
-|---|:-----|
-| [lsp](./lsp.md) | ls plus.  Includes Block information and locations. |     
-| [nnstats](./nnstats.md) | Namenode Stats |
+[lsp](./lsp.md) - *ls plus*.  Includes Block information and locations.
+[nnstats](./nnstats.md) - Namenode Stats
 
 ### Building
 
