@@ -327,6 +327,8 @@ public class HdfsLsPlus extends HdfsAbstract {
                 return;
             }
 
+            logd(env, "L:" + level);
+
             for (PRINT_OPTION option : print_options) {
                 if (in && option != DATANODE_INFO)
                     sb.append(getSeparator());
@@ -573,7 +575,11 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         if (maxDepth == -1 || currentDepth <= (maxDepth + 1)) {
 
+
             FileStatus fileStatus = path.stat;
+            logd(env, "L:" + currentDepth + " - " + fileStatus.getPath().toUri().getPath());
+//            currentDepth++;
+
             try {
                 String[] parts = null;
                 String endPath = null;
@@ -591,7 +597,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                         e.printStackTrace();
                     }
 
-                    currentDepth++;
+//                    currentDepth++;
 
                     for (PathData intPd : pathDatas) {
                         FileStatus subPathStatus = intPd.stat;
@@ -604,11 +610,13 @@ public class HdfsLsPlus extends HdfsAbstract {
                         if (subEndPath == null || checkVisible(subEndPath)) {
                             if (doesMatch(intPd, subPathStatus)) {
                                 if (!isTest()) {
-                                    writeItem(intPd, subPathStatus, currentDepth);
+                                    writeItem(intPd, subPathStatus, currentDepth + 1);
                                 } else {
                                     setTestFound(true);
                                     if (isAddComment() && !isShowParent()) {
-                                        writeItem(intPd, subPathStatus, currentDepth);
+                                        writeItem(intPd, subPathStatus, currentDepth + 1);
+                                    } else if (isShowParent()) {
+                                        writeItem(path, fileStatus, currentDepth + 1);
                                     }
                                 }
                             }
@@ -620,7 +628,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-                                currentDepth++;
+//                                currentDepth++;
                                 for (PathData intPdR : pathDataR) {
                                     FileStatus subPathStatusR = intPdR.stat;
                                     String[] subPartsR = null;
@@ -632,16 +640,18 @@ public class HdfsLsPlus extends HdfsAbstract {
                                     if (subEndPathR == null || checkVisible(subEndPathR)) {
                                         if (doesMatch(intPdR, subPathStatusR)) {
                                             if (!isTest()) {
-                                                writeItem(intPdR, subPathStatusR, currentDepth);
+                                                writeItem(intPdR, subPathStatusR, currentDepth + 2);
                                             } else {
                                                 setTestFound(true);
                                                 if (isAddComment() && !isShowParent()) {
-                                                    writeItem(intPdR, subPathStatusR, currentDepth);
+                                                    writeItem(intPdR, subPathStatusR, currentDepth + 2);
+                                                } else if (isShowParent()) {
+                                                    writeItem(intPd, subPathStatus, currentDepth + 2);
                                                 }
                                             }
                                         }
                                     }
-                                    if (processPath(intPdR, currentDepth + 1)) {
+                                    if (processPath(intPdR, currentDepth + 2)) {
                                         if (isTest()) {
                                             // Test Found an Item, so we need to break
                                             subTestMatch = true;
@@ -665,6 +675,8 @@ public class HdfsLsPlus extends HdfsAbstract {
                         } else {
                             setTestFound(true);
                             if (isAddComment() && !isShowParent()) {
+                                writeItem(path, fileStatus, currentDepth);
+                            }  else if (isShowParent()) {
                                 writeItem(path, fileStatus, currentDepth);
                             }
                         }
@@ -877,7 +889,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             if (isTestFound()) {
                 return cr;
             } else {
-                return new CommandReturn(CODE_NOT_FOUND, "");
+                return new CommandReturn(CODE_NOT_FOUND, "Not Found");
             }
         }
         return cr;

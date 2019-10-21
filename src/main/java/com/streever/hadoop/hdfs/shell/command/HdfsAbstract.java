@@ -45,7 +45,7 @@ public abstract class HdfsAbstract extends AbstractCommand {
     public int CODE_PATH_ERROR = -20;
     public int CODE_FS_CLOSE_ISSUE = -100;
     public int CODE_STATS_ISSUE = -200;
-    public int CODE_NOT_FOUND = -99;
+    public int CODE_NOT_FOUND = 1;
     
     protected Environment env;
     
