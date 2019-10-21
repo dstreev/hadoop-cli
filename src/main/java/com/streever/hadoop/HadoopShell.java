@@ -1007,7 +1007,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
             
             if (crTest.isError()) {
                 rtn = false;
-                loge(getEnv(), crTest.getSummary());
+                loge(getEnv(), crTest.getSummary() + ".\nAttempted to set home directory.  User home directory must exist.\nIf user is 'hdfs', consider using a proxy account for audit purposes.");
             }
         } catch (Exception e) {
             e.printStackTrace();
