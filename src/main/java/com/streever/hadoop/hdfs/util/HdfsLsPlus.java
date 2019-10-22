@@ -50,6 +50,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -126,6 +127,8 @@ public class HdfsLsPlus extends HdfsAbstract {
     // Used to shortcut 'test' and return when match located.
     private boolean testFound = false;
     private Pattern pattern = null;
+
+    private MessageFormat messageFormat = null;
 
     //    private PRINT_OPTION filterElement = PATH;
     private boolean invert = false;
@@ -219,6 +222,14 @@ public class HdfsLsPlus extends HdfsAbstract {
         this.comment = comment;
     }
 
+    public MessageFormat getMessageFormat() {
+        return messageFormat;
+    }
+
+    public void setMessageFormat(MessageFormat messageFormat) {
+        this.messageFormat = messageFormat;
+    }
+
     public Pattern getPattern() {
         return pattern;
     }
@@ -270,9 +281,6 @@ public class HdfsLsPlus extends HdfsAbstract {
     public void setShowParent(boolean showParent) {
         this.showParent = showParent;
     }
-//    public void setRecurse(Boolean recurse) {
-//        this.recurse = recurse;
-//    }
 
     public void setFormat(String format) {
         this.format = format;
@@ -303,10 +311,6 @@ public class HdfsLsPlus extends HdfsAbstract {
 
     }
 
-    //    public static boolean contains(int[] arr, int item) {
-//        int index = Arrays.binarySearch(arr, item);
-//        return index >= 0;
-//    }
     public static boolean contains(PRINT_OPTION[] arr, PRINT_OPTION item) {
         return Arrays.stream(arr).anyMatch(item::equals);
     }
@@ -314,13 +318,13 @@ public class HdfsLsPlus extends HdfsAbstract {
 
     private void writeItem(PathData item, int level) {
 
+        List<String> output = new ArrayList<String>();
+
         // Don't write files when -do specified.
         if (item.stat.isFile() && isDirOnly())
             return;
 
         try {
-            StringBuilder sb = new StringBuilder();
-
             boolean in = false;
             // Skip directories when PARENT is specified and is a directory.
             if (contains(print_options, PARENT) && item.stat.isDirectory()) {
@@ -330,79 +334,79 @@ public class HdfsLsPlus extends HdfsAbstract {
             logd(env, "L:" + level);
 
             for (PRINT_OPTION option : print_options) {
-                if (in && option != DATANODE_INFO)
-                    sb.append(getSeparator());
                 in = true;
                 switch (option) {
                     case PERMISSIONS_SHORT:
                         if (item.stat.isDirectory())
-                            sb.append("1");
+                            output.add("1" + Short.toString(item.stat.getPermission().toOctal()));
                         else
-                            sb.append("0");
-                        sb.append(item.stat.getPermission().toOctal());
+                            output.add("0" + Short.toString(item.stat.getPermission().toOctal()));
                         break;
                     case PERMISSIONS_LONG:
                         if (item.stat.isDirectory()) {
-                            sb.append("d");
+                            output.add("d" + item.stat.getPermission().toString());
+                        } else {
+                            output.add(item.stat.getPermission().toString());
                         }
-                        sb.append(item.stat.getPermission());
                         break;
                     case REPLICATION:
-                        sb.append(item.stat.getReplication());
+                        output.add(Short.toString(item.stat.getReplication()));
                         break;
                     case USER:
-                        sb.append(item.stat.getOwner());
+                        output.add(item.stat.getOwner());
                         break;
                     case GROUP:
-                        sb.append(item.stat.getGroup());
+                        output.add(item.stat.getGroup());
                         break;
                     case SIZE:
-                        sb.append(item.stat.getLen());
+                        output.add(Long.toString(item.stat.getLen()));
                         break;
                     case BLOCK_SIZE:
-                        sb.append(item.stat.getBlockSize());
+                        output.add(Long.toString(item.stat.getBlockSize()));
                         break;
                     case RATIO:
                         if (!item.stat.isDirectory()) {
                             Double blockRatio = (double) item.stat.getLen() / item.stat.getBlockSize();
                             BigDecimal ratioBD = new BigDecimal(blockRatio, mc);
-                            sb.append(ratioBD.toString());
+                            output.add(ratioBD.toString());
                         }
                         break;
                     case MOD:
-                        sb.append(df.format(new Date(item.stat.getModificationTime())));
+                        output.add(df.format(new Date(item.stat.getModificationTime())));
                         break;
                     case ACCESS:
-                        sb.append(df.format(new Date(item.stat.getAccessTime())));
+                        output.add(df.format(new Date(item.stat.getAccessTime())));
                         break;
                     case PARENT:
-                        sb.append(item.path.getParent().toString());
+                        output.add(item.path.getParent().toString());
                         break;
                     case PATH:
                         if (!isRelative()) {
-                            sb.append(item.toString());
+                            output.add(item.toString());
                         } else {
                             String[] parts = item.stat.getPath().toUri().getPath().split("/");
+                            StringBuilder sbp = new StringBuilder();
                             for (int i = parts.length - level; i < parts.length; i++) {
                                 if (parts[i].trim().length() == 0) {
-                                    sb.append(".");
+                                    sbp.append(".");
                                 } else {
-                                    sb.append(parts[i]);
+                                    sbp.append(parts[i]);
                                     if (i < parts.length - 1 || item.stat.isDirectory())
-                                        sb.append("/");
+                                        sbp.append("/");
                                 }
                             }
-
+                            output.add(sbp.toString());
                         }
                         break;
                     case FILE:
-                        if (!item.stat.isDirectory())
-                            sb.append(item.path.getName());
-                        else
-                            sb.append(".");
+                        if (!item.stat.isDirectory()) {
+                            output.add(item.path.getName());
+                        } else {
+                            output.add(".");
+                        }
                         break;
                     case LEVEL:
-                        sb.append(level);
+                        output.add(Integer.toString(level));
                         break;
                 }
             }
@@ -410,32 +414,26 @@ public class HdfsLsPlus extends HdfsAbstract {
                 LocatedBlocks blocks = null;
                 blocks = dfsClient.getLocatedBlocks(item.toString(), 0, Long.MAX_VALUE);
                 if (blocks.getLocatedBlocks().size() == 0) {
-                    // Happens on Zero Length Files.
-                    StringBuilder sb1 = new StringBuilder(sb);
-                    sb1.append(getSeparator());
-                    sb1.append("none").append(getSeparator());
-                    sb1.append("none").append(getSeparator());
-                    sb1.append("na");
-                    postItem(sb1.toString());
+                    output.add("none");
+                    output.add("none");
+                    output.add("na");
+                    postItem(output);
 
                 } else {
                     for (LocatedBlock block : blocks.getLocatedBlocks()) {
                         DatanodeInfo[] datanodeInfo = block.getLocations();
-//                    System.out.println("\tBlock: " + block.getBlock().getBlockName());
 
                         for (DatanodeInfo dni : datanodeInfo) {
-//                        System.out.println(dni.getIpAddr() + " - " + dni.getHostName());
-                            StringBuilder sb1 = new StringBuilder(sb);
-                            sb1.append(getSeparator());
-                            sb1.append(dni.getIpAddr()).append(getSeparator());
-                            sb1.append(dni.getHostName()).append(getSeparator());
-                            sb1.append(block.getBlock().getBlockName());
-                            postItem(sb1.toString());
+                            List<String> dno = new ArrayList<String>(output);
+                            dno.add(dni.getIpAddr());
+                            dno.add(dni.getHostName());
+                            dno.add(block.getBlock().getBlockName());
+                            postItem(dno);
                         }
                     }
                 }
             } else {
-                postItem(sb.toString());
+                postItem(output);
             }
 
         } catch (IOException e) {
@@ -443,19 +441,29 @@ public class HdfsLsPlus extends HdfsAbstract {
         }
     }
 
-    private void postItem(String line) {
+    private String getRecord(List<String> item) {
+        Object[] itemArray = (Object[])item.toArray();
+        String rtn = null;
+        if (messageFormat != null) {
+            rtn = messageFormat.format(itemArray);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            if (isAddComment() && getComment() != null) {
+                sb.append(getComment());
+                sb.append(getSeparator());
+            }
+            for (String i: item) {
+                sb.append(i).append(getSeparator());
+            }
+            rtn = sb.toString();
+        }
+        return rtn;
+    }
+
+    private void postItem(List<String> item) {
         if (outFS != null) {
             try {
-                if (isAddComment() && getComment() != null) {
-                    StringBuilder sb = new StringBuilder(getComment());
-                    sb.append(getSeparator());
-                    sb.append(line);
-                    outFS.write(sb.toString().getBytes());
-                } else {
-                    StringBuilder sb = new StringBuilder(line);
-                    sb.append("\n");
-                    outFS.write(sb.toString().getBytes());
-                }
+                outFS.write(getRecord(item).getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -467,11 +475,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             if (count % 10000 == 0)
                 System.out.println("----------");
         } else {
-            if (isAddComment() && getComment() != null) {
-                log(env, getComment() + getSeparator() + line);
-            } else {
-                log(env, line);
-            }
+            log(env, getRecord(item));
         }
     }
 
@@ -577,19 +581,10 @@ public class HdfsLsPlus extends HdfsAbstract {
             if (env.isDebug()) {
                 logd(env, "L:" + currentDepth + " - " + path.stat.getPath().toUri().getPath());
             }
-            
-            try {
-//                String[] parts = null;
-//                String endPath = null;
-//                parts = path.stat.getPath().toUri().getPath().split("/");
-//                if (parts.length > 0) {
-//                    endPath = parts[parts.length - 1];
-//                }
-//                boolean go = true;
 
+            try {
                 if (doesMatch(path)) {
                     boolean print = true;
-//                    boolean printParent = false;
 
                     if (isDirOnly() && !path.stat.isDirectory()) {
                         print = false;
@@ -618,107 +613,20 @@ public class HdfsLsPlus extends HdfsAbstract {
                         e.printStackTrace();
                     }
 
-//                    currentDepth++;
-
                     for (PathData intPd : pathDatas) {
                         if (isShowParent()) {
-//                        if (isShowParent() && !intPd.stat.isDirectory()) {
                             if (!processPath(intPd, path, currentDepth + 1))
                                 break;
                         } else {
                             processPath(intPd, path, currentDepth + 1);
                         }
-/*
-                        FileStatus subPathStatus = intPd.stat;
-                        String[] subParts = null;
-                        String subEndPath = null;
-                        subParts = subPathStatus.getPath().toUri().getPath().split("/");
-                        if (subParts.length > 0) {
-                            subEndPath = subParts[subParts.length - 1];
-                        }
-                        if (subEndPath == null || checkVisible(subEndPath)) {
-                            if (doesMatch(intPd, subPathStatus)) {
-                                if (!isTest()) {
-                                    writeItem(intPd, subPathStatus, currentDepth + 1);
-                                } else {
-                                    setTestFound(true);
-                                    if (isAddComment() && !isShowParent()) {
-                                        writeItem(intPd, subPathStatus, currentDepth + 1);
-                                    } else if (isShowParent()) {
-                                        writeItem(path, path.stat, currentDepth + 1);
-                                    }
-                                }
-                            }
-
-                            if (intPd.stat.isDirectory() && isRecursive()) {
-                                PathData[] pathDataR = new PathData[0];
-                                try {
-                                    pathDataR = intPd.getDirectoryContents();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-//                                currentDepth++;
-                                for (PathData intPdR : pathDataR) {
-                                    FileStatus subPathStatusR = intPdR.stat;
-                                    String[] subPartsR = null;
-                                    String subEndPathR = null;
-                                    subPartsR = subPathStatusR.getPath().toUri().getPath().split("/");
-                                    if (subPartsR.length > 0) {
-                                        subEndPathR = subPartsR[subPartsR.length - 1];
-                                    }
-                                    if (subEndPathR == null || checkVisible(subEndPathR)) {
-                                        if (doesMatch(intPdR, subPathStatusR)) {
-                                            if (!isTest()) {
-                                                writeItem(intPdR, subPathStatusR, currentDepth + 2);
-                                            } else {
-                                                setTestFound(true);
-                                                if (isAddComment() && !isShowParent()) {
-                                                    writeItem(intPdR, subPathStatusR, currentDepth + 2);
-                                                } else if (isShowParent()) {
-                                                    writeItem(intPd, subPathStatus, currentDepth + 2);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (processPath(intPdR, currentDepth + 2)) {
-                                        if (isTest()) {
-                                            // Test Found an Item, so we need to break
-                                            subTestMatch = true;
-                                            if (!intPd.stat.isDirectory()) {
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        */
                     }
-
-               /*
-                } else {
-                    // Go through contents.
-                    if (doesMatch(path)) {
-                        if (!isTest()) {
-                            writeItem(path, currentDepth);
-
-                        } else {
-                            setTestFound(true);
-                            if (isAddComment() && !isShowParent()) {
-                                writeItem(path, currentDepth);
-                            }  else if (isShowParent()) {
-                                writeItem(path, currentDepth);
-                            }
-                        }
-                    } else if (isTest()) {
-                        rtn = false;
-                    }
-
-                */
                 }
             } catch (Throwable e) {
                 // Happens when path doesn't exist.
-                postItem("doesn't exist");
+                List<String> j = new ArrayList<String>();
+                j.add("doesn't exist");
+                postItem(j);
             }
         } else {
             logv(env, "Max Depth of: " + maxDepth + " Reached.  Sub-folder will not be traversed beyond this depth. Increase of set to -1 for unlimited depth");
@@ -782,6 +690,13 @@ public class HdfsLsPlus extends HdfsAbstract {
             setAddComment(true);
         } else {
             setAddComment(false);
+        }
+
+        if (commandLine.hasOption("message-format")) {
+            messageFormat = new MessageFormat(commandLine.getOptionValue("message-format"));
+            setAddComment(false);
+        } else {
+            messageFormat = null;
         }
 
         if (commandLine.hasOption("recursive")) {
@@ -860,7 +775,6 @@ public class HdfsLsPlus extends HdfsAbstract {
         fs = (FileSystem) env.getValue(Constants.HDFS);
 
         if (fs == null) {
-//            log(env, "Please connect first");
             return new CommandReturn(CODE_NOT_CONNECTED, "Connect First");
         }
 
@@ -869,11 +783,9 @@ public class HdfsLsPlus extends HdfsAbstract {
         try {
             dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
-//            e.printStackTrace();
             return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
         }
 
-//        Option[] cmdOpts = cmd.getOptions();
         String[] cmdArgs = cmd.getArgs();
 
         processCommandLine(cmd);
@@ -889,8 +801,8 @@ public class HdfsLsPlus extends HdfsAbstract {
             targetPath = fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length());
         }
 
-        if (cmd.hasOption("output")) {
-            outputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+        if (cmd.hasOption("output-directory")) {
+            outputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output-directory"));
             outputFile = outputDir + "/" + UUID.randomUUID();
 
             Path pof = new Path(outputFile);
@@ -937,8 +849,6 @@ public class HdfsLsPlus extends HdfsAbstract {
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();
-
-//        opts.addOption("r", "recurse", false, "recurse (default false)");
 
         Option formatOption = Option.builder("f").required(false)
                 .argName("output format")
@@ -1056,6 +966,15 @@ public class HdfsLsPlus extends HdfsAbstract {
                 .build();
         opts.addOption(commentOption);
 
+        Option messageFormatOption = Option.builder("mf").required(false)
+                .argName("Message Format")
+                .desc("Message Format function that uses the elements of the 'format' to populate a string message. See Java: https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html.")
+                .hasArg(true)
+                .numberOfArgs(1)
+                .longOpt("message-format")
+                .build();
+        opts.addOption(messageFormatOption);
+
         Option testOption = Option.builder("t").required(false)
                 .argName("test")
                 .desc("Test for existence")
@@ -1071,6 +990,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                 .longOpt("show-parent")
                 .build();
         opts.addOption(parentOption);
+
 
         return opts;
     }
