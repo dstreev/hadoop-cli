@@ -312,10 +312,10 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
 
-    private void writeItem(PathData item, FileStatus itemStatus, int level) {
+    private void writeItem(PathData item, int level) {
 
         // Don't write files when -do specified.
-        if (itemStatus.isFile() && isDirOnly())
+        if (item.stat.isFile() && isDirOnly())
             return;
 
         try {
@@ -323,7 +323,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
             boolean in = false;
             // Skip directories when PARENT is specified and is a directory.
-            if (contains(print_options, PARENT) && itemStatus.isDirectory()) {
+            if (contains(print_options, PARENT) && item.stat.isDirectory()) {
                 return;
             }
 
@@ -335,45 +335,45 @@ public class HdfsLsPlus extends HdfsAbstract {
                 in = true;
                 switch (option) {
                     case PERMISSIONS_SHORT:
-                        if (itemStatus.isDirectory())
+                        if (item.stat.isDirectory())
                             sb.append("1");
                         else
                             sb.append("0");
-                        sb.append(itemStatus.getPermission().toOctal());
+                        sb.append(item.stat.getPermission().toOctal());
                         break;
                     case PERMISSIONS_LONG:
-                        if (itemStatus.isDirectory()) {
+                        if (item.stat.isDirectory()) {
                             sb.append("d");
                         }
-                        sb.append(itemStatus.getPermission());
+                        sb.append(item.stat.getPermission());
                         break;
                     case REPLICATION:
-                        sb.append(itemStatus.getReplication());
+                        sb.append(item.stat.getReplication());
                         break;
                     case USER:
-                        sb.append(itemStatus.getOwner());
+                        sb.append(item.stat.getOwner());
                         break;
                     case GROUP:
-                        sb.append(itemStatus.getGroup());
+                        sb.append(item.stat.getGroup());
                         break;
                     case SIZE:
-                        sb.append(itemStatus.getLen());
+                        sb.append(item.stat.getLen());
                         break;
                     case BLOCK_SIZE:
-                        sb.append(itemStatus.getBlockSize());
+                        sb.append(item.stat.getBlockSize());
                         break;
                     case RATIO:
-                        if (!itemStatus.isDirectory()) {
-                            Double blockRatio = (double) itemStatus.getLen() / itemStatus.getBlockSize();
+                        if (!item.stat.isDirectory()) {
+                            Double blockRatio = (double) item.stat.getLen() / item.stat.getBlockSize();
                             BigDecimal ratioBD = new BigDecimal(blockRatio, mc);
                             sb.append(ratioBD.toString());
                         }
                         break;
                     case MOD:
-                        sb.append(df.format(new Date(itemStatus.getModificationTime())));
+                        sb.append(df.format(new Date(item.stat.getModificationTime())));
                         break;
                     case ACCESS:
-                        sb.append(df.format(new Date(itemStatus.getAccessTime())));
+                        sb.append(df.format(new Date(item.stat.getAccessTime())));
                         break;
                     case PARENT:
                         sb.append(item.path.getParent().toString());
@@ -382,13 +382,13 @@ public class HdfsLsPlus extends HdfsAbstract {
                         if (!isRelative()) {
                             sb.append(item.toString());
                         } else {
-                            String[] parts = itemStatus.getPath().toUri().getPath().split("/");
+                            String[] parts = item.stat.getPath().toUri().getPath().split("/");
                             for (int i = parts.length - level; i < parts.length; i++) {
                                 if (parts[i].trim().length() == 0) {
                                     sb.append(".");
                                 } else {
                                     sb.append(parts[i]);
-                                    if (i < parts.length - 1 || itemStatus.isDirectory())
+                                    if (i < parts.length - 1 || item.stat.isDirectory())
                                         sb.append("/");
                                 }
                             }
@@ -396,7 +396,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                         }
                         break;
                     case FILE:
-                        if (!itemStatus.isDirectory())
+                        if (!item.stat.isDirectory())
                             sb.append(item.path.getName());
                         else
                             sb.append(".");
@@ -406,7 +406,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                         break;
                 }
             }
-            if (!itemStatus.isDirectory() && Arrays.asList(print_options).contains(DATANODE_INFO)) {
+            if (!item.stat.isDirectory() && Arrays.asList(print_options).contains(DATANODE_INFO)) {
                 LocatedBlocks blocks = null;
                 blocks = dfsClient.getLocatedBlocks(item.toString(), 0, Long.MAX_VALUE);
                 if (blocks.getLocatedBlocks().size() == 0) {
@@ -475,13 +475,13 @@ public class HdfsLsPlus extends HdfsAbstract {
         }
     }
 
-    protected boolean doesMatch(PathData item, FileStatus itemStatus) {
+    protected boolean doesMatch(PathData item) {
         if (getPattern() != null) {
             StringBuilder sb = new StringBuilder();
 
             boolean in = false;
             // Skip directories when PARENT is specified and is a directory.
-            if (contains(filter_options, PARENT) && itemStatus.isDirectory()) {
+            if (contains(filter_options, PARENT) && item.stat.isDirectory()) {
                 return false;
             }
 
@@ -491,45 +491,45 @@ public class HdfsLsPlus extends HdfsAbstract {
                 in = true;
                 switch (option) {
                     case PERMISSIONS_SHORT:
-                        if (itemStatus.isDirectory())
+                        if (item.stat.isDirectory())
                             sb.append("1");
                         else
                             sb.append("0");
-                        sb.append(itemStatus.getPermission().toOctal());
+                        sb.append(item.stat.getPermission().toOctal());
                         break;
                     case PERMISSIONS_LONG:
-                        if (itemStatus.isDirectory()) {
+                        if (item.stat.isDirectory()) {
                             sb.append("d");
                         }
-                        sb.append(itemStatus.getPermission());
+                        sb.append(item.stat.getPermission());
                         break;
                     case REPLICATION:
-                        sb.append(itemStatus.getReplication());
+                        sb.append(item.stat.getReplication());
                         break;
                     case USER:
-                        sb.append(itemStatus.getOwner());
+                        sb.append(item.stat.getOwner());
                         break;
                     case GROUP:
-                        sb.append(itemStatus.getGroup());
+                        sb.append(item.stat.getGroup());
                         break;
                     case SIZE:
-                        sb.append(itemStatus.getLen());
+                        sb.append(item.stat.getLen());
                         break;
                     case BLOCK_SIZE:
-                        sb.append(itemStatus.getBlockSize());
+                        sb.append(item.stat.getBlockSize());
                         break;
                     case RATIO:
-                        if (!itemStatus.isDirectory()) {
-                            Double blockRatio = (double) itemStatus.getLen() / itemStatus.getBlockSize();
+                        if (!item.stat.isDirectory()) {
+                            Double blockRatio = (double) item.stat.getLen() / item.stat.getBlockSize();
                             BigDecimal ratioBD = new BigDecimal(blockRatio, mc);
                             sb.append(ratioBD.toString());
                         }
                         break;
                     case MOD:
-                        sb.append(df.format(new Date(itemStatus.getModificationTime())));
+                        sb.append(df.format(new Date(item.stat.getModificationTime())));
                         break;
                     case ACCESS:
-                        sb.append(df.format(new Date(itemStatus.getAccessTime())));
+                        sb.append(df.format(new Date(item.stat.getAccessTime())));
                         break;
                     case PARENT:
                         sb.append(item.path.getParent().toString());
@@ -538,7 +538,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                         sb.append(item.toString());
                         break;
                     case FILE:
-                        if (!itemStatus.isDirectory())
+                        if (!item.stat.isDirectory())
                             sb.append(item.path.getName());
                         else
                             sb.append(".");
@@ -569,27 +569,48 @@ public class HdfsLsPlus extends HdfsAbstract {
         }
     }
 
-    private boolean processPath(PathData path, int currentDepth) {
+    private boolean processPath(PathData path, PathData parent, int currentDepth) {
         boolean rtn = true;
-        boolean subTestMatch = false;
 
         if (maxDepth == -1 || currentDepth <= (maxDepth + 1)) {
 
-
-            FileStatus fileStatus = path.stat;
-            logd(env, "L:" + currentDepth + " - " + fileStatus.getPath().toUri().getPath());
-//            currentDepth++;
-
+            if (env.isDebug()) {
+                logd(env, "L:" + currentDepth + " - " + path.stat.getPath().toUri().getPath());
+            }
+            
             try {
-                String[] parts = null;
-                String endPath = null;
-                parts = fileStatus.getPath().toUri().getPath().split("/");
-                if (parts.length > 0) {
-                    endPath = parts[parts.length - 1];
-                }
-                boolean go = true;
+//                String[] parts = null;
+//                String endPath = null;
+//                parts = path.stat.getPath().toUri().getPath().split("/");
+//                if (parts.length > 0) {
+//                    endPath = parts[parts.length - 1];
+//                }
+//                boolean go = true;
 
-                if (fileStatus.isDirectory()) {
+                if (doesMatch(path)) {
+                    boolean print = true;
+//                    boolean printParent = false;
+
+                    if (isDirOnly() && !path.stat.isDirectory()) {
+                        print = false;
+                    }
+                    if (isTest()) {
+                        setTestFound(true);
+                    }
+                    if (isShowParent()) {
+                        if (print) {
+                            writeItem(parent, currentDepth - 1);
+                            // Shortcut Recursion since we found a match and 'show parent'.
+                            return false;
+                        }
+                    } else {
+                        if (print) {
+                            writeItem(path, currentDepth);
+                        }
+                    }
+                }
+
+                if (path.stat.isDirectory() && (isRecursive() || currentDepth == 1)) {
                     PathData[] pathDatas = new PathData[0];
                     try {
                         pathDatas = path.getDirectoryContents();
@@ -600,6 +621,14 @@ public class HdfsLsPlus extends HdfsAbstract {
 //                    currentDepth++;
 
                     for (PathData intPd : pathDatas) {
+                        if (isShowParent()) {
+//                        if (isShowParent() && !intPd.stat.isDirectory()) {
+                            if (!processPath(intPd, path, currentDepth + 1))
+                                break;
+                        } else {
+                            processPath(intPd, path, currentDepth + 1);
+                        }
+/*
                         FileStatus subPathStatus = intPd.stat;
                         String[] subParts = null;
                         String subEndPath = null;
@@ -616,7 +645,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                                     if (isAddComment() && !isShowParent()) {
                                         writeItem(intPd, subPathStatus, currentDepth + 1);
                                     } else if (isShowParent()) {
-                                        writeItem(path, fileStatus, currentDepth + 1);
+                                        writeItem(path, path.stat, currentDepth + 1);
                                     }
                                 }
                             }
@@ -663,26 +692,29 @@ public class HdfsLsPlus extends HdfsAbstract {
                                 }
                             }
                         }
+                        */
                     }
 
-
+               /*
                 } else {
                     // Go through contents.
-                    if (doesMatch(path, fileStatus)) {
+                    if (doesMatch(path)) {
                         if (!isTest()) {
-                            writeItem(path, fileStatus, currentDepth);
+                            writeItem(path, currentDepth);
 
                         } else {
                             setTestFound(true);
                             if (isAddComment() && !isShowParent()) {
-                                writeItem(path, fileStatus, currentDepth);
+                                writeItem(path, currentDepth);
                             }  else if (isShowParent()) {
-                                writeItem(path, fileStatus, currentDepth);
+                                writeItem(path, currentDepth);
                             }
                         }
                     } else if (isTest()) {
                         rtn = false;
                     }
+
+                */
                 }
             } catch (Throwable e) {
                 // Happens when path doesn't exist.
@@ -739,8 +771,8 @@ public class HdfsLsPlus extends HdfsAbstract {
             setFilterFormat("path"); // default
         }
 
-        if (commandLine.hasOption("format")) {
-            setFormat(commandLine.getOptionValue("format"));
+        if (commandLine.hasOption("output-format")) {
+            setFormat(commandLine.getOptionValue("output-format"));
         } else {
             setFormat(DEFAULT_FORMAT);
         }
@@ -754,8 +786,10 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         if (commandLine.hasOption("recursive")) {
             setRecursive(true);
+            setMaxDepth(DEFAULT_DEPTH);
         } else {
             setRecursive(false);
+            setMaxDepth(1);
         }
 
         if (commandLine.hasOption("test")) {
@@ -764,17 +798,22 @@ public class HdfsLsPlus extends HdfsAbstract {
             setTest(false);
         }
 
-        if (commandLine.hasOption("show-parent") && isTest()) {
+        if (commandLine.hasOption("show-parent")) {
             setShowParent(true);
+            if (!commandLine.hasOption("filter")) {
+                loge(env, "show-parent requires a 'filter'");
+            }
         } else {
             setShowParent(false);
         }
 
-        if (commandLine.hasOption("maxDepth")) {
-            setMaxDepth(Integer.parseInt(commandLine.getOptionValue("maxDepth")));
+        if (commandLine.hasOption("max-depth")) {
+            setMaxDepth(Integer.parseInt(commandLine.getOptionValue("max-depth")));
             setRecursive(true);
         } else {
-            setMaxDepth(DEFAULT_DEPTH);
+            // Don't reset Recursive if already set.
+            if (!isRecursive())
+                setMaxDepth(1);
         }
 
         if (commandLine.hasOption("invisible")) {
@@ -871,7 +910,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             return new CommandReturn(CODE_PATH_ERROR, "Error in Path");
         }
 
-        processPath(targetPathData, 1);
+        processPath(targetPathData, null, 1);
 
         if (outFS != null) {
             try {
@@ -902,12 +941,12 @@ public class HdfsLsPlus extends HdfsAbstract {
 //        opts.addOption("r", "recurse", false, "recurse (default false)");
 
         Option formatOption = Option.builder("f").required(false)
-                .argName("output-format")
+                .argName("output format")
                 .desc("Comma separated list of one or more: permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,file,datanode_info (default all of the above)")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .valueSeparator(',')
-                .longOpt("format")
+                .longOpt("output-format")
                 .build();
         opts.addOption(formatOption);
 
@@ -920,7 +959,7 @@ public class HdfsLsPlus extends HdfsAbstract {
         opts.addOption(recursiveOption);
 
         Option dirOnlyOption = Option.builder("do").required(false)
-                .argName("dir-only")
+                .argName("directories only")
                 .desc("Show Directories Only")
                 .hasArg(false)
                 .longOpt("dir-only")
@@ -946,11 +985,11 @@ public class HdfsLsPlus extends HdfsAbstract {
 
 
         Option depthOption = Option.builder("d").required(false)
-                .argName("maxDepth")
+                .argName("max depth")
                 .desc("Depth of Recursion (default 5), use '-1' for unlimited")
                 .hasArg(true)
                 .numberOfArgs(1)
-                .longOpt("maxDepth")
+                .longOpt("max-depth")
                 .build();
         opts.addOption(depthOption);
 
@@ -964,7 +1003,7 @@ public class HdfsLsPlus extends HdfsAbstract {
         opts.addOption(filterOption);
 
         Option filterElementOption = Option.builder("Fe").required(false)
-                .argName("filter element")
+                .argName("Filter Element")
                 .desc("Filter on 'element'.  One of '--format'")
                 .hasArg(true)
                 .numberOfArgs(1)
@@ -1000,11 +1039,11 @@ public class HdfsLsPlus extends HdfsAbstract {
 
 
         Option outputOption = Option.builder("o").required(false)
-                .argName("output directory")
+                .argName("Output Directory")
                 .desc("Output Directory (HDFS) (default System.out)")
                 .hasArg(true)
                 .numberOfArgs(1)
-                .longOpt("output")
+                .longOpt("output-directory")
                 .build();
         opts.addOption(outputOption);
 
@@ -1026,8 +1065,8 @@ public class HdfsLsPlus extends HdfsAbstract {
         opts.addOption(testOption);
 
         Option parentOption = Option.builder("sp").required(false)
-                .argName("Show parent")
-                .desc("For Test, show parent")
+                .argName("Show Parent")
+                .desc("Shows the parent directory of the related matched 'filter'. When match is found, recursion into directory is aborted since parent has been identified.")
                 .hasArg(false)
                 .longOpt("show-parent")
                 .build();
