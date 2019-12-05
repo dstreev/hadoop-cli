@@ -37,16 +37,19 @@ To use an alternate HADOOP_CONF_DIR:
 
 ```
 usage: hadoopcli
- -d,--debug                               Debug Commands
- -e,--execute <command [args]>            Execute Command
- -f,--file <file to exec>                 Run File and Exit
+ -d,--debug                                      Debug Commands
+ -e,--execute <command [args]>                   Execute Command
+ -f,--file <file to exec>                        Run File and Exit
  -h,--help
- -i,--init <init set>                     Initialize with set
- -p,--password <password>                 Password
- -s,--silent                              Suppress Banner
- -stdin,--stdin                           Run Stdin pipe and Exit
- -u,--username <username>                 Username to log into gateway
- -v,--verbose                             Verbose Commands
+ -i,--init <init set>                            Initialize with set
+ -s,--silent                                     Suppress Banner
+ -stdin,--stdin                                  Run Stdin pipe and Exit
+ -t,--template <template>                        Template to apply on
+                                                 input (-f | -stdin)
+ -td,--template-delimiter <template-delimiter>   Delimiter to apply to
+                                                 'input' for template
+                                                 option (default=',')
+ -v,--verbose                                    Verbose Commands
 ```
 
 ### File System Command Basics

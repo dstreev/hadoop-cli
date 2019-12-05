@@ -193,6 +193,7 @@ public class HdfsCommand extends HdfsAbstract {
         opts.addOption("ignorecrc", false, "ignorecrc");
         opts.addOption("crc", false, "crc");
 
+//        opts.addOption("c", true, "Comment");
 //        opts.addOption("ignore-fail-on-non-empty", false, "ignore-fail-on-non-empty");
         return opts;
     }

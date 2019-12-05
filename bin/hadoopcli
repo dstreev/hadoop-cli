@@ -63,6 +63,16 @@ while [[ $# -gt 0 ]]; do
       shift
       PRG_ARGS="${PRG_ARGS} -d"
       ;;
+    -t|--template)
+      shift
+      PRG_ARGS="${PRG_ARGS} -t \"${1}\""
+      shift
+      ;;
+    -td|--template-delimiter)
+      shift
+      PRG_ARGS="${PRG_ARGS} -td \"${1}\""
+      shift
+      ;;
     -stdin)
       shift
       PRG_ARGS="${PRG_ARGS} -stdin"

@@ -706,6 +706,7 @@ import org.apache.commons.cli.*;
 import org.apache.hadoop.fs.FileSystem;
 
 import java.io.*;
+import java.text.MessageFormat;
 import java.util.concurrent.*;
 
 public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
@@ -744,6 +745,20 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 .build();
         options.addOption(fileOption);
 
+        Option templateOption = Option.builder("t").required(false)
+                .argName("template").desc("Template to apply on input (-f | -stdin)")
+                .longOpt("template")
+                .hasArg(true).numberOfArgs(1)
+                .build();
+        options.addOption(templateOption);
+
+        Option delimiterOption = Option.builder("td").required(false)
+                .argName("template-delimiter").desc("Delimiter to apply to 'input' for template option (default=',')")
+                .longOpt("template-delimiter")
+                .hasArg(true).numberOfArgs(1)
+                .build();
+        options.addOption(delimiterOption);
+
         // add stdin option
         Option siOption = Option.builder("stdin").required(false)
                 .argName("stdin process").desc("Run Stdin pipe and Exit")
@@ -773,26 +788,26 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 .build();
         options.addOption(debugOption);
 
-        Option usernameOption = Option.builder("u").required(false)
-                .argName("username").desc("Username to log into gateway")
-                .longOpt("username")
-                .hasArg(true).numberOfArgs(1)
-                .build();
-        options.addOption(usernameOption);
+//        Option usernameOption = Option.builder("u").required(false)
+//                .argName("username").desc("Username to log into gateway")
+//                .longOpt("username")
+//                .hasArg(true).numberOfArgs(1)
+//                .build();
+//        options.addOption(usernameOption);
 
-        Option passwordOption = Option.builder("p").required(false)
-                .argName("password").desc("Password")
-                .longOpt("password")
-                .hasArg(true).numberOfArgs(1)
-                .build();
-        options.addOption(passwordOption);
+//        Option passwordOption = Option.builder("p").required(false)
+//                .argName("password").desc("Password")
+//                .longOpt("password")
+//                .hasArg(true).numberOfArgs(1)
+//                .build();
+//        options.addOption(passwordOption);
 
-        Option webhdfsOption = Option.builder("w").required(false)
-                .argName("webhdfs://<host>:<port>").desc("Connect via webhdfs")
-                .longOpt("webhdfs")
-                .hasArg(true).numberOfArgs(1)
-                .build();
-        options.addOption(webhdfsOption);
+//        Option webhdfsOption = Option.builder("w").required(false)
+//                .argName("webhdfs://<host>:<port>").desc("Connect via webhdfs")
+//                .longOpt("webhdfs")
+//                .hasArg(true).numberOfArgs(1)
+//                .build();
+//        options.addOption(webhdfsOption);
 
         // Need to add mechanism to use a password from file.
         // Need to add mechanism to pull username from file.
@@ -888,16 +903,24 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
         }
 
         if (cmd.hasOption("i")) {
-            runFile(cmd.getOptionValue("i"), reader);
+            runFile(cmd.getOptionValue("i"), null, null, reader);
         }
 
         if (cmd.hasOption("e")) {
             processInput(cmd.getOptionValue("e"), reader);
             processInput("exit", reader);
         }
+        String template = null;
+        String delimiter = null;
+        if (cmd.hasOption("t")) {
+            template = cmd.getOptionValue("t");
+        }
+        if (cmd.hasOption("td")) {
+            delimiter = cmd.getOptionValue("td");
+        }
 
         if (cmd.hasOption("f")) {
-            runFile(cmd.getOptionValue("f"), reader);
+            runFile(cmd.getOptionValue("f"), template, delimiter, reader);
             processInput("exit", reader);
         }
 
@@ -915,7 +938,7 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                 }
                 tempFileWriter.close();
 
-                runFile(temp.getAbsolutePath(), reader);
+                runFile(temp.getAbsolutePath(), template, delimiter, reader);
                 processInput("exit", reader);
 
             } catch (Exception e) {
@@ -926,25 +949,33 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
         return rtn;
     }
 
-    public void runFile(String set, ConsoleReader reader) {
-        logv(getEnv(), "-- Running source file: " + set);
+    public void runFile(String inSet, String template, String delimiter, ConsoleReader reader) {
+        logv(getEnv(), "-- Running source file: " + inSet);
 
         String localFile = null;
 
-        if (set.startsWith("/")) {
-            localFile = set;
+        // Absolute Path
+        if (inSet.startsWith("/")) {
+            localFile = inSet;
         } else {
+            // Relative Path
             org.apache.hadoop.fs.FileSystem localfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.LOCAL_FS);
-//        org.apache.hadoop.fs.FileSystem hdfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.HDFS);
 
             String localwd = localfs.getWorkingDirectory().toString();
-//        String hdfswd = hdfs.getWorkingDirectory().toString();
 
             // Remove 'file:' from working directory.
-            localFile = localwd.split(":")[1] + System.getProperty("file.separator") + set;
+            localFile = localwd.split(":")[1] + System.getProperty("file.separator") + inSet;
         }
         File setFile = new File(localFile);
 
+        MessageFormat messageFormat = null;
+        if (template != null) {
+            messageFormat = new MessageFormat(template);
+        }
+        String lclDelimiter = null;
+        if (delimiter == null) {
+            lclDelimiter = ",";
+        }
         if (!setFile.exists()) {
             loge(getEnv(), "File not found: " + setFile.getAbsoluteFile());
         } else {
@@ -955,10 +986,11 @@ public class HadoopShell extends com.streever.tools.stemshell.AbstractShell {
                     logv(getEnv(), line);
                     String line2 = line.trim();
                     if (line2.length() > 0 && !line2.startsWith("#")) {
+                        if (messageFormat != null) {
+                            String[] items = line2.split(lclDelimiter);
+                            line2 = messageFormat.format(items);
+                        }
                         CommandReturn cr = processInput(line2, reader);
-                        // Handled at process level to extract details from processor
-                        //                        if (res != 0)
-//                            loge(getEnv(), "Non-Zero Return Code: " + Integer.toString(res));
                     }
                 }
             } catch (Exception e) {

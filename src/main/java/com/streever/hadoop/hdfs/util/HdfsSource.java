@@ -84,8 +84,16 @@ public class HdfsSource  extends HdfsAbstract {
         Option[] cmdOpts = cmd.getOptions();
         String[] cmdArgs = cmd.getArgs();
 
+        String template = null;
+        String delimiter = null;
+        if (cmd.hasOption("t")) {
+            template = cmd.getOptionValue("t");
+        }
+        if (cmd.hasOption("d")) {
+            delimiter = cmd.getOptionValue("d");
+        }
         if (cmd.hasOption("lf")) {
-            runSource(cmd.getOptionValue("lf"), reader);
+            runSource(cmd.getOptionValue("lf"), template, delimiter, reader);
         }
 
         logv(env,"'Source' complete.");
@@ -93,8 +101,8 @@ public class HdfsSource  extends HdfsAbstract {
         return CommandReturn.GOOD;
     }
 
-    private void runSource(String sourceFile, ConsoleReader reader) {
-        this.shell.runFile(sourceFile,reader);
+    private void runSource(String sourceFile, String template, String delimiter, ConsoleReader reader) {
+        this.shell.runFile(sourceFile,template, delimiter, reader);
     }
 
 
@@ -110,6 +118,24 @@ public class HdfsSource  extends HdfsAbstract {
                 .longOpt("localfile")
                 .build();
         opts.addOption(lfileOption);
+
+        Option templateOption = Option.builder("t").required(false)
+                .argName("template")
+                .desc("Message Template")
+                .hasArg(true)
+                .numberOfArgs(1)
+                .longOpt("template")
+                .build();
+        opts.addOption(templateOption);
+
+        Option delimiterOption = Option.builder("d").required(false)
+                .argName("delimiter")
+                .desc("delimiter")
+                .hasArg(true)
+                .numberOfArgs(1)
+                .longOpt("delimiter")
+                .build();
+        opts.addOption(delimiterOption);
 
         // TODO: Add Distributed File Source
 //        Option dfileOption = Option.builder("df").required(false)
