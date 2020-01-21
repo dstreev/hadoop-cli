@@ -25,7 +25,7 @@ package com.streever.hadoop.hdfs.util;
 
 import com.streever.hadoop.AbstractStats;
 import com.streever.hadoop.hdfs.shell.command.Direction;
-import com.streever.tools.stemshell.Environment;
+import com.streever.hadoop.shell.Environment;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;

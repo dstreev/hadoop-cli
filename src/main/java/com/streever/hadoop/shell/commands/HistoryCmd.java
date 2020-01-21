@@ -20,41 +20,39 @@
  *     OR LOSS OR CORRUPTION OF DATA.
  *
  */
-package com.streever.hadoop.hdfs.shell.command;
 
-import com.streever.hadoop.shell.command.CommandReturn;
+package com.streever.hadoop.shell.commands;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileSystem;
+import java.util.ListIterator;
 
 import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.AbstractCommand;
+import com.streever.hadoop.shell.command.CommandReturn;
+import jline.console.history.History.Entry;
 
-public class LocalPwd extends HdfsCommand {
+import org.apache.commons.cli.CommandLine;
 
-    public LocalPwd(String name) {
+public class HistoryCmd extends AbstractCommand {
+
+    public HistoryCmd(String name) {
         super(name);
     }
 
+    @Override
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-        
-        String wd = localfs.getWorkingDirectory().toString();
-        if (cmd.hasOption("l")) {
-            log(env, wd);
+        if (env.getConsoleReader() != null) {
+            jline.console.history.History history = env.getConsoleReader().getHistory();
+            ListIterator<Entry> it = history.entries();
+            while (it.hasNext()) {
+                Entry entry = it.next();
+                System.out.println(entry.value());
+            }
+        } else {
+            commandReturn.setCode(-1);
+            commandReturn.setDetails("No console reader defined.  Not available in 'api' mode");
+//            return CommandReturn.BAD;
         }
-        else {
-            // strip off prefix: "file:"
-            log(env, wd.substring(5));
-        }
-        FSUtil.prompt(env);
         return commandReturn;
     }
-    
-    @Override
-    public Options getOptions() {
-        Options opts = super.getOptions();
-        opts.addOption("l", false, "show the full file system URL");
-        return opts;
-    }
+
 }

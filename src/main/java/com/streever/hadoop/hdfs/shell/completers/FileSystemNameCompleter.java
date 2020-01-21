@@ -33,7 +33,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.streever.tools.stemshell.Environment;
+import com.streever.hadoop.shell.Environment;
 
 public class FileSystemNameCompleter implements Completer {
     private Environment env;
@@ -63,6 +63,7 @@ public class FileSystemNameCompleter implements Completer {
     }
 
     // TODO add ability to handle ~/ for local filesystems
+    // Remember...  the completers don't work in the IDE (IntelliJ)
     public int complete(String buffer, final int cursor,
                     final List<CharSequence> candidates) {
 
@@ -91,13 +92,16 @@ public class FileSystemNameCompleter implements Completer {
 
         String prefix;
 
+        Path basePath = null;
         if (!this.local) {
             fs = (FileSystem) env.getValue(Constants.HDFS);
             prefix = env.getProperties().getProperty(Constants.HDFS_URL);
+            basePath = env.getRemoteWorkingDirectory();
         }
         else {
             fs = (FileSystem) env.getValue(Constants.LOCAL_FS);
             prefix = "file:" + (checkBuffer != null && checkBuffer.startsWith("/") ? "/" : "");
+            basePath = fs.getWorkingDirectory();
         }
         if(fs == null){
 //            System.out.println("Not connected.");
@@ -105,7 +109,8 @@ public class FileSystemNameCompleter implements Completer {
         }
         logd("Prefix: " + prefix);
 
-        Path basePath = fs.getWorkingDirectory();
+//        Path basePath = fs.getWorkingDirectory();
+//        Path basePath = env.getWorkingDirectory();
 
         logd("Current Path: " + strip(prefix, basePath.toString()));
 

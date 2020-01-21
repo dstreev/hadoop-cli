@@ -20,41 +20,30 @@
  *     OR LOSS OR CORRUPTION OF DATA.
  *
  */
-package com.streever.hadoop.hdfs.shell.command;
 
-import com.streever.hadoop.shell.command.CommandReturn;
+package com.streever.hadoop.shell.command;
+
+import com.streever.hadoop.shell.Environment;
+import jline.console.completer.Completer;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileSystem;
 
-import com.streever.hadoop.shell.Environment;
+public interface Command {
 
-public class LocalPwd extends HdfsCommand {
-
-    public LocalPwd(String name) {
-        super(name);
-    }
-
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-        
-        String wd = localfs.getWorkingDirectory().toString();
-        if (cmd.hasOption("l")) {
-            log(env, wd);
-        }
-        else {
-            // strip off prefix: "file:"
-            log(env, wd.substring(5));
-        }
-        FSUtil.prompt(env);
-        return commandReturn;
-    }
+    String getHelpHeader();
+    String gethelpFooter();
+    String getUsage();
     
-    @Override
-    public Options getOptions() {
-        Options opts = super.getOptions();
-        opts.addOption("l", false, "show the full file system URL");
-        return opts;
-    }
+    String getName();
+    
+    CommandReturn execute(Environment env, CommandLine cmd, CommandReturn commandReturn);
+
+//    void processCommandLine(CommandLine commandLine);
+
+    Options getOptions();
+    
+    Completer getCompleter();
+
+    CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn);
 }

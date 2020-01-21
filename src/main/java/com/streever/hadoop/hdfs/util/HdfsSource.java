@@ -23,40 +23,36 @@
 
 package com.streever.hadoop.hdfs.util;
 
-import com.streever.hadoop.HadoopShell;
+import com.streever.hadoop.HadoopSession;
 import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
-import com.streever.tools.stemshell.Environment;
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.hdfs.DFSClient;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.UUID;
 
 public class HdfsSource  extends HdfsAbstract {
 
     private FileSystem fs = null;
 
-    private HadoopShell shell;
+    private HadoopSession shell;
     private Configuration configuration = null;
     private DFSClient dfsClient = null;
 
-    public HdfsSource(String name, Environment env, HadoopShell shell) {
+    public HdfsSource(String name, Environment env, HadoopSession shell) {
         super(name, env);
         this.shell = shell;
     }
 
     @Override
-    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
 
         logv(env, "Beginning 'source' collection.");
 
@@ -93,16 +89,17 @@ public class HdfsSource  extends HdfsAbstract {
             delimiter = cmd.getOptionValue("d");
         }
         if (cmd.hasOption("lf")) {
-            runSource(cmd.getOptionValue("lf"), template, delimiter, reader);
+            // TODO: FIX THIS
+            runSource(cmd.getOptionValue("lf"), template, delimiter);
         }
 
         logv(env,"'Source' complete.");
 
-        return CommandReturn.GOOD;
+        return commandReturn;
     }
 
-    private void runSource(String sourceFile, String template, String delimiter, ConsoleReader reader) {
-        this.shell.runFile(sourceFile,template, delimiter, reader);
+    private void runSource(String sourceFile, String template, String delimiter) {
+        this.shell.runFile(sourceFile,template, delimiter);
     }
 
 

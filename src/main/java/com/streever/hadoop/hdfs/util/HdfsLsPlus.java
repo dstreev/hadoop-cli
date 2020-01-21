@@ -27,15 +27,13 @@ import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.streever.hadoop.hdfs.shell.command.PathBuilder;
-import com.streever.tools.stemshell.Environment;
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.shell.PathData;
@@ -751,16 +749,18 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn implementation(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+    public CommandReturn implementation(Environment environment, CommandLine cmd, CommandReturn commandReturn) {
         // reset counter.
         count = 0;
         logv(env, "Beginning 'lsp' collection.");
-        CommandReturn cr = CommandReturn.GOOD;
+        CommandReturn cr = commandReturn;
 
         // Check connect protocol
         if (!environment.getProperties().getProperty(Constants.CONNECT_PROTOCOL).equalsIgnoreCase(Constants.HDFS)) {
             loge(environment, "This function is only available when connecting via 'hdfs'");
-            cr = new CommandReturn(-1, "Not available with this protocol");
+            cr.setCode(-1);
+            cr.setDetails("Not available with this protocol");
+//            cr = new CommandReturn(-1, "Not available with this protocol");
             return cr;
         }
 
@@ -775,7 +775,10 @@ public class HdfsLsPlus extends HdfsAbstract {
         fs = (FileSystem) env.getValue(Constants.HDFS);
 
         if (fs == null) {
-            return new CommandReturn(CODE_NOT_CONNECTED, "Connect First");
+            cr.setCode(CODE_NOT_CONNECTED);
+            cr.setDetails("Connect first");
+            return cr;
+//            return new CommandReturn(CODE_NOT_CONNECTED, "Connect First");
         }
 
         URI nnURI = fs.getUri();
@@ -783,7 +786,10 @@ public class HdfsLsPlus extends HdfsAbstract {
         try {
             dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
-            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
+            cr.setCode(CODE_CONNECTION_ISSUE);
+            cr.setDetails(e.getMessage());
+            return cr;
+//            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
         }
 
         String[] cmdArgs = cmd.getArgs();
@@ -819,7 +825,10 @@ public class HdfsLsPlus extends HdfsAbstract {
         try {
             targetPathData = new PathData(targetPath, configuration);
         } catch (IOException e) {
-            return new CommandReturn(CODE_PATH_ERROR, "Error in Path");
+            cr.setCode(CODE_PATH_ERROR);
+            cr.setDetails("Error in Path");
+            return cr;
+//            return new CommandReturn(CODE_PATH_ERROR, "Error in Path");
         }
 
         processPath(targetPathData, null, 1);
@@ -828,7 +837,10 @@ public class HdfsLsPlus extends HdfsAbstract {
             try {
                 outFS.close();
             } catch (IOException e) {
-                return new CommandReturn(CODE_FS_CLOSE_ISSUE, e.getMessage());
+                cr.setCode(CODE_FS_CLOSE_ISSUE);
+                cr.setDetails(e.getMessage());
+                return cr;
+//                return new CommandReturn(CODE_FS_CLOSE_ISSUE, e.getMessage());
             } finally {
                 outFS = null;
             }
@@ -837,10 +849,9 @@ public class HdfsLsPlus extends HdfsAbstract {
         logv(env, "'lsp' complete.");
 
         if (isTest()) {
-            if (isTestFound()) {
-                return cr;
-            } else {
-                return new CommandReturn(CODE_NOT_FOUND, "Not Found");
+            if (!isTestFound()) {
+                cr.setCode(CODE_NOT_FOUND);
+                cr.setDetails("Not Found");
             }
         }
         return cr;

@@ -26,9 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import com.streever.tools.stemshell.command.AbstractCommand;
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.command.AbstractCommand;
+import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
 
@@ -37,7 +36,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.streever.tools.stemshell.Environment;
+import com.streever.hadoop.shell.Environment;
 import org.apache.hadoop.security.UserGroupInformation;
 
 public class HdfsConnect extends AbstractCommand {
@@ -53,7 +52,7 @@ public class HdfsConnect extends AbstractCommand {
         this.completer = completer;
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         try {
             // Get a value that over rides the default, if nothing then use default.
 // Requires Java 1.8...
@@ -100,7 +99,10 @@ public class HdfsConnect extends AbstractCommand {
             env.setValue(Constants.CFG, config);
             env.setValue(Constants.HDFS, hdfs);
             // set working dir to root
-            hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
+//            hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
+            env.setRemoteWorkingDirectory(hdfs.makeQualified(new Path("/")));
+
+            env.setRemoteWorkingDirectory(hdfs.makeQualified(new Path("/")));
 
             FileSystem local = FileSystem.getLocal(new Configuration());
             env.setValue(Constants.LOCAL_FS, local);
@@ -108,16 +110,17 @@ public class HdfsConnect extends AbstractCommand {
 
             FSUtil.prompt(env);
 
-            if (!env.isSilent())
-                log(env, "Connecting: " + hdfs.getUri());
+//            if (!env.isSilent())
+            logv(env, "Connecting: " + hdfs.getUri());
             
             logv(env, "HDFS CWD: " + hdfs.getWorkingDirectory());
+            logv(env, "HDFS CWD(env): " + env.getRemoteWorkingDirectory());
             logv(env, "Local CWD: " + local.getWorkingDirectory());
 
         } catch (IOException e) {
             log(env, e.getMessage());
         }
-        return CommandReturn.GOOD;
+        return commandReturn;
     }
 
     @Override

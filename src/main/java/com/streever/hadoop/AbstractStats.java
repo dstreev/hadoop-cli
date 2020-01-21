@@ -28,9 +28,8 @@ import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.util.HdfsWriter;
 import com.streever.hadoop.util.RecordConverter;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
-import com.streever.tools.stemshell.Environment;
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
@@ -132,12 +131,12 @@ public abstract class AbstractStats extends HdfsAbstract {
     }
 
     @Override
-    public final CommandReturn implementation(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+    public final CommandReturn implementation(Environment environment, CommandLine cmd, CommandReturn commandReturn) {
         if (cmd.hasOption("help")) {
             getHelp();
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("hadoop-cli <stats>", getOptions());
-            return CommandReturn.GOOD;
+            return commandReturn;
         }
 
         // Get the Filesystem
@@ -159,7 +158,8 @@ public abstract class AbstractStats extends HdfsAbstract {
 
             if (cmd.hasOption("output")) {
                 // Get a handle to the FileSystem if we intent to write our results to the HDFS.
-                baseOutputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+//                baseOutputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+                baseOutputDir = pathBuilder.resolveFullPath(env.getRemoteWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
             } else {
                 baseOutputDir = null;
             }
@@ -183,7 +183,10 @@ public abstract class AbstractStats extends HdfsAbstract {
                     startDate = df.parse(cmd.getOptionValue("start"));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
+                    commandReturn.setCode(CODE_BAD_DATE);
+                    commandReturn.setDetails(e.getMessage());
+                    return commandReturn;
+//                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
                 }
                 startTime = startDate.getTime();
             } else {
@@ -199,8 +202,11 @@ public abstract class AbstractStats extends HdfsAbstract {
                 try {
                     endDate = df.parse(cmd.getOptionValue("end"));
                 } catch (ParseException e) {
-                    e.printStackTrace();
-                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
+                    commandReturn.setCode(CODE_BAD_DATE);
+                    commandReturn.setDetails(e.getMessage());
+                    return commandReturn;
+//                    e.printStackTrace();
+//                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
                 }
                 endTime = endDate.getTime();
             } else {
@@ -220,10 +226,13 @@ public abstract class AbstractStats extends HdfsAbstract {
 
             clearCache();
         } catch (Throwable t) {
-            t.printStackTrace();
-            return new CommandReturn(CODE_STATS_ISSUE, t.getMessage());
+            commandReturn.setCode(CODE_STATS_ISSUE);
+            commandReturn.setDetails(t.getMessage());
+            return commandReturn;
+//            t.printStackTrace();
+//            return new CommandReturn(CODE_STATS_ISSUE, t.getMessage());
         }
-        return CommandReturn.GOOD;
+        return commandReturn;
     }
 
     public abstract void process(CommandLine cmdln);

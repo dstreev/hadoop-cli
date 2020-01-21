@@ -20,41 +20,37 @@
  *     OR LOSS OR CORRUPTION OF DATA.
  *
  */
-package com.streever.hadoop.hdfs.shell.command;
+
+package com.streever.hadoop.shell.commands;
 
 import com.streever.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileSystem;
 
 import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.AbstractCommand;
 
-public class LocalPwd extends HdfsCommand {
+public class Exit extends AbstractCommand {
 
-    public LocalPwd(String name) {
+    public Exit(String name) {
         super(name);
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-        
-        String wd = localfs.getWorkingDirectory().toString();
-        if (cmd.hasOption("l")) {
-            log(env, wd);
-        }
-        else {
-            // strip off prefix: "file:"
-            log(env, wd.substring(5));
-        }
-        FSUtil.prompt(env);
+        System.exit(0);
         return commandReturn;
     }
-    
+
     @Override
-    public Options getOptions() {
-        Options opts = super.getOptions();
-        opts.addOption("l", false, "show the full file system URL");
-        return opts;
+    public String getHelpHeader() {
+        return "exit the command shell";
     }
+
+    @Override
+    public String getUsage() {
+        return this.getName();
+    }
+    
+    
+
 }

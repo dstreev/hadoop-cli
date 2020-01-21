@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.streever.hadoop</groupId>
     <artifactId>hadoop.cli</artifactId>
-    <version>2.0.22-SNAPSHOT</version>
+    <version>2.1.0-SNAPSHOT</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
@@ -38,7 +38,10 @@
         <junit.version>4.11</junit.version>
         <jackson.parser>2.7.3</jackson.parser>
         <commons-io.version>2.4</commons-io.version>
-        <stem-shell.version>1.0.7-SNAPSHOT</stem-shell.version>
+        <jcabi.manifests.version>1.1</jcabi.manifests.version>
+        <commons-cli.version>1.4</commons-cli.version>
+        <jline.version>2.5</jline.version>
+<!--        <stem-shell.version>1.0.7-SNAPSHOT</stem-shell.version>-->
     </properties>
     <repositories>
         <!--repository>
@@ -92,12 +95,28 @@
     </repositories>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            &lt;!&ndash; Pulling forked version from github.com/streever/stemshell &ndash;&gt;-->
+<!--            <groupId>com.streever.tools</groupId>-->
+<!--            <artifactId>tools.stemshell</artifactId>-->
+<!--            <version>${stem-shell.version}</version>-->
+<!--        </dependency>-->
         <dependency>
-            <!-- Pulling forked version from github.com/streever/stemshell -->
-            <groupId>com.streever.tools</groupId>
-            <artifactId>tools.stemshell</artifactId>
-            <version>${stem-shell.version}</version>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-manifests</artifactId>
+            <version>${jcabi.manifests.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>${commons-cli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>${jline.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
@@ -181,7 +200,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.streever.hadoop.HadoopShell</mainClass>
+                                    <mainClass>com.streever.hadoop.HadoopSession</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

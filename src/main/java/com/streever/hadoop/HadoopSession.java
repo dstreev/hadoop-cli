@@ -691,35 +691,43 @@ import com.streever.hadoop.hdfs.util.HdfsLsPlus;
 import com.streever.hadoop.hdfs.util.HdfsNNStats;
 import com.streever.hadoop.hdfs.util.HdfsSource;
 import com.streever.hadoop.mapreduce.JhsStats;
+import com.streever.hadoop.shell.AbstractShell;
 import com.streever.hadoop.yarn.ContainerStats;
 import com.streever.hadoop.yarn.SchedulerStats;
-import com.streever.tools.stemshell.BasicEnvironmentImpl;
-import com.streever.tools.stemshell.Environment;
-import com.streever.tools.stemshell.command.CommandReturn;
-import com.streever.tools.stemshell.commands.Env;
-import com.streever.tools.stemshell.commands.Exit;
-import com.streever.tools.stemshell.commands.Help;
-import com.streever.tools.stemshell.commands.HistoryCmd;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.BasicEnvironmentImpl;
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
+import com.streever.hadoop.shell.commands.Env;
+import com.streever.hadoop.shell.commands.Exit;
+import com.streever.hadoop.shell.commands.Help;
+import com.streever.hadoop.shell.commands.HistoryCmd;
 import org.apache.commons.cli.*;
+import org.apache.hadoop.fs.FileSystem;
 
 import java.io.*;
+import java.text.MessageFormat;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.*;
 
-public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
+public class HadoopSession extends AbstractShell {
 
-    static HadoopSession localInstance = null;
+    private String gatewayProxyURL = null;
+    private String altEndpoint = null;
 
-    public static HadoopSession get() {
-        if (localInstance == null) {
-            localInstance = new HadoopSession();
+    static Map<String, HadoopSession> sessions = new TreeMap<String, HadoopSession>();
+
+    public static HadoopSession get(String name) {
+        HadoopSession instance = null;
+        if (sessions.containsKey(name)) {
+            instance = sessions.get(name);
+        } else {
+            instance = new HadoopSession();
+            sessions.put(name, instance);
         }
-        return localInstance;
+        return instance;
     }
 
-    private enum Mode { CLI, PROXY }
-
-    private Mode state = Mode.CLI;
-    private String gatewayProxyURL = null;
 
     private Options getOptions() {
         // create Options object
@@ -734,19 +742,33 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
         options.addOption(initOption);
 
         Option executeOption = Option.builder("e").required(false)
-                .argName("execute").desc("Execute Command")
-                .longOpt("execute command")
+                .argName("command [args]").desc("Execute Command")
+                .longOpt("execute")
                 .hasArg(true).numberOfArgs(1)
                 .build();
         options.addOption(executeOption);
 
         // add f option
         Option fileOption = Option.builder("f").required(false)
-                .argName("file").desc("Run File and Exit")
-                .longOpt("exec file")
+                .argName("file to exec").desc("Run File and Exit")
+                .longOpt("file")
                 .hasArg(true).numberOfArgs(1)
                 .build();
         options.addOption(fileOption);
+
+        Option templateOption = Option.builder("t").required(false)
+                .argName("template").desc("Template to apply on input (-f | -stdin)")
+                .longOpt("template")
+                .hasArg(true).numberOfArgs(1)
+                .build();
+        options.addOption(templateOption);
+
+        Option delimiterOption = Option.builder("td").required(false)
+                .argName("template-delimiter").desc("Delimiter to apply to 'input' for template option (default=',')")
+                .longOpt("template-delimiter")
+                .hasArg(true).numberOfArgs(1)
+                .build();
+        options.addOption(delimiterOption);
 
         // add stdin option
         Option siOption = Option.builder("stdin").required(false)
@@ -763,6 +785,13 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
                 .build();
         options.addOption(silentOption);
 
+        Option apiOption = Option.builder("api").required(false)
+                .argName("api").desc("API mode")
+                .longOpt("api")
+                .hasArg(false)
+                .build();
+        options.addOption(apiOption);
+
         Option verboseOption = Option.builder("v").required(false)
                 .argName("verbose").desc("Verbose Commands")
                 .longOpt("verbose")
@@ -777,37 +806,45 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
                 .build();
         options.addOption(debugOption);
 
-        Option usernameOption = Option.builder("u").required(false)
-                .argName("username").desc("Username to log into gateway")
-                .longOpt("username")
-                .hasArg(true).numberOfArgs(1)
-                .build();
-        options.addOption(usernameOption);
+//        Option usernameOption = Option.builder("u").required(false)
+//                .argName("username").desc("Username to log into gateway")
+//                .longOpt("username")
+//                .hasArg(true).numberOfArgs(1)
+//                .build();
+//        options.addOption(usernameOption);
 
-        Option passwordOption = Option.builder("p").required(false)
-                .argName("password").desc("Password")
-                .longOpt("password")
-                .hasArg(true).numberOfArgs(1)
-                .build();
-        options.addOption(passwordOption);
+//        Option passwordOption = Option.builder("p").required(false)
+//                .argName("password").desc("Password")
+//                .longOpt("password")
+//                .hasArg(true).numberOfArgs(1)
+//                .build();
+//        options.addOption(passwordOption);
+
+//        Option webhdfsOption = Option.builder("w").required(false)
+//                .argName("webhdfs://<host>:<port>").desc("Connect via webhdfs")
+//                .longOpt("webhdfs")
+//                .hasArg(true).numberOfArgs(1)
+//                .build();
+//        options.addOption(webhdfsOption);
 
         // Need to add mechanism to use a password from file.
         // Need to add mechanism to pull username from file.
         // Need to add mechanism to pull gateway url from file.
         // Need to save last state to file for sign in (minus password) in next session.
 
-        Option helpOption = Option.builder("?").required(false)
+        Option helpOption = Option.builder("h").required(false)
                 .longOpt("help")
                 .build();
         options.addOption(helpOption);
+
+        // TODO: Scripting
+        //options.addOption("f", true, "Script file");
 
         return options;
 
     }
 
-    private void Disconnect() {
 
-    }
     @Override
     protected boolean preProcessInitializationArguments(String[] arguments) {
 //        super.preProcessInitializationArguments(arguments);
@@ -823,33 +860,20 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
         } catch (ParseException pe) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("hadoopcli", options);
-            Disconnect();
-//            System.exit(-1);
-        }
-
-
-        if (cmd.hasOption("gateway")) {
-            state = Mode.PROXY;
-            gatewayProxyURL = cmd.getOptionValue("gateway");
-            logv(getEnv(), "Using Gateway Proxy: " + gatewayProxyURL);
+            System.exit(-1);
         }
 
         Environment lclEnv = new BasicEnvironmentImpl();
 
         setEnv(lclEnv);
 
-//        switch (state) {
-//            case CLI:
-//                getEnv().setDefaultPrompt("hdfs-cli:$");
-//                break;
-//            case PROXY:
-//                getEnv().setDefaultPrompt("hdfs-proxy-cli:$");
-//                break;
-//            default:
-//        }
-
         if (cmd.hasOption("s")) {
             getEnv().setSilent(true);
+        }
+
+        if (cmd.hasOption("api")) {
+            getEnv().setSilent(true);
+            this.setApiMode(true);
         }
 
         if (cmd.hasOption("verbose")) {
@@ -863,14 +887,13 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
         if (cmd.hasOption("help")) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("hadoopcli", options);
-            Disconnect();
-//            System.exit(-1);
+            System.exit(-1);
         }
         return rtn;
     }
 
     @Override
-    protected boolean postProcessInitializationArguments(String[] arguments, ConsoleReader reader) {
+    protected boolean postProcessInitializationArguments(String[] arguments) {
 //        super.postProcessInitializationArguments(arguments, reader);
         boolean rtn = Boolean.TRUE;
         // create Options object
@@ -887,23 +910,42 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
             System.exit(-1);
         }
 
-        if (!autoConnect(reader)) {
+        // This will allow connections through webhdfs.
+        if (cmd.hasOption("w")) {
+            getEnv().getProperties().setProperty(FileSystem.FS_DEFAULT_NAME_KEY, cmd.getOptionValue("w"));
+            getEnv().getProperties().setProperty(Constants.CONNECT_PROTOCOL, Constants.WEBHDFS);
+            getEnv().setDefaultPrompt("webhdfs-cli:$");
+        } else {
+            getEnv().getProperties().setProperty(Constants.CONNECT_PROTOCOL, Constants.HDFS);
+            getEnv().setDefaultPrompt("hdfs-cli:$");
+        }
+
+
+        if (!autoConnect()) {
             loge(getEnv(), "Failed to Connect");
             rtn = Boolean.FALSE;
         }
 
         if (cmd.hasOption("i")) {
-            runFile(cmd.getOptionValue("i"), reader);
+            runFile(cmd.getOptionValue("i"), null, null);
         }
 
         if (cmd.hasOption("e")) {
-            processInput(cmd.getOptionValue("e"), reader);
-            processInput("exit", reader);
+            processInput(cmd.getOptionValue("e"));
+            processInput("exit");
+        }
+        String template = null;
+        String delimiter = null;
+        if (cmd.hasOption("t")) {
+            template = cmd.getOptionValue("t");
+        }
+        if (cmd.hasOption("td")) {
+            delimiter = cmd.getOptionValue("td");
         }
 
         if (cmd.hasOption("f")) {
-            runFile(cmd.getOptionValue("f"), reader);
-            processInput("exit", reader);
+            runFile(cmd.getOptionValue("f"), template, delimiter);
+            processInput("exit");
         }
 
         if (cmd.hasOption("stdin")) {
@@ -920,8 +962,8 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
                 }
                 tempFileWriter.close();
 
-                runFile(temp.getAbsolutePath(), reader);
-                processInput("exit", reader);
+                runFile(temp.getAbsolutePath(), template, delimiter);
+                processInput("exit");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -931,25 +973,34 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
         return rtn;
     }
 
-    public void runFile(String set, ConsoleReader reader) {
-        logv(getEnv(),"-- Running source file: " + set);
+    // TODO:
+    public void runFile(String inSet, String template, String delimiter) {
+        logv(getEnv(), "-- Running source file: " + inSet);
 
         String localFile = null;
-        
-        if (set.startsWith("/")) {
-            localFile = set;
+
+        // Absolute Path
+        if (inSet.startsWith("/")) {
+            localFile = inSet;
         } else {
+            // Relative Path
             org.apache.hadoop.fs.FileSystem localfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.LOCAL_FS);
-//        org.apache.hadoop.fs.FileSystem hdfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.HDFS);
 
             String localwd = localfs.getWorkingDirectory().toString();
-//        String hdfswd = hdfs.getWorkingDirectory().toString();
 
             // Remove 'file:' from working directory.
-            localFile = localwd.split(":")[1] + System.getProperty("file.separator") + set;
+            localFile = localwd.split(":")[1] + System.getProperty("file.separator") + inSet;
         }
         File setFile = new File(localFile);
-        
+
+        MessageFormat messageFormat = null;
+        if (template != null) {
+            messageFormat = new MessageFormat(template);
+        }
+        String lclDelimiter = null;
+        if (delimiter == null) {
+            lclDelimiter = ",";
+        }
         if (!setFile.exists()) {
             loge(getEnv(), "File not found: " + setFile.getAbsoluteFile());
         } else {
@@ -960,10 +1011,11 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
                     logv(getEnv(), line);
                     String line2 = line.trim();
                     if (line2.length() > 0 && !line2.startsWith("#")) {
-                        CommandReturn cr = processInput(line2, reader);
-                        // Handled at process level to extract details from processor
-                        //                        if (res != 0)
-//                            loge(getEnv(), "Non-Zero Return Code: " + Integer.toString(res));
+                        if (messageFormat != null) {
+                            String[] items = line2.split(lclDelimiter);
+                            line2 = messageFormat.format(items);
+                        }
+                        CommandReturn cr = processInput(line2);
                     }
                 }
             } catch (Exception e) {
@@ -974,20 +1026,46 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
 
     }
 
-    private boolean autoConnect(ConsoleReader reader) {
+    private boolean autoConnect() {
         CommandReturn crTest = null;
         boolean rtn = true;
         try {
-            String userHome = System.getProperty("user.name");
-            crTest = processInput("connect", reader);
+//            String userHome = System.getProperty("user.name");
+            crTest = processInput("connect");
             if (crTest.isError()) {
                 rtn = false;
                 loge(getEnv(), crTest.getSummary());
             }
-            crTest = processInput("cd /user/" + userHome, reader);
+            // TODO: If Kerberos enabled, pull this from ticket and use auth_to_local to extract. There maybe a Hadoop command for this.
+            String userHome = getEnv().getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
+
+            ExecutorService executor = Executors.newCachedThreadPool();
+            Callable<Object> task = new Callable<Object>() {
+                public Object call() {
+                    return processInput("cd /user/" + userHome);
+                }
+            };
+            Future<Object> future = executor.submit(task);
+            try {
+                Object result = future.get(5, TimeUnit.SECONDS);
+                crTest = (CommandReturn)result;
+            } catch (TimeoutException ex) {
+                loge(getEnv(), "Login Timeout.  Check for a valid Kerberos Ticket.");
+                processInput("exit");
+                // handle the timeout
+            } catch (InterruptedException e) {
+                // handle the interrupts
+            } catch (ExecutionException e) {
+                // handle other exceptions
+            } finally {
+                future.cancel(true); // may or may not desire this
+            }
+
+//            crTest = processInput("cd /user/" + userHome, reader);
+            
             if (crTest.isError()) {
                 rtn = false;
-                loge(getEnv(), crTest.getSummary());
+                loge(getEnv(), crTest.getSummary() + ".\nAttempted to set home directory.  User home directory must exist.\nIf user is 'hdfs', consider using a proxy account for audit purposes.");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -999,91 +1077,80 @@ public class HadoopSession extends com.streever.tools.stemshell.AbstractShell {
     public void initialize() throws Exception {
 
         setBannerResource("/hadoop_banner_0.txt");
-        
-        switch (state) {
-            case PROXY:
 
-            break;
-            case CLI:
-                
-                getEnv().addCommand(new HdfsCd("cd", getEnv()));
-                getEnv().addCommand(new HdfsPwd("pwd"));
+        getEnv().addCommand(new HdfsCd("cd", getEnv()));
+        getEnv().addCommand(new HdfsPwd("pwd"));
 
-                // remote local
-                getEnv().addCommand(new HdfsCommand("get", getEnv(), Direction.REMOTE_LOCAL));
-                getEnv().addCommand(new HdfsCommand("copyFromLocal", getEnv(), Direction.LOCAL_REMOTE));
-                // local remote
-                getEnv().addCommand(new HdfsCommand("put", getEnv(), Direction.LOCAL_REMOTE));
-                getEnv().addCommand(new HdfsCommand("copyToLocal", getEnv(), Direction.REMOTE_LOCAL));
-                // src dest
-                getEnv().addCommand(new HdfsCommand("cp", getEnv(), Direction.REMOTE_REMOTE));
+        // remote local
+        getEnv().addCommand(new HdfsCommand("get", getEnv(), Direction.REMOTE_LOCAL));
+        getEnv().addCommand(new HdfsCommand("copyFromLocal", getEnv(), Direction.LOCAL_REMOTE));
+        // local remote
+        getEnv().addCommand(new HdfsCommand("put", getEnv(), Direction.LOCAL_REMOTE));
+        getEnv().addCommand(new HdfsCommand("copyToLocal", getEnv(), Direction.REMOTE_LOCAL));
+        // src dest
+        getEnv().addCommand(new HdfsCommand("cp", getEnv(), Direction.REMOTE_REMOTE));
 
-                // amend to context path, if present
-                getEnv().addCommand(new HdfsCommand("chown", getEnv(), Direction.NONE, 1));
-                getEnv().addCommand(new HdfsCommand("chmod", getEnv(), Direction.NONE, 1));
-                getEnv().addCommand(new HdfsCommand("chgrp", getEnv(), Direction.NONE, 1));
+        // amend to context path, if present
+        getEnv().addCommand(new HdfsCommand("chown", getEnv(), Direction.NONE, 1));
+        getEnv().addCommand(new HdfsCommand("chmod", getEnv(), Direction.NONE, 1));
+        getEnv().addCommand(new HdfsCommand("chgrp", getEnv(), Direction.NONE, 1));
 
-                getEnv().addCommand(new HdfsCommand("createSnapshot", getEnv(), Direction.NONE, 1, false, true));
-                getEnv().addCommand(new HdfsCommand("deleteSnapshot", getEnv(), Direction.NONE, 1, false, false));
-                getEnv().addCommand(new HdfsCommand("renameSnapshot", getEnv(), Direction.NONE, 2, false, false));
+        getEnv().addCommand(new HdfsCommand("createSnapshot", getEnv(), Direction.NONE, 1, false, true));
+        getEnv().addCommand(new HdfsCommand("deleteSnapshot", getEnv(), Direction.NONE, 1, false, false));
+        getEnv().addCommand(new HdfsCommand("renameSnapshot", getEnv(), Direction.NONE, 2, false, false));
 
-                getEnv().addCommand(new HdfsCommand("du", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("df", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("dus", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("ls", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("lsr", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("du", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("df", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("dus", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("ls", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("lsr", getEnv(), Direction.NONE));
 //        env.addCommand(new HdfsCommand("find", env, Direction.NONE, 1, false));
 
 
-                getEnv().addCommand(new HdfsCommand("mkdir", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("mkdir", getEnv(), Direction.NONE));
 
-                getEnv().addCommand(new HdfsCommand("count", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("stat", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("tail", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("head", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("count", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("stat", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("tail", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("head", getEnv(), Direction.NONE));
 //        env.addCommand(new HdfsCommand("test", env, Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("touchz", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("touchz", getEnv(), Direction.NONE));
 
-                getEnv().addCommand(new HdfsCommand("rm", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("rmdir", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("mv", getEnv(), Direction.REMOTE_REMOTE));
-                getEnv().addCommand(new HdfsCommand("cat", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("test", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("text", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("touch", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("checksum", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsCommand("usage", getEnv()));
+        getEnv().addCommand(new HdfsCommand("rm", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("rmdir", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("mv", getEnv(), Direction.REMOTE_REMOTE));
+        getEnv().addCommand(new HdfsCommand("cat", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("test", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("text", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("touch", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("checksum", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsCommand("usage", getEnv()));
 
-                // Security Help
+        // Security Help
 //        env.addCommand(new HdfsUGI("ugi"));
 //        env.addCommand(new HdfsKrb("krb", env, Direction.NONE, 1));
 
-                // HDFS Utils
-                //env.addCommand(new HdfsRepair("repair", env, Direction.NONE, 2, true, true));
+        // HDFS Utils
+        //env.addCommand(new HdfsRepair("repair", env, Direction.NONE, 2, true, true));
 
-                getEnv().addCommand(new Env("env"));
-                getEnv().addCommand(new HdfsConnect("connect"));
-                getEnv().addCommand(new Help("help", getEnv()));
-                getEnv().addCommand(new HistoryCmd("history"));
+        getEnv().addCommand(new Env("env"));
+        getEnv().addCommand(new HdfsConnect("connect"));
+        getEnv().addCommand(new Help("help", getEnv()));
+        getEnv().addCommand(new HistoryCmd("history"));
 
-                // HDFS Tools
-                getEnv().addCommand(new HdfsLsPlus("lsp", getEnv(), Direction.NONE));
-                getEnv().addCommand(new HdfsNNStats("nnstat", getEnv(), Direction.NONE));
+        // HDFS Tools
+        getEnv().addCommand(new HdfsLsPlus("lsp", getEnv(), Direction.NONE));
+        getEnv().addCommand(new HdfsNNStats("nnstat", getEnv(), Direction.NONE));
 
-//                getEnv().addCommand(new HdfsSource("source", getEnv(), this));
+        getEnv().addCommand(new HdfsSource("source", getEnv(), this));
 
-                // MapReduce Tools
-                getEnv().addCommand(new JhsStats("jhsstat", getEnv(), Direction.NONE));
+        // MapReduce Tools
+        getEnv().addCommand(new JhsStats("jhsstat", getEnv(), Direction.NONE));
 
-                // Yarn Tools
-                getEnv().addCommand(new ContainerStats("cstat", getEnv(), Direction.NONE));
-                getEnv().addCommand(new SchedulerStats("sstat", getEnv(), Direction.NONE));
+        // Yarn Tools
+        getEnv().addCommand(new ContainerStats("cstat", getEnv(), Direction.NONE));
+        getEnv().addCommand(new SchedulerStats("sstat", getEnv(), Direction.NONE));
 
-            break;
-
-            default:
-
-        }
         getEnv().addCommand(new Exit("exit"));
         getEnv().addCommand(new LocalLs("lls", getEnv()));
         getEnv().addCommand(new LocalPwd("lpwd"));

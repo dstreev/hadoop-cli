@@ -24,8 +24,8 @@ package com.streever.hadoop.hdfs.shell.command;
 
 import java.io.IOException;
 
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.command.AbstractCommand;
+import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
 
 import org.apache.commons.cli.CommandLine;
@@ -33,19 +33,19 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
-import com.streever.tools.stemshell.Environment;
+import com.streever.hadoop.shell.Environment;
 
-public class HdfsCd extends HdfsCommand {
+public class HdfsCd extends AbstractCommand {
     private Environment env;
 
     public HdfsCd(String name, Environment env) {
-        super(name, env);
+        super(name);
         this.env = env;
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn cr) {
         FileSystem hdfs = null;
-        CommandReturn cr = CommandReturn.GOOD;
+//        CommandReturn cr = CommandReturn.GOOD;
         try {
             hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
@@ -54,25 +54,30 @@ public class HdfsCd extends HdfsCommand {
                 dir = dir.substring(1, dir.length()-1);
             }
             logv(env, "CWD before: " + hdfs.getWorkingDirectory());
+            logv(env, "CWD before (env): " + env.getRemoteWorkingDirectory());
             logv(env, "Requested CWD: " + dir);
 
             Path newPath = null;
             if (dir.startsWith("/")) {
                 newPath = new Path(env.getProperties().getProperty(Constants.HDFS_URL), dir);
             } else {
-                newPath = new Path(hdfs.getWorkingDirectory(), dir);
+//                newPath = new Path(hdfs.getWorkingDirectory(), dir);
+                newPath = new Path(env.getRemoteWorkingDirectory(), dir);
             }
 
             Path qPath = newPath.makeQualified(hdfs);
             logv(env, "" + newPath);
             if (hdfs.getFileStatus(qPath).isDir() && hdfs.exists(qPath)) {
-                hdfs.setWorkingDirectory(qPath);
+//                hdfs.setWorkingDirectory(qPath);
+                env.setRemoteWorkingDirectory(qPath);
             } else {
                 log(env, "No such directory: " + dir);
             }
 
         } catch (IOException e) {
-            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
+            cr.setCode(CODE_CMD_ERROR);
+            cr.setDetails(e.getMessage());
+//            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
         } finally {
             FSUtil.prompt(env);
         }

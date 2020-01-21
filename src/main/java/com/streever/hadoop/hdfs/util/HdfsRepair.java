@@ -25,9 +25,8 @@ package com.streever.hadoop.hdfs.util;
 
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
-import com.streever.tools.stemshell.Environment;
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
@@ -61,7 +60,7 @@ public class HdfsRepair extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn implementation(Environment environment, CommandLine commandLine, ConsoleReader consoleReader) {
+    public CommandReturn implementation(Environment environment, CommandLine commandLine, CommandReturn commandReturn) {
         System.out.println("Not implemented yet... :( ");
         /*
 
@@ -77,7 +76,10 @@ public class HdfsRepair extends HdfsAbstract {
 
 
          */
-         return new CommandReturn(-1, "repair not implemented yet");
+        commandReturn.setCode(-1);
+        commandReturn.setDetails("Repair not yet implemented");
+        return commandReturn;
+//         return new CommandReturn(-1, "repair not implemented yet");
     }
 
     @Override

@@ -1,14 +1,23 @@
 ## Release Notes
 
+### 2.1.0-SNAPSHOT
+
+The API release.  Combined / Collapsed stemshell into this project and created a more consumable API interface that can be use externally.  See: [Test API for Example](./src/test/java/com/streever/hadoop/api/TestApi.java)
+
+[ISSUE 11](https://github.com/dstreev/hadoop-cli/issues/11)
+[ISSUE 12](https://github.com/dstreev/hadoop-cli/issues/12)
+[ISSUE 13](https://github.com/dstreev/hadoop-cli/issues/13)
+[ISSUE 14](https://github.com/dstreev/hadoop-cli/issues/14)
+
 ### 2.0.19-SNAPSHOT
 
 Been a while since I've updated this.  Lots of fixes and enhancements.  Review the issues below for details:
 
-[ISSUE 6](./ISSUES/6)
-[ISSUE 7](./ISSUES/7)
-[ISSUE 8](./ISSUES/8)
-[ISSUE 9](./ISSUES/9)
-[ISSUE 10](./ISSUES/10)
+[ISSUE 6](https://github.com/dstreev/hadoop-cli/issues/6)
+[ISSUE 7](https://github.com/dstreev/hadoop-cli/issues/7)
+[ISSUE 8](https://github.com/dstreev/hadoop-cli/issues/8)
+[ISSUE 9](https://github.com/dstreev/hadoop-cli/issues/9)
+[ISSUE 10](https://github.com/dstreev/hadoop-cli/issues/10)
 
 ### 2.0.11-SNAPSHOT
 

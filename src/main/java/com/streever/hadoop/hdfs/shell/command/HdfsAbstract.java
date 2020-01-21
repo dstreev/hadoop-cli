@@ -23,30 +23,14 @@
 package com.streever.hadoop.hdfs.shell.command;
 
 import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
-import com.streever.tools.stemshell.Environment;
-import com.streever.tools.stemshell.command.AbstractCommand;
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.AbstractCommand;
 import jline.console.completer.Completer;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 
 public abstract class HdfsAbstract extends AbstractCommand {
 
-    public int CODE_BAD_DATE = -321;
-    public int CODE_SUCCESS = 0;
-    public int CODE_LOCAL_FS_ISSUE = -123;
-    public int CODE_NOT_CONNECTED = -10;
-    public int CODE_CONNECTION_ISSUE = -11;
-    public int CODE_CMD_ERROR = -1;
-    public int CODE_PATH_ERROR = -20;
-    public int CODE_FS_CLOSE_ISSUE = -100;
-    public int CODE_STATS_ISSUE = -200;
-    public int CODE_NOT_FOUND = 1;
-    
     protected Environment env;
     
     protected PathBuilder pathBuilder;
