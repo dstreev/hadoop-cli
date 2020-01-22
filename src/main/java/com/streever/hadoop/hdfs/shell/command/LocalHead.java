@@ -83,9 +83,9 @@ public class LocalHead extends HdfsCommand {
             catch (IOException e) {
 //                log(env, "Error reading file '" + cmd.getArgs()[0]
 //                                + "': " + e.getMessage());
-                cr = new CommandReturn(CODE_CMD_ERROR, "Error reading file '" + cmd.getArgs()[0]
+                cr.setCode(CODE_CMD_ERROR);
+                cr.getErr().print("Error reading file '" + cmd.getArgs()[0]
                                 + "': " + e.getMessage());
-//                rtn = CODE_CMD_ERROR;
             }
             finally {
                 try {

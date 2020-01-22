@@ -196,30 +196,38 @@ public class HdfsNNStats extends AbstractStats {
     public Options getOptions() {
         Options opts = super.getOptions();
 
-        Option helpOption = Option.builder("h").required(false)
-                .argName("help")
-                .desc("Help")
-                .hasArg(false)
-                .longOpt("help")
-                .build();
+        Option helpOption = new Option("h", "help", false, "Help");
+        helpOption.setRequired(false);
+        //        Option helpOption = Option.builder("h").required(false)
+        //                .argName("help")
+        //                .desc("Help")
+        //                .hasArg(false)
+        //                .longOpt("help")
+        //                .build();
         opts.addOption(helpOption);
 
-        Option formatOption = Option.builder("ff").required(false)
-                .argName("fileFormat")
-                .desc("Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("fileFormat")
-                .build();
+        Option formatOption = new Option("ff", "fileFormat", true,
+                "Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.");
+        formatOption.setRequired(false);
+        //        Option formatOption = Option.builder("ff").required(false)
+        //                .argName("fileFormat")
+        //                .desc("Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("fileFormat")
+        //                .build();
         opts.addOption(formatOption);
 
-        Option outputOption = Option.builder("o").required(false)
-                .argName("output")
-                .desc("Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("output")
-                .build();
+        Option outputOption = new Option("o", "output", true,
+                "Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.");
+        outputOption.setRequired(false);
+        //        Option outputOption = Option.builder("o").required(false)
+        //                .argName("output")
+        //                .desc("Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("output")
+        //                .build();
         opts.addOption(outputOption);
 
         return opts;

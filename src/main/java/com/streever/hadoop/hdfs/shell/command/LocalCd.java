@@ -71,8 +71,7 @@ public class LocalCd extends HdfsCommand {
         catch (IOException e) {
             log(env, e.getMessage());
             commandReturn.setCode(CODE_LOCAL_FS_ISSUE);
-            commandReturn.setDetails(e.getMessage());
-//            return new CommandReturn(CODE_LOCAL_FS_ISSUE, e.getMessage());
+            commandReturn.getErr().print(e.getMessage());
         }
         return commandReturn;
     }

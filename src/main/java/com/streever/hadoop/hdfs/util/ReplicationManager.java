@@ -99,7 +99,7 @@ public class ReplicationManager {
         // Handle the commandline options.
         Options options = getOptions();
 
-        CommandLineParser parser = new DefaultParser();
+        CommandLineParser parser = new PosixParser();
         CommandLine cmd = null;
 
         try {
@@ -329,13 +329,15 @@ public class ReplicationManager {
         Options options = new Options();
         options.addOption("v", "verbose", false, "show verbose output");
 
-        Option replDefOption = Option.builder("f").required(true)
-                .argName("file")
-                .desc("Replication Definition File")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("file")
-                .build();
+        Option replDefOption = new Option("f", "file", true, "Replication Definition File");
+        replDefOption.setRequired(true);
+//        Option replDefOption = Option.builder("f").required(true)
+//                .argName("file")
+//                .desc("Replication Definition File")
+//                .hasArg(true)
+//                .numberOfArgs(1)
+//                .longOpt("file")
+//                .build();
         options.addOption(replDefOption);
 
 //        Option cfgOption = Option.builder("cfg").required(false)
@@ -356,12 +358,14 @@ public class ReplicationManager {
 //                .build();
 //        options.addOption(nameOption);
 
-        Option helpOption = Option.builder("h").required(false)
-                .argName("help")
-                .desc("Help")
-                .hasArg(false)
-                .longOpt("help")
-                .build();
+        Option helpOption = new Option("h", "help", false, "Help");
+        helpOption.setRequired(false);
+        //        Option helpOption = Option.builder("h").required(false)
+        //                .argName("help")
+        //                .desc("Help")
+        //                .hasArg(false)
+        //                .longOpt("help")
+        //                .build();
         options.addOption(helpOption);
 
         return options;

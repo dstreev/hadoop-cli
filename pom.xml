@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.streever.hadoop</groupId>
     <artifactId>hadoop.cli</artifactId>
-    <version>2.1.0-SNAPSHOT</version>
+    <version>2.1.13-SNAPSHOT</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
@@ -39,7 +39,9 @@
         <jackson.parser>2.7.3</jackson.parser>
         <commons-io.version>2.4</commons-io.version>
         <jcabi.manifests.version>1.1</jcabi.manifests.version>
-        <commons-cli.version>1.4</commons-cli.version>
+        <!-- This needs to be in sync with Hadoop Common when using this cli in api mode  -->
+<!--        <commons-cli.version>1.2</commons-cli.version>-->
+
         <jline.version>2.5</jline.version>
 <!--        <stem-shell.version>1.0.7-SNAPSHOT</stem-shell.version>-->
     </properties>
@@ -106,11 +108,18 @@
             <artifactId>jcabi-manifests</artifactId>
             <version>${jcabi.manifests.version}</version>
         </dependency>
-        <dependency>
-            <groupId>commons-cli</groupId>
-            <artifactId>commons-cli</artifactId>
-            <version>${commons-cli.version}</version>
-        </dependency>
+<!--
+
+Leveraging the Hadoop commons-cli version information here.
+When I tried to use a newer version, it broke 'api' mode when integrating
+more with FsShell.
+
+-->
+<!--        <dependency>-->
+<!--            <groupId>commons-cli</groupId>-->
+<!--            <artifactId>commons-cli</artifactId>-->
+<!--            <version>${commons-cli.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.sonatype.jline</groupId>
             <artifactId>jline</artifactId>
@@ -224,7 +233,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
     <profiles>

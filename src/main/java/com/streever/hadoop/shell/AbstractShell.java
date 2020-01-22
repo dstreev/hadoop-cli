@@ -47,7 +47,7 @@ import org.fusesource.jansi.AnsiConsole;
 import com.streever.hadoop.shell.command.Command;
 
 public abstract class AbstractShell implements Shell {
-    private static CommandLineParser parser = new DefaultParser();
+    private CommandLineParser parser = new PosixParser();
     private Environment env = null; //new Environment();
     private String bannerResource = "/banner.txt";
     private boolean apiMode = false;
@@ -177,7 +177,8 @@ public abstract class AbstractShell implements Shell {
             }
         }
         matcher.appendTail(buffer);
-        return buffer.toString();
+        String rtn = buffer.toString();
+        return rtn;
     }
 
     public CommandReturn processInput(String line) {
@@ -199,7 +200,7 @@ public abstract class AbstractShell implements Shell {
 
             if (commands.length > 2) {
                 CommandReturn crLength = new CommandReturn(CommandReturn.BAD);
-                crLength.setDetails("Only support single depth pipeline at this time.");
+                crLength.getErr().print("Only support single depth pipeline at this time.");
                 return crLength;
             }
             for (String command : commands) {
@@ -207,7 +208,7 @@ public abstract class AbstractShell implements Shell {
                     // First time thru
                     previousCR = processCommand(command, null);
                 } else {
-                    BufferedReader bufferedReader = new BufferedReader(new StringReader(new String(previousCR.getBufferedOutputStream().toByteArray())));
+                    BufferedReader bufferedReader = new BufferedReader(new StringReader(previousCR.getReturn()));
                     CommandReturn innerCR = new CommandReturn(CommandReturn.GOOD);
                     while (true) {
                         try {
@@ -231,7 +232,8 @@ public abstract class AbstractShell implements Shell {
             }
             return previousCR;
         } else {
-            CommandReturn cr = processCommand(line, null);
+            CommandReturn cr = new CommandReturn(CommandReturn.GOOD);
+            cr = processCommand(line, cr);
             return cr;
         }
     }
@@ -269,7 +271,8 @@ public abstract class AbstractShell implements Shell {
 
         if (matchList.size() == 0) {
             cr.setCode(AbstractCommand.CODE_CMD_ERROR);
-            cr.setDetails("Match List = 0");
+            cr.getErr().print("Match List = 0");
+//            cr.setDetails("Match List = 0");
 //            cr = CommandReturn.BAD;
             return cr;
         }
@@ -280,10 +283,6 @@ public abstract class AbstractShell implements Shell {
 
         Command command = env.getCommand(cmdName);
         if (command != null) {
-//            if (getEnv().isVerbose()) {
-//                System.out.println("Running: " + command.getName() + " ("
-//                        + command.getClass().getName() + ")");
-//            }
             String[] cmdArgs = null;
             if (argv.length > 1) {
                 cmdArgs = Arrays.copyOfRange(argv, 1, argv.length);
@@ -291,16 +290,17 @@ public abstract class AbstractShell implements Shell {
             CommandLine cl = parse(command, cmdArgs);
             if (cl != null) {
                 // Intercept System.out and set to the CommandReturn
-                PrintStream orig = System.out;
-                System.setOut(new PrintStream(cr.getBufferedOutputStream()));
+//                PrintStream orig = System.out;
+//                System.setOut(new PrintStream(cr.getBaosOut()));
                 try {
                     cr = command.execute(env, cl, cr);
                     if (cr.isError()) {
-                        loge(env, cr.getSummary());
+                        loge(env, cr.getError());
                     } else if (cr.isMessage()) {
-                        logv(env, cr.getSummary());
+                        logv(env, cr.getReturn());
                     }
                 } catch (Throwable e) {
+                    e.printStackTrace();
                     loge(env, "Command failed with error: "
                             + e.getMessage());
                     if (cl.hasOption("v")) {
@@ -308,7 +308,7 @@ public abstract class AbstractShell implements Shell {
                     }
                 } finally {
                     // Reset System.out
-                    System.setOut(orig);
+//                    System.setOut(orig);
                 }
             }
 
@@ -325,21 +325,18 @@ public abstract class AbstractShell implements Shell {
         while ((line = reader.readLine(getEnv().getCurrentPrompt() + " ")) != null) {
             CommandReturn cr = processInput(line);
             if (!cr.isError()) {
-                byte[] crOut = cr.getBufferedOutputStream().toByteArray();
+                byte[] crOut = cr.getReturn().getBytes();
                 for (int x = 0; x < crOut.length; x++) {
                     System.out.print((char) crOut[x]);
                 }
-//            if (cr.isError()) {
-//                loge(env, cr.getSummary());
-//            }
             } else {
-                System.out.println("ERROR (code) : " + cr.getCode());
-                System.out.println("     Summary : " + cr.getSummary());
+                System.err.println("ERROR (code) : " + cr.getCode());
+                System.err.println("     Summary : " + cr.getError());
             }
         }
     }
 
-    private static CommandLine parse(Command cmd, String[] args) {
+    private CommandLine parse(Command cmd, String[] args) {
         Options opts = cmd.getOptions();
         CommandLine retval = null;
         try {

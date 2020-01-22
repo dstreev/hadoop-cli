@@ -53,7 +53,7 @@ public class TestApi {
         CommandReturn cr = null;
         cr = shell.processInput("ls");
         System.out.print(cr.getReturn());
-        cr = shell2.processInput("cd /warehouse");
+        cr = shell2.processInput("test -e hdfs://HOME90/user/dstreev/datasets/external/cc_trans_part/section=10");
         System.out.print(cr.getReturn());
         for (int i = 0; i < 10; i++) {
             cr = shell.processInput("ls");

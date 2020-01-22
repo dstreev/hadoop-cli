@@ -22,6 +22,7 @@
  */
 package com.streever.hadoop.hdfs.shell.command;
 
+import org.apache.hadoop.fs.CliFsShell;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
@@ -29,10 +30,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.FsShell;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Arrays;
 
 public class HdfsCommand extends HdfsAbstract {
@@ -58,10 +59,18 @@ public class HdfsCommand extends HdfsAbstract {
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn cr) {
-        FsShell shell = new FsShell();
+        Configuration conf = (Configuration)env.getValue(Constants.CFG);
+        CliFsShell shell = new CliFsShell(conf);
+        try {
+            shell.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        shell.setOut(cr.getOut());
+        shell.setErr(cr.getErr());
+//        FsShell shell = new FsShell();
 //        CommandReturn cr = CommandReturn.GOOD;
 
-        Configuration conf = (Configuration)env.getValue(Constants.CFG);
 
         String hdfs_uri = (String)env.getProperties().getProperty(Constants.HDFS_URL);
 
@@ -121,6 +130,9 @@ public class HdfsCommand extends HdfsAbstract {
         int pos = 1;
 
         for (Option opt: cmdOpts) {
+            if (pos >= argv.length) {
+                System.out.println("OUT OF BOUNDS: " + pos + " " + argv.length);
+            }
             argv[pos++] = "-" + opt.getOpt();
         }
 
@@ -151,13 +163,14 @@ public class HdfsCommand extends HdfsAbstract {
         try {
             res = ToolRunner.run(shell, argv);
             if (res != 0) {
-                StringBuilder sb = new StringBuilder("ERROR");
+                StringBuilder sb = new StringBuilder();
                 for (String arg: argv) {
                     sb.append("\t");
                     sb.append(arg);
                 }
                 cr.setCode(res);
-                cr.setDetails(sb.toString());//
+                cr.getErr().print(sb.toString());
+//                cr.setDetails(sb.toString());//
                 //  cr = new CommandReturn(res, sb.toString());
 //                this.loge(env, sb.toString());
             }

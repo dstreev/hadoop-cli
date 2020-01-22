@@ -21,38 +21,46 @@
  *
  */
 
-package com.streever.hadoop.shell.commands;
+package org.apache.hadoop.fs.shell;
 
-import java.util.ListIterator;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.shell.Command;
+import org.apache.hadoop.fs.shell.CommandFactory;
 
-import com.streever.hadoop.shell.Environment;
-import com.streever.hadoop.shell.command.AbstractCommand;
-import com.streever.hadoop.shell.command.CommandReturn;
-import jline.console.history.History.Entry;
+import java.io.PrintStream;
 
-import org.apache.commons.cli.CommandLine;
+/**
+ * Extending to allow us to override the PrintStreams for native 'Commands'.
+ */
+public class CliCommandFactory extends CommandFactory {
 
-public class HistoryCmd extends AbstractCommand {
+    /** allows stdout to be captured if necessary */
+    public PrintStream out = System.out;
+    /** allows stderr to be captured if necessary */
+    public PrintStream err = System.err;
 
-    public HistoryCmd(String name) {
-        super(name);
+    public CliCommandFactory() {
+        super();
+    }
+
+    public CliCommandFactory(Configuration conf) {
+        super(conf);
     }
 
     @Override
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        if (env.getConsoleReader() != null) {
-            jline.console.history.History history = env.getConsoleReader().getHistory();
-            ListIterator<Entry> it = history.entries();
-            while (it.hasNext()) {
-                Entry entry = it.next();
-                System.out.println(entry.value());
-            }
-        } else {
-            commandReturn.setCode(-1);
-            commandReturn.getErr().print("No console reader defined.  Not available in 'api' mode");
-//            return CommandReturn.BAD;
-        }
-        return commandReturn;
+    public Command getInstance(String cmd) {
+        Command rtn = super.getInstance(cmd);
+        rtn.err = err;
+        rtn.out = out;
+        return rtn;
     }
 
+    @Override
+    public Command getInstance(String cmdName, Configuration conf) {
+        Command rtn = super.getInstance(cmdName, conf);
+        // Set / Reset these for this purpose.
+        rtn.err = err;
+        rtn.out = out;
+        return rtn;
+    }
 }

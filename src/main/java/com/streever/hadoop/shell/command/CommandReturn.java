@@ -24,18 +24,22 @@
 package com.streever.hadoop.shell.command;
 
 import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class CommandReturn {
     public static int GOOD = 0;
     public static int BAD = -1;
 
     private int code = 0;
-    private String details = null;
-    private ByteArrayOutputStream bufferedOutputStream = new ByteArrayOutputStream();
+
+    private ByteArrayOutputStream baosOut = new ByteArrayOutputStream();
+    private ByteArrayOutputStream baosErr = new ByteArrayOutputStream();
+    private PrintStream out = new PrintStream(baosOut);
+    private PrintStream err = new PrintStream(baosErr);
 //    private String commandBufferedOutput = null;
 
     public boolean isError() {
-        if (code < 0)
+        if (code != 0)
             return true;
         else
             return false;
@@ -48,13 +52,13 @@ public class CommandReturn {
             return false;
     }
 
-    public String getSummary() {
-        StringBuilder sb = new StringBuilder();
-        if (details != null)
-            sb.append(getDetails()).append("\t");
-        //sb.append(getClass());
-        return sb.toString();
-    }
+//    public String getSummary() {
+//        StringBuilder sb = new StringBuilder();
+//        if (details != null)
+//            sb.append(getDetails()).append("\t");
+//        //sb.append(getClass());
+//        return sb.toString();
+//    }
 
     public int getCode() {
         return code;
@@ -64,43 +68,31 @@ public class CommandReturn {
         this.code = code;
     }
 
-    public String getDetails() {
-        return details;
+    public PrintStream getOut() {
+        return out;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public ByteArrayOutputStream getBufferedOutputStream() {
-        return bufferedOutputStream;
-    }
-
-    public void setBufferedOutputStream(ByteArrayOutputStream buffer) {
-        this.bufferedOutputStream = buffer;
+    public PrintStream getErr() {
+        return err;
     }
 
     public CommandReturn(int code) {
         this.code = code;
     }
 
-    public CommandReturn(int code, String details) {
-        this.code = code;
-        this.details = details;
-    }
+//    public CommandReturn(int code, String details) {
+//        this.code = code;
+//        this.details = details;
+//    }
 
     public String getReturn() {
-        String rtn = new String(this.getBufferedOutputStream().toByteArray());
-//        StringBuilder sb = new StringBuilder();
-//        if (!this.isError()) {
-//            byte[] crOut = this.getBufferedOutputStream().toByteArray();
-//            for (int x = 0; x < crOut.length; x++) {
-//                System.out.print((char) crOut[x]);
-//            }
-//        } else {
-//            System.out.println("ERROR (code) : " + this.getCode());
-//            System.out.println("     Summary : " + this.getSummary());
-//        }
+        String rtn = new String(this.baosOut.toByteArray());
         return rtn;
     }
+
+    public String getError() {
+        String rtn = new String(this.baosErr.toByteArray());
+        return rtn;
+    }
+
 }

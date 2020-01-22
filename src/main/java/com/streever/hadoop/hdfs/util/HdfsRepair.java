@@ -77,7 +77,7 @@ public class HdfsRepair extends HdfsAbstract {
 
          */
         commandReturn.setCode(-1);
-        commandReturn.setDetails("Repair not yet implemented");
+        commandReturn.getErr().print("Repair not yet implemented");
         return commandReturn;
 //         return new CommandReturn(-1, "repair not implemented yet");
     }

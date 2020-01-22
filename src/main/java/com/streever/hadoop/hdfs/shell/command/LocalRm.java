@@ -64,7 +64,8 @@ public class LocalRm extends HdfsCommand {
 
         }
         catch (Throwable e) {
-            return new CommandReturn(CODE_CMD_ERROR, e.getMessage());
+            cr.setCode(CODE_CMD_ERROR);
+            cr.getErr().print(e.getMessage());
         }
         return cr;
     }

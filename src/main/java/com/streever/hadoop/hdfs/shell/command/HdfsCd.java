@@ -76,7 +76,8 @@ public class HdfsCd extends AbstractCommand {
 
         } catch (IOException e) {
             cr.setCode(CODE_CMD_ERROR);
-            cr.setDetails(e.getMessage());
+            cr.getErr().print(e.getMessage());
+//            cr.setDetails(e.getMessage());
 //            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
         } finally {
             FSUtil.prompt(env);

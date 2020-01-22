@@ -65,7 +65,9 @@ public class HdfsSource  extends HdfsAbstract {
 
         if (fs == null) {
             log(env, "Please connect first");
-            return new CommandReturn(CODE_NOT_CONNECTED, "Not connected. Connect first.");
+            CommandReturn cr = new CommandReturn(CODE_NOT_CONNECTED);
+            cr.getErr().print("Not connected. Connect first.");
+            return cr;
         }
 
         URI nnURI = fs.getUri();
@@ -74,7 +76,9 @@ public class HdfsSource  extends HdfsAbstract {
             dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
             e.printStackTrace();
-            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
+            CommandReturn cr = new CommandReturn(CODE_CONNECTION_ISSUE);
+            cr.getErr().print(e.getMessage());
+            return cr;
         }
 
         Option[] cmdOpts = cmd.getOptions();
@@ -107,31 +111,35 @@ public class HdfsSource  extends HdfsAbstract {
     public Options getOptions() {
         Options opts = super.getOptions();
 
-        Option lfileOption = Option.builder("lf").required(false)
-                .argName("source local file")
-                .desc("local file to run")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("localfile")
-                .build();
+        Option lfileOption = new Option("lf", "localfile", true, "local file to run");
+        // For Commons-CLI v 1.3+
+        //        Option lfileOption = Option.builder("lf").required(false)
+        //               .argName("source local file")
+        //                .desc("local file to run")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("localfile")
+        //                .build();
         opts.addOption(lfileOption);
 
-        Option templateOption = Option.builder("t").required(false)
-                .argName("template")
-                .desc("Message Template")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("template")
-                .build();
+        Option templateOption = new Option("t", "template", true, "Message Template");
+        //        Option templateOption = Option.builder("t").required(false)
+        //                .argName("template")
+        //                .desc("Message Template")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("template")
+        //                .build();
         opts.addOption(templateOption);
 
-        Option delimiterOption = Option.builder("d").required(false)
-                .argName("delimiter")
-                .desc("delimiter")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("delimiter")
-                .build();
+        Option delimiterOption = new Option("d", "delimiter", true, "delimiter");
+        //        Option delimiterOption = Option.builder("d").required(false)
+        //                .argName("delimiter")
+        //                .desc("delimiter")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("delimiter")
+        //                .build();
         opts.addOption(delimiterOption);
 
         // TODO: Add Distributed File Source

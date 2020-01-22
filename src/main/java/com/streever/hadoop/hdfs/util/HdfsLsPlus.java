@@ -759,7 +759,7 @@ public class HdfsLsPlus extends HdfsAbstract {
         if (!environment.getProperties().getProperty(Constants.CONNECT_PROTOCOL).equalsIgnoreCase(Constants.HDFS)) {
             loge(environment, "This function is only available when connecting via 'hdfs'");
             cr.setCode(-1);
-            cr.setDetails("Not available with this protocol");
+            cr.getErr().print("Not available with this protocol");
 //            cr = new CommandReturn(-1, "Not available with this protocol");
             return cr;
         }
@@ -776,7 +776,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         if (fs == null) {
             cr.setCode(CODE_NOT_CONNECTED);
-            cr.setDetails("Connect first");
+            cr.getErr().print("Connect first");
             return cr;
 //            return new CommandReturn(CODE_NOT_CONNECTED, "Connect First");
         }
@@ -787,7 +787,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
             cr.setCode(CODE_CONNECTION_ISSUE);
-            cr.setDetails(e.getMessage());
+            cr.getErr().print(e.getMessage());
             return cr;
 //            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
         }
@@ -826,7 +826,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             targetPathData = new PathData(targetPath, configuration);
         } catch (IOException e) {
             cr.setCode(CODE_PATH_ERROR);
-            cr.setDetails("Error in Path");
+            cr.getErr().print("Error in Path");
             return cr;
 //            return new CommandReturn(CODE_PATH_ERROR, "Error in Path");
         }
@@ -838,7 +838,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                 outFS.close();
             } catch (IOException e) {
                 cr.setCode(CODE_FS_CLOSE_ISSUE);
-                cr.setDetails(e.getMessage());
+                cr.getErr().print(e.getMessage());
                 return cr;
 //                return new CommandReturn(CODE_FS_CLOSE_ISSUE, e.getMessage());
             } finally {
@@ -851,7 +851,7 @@ public class HdfsLsPlus extends HdfsAbstract {
         if (isTest()) {
             if (!isTestFound()) {
                 cr.setCode(CODE_NOT_FOUND);
-                cr.setDetails("Not Found");
+                cr.getErr().print("Not Found");
             }
         }
         return cr;
@@ -861,145 +861,190 @@ public class HdfsLsPlus extends HdfsAbstract {
     public Options getOptions() {
         Options opts = super.getOptions();
 
-        Option formatOption = Option.builder("f").required(false)
-                .argName("output format")
-                .desc("Comma separated list of one or more: permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,file,datanode_info (default all of the above)")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .valueSeparator(',')
-                .longOpt("output-format")
-                .build();
+        Option formatOption = new Option("f", "output-format", true,
+                "Comma separated list of one or more: " +
+                        "permissions_long,replication,user,group,size,block_size,ratio,mod," +
+                        "access,path,file,datanode_info (default all of the above)");
+        formatOption.setRequired(false);
+        //        Option formatOption = Option.builder("f").required(false)
+        //                .argName("output format")
+        //                .desc("Comma separated list of one or more: permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,file,datanode_info (default all of the above)")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .valueSeparator(',')
+        //                .longOpt("output-format")
+        //                .build();
         opts.addOption(formatOption);
 
-        Option recursiveOption = Option.builder("R").required(false)
-                .argName("recursive")
-                .desc("Process Path Recursively")
-                .hasArg(false)
-                .longOpt("recursive")
-                .build();
+        Option recursiveOption = new Option("R", "recursive", false, "Process Path Recursively");
+        recursiveOption.setRequired(false);
+        //        Option recursiveOption = Option.builder("R").required(false)
+        //                .argName("recursive")
+        //                .desc("Process Path Recursively")
+        //                .hasArg(false)
+        //                .longOpt("recursive")
+        //                .build();
         opts.addOption(recursiveOption);
 
-        Option dirOnlyOption = Option.builder("do").required(false)
-                .argName("directories only")
-                .desc("Show Directories Only")
-                .hasArg(false)
-                .longOpt("dir-only")
-                .build();
+        Option dirOnlyOption = new Option("do", "dir-only", false, "Show Directories Only");
+        dirOnlyOption.setRequired(false);
+        //        Option dirOnlyOption = Option.builder("do").required(false)
+        //                .argName("directories only")
+        //                .desc("Show Directories Only")
+        //                .hasArg(false)
+        //                .longOpt("dir-only")
+        //                .build();
         opts.addOption(dirOnlyOption);
 
-        Option relativeOutputOption = Option.builder("r").required(false)
-                .argName("relative")
-                .desc("Show Relative Path Output")
-                .hasArg(false)
-                .longOpt("relative")
-                .build();
+        Option relativeOutputOption = new Option("r", "relative", false, "Show Relative Path Output");
+        relativeOutputOption.setRequired(false);
+        //        Option relativeOutputOption = Option.builder("r").required(false)
+        //                .argName("relative")
+        //                .desc("Show Relative Path Output")
+        //                .hasArg(false)
+        //                .longOpt("relative")
+        //                .build();
         opts.addOption(relativeOutputOption);
 
 
-        Option invisibleOption = Option.builder("i").required(false)
-                .argName("invisible")
-                .desc("Process Invisible Files/Directories")
-                .hasArg(false)
-                .longOpt("invisible")
-                .build();
+        Option invisibleOption = new Option("i", "invisible", false, "Process Invisible Files/Directories");
+        invisibleOption.setRequired(false);
+        //        Option invisibleOption = Option.builder("i").required(false)
+        //                .argName("invisible")
+        //                .desc("Process Invisible Files/Directories")
+        //                .hasArg(false)
+        //                .longOpt("invisible")
+        //                .build();
         opts.addOption(invisibleOption);
 
 
-        Option depthOption = Option.builder("d").required(false)
-                .argName("max depth")
-                .desc("Depth of Recursion (default 5), use '-1' for unlimited")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("max-depth")
-                .build();
+        Option depthOption = new Option("d", "max-depth", true,
+                "Depth of Recursion (default 5), use '-1' for unlimited");
+        depthOption.setRequired(false);
+        //        Option depthOption = Option.builder("d").required(false)
+        //                .argName("max depth")
+        //                .desc("Depth of Recursion (default 5), use '-1' for unlimited")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("max-depth")
+        //                .build();
         opts.addOption(depthOption);
 
-        Option filterOption = Option.builder("F").required(false)
-                .argName("filter")
-                .desc("Regex Filter of Content. Can be 'Quoted'")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("filter")
-                .build();
+        Option filterOption = new Option("F", "filter", true,
+                "Regex Filter of Content. Can be 'Quoted'");
+        filterOption.setRequired(false);
+        //        Option filterOption = Option.builder("F").required(false)
+        //                .argName("filter")
+        //                .desc("Regex Filter of Content. Can be 'Quoted'")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("filter")
+        //                .build();
         opts.addOption(filterOption);
 
-        Option filterElementOption = Option.builder("Fe").required(false)
-                .argName("Filter Element")
-                .desc("Filter on 'element'.  One of '--format'")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("filter-element")
-                .build();
+        Option filterElementOption = new Option("Fe", "filter-element", true,
+                "Filter on 'element'.  One of '--format'");
+        filterElementOption.setRequired(false);
+        //        Option filterElementOption = Option.builder("Fe").required(false)
+        //                .argName("Filter Element")
+        //                .desc("Filter on 'element'.  One of '--format'")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("filter-element")
+        //                .build();
         opts.addOption(filterElementOption);
 
-        Option invertOption = Option.builder("v").required(false)
-                .argName("invert")
-                .desc("Invert Regex Filter of Content")
-                .hasArg(false)
-                .longOpt("invert")
-                .build();
+        Option invertOption = new Option("v", "invert", false,
+                "Invert Regex Filter of Content");
+        invertOption.setRequired(false);
+        //        Option invertOption = Option.builder("v").required(false)
+        //                .argName("invert")
+        //                .desc("Invert Regex Filter of Content")
+        //                .hasArg(false)
+        //                .longOpt("invert")
+        //                .build();
         opts.addOption(invertOption);
 
-        Option sepOption = Option.builder("s").required(false)
-                .argName("separator")
-                .desc("Field Separator")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("separator")
-                .build();
+        Option sepOption = new Option("s", "separator", true, "Field Separator");
+        sepOption.setRequired(false);
+        //        Option sepOption = Option.builder("s").required(false)
+        //                .argName("separator")
+        //                .desc("Field Separator")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("separator")
+        //                .build();
         opts.addOption(sepOption);
 
-        Option newlineOption = Option.builder("n").required(false)
-                .argName("newline")
-                .desc("New Line")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("newline")
-                .build();
+        Option newlineOption = new Option("n", "newline", true, "New Line");
+        newlineOption.setRequired(false);
+        //        Option newlineOption = Option.builder("n").required(false)
+        //                .argName("newline")
+        //                .desc("New Line")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("newline")
+        //                .build();
         opts.addOption(newlineOption);
 
 
-        Option outputOption = Option.builder("o").required(false)
-                .argName("Output Directory")
-                .desc("Output Directory (HDFS) (default System.out)")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("output-directory")
-                .build();
+        Option outputOption = new Option("o", "output-directory", true,
+                "Output Directory (HDFS) (default System.out)");
+        outputOption.setRequired(false);
+        //        Option outputOption = Option.builder("o").required(false)
+        //                .argName("Output Directory")
+        //                .desc("Output Directory (HDFS) (default System.out)")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("output-directory")
+        //                .build();
         opts.addOption(outputOption);
 
-        Option commentOption = Option.builder("c").required(false)
-                .argName("comment")
-                .desc("Add comment to output")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("comment")
-                .build();
+        Option commentOption = new Option("c", "comment", true, "Add comment to output");
+        commentOption.setRequired(false);
+        //        Option commentOption = Option.builder("c").required(false)
+        //                .argName("comment")
+        //                .desc("Add comment to output")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("comment")
+        //                .build();
         opts.addOption(commentOption);
 
-        Option messageFormatOption = Option.builder("mf").required(false)
-                .argName("Message Format")
-                .desc("Message Format function that uses the elements of the 'format' to populate a string message. See Java: https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html.")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("message-format")
-                .build();
+        Option messageFormatOption = new Option("mf", "message-format", true,
+                "Message Format function that uses the elements of the 'format' to populate a string message." +
+                        " See Java: https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html.");
+        messageFormatOption.setRequired(false);
+        //        Option messageFormatOption = Option.builder("mf").required(false)
+        //                .argName("Message Format")
+        //                .desc("Message Format function that uses the elements of the 'format' to populate a string message. See Java: https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html.")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("message-format")
+        //                .build();
         opts.addOption(messageFormatOption);
 
-        Option testOption = Option.builder("t").required(false)
-                .argName("test")
-                .desc("Test for existence")
-                .hasArg(false)
-                .longOpt("test")
-                .build();
+        Option testOption = new Option("t", "test", false,
+                "Test for existence");
+        testOption.setRequired(false);
+        //        Option testOption = Option.builder("t").required(false)
+        //                .argName("test")
+        //                .desc("Test for existence")
+        //                .hasArg(false)
+        //                .longOpt("test")
+        //                .build();
         opts.addOption(testOption);
 
-        Option parentOption = Option.builder("sp").required(false)
-                .argName("Show Parent")
-                .desc("Shows the parent directory of the related matched 'filter'. When match is found, recursion into directory is aborted since parent has been identified.")
-                .hasArg(false)
-                .longOpt("show-parent")
-                .build();
+        Option parentOption = new Option("sp", "show-parent", false,
+                "Shows the parent directory of the related matched 'filter'. " +
+                        "When match is found, recursion into directory is aborted since parent has been identified.");
+        parentOption.setRequired(false);
+        //        Option parentOption = Option.builder("sp").required(false)
+        //                .argName("Show Parent")
+        //                .desc("Shows the parent directory of the related matched 'filter'. When match is found, recursion into directory is aborted since parent has been identified.")
+        //                .hasArg(false)
+        //                .longOpt("show-parent")
+        //                .build();
         opts.addOption(parentOption);
 
 

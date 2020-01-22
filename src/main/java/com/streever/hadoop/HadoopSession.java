@@ -734,76 +734,99 @@ public class HadoopSession extends AbstractShell {
         Options options = new Options();
 
         // add i option
-        Option initOption = Option.builder("i").required(false)
-                .argName("init set").desc("Initialize with set")
-                .longOpt("init")
-                .hasArg(true).numberOfArgs(1)
-                .build();
+        Option initOption = new Option("i", "init", true, "Initialization with Set");
+        initOption.setRequired(false);
+        // Commons-Cli v1.3+ (can use currently because of Hadoop Commons-cli version is at 1.2.
+        //        Option initOption = Option.builder("i").required(false)
+        //                .argName("init set").desc("Initialize with set")
+        //                .longOpt("init")
+        //                .hasArg(true).numberOfArgs(1)
+        //                .build();
         options.addOption(initOption);
 
-        Option executeOption = Option.builder("e").required(false)
-                .argName("command [args]").desc("Execute Command")
-                .longOpt("execute")
-                .hasArg(true).numberOfArgs(1)
-                .build();
+        Option executeOption = new Option("e", "execute", true, "Execute Command");
+        executeOption.setRequired(false);
+        //        Option executeOption = Option.builder("e").required(false)
+        //                .argName("command [args]").desc("Execute Command")
+        //                .longOpt("execute")
+        //                .hasArg(true).numberOfArgs(1)
+        //                .build();
         options.addOption(executeOption);
 
         // add f option
-        Option fileOption = Option.builder("f").required(false)
-                .argName("file to exec").desc("Run File and Exit")
-                .longOpt("file")
-                .hasArg(true).numberOfArgs(1)
-                .build();
+        Option fileOption = new Option("f", "file", false, "File to execute");
+        fileOption.setRequired(false);
+        //        Option fileOption = Option.builder("f").required(false)
+        //                .argName("file to exec").desc("Run File and Exit")
+        //                .longOpt("file")
+        //                .hasArg(true).numberOfArgs(1)
+        //                .build();
         options.addOption(fileOption);
 
-        Option templateOption = Option.builder("t").required(false)
-                .argName("template").desc("Template to apply on input (-f | -stdin)")
-                .longOpt("template")
-                .hasArg(true).numberOfArgs(1)
-                .build();
+        Option templateOption = new Option("t", "template", true,
+                "Template to apply on input (-f | -stdin)");
+        templateOption.setRequired(false);
+        //        Option templateOption = Option.builder("t").required(false)
+        //                .argName("template").desc("Template to apply on input (-f | -stdin)")
+        //                .longOpt("template")
+        //                .hasArg(true).numberOfArgs(1)
+        //                .build();
         options.addOption(templateOption);
 
-        Option delimiterOption = Option.builder("td").required(false)
-                .argName("template-delimiter").desc("Delimiter to apply to 'input' for template option (default=',')")
-                .longOpt("template-delimiter")
-                .hasArg(true).numberOfArgs(1)
-                .build();
+        Option delimiterOption = new Option("td", "template-delimiter", true,
+                "Delimiter to apply to 'input' for template option (default=',')");
+        delimiterOption.setRequired(false);
+        //        Option delimiterOption = Option.builder("td").required(false)
+        //                .argName("template-delimiter").desc("Delimiter to apply to 'input' for template option (default=',')")
+        //                .longOpt("template-delimiter")
+        //                .hasArg(true).numberOfArgs(1)
+        //                .build();
         options.addOption(delimiterOption);
 
         // add stdin option
-        Option siOption = Option.builder("stdin").required(false)
-                .argName("stdin process").desc("Run Stdin pipe and Exit")
-                .longOpt("stdin")
-                .hasArg(false)
-                .build();
+        Option siOption = new Option("stdin", "stdin", false, "Run Stdin pipe and Exit");
+        siOption.setRequired(false);
+        //        Option siOption = Option.builder("stdin").required(false)
+        //                .argName("stdin process").desc("Run Stdin pipe and Exit")
+        //                .longOpt("stdin")
+        //                .hasArg(false)
+        //                .build();
         options.addOption(siOption);
 
-        Option silentOption = Option.builder("s").required(false)
-                .argName("silent").desc("Suppress Banner")
-                .longOpt("silent")
-                .hasArg(false)
-                .build();
+        Option silentOption = new Option("s", "silent", false, "Suppress Banner");
+        silentOption.setRequired(false);
+        //        Option silentOption = Option.builder("s").required(false)
+        //                .argName("silent").desc("Suppress Banner")
+        //                .longOpt("silent")
+        //                .hasArg(false)
+        //                .build();
         options.addOption(silentOption);
 
-        Option apiOption = Option.builder("api").required(false)
-                .argName("api").desc("API mode")
-                .longOpt("api")
-                .hasArg(false)
-                .build();
+        Option apiOption = new Option("api", "api", false, "API mode");
+        apiOption.setRequired(false);
+        //        Option apiOption = Option.builder("api").required(false)
+        //                .argName("api").desc("API mode")
+        //                .longOpt("api")
+        //                .hasArg(false)
+        //                .build();
         options.addOption(apiOption);
 
-        Option verboseOption = Option.builder("v").required(false)
-                .argName("verbose").desc("Verbose Commands")
-                .longOpt("verbose")
-                .hasArg(false)
-                .build();
+        Option verboseOption = new Option("v", "verbose", false, "Verbose Commands");
+        verboseOption.setRequired(false);
+        //        Option verboseOption = Option.builder("v").required(false)
+        //                .argName("verbose").desc("Verbose Commands")
+        //                .longOpt("verbose")
+        //                .hasArg(false)
+        //                .build();
         options.addOption(verboseOption);
 
-        Option debugOption = Option.builder("d").required(false)
-                .argName("debug").desc("Debug Commands")
-                .longOpt("debug")
-                .hasArg(false)
-                .build();
+        Option debugOption = new Option("d", "debug", false, "Debug Commands");
+        debugOption.setRequired(false);
+        //        Option debugOption = Option.builder("d").required(false)
+        //                .argName("debug").desc("Debug Commands")
+        //                .longOpt("debug")
+        //                .hasArg(false)
+        //                .build();
         options.addOption(debugOption);
 
 //        Option usernameOption = Option.builder("u").required(false)
@@ -832,9 +855,11 @@ public class HadoopSession extends AbstractShell {
         // Need to add mechanism to pull gateway url from file.
         // Need to save last state to file for sign in (minus password) in next session.
 
-        Option helpOption = Option.builder("h").required(false)
-                .longOpt("help")
-                .build();
+        Option helpOption = new Option("h", "help", false, "Help");
+        helpOption.setRequired(false);
+        //        Option helpOption = Option.builder("h").required(false)
+        //                .longOpt("help")
+        //                .build();
         options.addOption(helpOption);
 
         // TODO: Scripting
@@ -852,7 +877,7 @@ public class HadoopSession extends AbstractShell {
         // create Options object
         Options options = getOptions();
 
-        CommandLineParser parser = new DefaultParser();
+        CommandLineParser parser = new PosixParser();
         CommandLine cmd = null;
 
         try {
@@ -899,7 +924,7 @@ public class HadoopSession extends AbstractShell {
         // create Options object
         Options options = getOptions();
 
-        CommandLineParser parser = new DefaultParser();
+        CommandLineParser parser = new PosixParser();
         CommandLine cmd = null;
 
         try {
@@ -1034,7 +1059,7 @@ public class HadoopSession extends AbstractShell {
             crTest = processInput("connect");
             if (crTest.isError()) {
                 rtn = false;
-                loge(getEnv(), crTest.getSummary());
+                loge(getEnv(), crTest.getError());
             }
             // TODO: If Kerberos enabled, pull this from ticket and use auth_to_local to extract. There maybe a Hadoop command for this.
             String userHome = getEnv().getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
@@ -1065,7 +1090,7 @@ public class HadoopSession extends AbstractShell {
             
             if (crTest.isError()) {
                 rtn = false;
-                loge(getEnv(), crTest.getSummary() + ".\nAttempted to set home directory.  User home directory must exist.\nIf user is 'hdfs', consider using a proxy account for audit purposes.");
+                loge(getEnv(), crTest.getError() + ".\nAttempted to set home directory.  User home directory must exist.\nIf user is 'hdfs', consider using a proxy account for audit purposes.");
             }
         } catch (Exception e) {
             e.printStackTrace();

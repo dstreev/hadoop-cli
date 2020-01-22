@@ -69,14 +69,6 @@ public abstract class AbstractCommand implements Command{
 
         options.addOption("v", "verbose", false, "show verbose output");
 
-//        Option bufferOption = Option.builder("b").required(false)
-//                .argName("buffer")
-//                .desc("Buffer Output")
-//                .hasArg(false)
-//                .longOpt("buffer")
-//                .build();
-//        options.addOption(bufferOption);
-
         return options;
     }
     
@@ -120,34 +112,24 @@ public abstract class AbstractCommand implements Command{
     
     @Override
     public CommandReturn execute(Environment env, CommandLine cmd, CommandReturn cr) {
-//        CommandReturn cr = new CommandReturn(0); // Assume Good.
-            // Intercept System.out and set to the CommandReturn
-            PrintStream orig = System.out;
-            System.setOut(new PrintStream(cr.getBufferedOutputStream()));
+        CommandReturn lclCr = cr;
+        if (lclCr == null) {
+            lclCr = new CommandReturn(CommandReturn.GOOD);
+        }
+//            PrintStream orig = System.out;
+//            System.setOut(new PrintStream(lclCr.getBufferedOutputStream()));
 
             try {
-//                // Change Output to ByteArrayOutputStream
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                PrintStream ps = new PrintStream(baos);
-//                old = System.out;
-//                System.setOut(ps);
 
-                cr = implementation(env, cmd, cr);
+                lclCr = implementation(env, cmd, lclCr);
 
-                System.out.flush();
+//                System.out.flush();
 
-//                cr.setBufferedOutputStream(baos);
-//                try {
-//                    baos.flush();
-//                } catch (IOException io) {
-//                    io.printStackTrace();
-//                }
             } finally {
                 // Revert Buffered Output
-                System.setOut(orig);
+//                System.setOut(orig);
             }
-
-        return cr;
+        return lclCr;
     }
 
     @Override
