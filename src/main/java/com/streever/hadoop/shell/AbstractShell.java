@@ -66,6 +66,7 @@ public abstract class AbstractShell implements Shell {
 
     public void setApiMode(boolean apiMode) {
         this.apiMode = apiMode;
+        getEnv().setApiMode(true);
     }
 
     public String getBannerResource() {
@@ -87,7 +88,8 @@ public abstract class AbstractShell implements Shell {
     }
 
     protected static void loge(Environment env, String log) {
-        System.err.println(log);
+        if (!env.isApiMode())
+            System.err.println(log);
     }
 
     protected abstract boolean preProcessInitializationArguments(String[] arguments);
@@ -192,50 +194,42 @@ public abstract class AbstractShell implements Shell {
 
         At this time, the pipeline only support 1 redirect.
          */
-        if (line.contains("|")) {
-//            CommandReturn cr = new CommandReturn(CommandReturn.GOOD);
-
-            String[] commands = line.split("\\|");
-            CommandReturn previousCR = null;
-
-            if (commands.length > 2) {
-                CommandReturn crLength = new CommandReturn(CommandReturn.BAD);
-                crLength.getErr().print("Only support single depth pipeline at this time.");
-                return crLength;
-            }
-            for (String command : commands) {
-                if (previousCR == null) {
-                    // First time thru
-                    previousCR = processCommand(command, null);
-                } else {
-                    BufferedReader bufferedReader = new BufferedReader(new StringReader(previousCR.getReturn()));
-                    CommandReturn innerCR = new CommandReturn(CommandReturn.GOOD);
-                    while (true) {
-                        try {
-                            if (!((line = bufferedReader.readLine()) != null)) break;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            break;
-                        }
-                        // Check line for spaces.  If it has them, quote it.
-                        String adjustedLine = null;
-                        if (line.contains(" ")) {
-                            adjustedLine = "\"" + line + "\"";
-                        } else {
-                            adjustedLine = line;
-                        }
-                        String pipedCommand = command.trim() + " " + adjustedLine;
-                        innerCR = processCommand(pipedCommand, innerCR);
-                    }
-                    previousCR = innerCR;
-                }
-            }
-            return previousCR;
-        } else {
-            CommandReturn cr = new CommandReturn(CommandReturn.GOOD);
-            cr = processCommand(line, cr);
-            return cr;
+        String splitRegEx = "\\|(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)";
+        String[] cmds = line.split(splitRegEx);
+        if (cmds.length > 2) {
+            CommandReturn crLength = new CommandReturn(CommandReturn.BAD);
+            crLength.getErr().print("Only support single depth pipeline at this time.");
+            return crLength;
         }
+        CommandReturn previousCR = null;
+        for (String command : cmds) {
+            if (previousCR == null) {
+                // First time thru
+                previousCR = processCommand(command, null);
+            } else {
+                BufferedReader bufferedReader = new BufferedReader(new StringReader(previousCR.getReturn()));
+                CommandReturn innerCR = new CommandReturn(CommandReturn.GOOD);
+                while (true) {
+                    try {
+                        if (!((line = bufferedReader.readLine()) != null)) break;
+                    } catch (IOException e) {
+//                        e.printStackTrace();
+                        break;
+                    }
+                    // Check line for spaces.  If it has them, quote it.
+                    String adjustedLine = null;
+                    if (line.contains(" ")) {
+                        adjustedLine = "\"" + line + "\"";
+                    } else {
+                        adjustedLine = line;
+                    }
+                    String pipedCommand = command.trim() + " " + adjustedLine;
+                    innerCR = processCommand(pipedCommand, innerCR);
+                }
+                previousCR = innerCR;
+            }
+        }
+        return previousCR;
     }
 
     protected CommandReturn processCommand(String line, CommandReturn commandReturn) {
@@ -282,33 +276,34 @@ public abstract class AbstractShell implements Shell {
 //        cr = new CommandReturn(0);
 
         Command command = env.getCommand(cmdName);
+
+
         if (command != null) {
+            // Set Command io.
+            command.setErr(cr.getErr());
+            command.setOut(cr.getOut());
+
             String[] cmdArgs = null;
             if (argv.length > 1) {
                 cmdArgs = Arrays.copyOfRange(argv, 1, argv.length);
             }
             CommandLine cl = parse(command, cmdArgs);
             if (cl != null) {
-                // Intercept System.out and set to the CommandReturn
-//                PrintStream orig = System.out;
-//                System.setOut(new PrintStream(cr.getBaosOut()));
                 try {
                     cr = command.execute(env, cl, cr);
-                    if (cr.isError()) {
-                        loge(env, cr.getError());
-                    } else if (cr.isMessage()) {
-                        logv(env, cr.getReturn());
-                    }
+//                    if (cr.isError()) {
+//                        loge(env, cr.getError());
+//                    } else {
+//                        logv(env, cr.getReturn());
+//                    }
                 } catch (Throwable e) {
-                    e.printStackTrace();
-                    loge(env, "Command failed with error: "
+//                    e.printStackTrace();
+                    loge(getEnv(), "Command failed with error: "
                             + e.getMessage());
                     if (cl.hasOption("v")) {
-                        loge(env, e.getMessage());
+                        loge(getEnv(), e.getMessage());
                     }
                 } finally {
-                    // Reset System.out
-//                    System.setOut(orig);
                 }
             }
 
@@ -325,13 +320,11 @@ public abstract class AbstractShell implements Shell {
         while ((line = reader.readLine(getEnv().getCurrentPrompt() + " ")) != null) {
             CommandReturn cr = processInput(line);
             if (!cr.isError()) {
-                byte[] crOut = cr.getReturn().getBytes();
-                for (int x = 0; x < crOut.length; x++) {
-                    System.out.print((char) crOut[x]);
-                }
+                System.out.println(cr.getReturn());
             } else {
-                System.err.println("ERROR (code) : " + cr.getCode());
-                System.err.println("     Summary : " + cr.getError());
+                System.err.println("ERROR   CODE : " + cr.getCode());
+                System.err.println("     Command : " + cr.getCommand());
+                System.err.println("       ERROR : " + cr.getError());
             }
         }
     }

@@ -23,14 +23,21 @@
 
 package com.streever.hadoop.shell.command;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandReturn {
     public static int GOOD = 0;
     public static int BAD = -1;
 
     private int code = 0;
+    private String[] commandArgs = null;
+    private String path = null;
+    private List<List<String>> records = new ArrayList<List<String>>();
 
     private ByteArrayOutputStream baosOut = new ByteArrayOutputStream();
     private ByteArrayOutputStream baosErr = new ByteArrayOutputStream();
@@ -38,27 +45,49 @@ public class CommandReturn {
     private PrintStream err = new PrintStream(baosErr);
 //    private String commandBufferedOutput = null;
 
+
+    public List<List<String>> getRecords() {
+        return records;
+    }
+
+    public boolean addRecord(List<String> record) {
+        boolean rtn = records.add(record);
+        return rtn;
+
+    }
+
+    public String[] getCommandArgs() {
+        return commandArgs;
+    }
+
+    public String getCommand() {
+        return StringUtils.join(commandArgs, " ");
+    }
+
+    public void setCommandArgs(String[] commandArgs) {
+        this.commandArgs = commandArgs;
+    }
+
+    public void setCommandArgs(List<String> commandArgs) {
+        String[] args = new String[commandArgs.size()];
+        commandArgs.toArray(args);
+        this.commandArgs = args;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public boolean isError() {
         if (code != 0)
             return true;
         else
             return false;
     }
-
-    public boolean isMessage() {
-        if (code > 0)
-            return true;
-        else
-            return false;
-    }
-
-//    public String getSummary() {
-//        StringBuilder sb = new StringBuilder();
-//        if (details != null)
-//            sb.append(getDetails()).append("\t");
-//        //sb.append(getClass());
-//        return sb.toString();
-//    }
 
     public int getCode() {
         return code;
@@ -86,8 +115,25 @@ public class CommandReturn {
 //    }
 
     public String getReturn() {
-        String rtn = new String(this.baosOut.toByteArray());
-        return rtn;
+        StringBuilder sb = new StringBuilder();
+        String outString = new String(this.baosOut.toByteArray());
+        sb.append(outString);
+        if (records.size() > 0) {
+//            for (List<String> record : records) {
+            for (int i = 0; i < records.size(); i++) {
+                List<String> record = records.get(i);
+                for (int j = 0; j < record.size(); j++) {
+                    sb.append(record.get(j));
+                    if (j < record.size() - 1) {
+                        sb.append("\t");
+                    }
+                }
+                if (i < records.size() - 1) {
+                    sb.append("\n");
+                }
+            }
+        }
+        return sb.toString();
     }
 
     public String getError() {

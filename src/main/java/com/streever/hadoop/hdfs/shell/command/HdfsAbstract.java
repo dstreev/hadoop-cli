@@ -66,6 +66,10 @@ public abstract class HdfsAbstract extends AbstractCommand {
         this.env = env;
     }
 
+    public Environment getEnv() {
+        return env;
+    }
+
     @Override
     public Options getOptions() {
         Options options = super.getOptions();

@@ -140,7 +140,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     private FSDataOutputStream outFS = null;
     private static MathContext mc = new MathContext(4, RoundingMode.HALF_UP);
     private int count = 0;
-    private PathBuilder pathBuilder;
+//    private PathBuilder pathBuilder;
 
     public HdfsLsPlus(String name) {
         super(name);
@@ -314,19 +314,19 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
 
-    private void writeItem(PathData item, int level) {
+    private List<String> writeItem(PathData item, int level) {
 
         List<String> output = new ArrayList<String>();
 
         // Don't write files when -do specified.
         if (item.stat.isFile() && isDirOnly())
-            return;
+            return null;
 
         try {
             boolean in = false;
             // Skip directories when PARENT is specified and is a directory.
             if (contains(print_options, PARENT) && item.stat.isDirectory()) {
-                return;
+                return null;
             }
 
             logd(env, "L:" + level);
@@ -408,6 +408,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                         break;
                 }
             }
+            // TODO: Need to Revisit the posting of Datanode Block Details.
             if (!item.stat.isDirectory() && Arrays.asList(print_options).contains(DATANODE_INFO)) {
                 LocatedBlocks blocks = null;
                 blocks = dfsClient.getLocatedBlocks(item.toString(), 0, Long.MAX_VALUE);
@@ -415,28 +416,40 @@ public class HdfsLsPlus extends HdfsAbstract {
                     output.add("none");
                     output.add("none");
                     output.add("na");
-                    postItem(output);
+//                    postItem(output);
 
                 } else {
                     for (LocatedBlock block : blocks.getLocatedBlocks()) {
                         DatanodeInfo[] datanodeInfo = block.getLocations();
-
-                        for (DatanodeInfo dni : datanodeInfo) {
-                            List<String> dno = new ArrayList<String>(output);
-                            dno.add(dni.getIpAddr());
-                            dno.add(dni.getHostName());
-                            dno.add(block.getBlock().getBlockName());
-                            postItem(dno);
+                        StringBuilder dnSb = new StringBuilder("[");
+                        for (int i = 0; i < datanodeInfo.length; i++) {
+                            dnSb.append("{");
+                            dnSb.append(datanodeInfo[i].getIpAddr()).append(",");
+                            dnSb.append(datanodeInfo[i].getHostName()).append(",");
+                            dnSb.append(block.getBlock().getBlockName());
+                            dnSb.append("}");
+                            if (i < datanodeInfo.length -1) {
+                                dnSb.append(",");
+                            }
                         }
+
+//                        for (DatanodeInfo dni : datanodeInfo) {
+//                            List<String> dno = new ArrayList<String>(output);
+//                            dno.add(dni.getIpAddr());
+//                            dno.add(dni.getHostName());
+//                            dno.add(block.getBlock().getBlockName());
+//                            postItem(dno);
+//                        }
                     }
                 }
             } else {
-                postItem(output);
+//                postItem(output);
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
+        return output;
     }
 
     private String getRecord(List<String> item) {
@@ -463,7 +476,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             try {
                 outFS.write(getRecord(item).getBytes());
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
             count++;
             if (count % 10 == 0)
@@ -473,7 +486,8 @@ public class HdfsLsPlus extends HdfsAbstract {
             if (count % 10000 == 0)
                 System.out.println("----------");
         } else {
-            log(env, getRecord(item));
+            out.println(getRecord(item));
+//            log(env, getRecord(item));
         }
     }
 
@@ -571,7 +585,7 @@ public class HdfsLsPlus extends HdfsAbstract {
         }
     }
 
-    private boolean processPath(PathData path, PathData parent, int currentDepth) {
+    private boolean processPath(PathData path, PathData parent, int currentDepth, CommandReturn commandReturn) {
         boolean rtn = true;
 
         if (maxDepth == -1 || currentDepth <= (maxDepth + 1)) {
@@ -592,13 +606,19 @@ public class HdfsLsPlus extends HdfsAbstract {
                     }
                     if (isShowParent()) {
                         if (print) {
-                            writeItem(parent, currentDepth - 1);
+                            List<String> output = writeItem(parent, currentDepth - 1);
+                            if (output != null) {
+                                commandReturn.addRecord(output);
+                            }
                             // Shortcut Recursion since we found a match and 'show parent'.
                             return false;
                         }
                     } else {
                         if (print) {
-                            writeItem(path, currentDepth);
+                            List<String> output = writeItem(path, currentDepth);
+                            if (output != null) {
+                                commandReturn.addRecord(output);
+                            }
                         }
                     }
                 }
@@ -608,15 +628,15 @@ public class HdfsLsPlus extends HdfsAbstract {
                     try {
                         pathDatas = path.getDirectoryContents();
                     } catch (IOException e) {
-                        e.printStackTrace();
+//                        e.printStackTrace();
                     }
 
                     for (PathData intPd : pathDatas) {
                         if (isShowParent()) {
-                            if (!processPath(intPd, path, currentDepth + 1))
+                            if (!processPath(intPd, path, currentDepth + 1, commandReturn))
                                 break;
                         } else {
-                            processPath(intPd, path, currentDepth + 1);
+                            processPath(intPd, path, currentDepth + 1, commandReturn);
                         }
                     }
                 }
@@ -624,6 +644,8 @@ public class HdfsLsPlus extends HdfsAbstract {
                 // Happens when path doesn't exist.
                 List<String> j = new ArrayList<String>();
                 j.add("doesn't exist");
+                commandReturn.setCode(CODE_PATH_ERROR);
+//                commandReturn.getErr().println(path.path.toString() + " doesn't exist");
                 postItem(j);
             }
         } else {
@@ -714,7 +736,8 @@ public class HdfsLsPlus extends HdfsAbstract {
         if (commandLine.hasOption("show-parent")) {
             setShowParent(true);
             if (!commandLine.hasOption("filter")) {
-                loge(env, "show-parent requires a 'filter'");
+                err.println("show-parent requires a 'filter'");
+//                loge(env, "show-parent requires a 'filter'");
             }
         } else {
             setShowParent(false);
@@ -752,107 +775,131 @@ public class HdfsLsPlus extends HdfsAbstract {
     public CommandReturn implementation(Environment environment, CommandLine cmd, CommandReturn commandReturn) {
         // reset counter.
         count = 0;
-        logv(env, "Beginning 'lsp' collection.");
+        logv(environment, "Beginning 'lsp' collection.");
         CommandReturn cr = commandReturn;
+        try {
 
-        // Check connect protocol
-        if (!environment.getProperties().getProperty(Constants.CONNECT_PROTOCOL).equalsIgnoreCase(Constants.HDFS)) {
-            loge(environment, "This function is only available when connecting via 'hdfs'");
-            cr.setCode(-1);
-            cr.getErr().print("Not available with this protocol");
+            // Check connect protocol
+            if (!environment.getProperties().getProperty(Constants.CONNECT_PROTOCOL).equalsIgnoreCase(Constants.HDFS)) {
+                loge(environment, "This function is only available when connecting via 'hdfs'");
+//            loge(environment, "This function is only available when connecting via 'hdfs'");
+                cr.setCode(-1);
+//            cr.getErr().print("Not available with this protocol");
 //            cr = new CommandReturn(-1, "Not available with this protocol");
-            return cr;
-        }
-
-        // Reset
-        setTestFound(false);
-
-        // Get the Filesystem
-        configuration = (Configuration) env.getValue(Constants.CFG);
-
-        String hdfs_uri = (String) env.getProperties().getProperty(Constants.HDFS_URL);
-
-        fs = (FileSystem) env.getValue(Constants.HDFS);
-
-        if (fs == null) {
-            cr.setCode(CODE_NOT_CONNECTED);
-            cr.getErr().print("Connect first");
-            return cr;
-//            return new CommandReturn(CODE_NOT_CONNECTED, "Connect First");
-        }
-
-        URI nnURI = fs.getUri();
-
-        try {
-            dfsClient = new DFSClient(nnURI, configuration);
-        } catch (IOException e) {
-            cr.setCode(CODE_CONNECTION_ISSUE);
-            cr.getErr().print(e.getMessage());
-            return cr;
-//            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
-        }
-
-        String[] cmdArgs = cmd.getArgs();
-
-        processCommandLine(cmd);
-
-        String outputDir = null;
-        String outputFile = null;
-
-        String targetPath = null;
-        if (cmdArgs.length > 0) {
-            String pathIn = cmdArgs[0];
-            targetPath = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), pathIn);
-        } else {
-            targetPath = fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length());
-        }
-
-        if (cmd.hasOption("output-directory")) {
-            outputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output-directory"));
-            outputFile = outputDir + "/" + UUID.randomUUID();
-
-            Path pof = new Path(outputFile);
-            try {
-                if (fs.exists(pof))
-                    fs.delete(pof, false);
-                outFS = fs.create(pof);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        PathData targetPathData = null;
-        try {
-            targetPathData = new PathData(targetPath, configuration);
-        } catch (IOException e) {
-            cr.setCode(CODE_PATH_ERROR);
-            cr.getErr().print("Error in Path");
-            return cr;
-//            return new CommandReturn(CODE_PATH_ERROR, "Error in Path");
-        }
-
-        processPath(targetPathData, null, 1);
-
-        if (outFS != null) {
-            try {
-                outFS.close();
-            } catch (IOException e) {
-                cr.setCode(CODE_FS_CLOSE_ISSUE);
-                cr.getErr().print(e.getMessage());
                 return cr;
+            }
+
+            // Reset
+            setTestFound(false);
+
+            // Get the Filesystem
+            configuration = (Configuration) environment.getValue(Constants.CFG);
+
+            String hdfs_uri = (String) environment.getProperties().getProperty(Constants.HDFS_URL);
+
+            fs = (FileSystem) environment.getValue(Constants.HDFS);
+
+            if (fs == null) {
+                cr.setCode(CODE_NOT_CONNECTED);
+                err.println("Connect first");
+                return cr;
+//            return new CommandReturn(CODE_NOT_CONNECTED, "Connect First");
+            }
+
+            URI nnURI = fs.getUri();
+
+            try {
+                dfsClient = new DFSClient(nnURI, configuration);
+            } catch (IOException e) {
+                cr.setCode(CODE_CONNECTION_ISSUE);
+                err.println(e.getMessage());
+                return cr;
+//            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
+            }
+            Option[] cmdOpts = cmd.getOptions();
+
+            List<String> cmdParts = new ArrayList<String>();
+            cmdParts.add("lsp");
+            for (Option option : cmdOpts) {
+                cmdParts.add("-" + option.getOpt());
+                // TODO: Need to rebuild commandline args.
+//            for (int a = 0; a < option.getArgs(); a++) {
+//                cmdPart
+//            }
+//            if (option.hasArgs()) {
+//                cmdParts.addAll(option.getValuesList());
+//            }
+            }
+
+            String[] cmdArgs = cmd.getArgs();
+
+            cmdParts.addAll(cmd.getArgList());
+
+            cr.setCommandArgs(cmdParts);
+
+            processCommandLine(cmd);
+
+            String outputDir = null;
+            String outputFile = null;
+
+            String targetPath = null;
+            if (cmdArgs.length > 0) {
+                String pathIn = cmdArgs[0];
+                targetPath = pathBuilder.resolveFullPath(environment.getRemoteWorkingDirectory().toString().substring(((String) environment.getProperties().getProperty(Constants.HDFS_URL)).length()), pathIn);
+            } else {
+                targetPath = environment.getRemoteWorkingDirectory().toString().substring(((String) environment.getProperties().getProperty(Constants.HDFS_URL)).length());
+            }
+
+            if (cmd.hasOption("output-directory")) {
+                outputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) environment.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output-directory"));
+                outputFile = outputDir + "/" + UUID.randomUUID();
+
+                Path pof = new Path(outputFile);
+                try {
+                    if (fs.exists(pof))
+                        fs.delete(pof, false);
+                    outFS = fs.create(pof);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            PathData targetPathData = null;
+            try {
+                targetPathData = new PathData(targetPath, configuration);
+                cr.setPath(targetPathData.path.toString());
+            } catch (IOException e) {
+                cr.setCode(CODE_PATH_ERROR);
+                err.println("No such file or directory: " + targetPath);
+                return cr;
+//            return new CommandReturn(CODE_PATH_ERROR, "Error in Path");
+            }
+
+            processPath(targetPathData, null, 1, cr);
+
+            if (outFS != null) {
+                try {
+                    outFS.close();
+                } catch (IOException e) {
+                    cr.setCode(CODE_FS_CLOSE_ISSUE);
+                    err.println(e.getMessage());
+                    return cr;
 //                return new CommandReturn(CODE_FS_CLOSE_ISSUE, e.getMessage());
-            } finally {
-                outFS = null;
+                } finally {
+                    outFS = null;
+                }
             }
-        }
 
-        logv(env, "'lsp' complete.");
+            logv(environment, "'lsp' complete.");
 
-        if (isTest()) {
-            if (!isTestFound()) {
-                cr.setCode(CODE_NOT_FOUND);
-                cr.getErr().print("Not Found");
+            if (isTest()) {
+                if (!isTestFound()) {
+                    cr.setCode(CODE_NOT_FOUND);
+                    cr.getErr().print("Not Found");
+                }
             }
+        } catch (RuntimeException rt) {
+            loge(environment, rt.getMessage() + " cmd:" + cmd.toString());
         }
         return cr;
     }

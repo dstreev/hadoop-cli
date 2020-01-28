@@ -66,6 +66,9 @@ public interface Environment {
     Boolean isSilent();
     void setSilent(Boolean verbose);
 
+    Boolean isApiMode();
+    void setApiMode(Boolean apiMode);
+
     ConsoleReader getConsoleReader();
     void setConsoleReader(ConsoleReader consoleReader);
 }

@@ -44,6 +44,10 @@ public abstract class AbstractCommand implements Command{
     public static int CODE_STATS_ISSUE = -200;
     public static int CODE_NOT_FOUND = 1;
 
+    /** allows stdout to be captured if necessary */
+    public PrintStream out = System.out;
+    /** allows stderr to be captured if necessary */
+    public PrintStream err = System.err;
     private String name;
 
     protected Completer completer = new NullCompleter();
@@ -58,6 +62,16 @@ public abstract class AbstractCommand implements Command{
 
     public String gethelpFooter() {
         return null;
+    }
+
+    @Override
+    public void setOut(PrintStream out) {
+        this.out = out;
+    }
+
+    @Override
+    public void setErr(PrintStream err) {
+        this.err = err;
     }
 
     public String getName() {
@@ -124,7 +138,8 @@ public abstract class AbstractCommand implements Command{
                 lclCr = implementation(env, cmd, lclCr);
 
 //                System.out.flush();
-
+            } catch (Throwable t) {
+                t.printStackTrace();
             } finally {
                 // Revert Buffered Output
 //                System.setOut(orig);

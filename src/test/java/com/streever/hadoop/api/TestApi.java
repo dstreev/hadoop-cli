@@ -56,10 +56,10 @@ public class TestApi {
         cr = shell2.processInput("test -e hdfs://HOME90/user/dstreev/datasets/external/cc_trans_part/section=10");
         System.out.print(cr.getReturn());
         for (int i = 0; i < 10; i++) {
-            cr = shell.processInput("ls");
+            cr = shell.processInput("lsp -R -F \"([0-9]+_[0-9]+)|([0-9]+_[0-9]+_copy_[0-9]+)\" -i -Fe file -f parent,file /user/dstreev/bad_orc_files_test ");
             System.out.print(cr.getReturn());
-            cr = shell2.processInput("ls");
-            System.out.print(cr.getReturn());
+            cr = shell2.processInput("lsp -f permissions_long,path /tmp/tpcds-generate/250/customer");
+            System.out.print("** " + cr.getPath() + " " + cr.getReturn());
         }
 
 //        System.out.println(cr);

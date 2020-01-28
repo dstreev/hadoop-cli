@@ -35,12 +35,14 @@ public class BasicEnvironmentImpl implements Environment {
 
     private String defaultPrompt = "basic:$";
     private String currentPrompt = null;
-    private Path remoteWorkingDirectory = null;
-    private Path localWorkingDirectory = null;
+    private Path remoteWorkingDirectory = new Path("/");
+    private Path localWorkingDirectory = new Path("/");
 
     private Boolean verbose = Boolean.FALSE;
     private Boolean debug = Boolean.FALSE;
     private Boolean silent = Boolean.FALSE;
+    private Boolean apiMode = Boolean.FALSE;
+
     private ConsoleReader consoleReader = null;
 
     private Properties props = new Properties();
@@ -146,5 +148,15 @@ public class BasicEnvironmentImpl implements Environment {
     @Override
     public void setSilent(Boolean silent) {
         this.silent = silent;
+    }
+
+    @Override
+    public Boolean isApiMode() {
+        return apiMode;
+    }
+
+    @Override
+    public void setApiMode(Boolean apiMode) {
+        this.apiMode = apiMode;
     }
 }

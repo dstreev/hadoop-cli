@@ -29,6 +29,8 @@ import jline.console.completer.Completer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
+import java.io.PrintStream;
+
 public interface Command {
 
     String getHelpHeader();
@@ -36,7 +38,10 @@ public interface Command {
     String getUsage();
     
     String getName();
-    
+
+    void setErr(PrintStream err);
+    void setOut(PrintStream out);
+
     CommandReturn execute(Environment env, CommandLine cmd, CommandReturn commandReturn);
 
 //    void processCommandLine(CommandLine commandLine);

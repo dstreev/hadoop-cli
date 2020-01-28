@@ -33,7 +33,6 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Arrays;
 
 public class HdfsCommand extends HdfsAbstract {
@@ -161,15 +160,18 @@ public class HdfsCommand extends HdfsAbstract {
         logv(env, "HDFS Command: " + Arrays.toString(argv));
 
         try {
+            cr.setCommandArgs(argv);
+            // TODO: Test for right PATH
+            cr.setPath(leftPath);
             res = ToolRunner.run(shell, argv);
             if (res != 0) {
-                StringBuilder sb = new StringBuilder();
-                for (String arg: argv) {
-                    sb.append("\t");
-                    sb.append(arg);
-                }
+//                StringBuilder sb = new StringBuilder();
+//                for (String arg: argv) {
+//                    sb.append("\t");
+//                    sb.append(arg);
+//                }
                 cr.setCode(res);
-                cr.getErr().print(sb.toString());
+//                cr.getErr().print(sb.toString());
 //                cr.setDetails(sb.toString());//
                 //  cr = new CommandReturn(res, sb.toString());
 //                this.loge(env, sb.toString());
