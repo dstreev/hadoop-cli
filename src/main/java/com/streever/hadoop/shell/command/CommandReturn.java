@@ -25,9 +25,9 @@ package com.streever.hadoop.shell.command;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandReturn {
@@ -37,23 +37,40 @@ public class CommandReturn {
     private int code = 0;
     private String[] commandArgs = null;
     private String path = null;
-    private List<List<String>> records = new ArrayList<List<String>>();
+    private List<List<Object>> records = new ArrayList<List<Object>>();
 
     private ByteArrayOutputStream baosOut = new ByteArrayOutputStream();
     private ByteArrayOutputStream baosErr = new ByteArrayOutputStream();
     private PrintStream out = new PrintStream(baosOut);
     private PrintStream err = new PrintStream(baosErr);
-//    private String commandBufferedOutput = null;
 
-
-    public List<List<String>> getRecords() {
+    public List<List<Object>> getRecords() {
+        if (records.size() == 0 && baosOut.size() > 0) {
+            BufferedReader bufferedReader;
+            String line = null;
+            bufferedReader = new BufferedReader(new StringReader(new String(baosOut.toByteArray())));
+            // When the record size is 0, this means the records from the
+            // command call are in the baosOut, read from the 'shell' of a
+            // native Hadoop Shell Command.  We'll convert over to
+            // records for better processing.
+            try {
+                while ((line = bufferedReader.readLine()) != null) {
+                    if (!line.startsWith("Found")) {
+                        String[] parts = line.trim().split("\\s{1,}");
+                        List<Object> record = Arrays.asList(parts);
+                        records.add(record);
+                    }
+                }
+            } catch (IOException ioe) {
+                //
+            }
+        }
         return records;
     }
 
-    public boolean addRecord(List<String> record) {
+    public boolean addRecord(List<Object> record) {
         boolean rtn = records.add(record);
         return rtn;
-
     }
 
     public String[] getCommandArgs() {
@@ -109,11 +126,6 @@ public class CommandReturn {
         this.code = code;
     }
 
-//    public CommandReturn(int code, String details) {
-//        this.code = code;
-//        this.details = details;
-//    }
-
     public String getReturn() {
         StringBuilder sb = new StringBuilder();
         String outString = new String(this.baosOut.toByteArray());
@@ -121,7 +133,7 @@ public class CommandReturn {
         if (records.size() > 0) {
 //            for (List<String> record : records) {
             for (int i = 0; i < records.size(); i++) {
-                List<String> record = records.get(i);
+                List<Object> record = records.get(i);
                 for (int j = 0; j < record.size(); j++) {
                     sb.append(record.get(j));
                     if (j < record.size() - 1) {

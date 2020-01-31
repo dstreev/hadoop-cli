@@ -26,7 +26,6 @@ package com.streever.hadoop.hdfs.util;
 import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
-import com.streever.hadoop.hdfs.shell.command.PathBuilder;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
@@ -130,6 +129,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
     //    private PRINT_OPTION filterElement = PATH;
     private boolean invert = false;
+    private boolean count = false;
     private String comment = null;
     private int maxDepth = DEFAULT_DEPTH;
     //    private Boolean recurse = Boolean.TRUE;
@@ -139,7 +139,9 @@ public class HdfsLsPlus extends HdfsAbstract {
     private DFSClient dfsClient = null;
     private FSDataOutputStream outFS = null;
     private static MathContext mc = new MathContext(4, RoundingMode.HALF_UP);
-    private int count = 0;
+    private int processPosition = 0;
+    private static Pattern invisiblePattern = Pattern.compile("(.*/\\..*)|(.*/_orc_acid_version$)");
+//    private static Pattern invisibleRegEx = Pattern.compile("(.*/\\..*)");
 //    private PathBuilder pathBuilder;
 
     public HdfsLsPlus(String name) {
@@ -244,6 +246,14 @@ public class HdfsLsPlus extends HdfsAbstract {
         this.invert = invert;
     }
 
+    public boolean isCount() {
+        return count;
+    }
+
+    public void setCount(boolean count) {
+        this.count = count;
+    }
+
     public boolean isDirOnly() {
         return dirOnly;
     }
@@ -314,9 +324,9 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
 
-    private List<String> writeItem(PathData item, int level) {
+    private List<Object> writeItem(PathData item, int level) {
 
-        List<String> output = new ArrayList<String>();
+        List<Object> output = new ArrayList<Object>();
 
         // Don't write files when -do specified.
         if (item.stat.isFile() && isDirOnly())
@@ -428,7 +438,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                             dnSb.append(datanodeInfo[i].getHostName()).append(",");
                             dnSb.append(block.getBlock().getBlockName());
                             dnSb.append("}");
-                            if (i < datanodeInfo.length -1) {
+                            if (i < datanodeInfo.length - 1) {
                                 dnSb.append(",");
                             }
                         }
@@ -453,7 +463,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
     private String getRecord(List<String> item) {
-        Object[] itemArray = (Object[])item.toArray();
+        Object[] itemArray = (Object[]) item.toArray();
         String rtn = null;
         if (messageFormat != null) {
             rtn = messageFormat.format(itemArray);
@@ -463,7 +473,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                 sb.append(getComment());
                 sb.append(getSeparator());
             }
-            for (String i: item) {
+            for (String i : item) {
                 sb.append(i).append(getSeparator());
             }
             rtn = sb.toString();
@@ -478,12 +488,12 @@ public class HdfsLsPlus extends HdfsAbstract {
             } catch (IOException e) {
 //                e.printStackTrace();
             }
-            count++;
-            if (count % 10 == 0)
+            processPosition++;
+            if (processPosition % 10 == 0)
                 System.out.print(".");
-            if (count % 1000 == 0)
+            if (processPosition % 1000 == 0)
                 System.out.println();
-            if (count % 10000 == 0)
+            if (processPosition % 10000 == 0)
                 System.out.println("----------");
         } else {
             out.println(getRecord(item));
@@ -575,7 +585,8 @@ public class HdfsLsPlus extends HdfsAbstract {
 
     protected boolean checkVisible(String path) {
         // Filter out invisibles
-        if (path.startsWith(".")) { // removed this because it was actually a file.. || path.trim().length() == 0) {
+        Matcher invisible = invisiblePattern.matcher(path);
+        if (invisible.matches()) { // removed this because it was actually a file.. || path.trim().length() == 0) {
             if (isInvisible()) {
                 return true;
             } else
@@ -591,11 +602,11 @@ public class HdfsLsPlus extends HdfsAbstract {
         if (maxDepth == -1 || currentDepth <= (maxDepth + 1)) {
 
             if (env.isDebug()) {
-                logd(env, "L:" + currentDepth + " - " + path.stat.getPath().toUri().getPath());
+                logd(getEnv(), "L:" + currentDepth + " - " + path.stat.getPath().toUri().getPath());
             }
 
             try {
-                if (doesMatch(path)) {
+                if (doesMatch(path) && checkVisible(path.toString())) {
                     boolean print = true;
 
                     if (isDirOnly() && !path.stat.isDirectory()) {
@@ -606,7 +617,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                     }
                     if (isShowParent()) {
                         if (print) {
-                            List<String> output = writeItem(parent, currentDepth - 1);
+                            List<Object> output = writeItem(parent, currentDepth - 1);
                             if (output != null) {
                                 commandReturn.addRecord(output);
                             }
@@ -615,9 +626,13 @@ public class HdfsLsPlus extends HdfsAbstract {
                         }
                     } else {
                         if (print) {
-                            List<String> output = writeItem(path, currentDepth);
-                            if (output != null) {
-                                commandReturn.addRecord(output);
+                            if (isCount()) {
+                                addToCounter(commandReturn, path);
+                            } else {
+                                List<Object> output = writeItem(path, currentDepth);
+                                if (output != null) {
+                                    commandReturn.addRecord(output);
+                                }
                             }
                         }
                     }
@@ -625,6 +640,9 @@ public class HdfsLsPlus extends HdfsAbstract {
 
                 if (path.stat.isDirectory() && (isRecursive() || currentDepth == 1)) {
                     PathData[] pathDatas = new PathData[0];
+//                    if (isCount()) {
+//                        addToCounter(commandReturn, path);
+//                    }
                     try {
                         pathDatas = path.getDirectoryContents();
                     } catch (IOException e) {
@@ -655,6 +673,33 @@ public class HdfsLsPlus extends HdfsAbstract {
         return rtn;
     }
 
+    private void addToCounter(CommandReturn commandReturn, PathData pathData) {
+        List<Object> countRecord = null;
+        if (commandReturn.getRecords().size() == 1) {
+            // Get first record.
+            countRecord = commandReturn.getRecords().get(0);
+        } else {
+            countRecord = new ArrayList<Object>();
+            countRecord.add(0);
+            countRecord.add(0);
+            countRecord.add(0l);
+            countRecord.add(pathData.path.toString());
+            commandReturn.getRecords().add(countRecord);
+        }
+        if (pathData.stat.isDirectory()) {
+            int dir = (Integer)countRecord.get(0);
+            dir += 1;
+            countRecord.set(0, dir);
+        } else {
+            int file = (Integer)countRecord.get(1);
+            file += 1;
+            countRecord.set(1, file);
+            long size = (Long)countRecord.get(2);
+            size += pathData.stat.getLen();
+            countRecord.set(2, size);
+        }
+    }
+
     protected void processCommandLine(CommandLine commandLine) {
         super.processCommandLine(commandLine);
 
@@ -662,6 +707,16 @@ public class HdfsLsPlus extends HdfsAbstract {
             setInvert(true);
         } else {
             setInvert(false);
+        }
+
+        if (commandLine.hasOption("c")) {
+            setCount(true);
+            // Allow recursion till path end.
+            setMaxDepth(-1);
+            // Set Recursion to allow build of counts
+            setRecursive(true);
+        } else {
+            setCount(false);
         }
 
         if (commandLine.hasOption("filter")) {
@@ -727,6 +782,16 @@ public class HdfsLsPlus extends HdfsAbstract {
             setMaxDepth(1);
         }
 
+        if (commandLine.hasOption("c")) {
+            setCount(true);
+            // Allow recursion till path end.
+            setMaxDepth(-1);
+            // Set Recursion to allow build of counts
+            setRecursive(true);
+        } else {
+            setCount(false);
+        }
+
         if (commandLine.hasOption("test")) {
             setTest(true);
         } else {
@@ -774,7 +839,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     @Override
     public CommandReturn implementation(Environment environment, CommandLine cmd, CommandReturn commandReturn) {
         // reset counter.
-        count = 0;
+        processPosition = 0;
         logv(environment, "Beginning 'lsp' collection.");
         CommandReturn cr = commandReturn;
         try {
@@ -954,7 +1019,9 @@ public class HdfsLsPlus extends HdfsAbstract {
         opts.addOption(relativeOutputOption);
 
 
-        Option invisibleOption = new Option("i", "invisible", false, "Process Invisible Files/Directories");
+        Option invisibleOption = new Option("i", "invisible", false,
+                "Process Invisible Files/Directories matching " +
+                        "regex \"(.*/\\..*)|(.*/_orc_acid_version$)\"");
         invisibleOption.setRequired(false);
         //        Option invisibleOption = Option.builder("i").required(false)
         //                .argName("invisible")
@@ -1094,6 +1161,16 @@ public class HdfsLsPlus extends HdfsAbstract {
         //                .build();
         opts.addOption(parentOption);
 
+        Option countOption = new Option("c", "count", false,
+                "Count");
+        countOption.setRequired(false);
+        //        Option parentOption = Option.builder("sp").required(false)
+        //                .argName("Show Parent")
+        //                .desc("Shows the parent directory of the related matched 'filter'. When match is found, recursion into directory is aborted since parent has been identified.")
+        //                .hasArg(false)
+        //                .longOpt("show-parent")
+        //                .build();
+        opts.addOption(countOption);
 
         return opts;
     }
