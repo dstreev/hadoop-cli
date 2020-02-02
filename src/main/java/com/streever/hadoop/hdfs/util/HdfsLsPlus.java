@@ -120,6 +120,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     private boolean addComment = false;
     private boolean showParent = false;
     private boolean dirOnly = false;
+    private boolean self = false;
     private boolean test = false;
     // Used to shortcut 'test' and return when match located.
     private boolean testFound = false;
@@ -212,6 +213,14 @@ public class HdfsLsPlus extends HdfsAbstract {
         this.addComment = addComment;
         if (!addComment)
             this.comment = null;
+    }
+
+    public boolean isSelf() {
+        return self;
+    }
+
+    public void setSelf(boolean self) {
+        this.self = self;
     }
 
     public String getComment() {
@@ -638,7 +647,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                     }
                 }
 
-                if (path.stat.isDirectory() && (isRecursive() || currentDepth == 1)) {
+                if (path.stat.isDirectory() && (isRecursive() || currentDepth == 1) && !isSelf()) {
                     PathData[] pathDatas = new PathData[0];
 //                    if (isCount()) {
 //                        addToCounter(commandReturn, path);
@@ -834,6 +843,15 @@ public class HdfsLsPlus extends HdfsAbstract {
         } else {
             setNewLine(DEFAULT_NEWLINE);
         }
+
+        if (commandLine.hasOption("self")) {
+            setSelf(true);
+            setRecursive(false);
+            setInvisible(true);
+        } else {
+            setSelf(false);
+        }
+
     }
 
     @Override
@@ -1171,6 +1189,17 @@ public class HdfsLsPlus extends HdfsAbstract {
         //                .longOpt("show-parent")
         //                .build();
         opts.addOption(countOption);
+
+        Option selfOption = new Option("self", "self", false,
+                "Only review path in command");
+        selfOption.setRequired(false);
+        //        Option parentOption = Option.builder("sp").required(false)
+        //                .argName("Show Parent")
+        //                .desc("Shows the parent directory of the related matched 'filter'. When match is found, recursion into directory is aborted since parent has been identified.")
+        //                .hasArg(false)
+        //                .longOpt("show-parent")
+        //                .build();
+        opts.addOption(selfOption);
 
         return opts;
     }

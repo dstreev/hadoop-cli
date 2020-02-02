@@ -88,7 +88,7 @@ public abstract class AbstractShell implements Shell {
     }
 
     protected static void loge(Environment env, String log) {
-        if (!env.isApiMode())
+//        if (!env.isApiMode())
             System.err.println(log);
     }
 
