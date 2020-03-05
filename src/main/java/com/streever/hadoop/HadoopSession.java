@@ -1072,7 +1072,7 @@ public class HadoopSession extends AbstractShell {
             };
             Future<Object> future = executor.submit(task);
             try {
-                Object result = future.get(5, TimeUnit.SECONDS);
+                Object result = future.get(30, TimeUnit.SECONDS);
                 crTest = (CommandReturn)result;
             } catch (TimeoutException ex) {
                 loge(getEnv(), "Login Timeout.  Check for a valid Kerberos Ticket.");
