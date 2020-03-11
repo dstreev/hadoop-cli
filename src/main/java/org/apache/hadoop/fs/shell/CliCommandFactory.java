@@ -20,41 +20,47 @@
  *     OR LOSS OR CORRUPTION OF DATA.
  *
  */
-package com.streever.hadoop.hdfs.shell.command;
 
-import com.streever.hadoop.shell.command.CommandReturn;
+package org.apache.hadoop.fs.shell;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.shell.Command;
+import org.apache.hadoop.fs.shell.CommandFactory;
 
-import com.streever.hadoop.shell.Environment;
+import java.io.PrintStream;
 
-public class LocalPwd extends HdfsCommand {
+/**
+ * Extending to allow us to override the PrintStreams for native 'Commands'.
+ */
+public class CliCommandFactory extends CommandFactory {
 
-    public LocalPwd(String name) {
-        super(name);
+    /** allows stdout to be captured if necessary */
+    public PrintStream out = System.out;
+    /** allows stderr to be captured if necessary */
+    public PrintStream err = System.err;
+
+    public CliCommandFactory() {
+        super();
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-        
-        String wd = localfs.getWorkingDirectory().toString();
-        if (cmd.hasOption("l")) {
-            log(env, wd);
-        }
-        else {
-            // strip off prefix: "file:"
-            log(env, wd.substring(5));
-        }
-        FSUtil.prompt(env);
-        return commandReturn;
+    public CliCommandFactory(Configuration conf) {
+        super(conf);
     }
-    
+
     @Override
-    public Options getOptions() {
-        Options opts = super.getOptions();
-        opts.addOption("l", false, "show the full file system URL");
-        return opts;
+    public Command getInstance(String cmd) {
+        Command rtn = super.getInstance(cmd);
+        rtn.err = err;
+        rtn.out = out;
+        return rtn;
+    }
+
+    @Override
+    public Command getInstance(String cmdName, Configuration conf) {
+        Command rtn = super.getInstance(cmdName, conf);
+        // Set / Reset these for this purpose.
+        rtn.err = err;
+        rtn.out = out;
+        return rtn;
     }
 }

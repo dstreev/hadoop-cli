@@ -20,41 +20,52 @@
  *     OR LOSS OR CORRUPTION OF DATA.
  *
  */
-package com.streever.hadoop.hdfs.shell.command;
 
-import com.streever.hadoop.shell.command.CommandReturn;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileSystem;
+package com.streever.hadoop.shell.commands;
 
 import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.AbstractCommand;
+import com.streever.hadoop.shell.command.Command;
+import com.streever.hadoop.shell.command.CommandReturn;
+import jline.console.completer.AggregateCompleter;
+import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
+import jline.console.completer.StringsCompleter;
 
-public class LocalPwd extends HdfsCommand {
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.HelpFormatter;
 
-    public LocalPwd(String name) {
+public class Help extends AbstractCommand {
+    private Environment env;
+
+    public Help(String name, Environment env) {
         super(name);
+        this.env = env;
+        
+        StringsCompleter strCompleter = new StringsCompleter(this.env.commandList());
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(strCompleter, nullCompleter);
+        
+        this.completer = completer;
+        
     }
+    
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-        
-        String wd = localfs.getWorkingDirectory().toString();
-        if (cmd.hasOption("l")) {
-            log(env, wd);
+        if (cmd.getArgs().length == 0) {
+            for (String str : env.commandList()) {
+                log(env, str);
+            }
+        } else {
+            Command command = env.getCommand(cmd.getArgs()[0]);
+            logv(env, "Get Help for command: " + command.getName() + "(" + command.getClass().getName() + ")");
+            printHelp(command);
         }
-        else {
-            // strip off prefix: "file:"
-            log(env, wd.substring(5));
-        }
-        FSUtil.prompt(env);
         return commandReturn;
     }
     
-    @Override
-    public Options getOptions() {
-        Options opts = super.getOptions();
-        opts.addOption("l", false, "show the full file system URL");
-        return opts;
+    private void printHelp(Command cmd){
+        HelpFormatter hf = new HelpFormatter();
+        hf.printHelp(cmd.getUsage(), cmd.getHelpHeader(), cmd.getOptions(), cmd.gethelpFooter());
     }
 }

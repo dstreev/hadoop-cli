@@ -26,7 +26,7 @@ package com.streever.hadoop.yarn;
 import com.streever.hadoop.AbstractStats;
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.yarn.parsers.QueueParser;
-import com.streever.tools.stemshell.Environment;
+import com.streever.hadoop.shell.Environment;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.IOUtils;
 

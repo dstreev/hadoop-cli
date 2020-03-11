@@ -20,41 +20,48 @@
  *     OR LOSS OR CORRUPTION OF DATA.
  *
  */
-package com.streever.hadoop.hdfs.shell.command;
 
+package com.streever.hadoop.api;
+
+import com.streever.hadoop.HadoopSession;
 import com.streever.hadoop.shell.command.CommandReturn;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileSystem;
+public class TestApi {
 
-import com.streever.hadoop.shell.Environment;
+    private HadoopSession shell;
+    private HadoopSession shell2;
 
-public class LocalPwd extends HdfsCommand {
-
-    public LocalPwd(String name) {
-        super(name);
+    @Before
+    public void before() {
+        shell = HadoopSession.get("shell1");
+        shell2 = HadoopSession.get( "shell2");
+        try {
+            String[] api = {"-api"};
+//            boolean result = Arrays.stream(alphabet).anyMatch("A"::equals);
+            shell.start(api);
+            shell2.start(api);
+//            shell.processInput("connect");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-        
-        String wd = localfs.getWorkingDirectory().toString();
-        if (cmd.hasOption("l")) {
-            log(env, wd);
+    @Test
+    public void Test001_init() {
+        CommandReturn cr = null;
+        cr = shell.processInput("ls");
+        System.out.print(cr.getReturn());
+        cr = shell2.processInput("test -e hdfs://HOME90/user/dstreev/datasets/external/cc_trans_part/section=10");
+        System.out.print(cr.getReturn());
+        for (int i = 0; i < 10; i++) {
+            cr = shell.processInput("lsp -R -F \"([0-9]+_[0-9]+)|([0-9]+_[0-9]+_copy_[0-9]+)\" -i -Fe file -f parent,file /user/dstreev/bad_orc_files_test ");
+            System.out.print(cr.getReturn());
+            cr = shell2.processInput("lsp -f permissions_long,path /tmp/tpcds-generate/250/customer");
+            System.out.print("** " + cr.getPath() + " " + cr.getReturn());
         }
-        else {
-            // strip off prefix: "file:"
-            log(env, wd.substring(5));
-        }
-        FSUtil.prompt(env);
-        return commandReturn;
-    }
-    
-    @Override
-    public Options getOptions() {
-        Options opts = super.getOptions();
-        opts.addOption("l", false, "show the full file system URL");
-        return opts;
+
+//        System.out.println(cr);
     }
 }

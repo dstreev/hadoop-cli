@@ -27,10 +27,10 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.streever.tools.stemshell.Environment;
+import com.streever.hadoop.shell.Environment;
 import org.apache.hadoop.fs.FileStatus;
 
-import com.streever.tools.stemshell.format.ANSIStyle;
+import com.streever.hadoop.shell.format.ANSIStyle;
 import org.apache.hadoop.fs.FileSystem;
 
 public class FSUtil {
@@ -75,7 +75,8 @@ public class FSUtil {
             FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
             FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
-            String hdfswd = hdfs.getWorkingDirectory().toString();
+//            String hdfswd = hdfs.getWorkingDirectory().toString();
+            String hdfswd = env.getRemoteWorkingDirectory().toString();
             String localwd = localfs.getWorkingDirectory().toString();
 
             String hwd = ANSIStyle.style(hdfswd, ANSIStyle.FG_GREEN) ;

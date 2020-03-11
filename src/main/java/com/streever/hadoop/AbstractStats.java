@@ -28,9 +28,8 @@ import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.util.HdfsWriter;
 import com.streever.hadoop.util.RecordConverter;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
-import com.streever.tools.stemshell.Environment;
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
@@ -132,12 +131,12 @@ public abstract class AbstractStats extends HdfsAbstract {
     }
 
     @Override
-    public final CommandReturn implementation(Environment environment, CommandLine cmd, ConsoleReader consoleReader) {
+    public final CommandReturn implementation(Environment environment, CommandLine cmd, CommandReturn commandReturn) {
         if (cmd.hasOption("help")) {
             getHelp();
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("hadoop-cli <stats>", getOptions());
-            return CommandReturn.GOOD;
+            return commandReturn;
         }
 
         // Get the Filesystem
@@ -159,7 +158,8 @@ public abstract class AbstractStats extends HdfsAbstract {
 
             if (cmd.hasOption("output")) {
                 // Get a handle to the FileSystem if we intent to write our results to the HDFS.
-                baseOutputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+//                baseOutputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+                baseOutputDir = pathBuilder.resolveFullPath(env.getRemoteWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
             } else {
                 baseOutputDir = null;
             }
@@ -183,7 +183,10 @@ public abstract class AbstractStats extends HdfsAbstract {
                     startDate = df.parse(cmd.getOptionValue("start"));
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
+                    commandReturn.setCode(CODE_BAD_DATE);
+                    commandReturn.getErr().print(e.getMessage());
+                    return commandReturn;
+//                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
                 }
                 startTime = startDate.getTime();
             } else {
@@ -199,8 +202,11 @@ public abstract class AbstractStats extends HdfsAbstract {
                 try {
                     endDate = df.parse(cmd.getOptionValue("end"));
                 } catch (ParseException e) {
-                    e.printStackTrace();
-                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
+                    commandReturn.setCode(CODE_BAD_DATE);
+                    commandReturn.getErr().print(e.getMessage());
+                    return commandReturn;
+//                    e.printStackTrace();
+//                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
                 }
                 endTime = endDate.getTime();
             } else {
@@ -220,10 +226,13 @@ public abstract class AbstractStats extends HdfsAbstract {
 
             clearCache();
         } catch (Throwable t) {
-            t.printStackTrace();
-            return new CommandReturn(CODE_STATS_ISSUE, t.getMessage());
+            commandReturn.setCode(CODE_STATS_ISSUE);
+            commandReturn.getErr().print(t.getMessage());
+            return commandReturn;
+//            t.printStackTrace();
+//            return new CommandReturn(CODE_STATS_ISSUE, t.getMessage());
         }
-        return CommandReturn.GOOD;
+        return commandReturn;
     }
 
     public abstract void process(CommandLine cmdln);
@@ -299,97 +308,125 @@ public abstract class AbstractStats extends HdfsAbstract {
     public Options getOptions() {
         Options opts = super.getOptions();
 
-        Option helpOption = Option.builder("h").required(false)
-                .argName("help")
-                .desc("Help")
-                .hasArg(false)
-                .longOpt("help")
-                .build();
+        Option helpOption = new Option("h", "help", false, "Help");
+        helpOption.setRequired(false);
+        //        Option helpOption = Option.builder("h").required(false)
+        //                .argName("help")
+        //                .desc("Help")
+        //                .hasArg(false)
+        //                .longOpt("help")
+        //                .build();
         opts.addOption(helpOption);
 
-        Option formatOption = Option.builder("ff").required(false)
-                .argName("fileFormat")
-                .desc("Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("fileFormat")
-                .build();
+        Option formatOption = new Option("ff", "fileFormat", true,
+                "Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.");
+        formatOption.setRequired(false);
+        //        Option formatOption = Option.builder("ff").required(false)
+        //                .argName("fileFormat")
+        //                .desc("Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("fileFormat")
+        //                .build();
         opts.addOption(formatOption);
 
-        Option startOption = Option.builder("s").required(false)
-                .argName("start")
-                .desc("Start time for retrieval in 'yyyy-MM-dd HH:mm:ss'")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("start")
-                .build();
+        Option startOption = new Option("s", "start", true,
+                "Start time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
+        startOption.setRequired(false);
+        //        Option startOption = Option.builder("s").required(false)
+        //                .argName("start")
+        //                .desc("Start time for retrieval in 'yyyy-MM-dd HH:mm:ss'")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("start")
+        //                .build();
         opts.addOption(startOption);
 
 
-        Option endOption = Option.builder("e").required(false)
-                .argName("end")
-                .desc("End time for retrieval in 'yyyy-MM-dd HH:mm:ss'")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("end")
-                .build();
+        Option endOption = new Option("e", "end", true,
+                "End time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
+        endOption.setRequired(false);
+        //        Option endOption = Option.builder("e").required(false)
+        //                .argName("end")
+        //                .desc("End time for retrieval in 'yyyy-MM-dd HH:mm:ss'")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("end")
+        //                .build();
         opts.addOption(endOption);
 
-        Option delimiterOption = Option.builder("d").required(false)
-                .argName("delimiter")
-                .desc("Record Delimiter (Cntrl-A is default).")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("delimiter")
-                .build();
+        Option delimiterOption = new Option("d", "delimiter", true,
+                "Record Delimiter (Cntrl-A is default).");
+        delimiterOption.setRequired(false);
+        //        Option delimiterOption = Option.builder("d").required(false)
+        //                .argName("delimiter")
+        //                .desc("Record Delimiter (Cntrl-A is default).")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("delimiter")
+        //                .build();
         opts.addOption(delimiterOption);
 
-        Option headerOption = Option.builder("hdr").required(false)
-                .argName("header")
-                .desc("Print Record Header")
-                .longOpt("header")
-                .build();
+        Option headerOption = new Option("hdr","header", false, "Print Record Header");
+        headerOption.setRequired(false);
+//        Option headerOption = Option.builder("hdr").required(false)
+//                .argName("header")
+//                .desc("Print Record Header")
+//                .longOpt("header")
+//                .build();
         opts.addOption(headerOption);
 
-        Option currentOption = Option.builder("c").required(false)
-                .argName("current")
-                .desc("Get Current / Active Records")
-                .longOpt("current")
-                .build();
+        Option currentOption = new Option("c", "current", false, "Get Current / Active Records");
+        currentOption.setRequired(false);
+//        Option currentOption = Option.builder("c").required(false)
+//                .argName("current")
+//                .desc("Get Current / Active Records")
+//                .longOpt("current")
+//                .build();
         opts.addOption(currentOption);
 
-        Option incOption = Option.builder("inc").required(false)
-                .argName("increment")
-                .desc("Query Increment in Minutes")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("increment")
-                .build();
+        Option incOption = new Option("inc", "increment", true, "Query Increment in minutes");
+        incOption.setRequired(false);
+    //        Option incOption = Option.builder("inc").required(false)
+    //                .argName("increment")
+    //                .desc("Query Increment in Minutes")
+    //                .hasArg(true)
+    //                .numberOfArgs(1)
+    //                .longOpt("increment")
+    //                .build();
         opts.addOption(incOption);
 
-        Option schemaOption = Option.builder("sch").required(false)
-                .argName("schema")
-                .desc("wip - Print Record Schema")
-                .longOpt("schema")
-                .build();
+        Option schemaOption = new Option("sch", "schema", false, "wip - Print Record Schema");
+        schemaOption.setRequired(false);
+        //        Option schemaOption = Option.builder("sch").required(false)
+        //                .argName("schema")
+        //                .desc("wip - Print Record Schema")
+        //                .longOpt("schema")
+        //                .build();
         opts.addOption(schemaOption);
 
-        Option outputOption = Option.builder("o").required(false)
-                .argName("output")
-                .desc("Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("output")
-                .build();
+        Option outputOption = new Option("o", "output", true,
+                "Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.");
+        outputOption.setRequired(false);
+        //        Option outputOption = Option.builder("o").required(false)
+        //                .argName("output")
+        //                .desc("Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("output")
+        //                .build();
         opts.addOption(outputOption);
 
-        Option cfOption = Option.builder("cf").required(false)
-                .argName("controlfile")
-                .desc("wip - Control File use to track run iterations")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("controlfile")
-                .build();
+        Option cfOption = new Option("cf","controlfile", true,
+                "wip - Control File use to track run iterations");
+        cfOption.setRequired(false);
+        //        Option cfOption = Option.builder("cf").required(false)
+        //                .argName("controlfile")
+        //                .desc("wip - Control File use to track run iterations")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("controlfile")
+        //                .build();
         opts.addOption(cfOption);
 
         return opts;

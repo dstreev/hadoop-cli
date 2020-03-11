@@ -1,6 +1,6 @@
 package com.streever.hadoop.hdfs.shell.command;
 
-import com.streever.tools.stemshell.Environment;
+import com.streever.hadoop.shell.Environment;
 import org.apache.hadoop.fs.FileSystem;
 
 public class PathBuilder {
@@ -17,7 +17,7 @@ public class PathBuilder {
         String rtn = null;
 
         FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
+//        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
         String in = null;
 
@@ -41,7 +41,8 @@ public class PathBuilder {
                     case REMOTE_LOCAL:
                     case REMOTE_REMOTE:
                     case NONE:
-                        rtn = resolveFullPath(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
+//                        rtn = resolveFullPath(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
+                        rtn = resolveFullPath(env.getRemoteWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
                         break;
                     case LOCAL_REMOTE:
                         rtn = resolveFullPath(localfs.getWorkingDirectory().toString().substring(5), in);
@@ -60,7 +61,8 @@ public class PathBuilder {
                         break;
                     case LOCAL_REMOTE:
                     case REMOTE_REMOTE:
-                        rtn = resolveFullPath(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
+//                        rtn = resolveFullPath(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
+                        rtn = resolveFullPath(env.getRemoteWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
                         break;
                     case NONE:
                         break;
@@ -82,7 +84,9 @@ public class PathBuilder {
             } else {
                 adjusted = input;
             }
-            if (!adjusted.startsWith("/"))
+            if (!adjusted.startsWith("/") && !adjusted.startsWith("hdfs://") && !adjusted.startsWith("s3://") &&
+                    !adjusted.startsWith("s3s://") && !adjusted.startsWith("gs://") && !adjusted.startsWith("adl://")
+                    && !adjusted.startsWith("wasb://") && !adjusted.startsWith("abfs://"))
                 adjusted = current + "/" + adjusted;
         } else {
             adjusted = current;

@@ -23,15 +23,14 @@
 
 package com.streever.hadoop.hdfs.shell.command;
 
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.streever.tools.stemshell.Environment;
+import com.streever.hadoop.shell.Environment;
 
 /**
  * Created by streever on 2015-11-22.
@@ -45,15 +44,16 @@ public class LocalRm extends HdfsCommand {
         this.local = local;
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
-        CommandReturn cr = CommandReturn.GOOD;
+    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+        CommandReturn cr = commandReturn;
         try {
             FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
                             : (FileSystem) env.getValue(Constants.HDFS);
             String remoteFile = cmd.getArgs()[0];
 
             logv(env, "HDFS file: " + remoteFile);
-            Path hdfsPath = new Path(hdfs.getWorkingDirectory(), remoteFile);
+//            Path hdfsPath = new Path(hdfs.getWorkingDirectory(), remoteFile);
+            Path hdfsPath = new Path(env.getRemoteWorkingDirectory(), remoteFile);
             logv(env, "Remote path: " + hdfsPath);
 
             boolean recursive = cmd.hasOption("r");
@@ -64,7 +64,8 @@ public class LocalRm extends HdfsCommand {
 
         }
         catch (Throwable e) {
-            return new CommandReturn(CODE_CMD_ERROR, e.getMessage());
+            cr.setCode(CODE_CMD_ERROR);
+            cr.getErr().print(e.getMessage());
         }
         return cr;
     }

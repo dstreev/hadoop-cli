@@ -20,41 +20,49 @@
  *     OR LOSS OR CORRUPTION OF DATA.
  *
  */
-package com.streever.hadoop.hdfs.shell.command;
 
+package com.streever.hadoop.shell.commands;
+
+import java.util.Properties;
+
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileSystem;
 
-import com.streever.hadoop.shell.Environment;
+public class Env extends AbstractCommand {
 
-public class LocalPwd extends HdfsCommand {
-
-    public LocalPwd(String name) {
+    public Env(String name) {
         super(name);
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-        
-        String wd = localfs.getWorkingDirectory().toString();
-        if (cmd.hasOption("l")) {
-            log(env, wd);
+        if (cmd.hasOption("l") || !cmd.hasOption("s")) {
+            Properties props = env.getProperties();
+            log(env, "Local Properties:");
+            for (Object key : props.keySet()) {
+                log(env, "\t" + key + "=" + props.get(key));
+            }
         }
-        else {
-            // strip off prefix: "file:"
-            log(env, wd.substring(5));
+        if (cmd.hasOption("s")) {
+            log(env, "System Properties:");
+            Properties props = System.getProperties();
+            for (Object key : props.keySet()) {
+                log(env, "\t" + key + "=" + props.get(key));
+            }
         }
-        FSUtil.prompt(env);
+
         return commandReturn;
     }
-    
+
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();
-        opts.addOption("l", false, "show the full file system URL");
+        opts.addOption("s", "system", false, "list system properties.");
+        opts.addOption("l", "local", false, "list local properties.");
         return opts;
     }
+
 }

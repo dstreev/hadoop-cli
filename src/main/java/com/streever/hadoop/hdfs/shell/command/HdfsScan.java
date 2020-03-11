@@ -23,9 +23,8 @@
 package com.streever.hadoop.hdfs.shell.command;
 
 import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
-import com.streever.tools.stemshell.Environment;
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.FileSystem;
@@ -51,9 +50,9 @@ public class HdfsScan extends HdfsCommand {
         this.env = env;
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         FileSystem hdfs = null;
-        CommandReturn cr = CommandReturn.GOOD;
+        CommandReturn cr = commandReturn;
         try {
             hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
@@ -65,6 +64,7 @@ public class HdfsScan extends HdfsCommand {
                 dir = dir.substring(1, dir.length()-1);
             }
             logv(env, "CWD before: " + hdfs.getWorkingDirectory());
+            logv(env, "CWD before(env): " + env.getRemoteWorkingDirectory());
             logv(env, "Requested CWD: " + dir);
 
 
@@ -72,7 +72,8 @@ public class HdfsScan extends HdfsCommand {
             if (dir.startsWith("/")) {
                 newPath = new Path(env.getProperties().getProperty(Constants.HDFS_URL), dir);
             } else {
-                newPath = new Path(hdfs.getWorkingDirectory(), dir);
+//                newPath = new Path(hdfs.getWorkingDirectory(), dir);
+                newPath = new Path(env.getRemoteWorkingDirectory(), dir);
             }
 
             Path qPath = newPath.makeQualified(hdfs);
@@ -84,7 +85,9 @@ public class HdfsScan extends HdfsCommand {
             }
 
         } catch (IOException e) {
-            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
+            cr.setCode(CODE_CMD_ERROR);
+            cr.getErr().print(e.getMessage());
+//            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
         } finally {
             FSUtil.prompt(env);
         }

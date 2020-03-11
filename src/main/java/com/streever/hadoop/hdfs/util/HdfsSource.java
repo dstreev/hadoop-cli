@@ -23,40 +23,36 @@
 
 package com.streever.hadoop.hdfs.util;
 
-import com.streever.hadoop.HadoopShell;
+import com.streever.hadoop.HadoopSession;
 import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
-import com.streever.tools.stemshell.Environment;
-import com.streever.tools.stemshell.command.CommandReturn;
-import jline.console.ConsoleReader;
+import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.hdfs.DFSClient;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.UUID;
 
 public class HdfsSource  extends HdfsAbstract {
 
     private FileSystem fs = null;
 
-    private HadoopShell shell;
+    private HadoopSession shell;
     private Configuration configuration = null;
     private DFSClient dfsClient = null;
 
-    public HdfsSource(String name, Environment env, HadoopShell shell) {
+    public HdfsSource(String name, Environment env, HadoopSession shell) {
         super(name, env);
         this.shell = shell;
     }
 
     @Override
-    public CommandReturn implementation(Environment env, CommandLine cmd, ConsoleReader reader) {
+    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
 
         logv(env, "Beginning 'source' collection.");
 
@@ -69,7 +65,9 @@ public class HdfsSource  extends HdfsAbstract {
 
         if (fs == null) {
             log(env, "Please connect first");
-            return new CommandReturn(CODE_NOT_CONNECTED, "Not connected. Connect first.");
+            CommandReturn cr = new CommandReturn(CODE_NOT_CONNECTED);
+            cr.getErr().print("Not connected. Connect first.");
+            return cr;
         }
 
         URI nnURI = fs.getUri();
@@ -78,7 +76,9 @@ public class HdfsSource  extends HdfsAbstract {
             dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
             e.printStackTrace();
-            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
+            CommandReturn cr = new CommandReturn(CODE_CONNECTION_ISSUE);
+            cr.getErr().print(e.getMessage());
+            return cr;
         }
 
         Option[] cmdOpts = cmd.getOptions();
@@ -93,16 +93,17 @@ public class HdfsSource  extends HdfsAbstract {
             delimiter = cmd.getOptionValue("d");
         }
         if (cmd.hasOption("lf")) {
-            runSource(cmd.getOptionValue("lf"), template, delimiter, reader);
+            // TODO: FIX THIS
+            runSource(cmd.getOptionValue("lf"), template, delimiter);
         }
 
         logv(env,"'Source' complete.");
 
-        return CommandReturn.GOOD;
+        return commandReturn;
     }
 
-    private void runSource(String sourceFile, String template, String delimiter, ConsoleReader reader) {
-        this.shell.runFile(sourceFile,template, delimiter, reader);
+    private void runSource(String sourceFile, String template, String delimiter) {
+        this.shell.runFile(sourceFile,template, delimiter);
     }
 
 
@@ -110,31 +111,35 @@ public class HdfsSource  extends HdfsAbstract {
     public Options getOptions() {
         Options opts = super.getOptions();
 
-        Option lfileOption = Option.builder("lf").required(false)
-                .argName("source local file")
-                .desc("local file to run")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("localfile")
-                .build();
+        Option lfileOption = new Option("lf", "localfile", true, "local file to run");
+        // For Commons-CLI v 1.3+
+        //        Option lfileOption = Option.builder("lf").required(false)
+        //               .argName("source local file")
+        //                .desc("local file to run")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("localfile")
+        //                .build();
         opts.addOption(lfileOption);
 
-        Option templateOption = Option.builder("t").required(false)
-                .argName("template")
-                .desc("Message Template")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("template")
-                .build();
+        Option templateOption = new Option("t", "template", true, "Message Template");
+        //        Option templateOption = Option.builder("t").required(false)
+        //                .argName("template")
+        //                .desc("Message Template")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("template")
+        //                .build();
         opts.addOption(templateOption);
 
-        Option delimiterOption = Option.builder("d").required(false)
-                .argName("delimiter")
-                .desc("delimiter")
-                .hasArg(true)
-                .numberOfArgs(1)
-                .longOpt("delimiter")
-                .build();
+        Option delimiterOption = new Option("d", "delimiter", true, "delimiter");
+        //        Option delimiterOption = Option.builder("d").required(false)
+        //                .argName("delimiter")
+        //                .desc("delimiter")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("delimiter")
+        //                .build();
         opts.addOption(delimiterOption);
 
         // TODO: Add Distributed File Source
