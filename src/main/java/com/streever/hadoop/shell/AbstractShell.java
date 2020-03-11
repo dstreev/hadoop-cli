@@ -162,11 +162,9 @@ public abstract class AbstractShell implements Shell {
         StringBuffer buffer = new StringBuffer();
         while (matcher.find()) {
             String matchStr = matcher.group(1);
-//            System.out.println("Found variable: " + matchStr);
             try {
                 String replacement = Manifests.read(matchStr);
                 if (replacement != null) {
-//                    System.out.println("Replacement Value: " + replacement);
                     // quote to work properly with $ and {,} signs
                     matcher.appendReplacement(buffer, replacement != null ? Matcher.quoteReplacement(replacement) : "null");
                 } else {
