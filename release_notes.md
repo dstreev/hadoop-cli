@@ -1,6 +1,6 @@
 ## Release Notes
 
-### 2.1.0-SNAPSHOT
+### 2.2.0-SNAPSHOT
 
 The API release.  Combined / Collapsed stemshell into this project and created a more consumable API interface that can be use externally.  See: [Test API for Example](./src/test/java/com/streever/hadoop/api/TestApi.java)
 
