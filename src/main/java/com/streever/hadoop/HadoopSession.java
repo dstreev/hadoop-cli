@@ -703,6 +703,7 @@ import com.streever.hadoop.shell.commands.Help;
 import com.streever.hadoop.shell.commands.HistoryCmd;
 import org.apache.commons.cli.*;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.util.StringUtils;
 
 import java.io.*;
 import java.text.MessageFormat;
@@ -879,7 +880,7 @@ public class HadoopSession extends AbstractShell {
 
         CommandLineParser parser = new PosixParser();
         CommandLine cmd = null;
-
+//        System.out.println(StringUtils.arrayToString(arguments));
         try {
             cmd = parser.parse(options, arguments);
         } catch (ParseException pe) {
@@ -914,6 +915,7 @@ public class HadoopSession extends AbstractShell {
             formatter.printHelp("hadoopcli", options);
             System.exit(-1);
         }
+//        System.out.println("EEE");
         return rtn;
     }
 
