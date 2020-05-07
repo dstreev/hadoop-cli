@@ -78,17 +78,18 @@ public abstract class AbstractShell implements Shell {
     }
 
     protected static void logv(Environment env, String log) {
-        if (env.isVerbose()) {
+        if (env.isVerbose() && !env.isApiMode()) {
             System.out.println(log);
         }
     }
 
     protected static void log(Environment env, String log) {
-        System.out.println(log);
+        if (!env.isApiMode())
+            System.out.println(log);
     }
 
     protected static void loge(Environment env, String log) {
-//        if (!env.isApiMode())
+        if (!env.isApiMode())
             System.err.println(log);
     }
 
