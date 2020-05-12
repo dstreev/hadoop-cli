@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 import com.jcabi.manifests.Manifests;
 import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.CommandReturn;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.ArgumentCompleter;
@@ -128,16 +129,18 @@ public abstract class AbstractShell implements Shell {
             return true;
         } else {
             loge(env, "Initialization Issue.");
-            processInput("exit");
+            if (!getEnv().isApiMode()) {
+                processInput("exit");
+            }
             return false;
         }
 
     }
 
-    public final void start(String[] arguments) throws Exception {
+    public final Boolean start(String[] arguments) throws Exception {
         if (!setupEnvironment(arguments)) {
             loge(env, "Initialization Issue");
-            return;
+            return Boolean.FALSE;
         } else {
             // create reader and add completers
             if (!apiMode) {
@@ -152,6 +155,7 @@ public abstract class AbstractShell implements Shell {
 
                 acceptCommands(reader);
             }
+            return Boolean.TRUE;
         }
 
     }

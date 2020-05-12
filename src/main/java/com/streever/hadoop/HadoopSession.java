@@ -1078,7 +1078,11 @@ public class HadoopSession extends AbstractShell {
                 crTest = (CommandReturn)result;
             } catch (TimeoutException ex) {
                 loge(getEnv(), "Login Timeout.  Check for a valid Kerberos Ticket.");
-                processInput("exit");
+                if (getEnv().isApiMode()) {
+                    rtn = Boolean.FALSE;
+                } else {
+                    processInput("exit");
+                }
                 // handle the timeout
             } catch (InterruptedException e) {
                 // handle the interrupts
