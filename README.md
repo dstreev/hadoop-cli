@@ -31,6 +31,15 @@ To use an alternate HADOOP_CONF_DIR:
 
     hadoopcli --config /var/hadoop/dev-cfg
 
+### AUX_LIBS - CLASSPATH Additions
+
+The directory `$HOME/.hadoop-cli/aux_libs` will be scanned for 'jar' files. Each 'jar' will be added the java classpath of the application.  Add any required libaries here.
+
+The application contains all the necesasry `hdfs` classes already.  You will need to add to the `aux_libs` directory the following:
+- AWS S3 Drivers (appropriate versions)
+    - `hadoop-aws.jar`
+    - `aws-java-sdk-bundle.jar`
+
 ### [Release Notes](./release_notes.md)
 
 ### Core Functions

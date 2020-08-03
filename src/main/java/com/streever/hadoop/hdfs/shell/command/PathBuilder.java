@@ -85,8 +85,8 @@ public class PathBuilder {
                 adjusted = input;
             }
             if (!adjusted.startsWith("/") && !adjusted.startsWith("hdfs://") && !adjusted.startsWith("s3://") &&
-                    !adjusted.startsWith("s3s://") && !adjusted.startsWith("gs://") && !adjusted.startsWith("adl://")
-                    && !adjusted.startsWith("wasb://") && !adjusted.startsWith("abfs://"))
+                    !adjusted.startsWith("s3a://") && !adjusted.startsWith("gs://") && !adjusted.startsWith("adl://")
+                    && !adjusted.startsWith("s3n://") && !adjusted.startsWith("wasb://") && !adjusted.startsWith("abfs://"))
                 adjusted = current + "/" + adjusted;
         } else {
             adjusted = current;

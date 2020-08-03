@@ -24,6 +24,7 @@ package com.streever.hadoop.hdfs.shell.command;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Enumeration;
 
 import com.streever.hadoop.shell.command.AbstractCommand;
@@ -55,15 +56,13 @@ public class HdfsConnect extends AbstractCommand {
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         try {
             // Get a value that over rides the default, if nothing then use default.
-// Requires Java 1.8...
-//            String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
+            String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
 
-            String hadoopConfDirProp = System.getenv().get(HADOOP_CONF_DIR);
             // Set a default
             if (hadoopConfDirProp == null)
                 hadoopConfDirProp = "/etc/hadoop/conf";
 
-            Configuration config = new Configuration(false);
+            Configuration config = new Configuration(true);
 
             File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
             for (String file : HADOOP_CONF_FILES) {
@@ -102,8 +101,6 @@ public class HdfsConnect extends AbstractCommand {
 //            hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
             env.setRemoteWorkingDirectory(hdfs.makeQualified(new Path("/")));
 
-            env.setRemoteWorkingDirectory(hdfs.makeQualified(new Path("/")));
-
             FileSystem local = FileSystem.getLocal(new Configuration());
             env.setValue(Constants.LOCAL_FS, local);
             env.getProperties().setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
@@ -111,7 +108,7 @@ public class HdfsConnect extends AbstractCommand {
             FSUtil.prompt(env);
 
 //            if (!env.isSilent())
-            logv(env, "Connecting: " + hdfs.getUri());
+            logv(env, "Connecting to default FS: " + hdfs.getUri());
             
             logv(env, "HDFS CWD: " + hdfs.getWorkingDirectory());
             logv(env, "HDFS CWD(env): " + env.getRemoteWorkingDirectory());
