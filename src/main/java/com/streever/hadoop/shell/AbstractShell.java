@@ -48,6 +48,18 @@ import org.fusesource.jansi.AnsiConsole;
 import com.streever.hadoop.shell.command.Command;
 
 public abstract class AbstractShell implements Shell {
+
+    public static final String RESET_TO_PREVIOUS_LINE = "\33[1A\33[2K";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
     private CommandLineParser parser = new PosixParser();
     private Environment env = null; //new Environment();
     private String bannerResource = "/banner.txt";
@@ -323,11 +335,15 @@ public abstract class AbstractShell implements Shell {
         while ((line = reader.readLine(getEnv().getCurrentPrompt() + " ")) != null) {
             CommandReturn cr = processInput(line);
             if (!cr.isError()) {
-                System.out.println(cr.getReturn());
+                if ( cr.getReturn() != null) {
+                    log(getEnv(), ANSI_GREEN + cr.getReturn() + ANSI_RESET);
+//                    log(getEnv(), "" );
+                }
             } else {
-                System.err.println("ERROR   CODE : " + cr.getCode());
-                System.err.println("     Command : " + cr.getCommand());
-                System.err.println("       ERROR : " + cr.getError());
+                loge(getEnv(), ANSI_RESET + "ERROR CODE : " + ANSI_RED + cr.getCode());
+                loge(getEnv(), ANSI_RESET + "   Command : " + ANSI_RED + cr.getCommand());
+                loge(getEnv(), ANSI_RESET + "     ERROR : " + ANSI_RED + cr.getError() + ANSI_RESET);
+//                loge(getEnv(), "");
             }
         }
     }

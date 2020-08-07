@@ -1,0 +1,7 @@
+put -f datasets/github/covid-19/countries-aggregated.csv /warehouse/tablespace/external/hive/covid_github.db/IN_COUNTRIES_AGGREGATED
+put -f datasets/github/covid-19/key-countries-pivoted.csv /warehouse/tablespace/external/hive/covid_github.db/IN_KEY_COUNTRIES_PIVOTED
+put -f datasets/github/covid-19/reference.csv /warehouse/tablespace/external/hive/covid_github.db/IN_REFERENCE
+put -f datasets/github/covid-19/time-series-19-covid-combined.csv /warehouse/tablespace/external/hive/covid_github.db/IN_TIME_SERIES_COMBINED
+put -f dtasets/github/covid-19/us_confirmed.csv /warehouse/tablespace/external/hive/covid_github.db/IN_US_CONFIRMED
+put -f datasets/github/covid-19/us_deaths.csv /warehouse/tablespace/external/hive/covid_github.db/IN_US_DEATHS
+put -f datasets/github/covid-19/worldwide-aggregated.csv /warehouse/tablespace/external/hive/covid_github.db/IN_WORLDWIDE_AGGREGATED

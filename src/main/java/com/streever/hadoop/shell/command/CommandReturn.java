@@ -127,25 +127,29 @@ public class CommandReturn {
     }
 
     public String getReturn() {
-        StringBuilder sb = new StringBuilder();
         String outString = new String(this.baosOut.toByteArray());
-        sb.append(outString);
-        if (records.size() > 0) {
+        if (outString != null && outString.length() > 0) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(outString);
+            if (records.size() > 0) {
 //            for (List<String> record : records) {
-            for (int i = 0; i < records.size(); i++) {
-                List<Object> record = records.get(i);
-                for (int j = 0; j < record.size(); j++) {
-                    sb.append(record.get(j));
-                    if (j < record.size() - 1) {
-                        sb.append("\t");
+                for (int i = 0; i < records.size(); i++) {
+                    List<Object> record = records.get(i);
+                    for (int j = 0; j < record.size(); j++) {
+                        sb.append(record.get(j));
+                        if (j < record.size() - 1) {
+                            sb.append("\t");
+                        }
+                    }
+                    if (i < records.size() - 1) {
+                        sb.append("\n");
                     }
                 }
-                if (i < records.size() - 1) {
-                    sb.append("\n");
-                }
             }
+            return sb.toString();
+        } else {
+            return null;
         }
-        return sb.toString();
     }
 
     public String getError() {

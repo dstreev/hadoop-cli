@@ -755,7 +755,7 @@ public class HadoopSession extends AbstractShell {
         options.addOption(executeOption);
 
         // add f option
-        Option fileOption = new Option("f", "file", false, "File to execute");
+        Option fileOption = new Option("f", "file", true, "File to execute");
         fileOption.setRequired(false);
         //        Option fileOption = Option.builder("f").required(false)
         //                .argName("file to exec").desc("Run File and Exit")
@@ -958,7 +958,18 @@ public class HadoopSession extends AbstractShell {
         }
 
         if (cmd.hasOption("e")) {
-            processInput(cmd.getOptionValue("e"));
+            CommandReturn cr = processInput(cmd.getOptionValue("e"));
+            if (!cr.isError()) {
+                if ( cr.getReturn() != null) {
+                    log(getEnv(), ANSI_GREEN + cr.getReturn() + ANSI_RESET);
+//                    log(getEnv(), "" );
+                }
+            } else {
+                loge(getEnv(), ANSI_RESET + "ERROR CODE : " + ANSI_RED + cr.getCode());
+                loge(getEnv(), ANSI_RESET + "   Command : " + ANSI_RED + cr.getCommand());
+                loge(getEnv(), ANSI_RESET + "     ERROR : " + ANSI_RED + cr.getError() + ANSI_RESET);
+//                loge(getEnv(), "");
+            }
             processInput("exit");
         }
         String template = null;
@@ -1034,6 +1045,12 @@ public class HadoopSession extends AbstractShell {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(setFile));
                 String line = null;
+                int[] status = {0,0};
+
+                log(getEnv(), ANSI_RESET + "[" + ANSI_GREEN + " success " + ANSI_RESET + "/" + ANSI_RED +
+                        " failures " + ANSI_RESET + "] <last command>");
+                log(getEnv(), "[0/0]");
+
                 while ((line = br.readLine()) != null) {
                     logv(getEnv(), line);
                     String line2 = line.trim();
@@ -1043,6 +1060,29 @@ public class HadoopSession extends AbstractShell {
                             line2 = messageFormat.format(items);
                         }
                         CommandReturn cr = processInput(line2);
+                        if (!cr.isError()) {
+                            status[0] += 1;
+                            if ( cr.getReturn() != null) {
+                                log(getEnv(), ANSI_GREEN + cr.getReturn() + ANSI_RESET);
+                                log(getEnv(), "" );
+                            }
+                        } else {
+                            status[1] += 1;
+                            loge(getEnv(), ANSI_RESET + "ERROR CODE : " + ANSI_RED + cr.getCode());
+                            loge(getEnv(), ANSI_RESET + "   Command : " + ANSI_RED + cr.getCommand());
+                            loge(getEnv(), ANSI_RESET + "     ERROR : " + ANSI_RED + cr.getError() + ANSI_RESET);
+                            loge(getEnv(), "");
+                        }
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(RESET_TO_PREVIOUS_LINE);
+                        sb.append(ANSI_RESET + "[" + ANSI_GREEN + Integer.toString(status[0]) + ANSI_RESET + "/" + ANSI_RED +
+                                Integer.toString(status[1]) + ANSI_RESET + "] ");
+                        if (!cr.isError()) {
+                            sb.append(ANSI_RESET + "<" + ANSI_GREEN + line2 +  ANSI_RESET + ">");
+                        } else {
+                            sb.append("<" + ANSI_RED + line2 +  ANSI_RED + ">\n");
+                        }
+                        log(getEnv(), sb.toString());
                     }
                 }
             } catch (Exception e) {
