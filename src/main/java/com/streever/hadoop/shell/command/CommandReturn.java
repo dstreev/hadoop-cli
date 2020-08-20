@@ -128,7 +128,7 @@ public class CommandReturn {
 
     public String getReturn() {
         String outString = new String(this.baosOut.toByteArray());
-        if (outString != null && outString.length() > 0) {
+        if ((outString != null && outString.length() > 0) || records.size() > 0) {
             StringBuilder sb = new StringBuilder();
             sb.append(outString);
             if (records.size() > 0) {
