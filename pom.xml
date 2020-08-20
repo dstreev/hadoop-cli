@@ -43,6 +43,7 @@
         <cdp.version>7.1.1.0-565</cdp.version>
         <!-- This needs to be in sync with Hadoop Common when using this cli in api mode  -->
         <!--        <commons-cli.version>1.2</commons-cli.version>-->
+        <gateway-shell.version>1.0.0</gateway-shell.version>
 
         <jline.version>2.5</jline.version>
     </properties>
@@ -198,25 +199,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>2.7</id>
-            <properties>
-                <hadoop.version>2.7.3.2.6.5.0-292</hadoop.version>
-                <gateway-shell.version>0.12.0.2.6.5.0-292</gateway-shell.version>
-                <hadoop.major>2.7</hadoop.major>
-            </properties>
-        </profile>
-        <profile>
-            <id>3.1</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <hadoop.version>3.1.1</hadoop.version>
-                <gateway-shell.version>1.0.0</gateway-shell.version>
-                <hadoop.major>3.1</hadoop.major>
-            </properties>
-        </profile>
-    </profiles>
 </project>

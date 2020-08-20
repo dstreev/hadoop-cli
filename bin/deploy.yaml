@@ -1,0 +1,35 @@
+- hosts: sdlc
+  become: true
+
+  vars:
+#    tarball: hadoop.cli-2.2.1.3-SNAPSHOT.tar.gz
+
+  tasks:
+    - name: Check Directories
+      file:
+        path: /usr/local/hadoop-cli/bin
+        state: directory
+
+    - name: Check Directories
+      file:
+        path: /usr/local/hadoop-cli/lib
+        state: directory
+
+    - name: Copy bin
+      copy:
+        src: hadoopcli
+        dest: /usr/local/hadoop-cli/bin
+        mode: 0755
+
+    - name: Copy lib
+      copy:
+        src: ../target/hadoop-cli-full-bin.jar
+        dest: /usr/local/hadoop-cli/lib
+        mode: 0755
+
+    - name: Link executable
+      file:
+        src: /usr/local/hadoop-cli/bin/hadoopcli
+        dest: /usr/local/bin/hadoopcli
+        mode: 0755
+

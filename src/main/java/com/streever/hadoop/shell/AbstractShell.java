@@ -333,17 +333,19 @@ public abstract class AbstractShell implements Shell {
     private void acceptCommands(ConsoleReader reader) throws IOException {
         String line;
         while ((line = reader.readLine(getEnv().getCurrentPrompt() + " ")) != null) {
-            CommandReturn cr = processInput(line);
-            if (!cr.isError()) {
-                if ( cr.getReturn() != null) {
-                    log(getEnv(), ANSI_GREEN + cr.getReturn() + ANSI_RESET);
+            if (line.trim().length() > 0) {
+                CommandReturn cr = processInput(line);
+                if (!cr.isError()) {
+                    if (cr.getReturn() != null) {
+                        log(getEnv(), ANSI_GREEN + cr.getReturn() + ANSI_RESET);
 //                    log(getEnv(), "" );
-                }
-            } else {
-                loge(getEnv(), ANSI_RESET + "ERROR CODE : " + ANSI_RED + cr.getCode());
-                loge(getEnv(), ANSI_RESET + "   Command : " + ANSI_RED + cr.getCommand());
-                loge(getEnv(), ANSI_RESET + "     ERROR : " + ANSI_RED + cr.getError() + ANSI_RESET);
+                    }
+                } else {
+                    loge(getEnv(), ANSI_RESET + "ERROR CODE : " + ANSI_RED + cr.getCode());
+                    loge(getEnv(), ANSI_RESET + "   Command : " + ANSI_RED + cr.getCommand());
+                    loge(getEnv(), ANSI_RESET + "     ERROR : " + ANSI_RED + cr.getError() + ANSI_RESET);
 //                loge(getEnv(), "");
+                }
             }
         }
     }
