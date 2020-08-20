@@ -7,13 +7,14 @@ simpler and more intuitive than the standard command-line tools that come with H
 
 NOTE: The prebuilt binary was compiled against HDFS 3.1, but is backwardly compatible with HDFS 2.6.x and HDFS 2.7.x (HDP 2.5.x, HDP 2.6.x)
 
-[Pre-Built Distribution for HDFS 2.6.x,2.7.x, and 3.1.x](https://github.com/dstreev/hadoop-cli/releases)
+### Don't Build, Download the LATEST binary here!!!
+[![Download the LATEST Binary](./images/download.png)](https://github.com/dstreev/hadoop-cli/releases)
 
 * Download the release 'tar.gz' file to a temp location.
 * Untar the file (tar.gz).
 ```
 tar xzvf <release>.tar.gz
-cd hadoop-cli-<version>
+cd hadoop-cli
 ```  
 * As a root user, chmod +x the 3 shell script files.
 * Run the 'setup.sh'.
