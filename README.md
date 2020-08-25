@@ -163,6 +163,7 @@ Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the
 
 | Command | Description |
 |---|:-----|
+| env | Env variable command |
 | help | List all available commands |
 | help \[command\] |	display help information |
 
@@ -235,10 +236,10 @@ mvn -DskipTests clean install -P 2.6
 HADOOP-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
 then manage local/remote files and transfers.
 
-To start HADOOP-CLI, run the following command:
+To start HADOOP-CLI, run the following command (after running setup as described above):
 
 ```
-java -jar hadoop-cli-full-bin.jar
+hadoopcli
 ```
 		
 ### Command Documentation
