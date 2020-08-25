@@ -49,19 +49,20 @@ The application contains all the necesasry `hdfs` classes already.  You will nee
 
 ```
 usage: hadoopcli
- -d,--debug                                      Debug Commands
- -e,--execute <command [args]>                   Execute Command
- -f,--file <file to exec>                        Run File and Exit
- -h,--help
- -i,--init <init set>                            Initialize with set
- -s,--silent                                     Suppress Banner
- -stdin,--stdin                                  Run Stdin pipe and Exit
- -t,--template <template>                        Template to apply on
-                                                 input (-f | -stdin)
- -td,--template-delimiter <template-delimiter>   Delimiter to apply to
-                                                 'input' for template
-                                                 option (default=',')
- -v,--verbose                                    Verbose Commands
+ -api,--api                       API mode
+ -d,--debug                       Debug Commands
+ -e,--execute <arg>               Execute Command
+ -ef,--env-file <arg>             Environment File(java properties format)
+                                  with a list of key=values
+ -f,--file <arg>                  File to execute
+ -h,--help                        Help
+ -i,--init <arg>                  Initialization with Set
+ -s,--silent                      Suppress Banner
+ -stdin,--stdin                   Run Stdin pipe and Exit
+ -t,--template <arg>              Template to apply on input (-f | -stdin)
+ -td,--template-delimiter <arg>   Delimiter to apply to 'input' for
+                                  template option (default=',')
+ -v,--verbose                     Verbose Commands
 ```
 
 ### File System Command Basics
@@ -105,6 +106,21 @@ drwxr-xr-x   - dstreev hadoop          0 2019-01-31 14:17 /user/dstreev/datasets
 drwxr-xr-x   - hive    hadoop          0 2019-03-18 06:09 /user/dstreev/datasets/internal.db
 REMOTE: hdfs://HOME90/user/dstreev/datasets		LOCAL: file:/home/dstreev
 hdfs-cli:$
+```
+
+### Variable Support
+
+Commandline input is processed for variables matching. IE: ${VARNAME} or $VARNAME.  Use the 'env' command for a list of variables available.  Additional variables can be added two ways:
+
+- By a `java` properties file, which is referenced for input by `-ef`
+- Using the `env -s` (set) command to add them dynamically within the session.
+
+Default behavior of the startup script will look for `${HOME}/.hadoop-cli/env-var.props` and load this automatically, if it exists.  If you have a common set of variable you wish to persist between session, add them to this file.
+
+Example: `env-var.props`
+```
+HEW=/warehouse/tablespace/external/hive
+HMW=/warehouse/tablespace/managed/hive
 ```
 
 ### Scripting Support

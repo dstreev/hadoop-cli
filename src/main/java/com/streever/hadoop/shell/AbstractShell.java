@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 import com.jcabi.manifests.Manifests;
 import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.CommandReturn;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.ArgumentCompleter;
@@ -131,7 +130,7 @@ public abstract class AbstractShell implements Shell {
                 String line = null;
                 while ((line = br.readLine()) != null) {
                     // Replace Token.
-                    log(env, substituteVariables(line));
+                    log(env, substituteVariablesFromManifest(line));
                 }
             }
         }
@@ -172,7 +171,7 @@ public abstract class AbstractShell implements Shell {
 
     }
 
-    public static String substituteVariables(String template) {
+    public static String substituteVariablesFromManifest(String template) {
         Pattern pattern = Pattern.compile("\\$\\{(.+?)\\}");
         Matcher matcher = pattern.matcher(template);
         // StringBuilder cannot be used here because Matcher expects StringBuffer
@@ -198,10 +197,60 @@ public abstract class AbstractShell implements Shell {
         return rtn;
     }
 
+    public String substituteVariables(String template) {
+        // StringBuilder cannot be used here because Matcher expects StringBuffer
+        String workingTemplate = template;
+        String matcherStrings[] = {"\\$\\{(.+?)\\}", "\\$(.+?)([\\s|\\/])"};
+        for (String matcherPattern : matcherStrings) {
+            StringBuffer buffer = new StringBuffer();
+
+            Pattern pattern = Pattern.compile(matcherPattern);
+            Matcher matcher = pattern.matcher(workingTemplate);
+            boolean found = false;
+            while (matcher.find()) {
+//                if (found) buffer.append(" ");
+                found = true;
+                String matchStr = matcher.group(1);
+                try {
+                    String replacement = null;
+                    replacement = System.getProperty(matchStr);
+                    if (replacement == null) {
+                        replacement = getEnv().getProperties().getProperty(matchStr);
+                    }
+//                Manifests.read(matchStr);
+                    if (replacement != null) {
+                        // quote to work properly with $ and {,} signs
+                        matcher.appendReplacement(buffer, replacement != null ? Matcher.quoteReplacement(replacement) : "null");
+                        if (matcher.group(2) != null)
+                            buffer.append(matcher.group(2));
+                    } else {
+//                    System.out.println("No replacement found for: " + matchStr);
+                    }
+                } catch (IllegalArgumentException iae) {
+                    //iae.printStackTrace();
+                    // Couldn't locate MANIFEST Entry.
+                    // Silently continue. Usually happens in IDE->run.
+                }
+            }
+            if (found) {
+                matcher.appendTail(buffer);
+                workingTemplate = buffer.toString();
+            }
+        }
+
+//        String rtn = buffer.toString();
+        return workingTemplate;
+    }
+
     public CommandReturn processInput(String line) {
         // Check for Pipelining.
         // Pipelining are used to string commands together.
         // https://en.wikipedia.org/wiki/Pipeline_%28Unix%29
+
+        // Substitute Variables
+        // Add space to end in order to help env-var discovery
+        String adjustVarLine = substituteVariables(line + " ");
+
         /*
         This pipelining works a bit different in the sense the downstream function does
         NOT take a stream.  So we need to iterate through the previous functions output
@@ -210,7 +259,7 @@ public abstract class AbstractShell implements Shell {
         At this time, the pipeline only support 1 redirect.
          */
         String splitRegEx = "\\|(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)";
-        String[] cmds = line.split(splitRegEx);
+        String[] cmds = adjustVarLine.split(splitRegEx);
         if (cmds.length > 2) {
             CommandReturn crLength = new CommandReturn(CommandReturn.BAD);
             crLength.getErr().print("Only support single depth pipeline at this time.");
@@ -226,17 +275,17 @@ public abstract class AbstractShell implements Shell {
                 CommandReturn innerCR = new CommandReturn(CommandReturn.GOOD);
                 while (true) {
                     try {
-                        if (!((line = bufferedReader.readLine()) != null)) break;
+                        if (!((adjustVarLine = bufferedReader.readLine()) != null)) break;
                     } catch (IOException e) {
 //                        e.printStackTrace();
                         break;
                     }
                     // Check line for spaces.  If it has them, quote it.
                     String adjustedLine = null;
-                    if (line.contains(" ")) {
-                        adjustedLine = "\"" + line + "\"";
+                    if (adjustVarLine.contains(" ")) {
+                        adjustedLine = "\"" + adjustVarLine + "\"";
                     } else {
-                        adjustedLine = line;
+                        adjustedLine = adjustVarLine;
                     }
                     String pipedCommand = command.trim() + " " + adjustedLine;
                     innerCR = processCommand(pipedCommand, innerCR);
@@ -257,6 +306,7 @@ public abstract class AbstractShell implements Shell {
             cr = new CommandReturn(CommandReturn.GOOD);
         }
 
+        // Looking for escape chars and quotes that allow for special chars and spaces
         List<String> matchList = new ArrayList<String>();
         Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
         Matcher regexMatcher = regex.matcher(line);

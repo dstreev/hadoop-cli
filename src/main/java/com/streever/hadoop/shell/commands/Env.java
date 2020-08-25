@@ -30,6 +30,7 @@ import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 public class Env extends AbstractCommand {
@@ -39,19 +40,28 @@ public class Env extends AbstractCommand {
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        if (cmd.hasOption("l") || !cmd.hasOption("s")) {
+        if (cmd.hasOption("l") || cmd.getOptions().length == 0) {
             Properties props = env.getProperties();
             log(env, "Local Properties:");
             for (Object key : props.keySet()) {
                 log(env, "\t" + key + "=" + props.get(key));
             }
-        }
-        if (cmd.hasOption("s")) {
             log(env, "System Properties:");
-            Properties props = System.getProperties();
+            props = System.getProperties();
             for (Object key : props.keySet()) {
                 log(env, "\t" + key + "=" + props.get(key));
             }
+        }
+        if (cmd.hasOption("s")) {
+            String input = cmd.getOptionValue("s");
+            String inputParts[] = input.split("=");
+            if (inputParts.length == 2) {
+                env.getProperties().setProperty(inputParts[0], inputParts[1]);
+            }
+        }
+        if (cmd.hasOption("u")) {
+            String input = cmd.getOptionValue("u");
+            env.getProperties().remove(input);
         }
 
         return commandReturn;
@@ -60,8 +70,22 @@ public class Env extends AbstractCommand {
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();
-        opts.addOption("s", "system", false, "list system properties.");
-        opts.addOption("l", "local", false, "list local properties.");
+//        opts.addOption("s", "system", false, "list system properties.");
+//        opts.addOption("l", "local", false, "list local properties.");
+
+        Option setOption = new Option("s", "set", true,
+                "set and environment var is the form of var=value");
+        setOption.setRequired(false);
+        opts.addOption(setOption);
+
+        Option unsetOption = new Option("u", "unset", true, "unset an environment var.");
+        unsetOption.setRequired(false);
+        opts.addOption(unsetOption);
+
+        Option listOption = new Option("l", "list", false, "Show Environment Variables");
+        listOption.setRequired(false);
+        opts.addOption(listOption);
+
         return opts;
     }
 

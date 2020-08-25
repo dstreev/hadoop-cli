@@ -42,6 +42,11 @@ SHOW_CP=
 CMD_DIRECTIVE=
 CMD_ARGS=
 VERBOSE=
+ENV_VAR_FILE=
+
+if [[ -f ${HOME}/.hadoop-cli/env-var.props ]]; then
+    ENV_VAR_FILE=${HOME}/.hadoop-cli/env-var.props
+fi
 
 if [[ ! -d ${AUX_LIBS_DIR} ]]; then
     mkdir -p ${AUX_LIBS_DIR}
@@ -76,6 +81,10 @@ while [[ $# -gt 0 ]]; do
     -stdin)
       shift
       PRG_ARGS="${PRG_ARGS} -stdin"
+      ;;
+    -ef|--env-file)
+      shift
+      ENV_VAR_FILE=${1}
       ;;
     -h|--help)
       shift
@@ -114,6 +123,10 @@ while [[ $# -gt 0 ]]; do
       break;
   esac
 done
+
+if [[ "${ENV_VAR_FILE}x" != "x" ]]; then
+    PRG_ARGS="${PRG_ARGS} -ef \"${ENV_VAR_FILE}\""
+fi
 
 #echo "Program Args: ${PRG_ARGS}"
 

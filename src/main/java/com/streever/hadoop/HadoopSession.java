@@ -703,11 +703,11 @@ import com.streever.hadoop.shell.commands.Help;
 import com.streever.hadoop.shell.commands.HistoryCmd;
 import org.apache.commons.cli.*;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.util.StringUtils;
 
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.*;
 
@@ -830,6 +830,16 @@ public class HadoopSession extends AbstractShell {
         //                .build();
         options.addOption(debugOption);
 
+        Option envOption = new Option("ef", "env-file", true, "Environment File(java properties format) with a list of key=values");
+        envOption.setRequired(false);
+        //        Option debugOption = Option.builder("d").required(false)
+        //                .argName("debug").desc("Debug Commands")
+        //                .longOpt("debug")
+        //                .hasArg(false)
+        //                .build();
+        options.addOption(envOption);
+
+
 //        Option usernameOption = Option.builder("u").required(false)
 //                .argName("username").desc("Username to log into gateway")
 //                .longOpt("username")
@@ -908,6 +918,22 @@ public class HadoopSession extends AbstractShell {
 
         if (cmd.hasOption("debug")) {
             getEnv().setDebug(Boolean.TRUE);
+        }
+
+        if (cmd.hasOption("env-file")) {
+            String envPropsFile = cmd.getOptionValue("env-file");
+            try {
+                InputStream inProps = new FileInputStream(envPropsFile);
+                Properties extProps = new Properties();
+                extProps.load(inProps);
+                getEnv().getProperties().putAll(extProps);
+            } catch (FileNotFoundException e) {
+                System.out.println("Couldn't locate 'env-file' " + envPropsFile);
+                System.out.println("Additional environment vars NOT loaded");
+            } catch (IOException e) {
+                System.out.println("Problems reading 'env-file' " + envPropsFile + " - " + e.getMessage());
+                System.out.println("Additional environment vars NOT loaded");
+            }
         }
 
         if (cmd.hasOption("help")) {
@@ -1195,6 +1221,7 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new HdfsCommand("text", getEnv(), Direction.NONE));
         getEnv().addCommand(new HdfsCommand("touchz", getEnv(), Direction.NONE));
         getEnv().addCommand(new HdfsCommand("checksum", getEnv(), Direction.NONE));
+
         getEnv().addCommand(new HdfsCommand("usage", getEnv()));
 
         // Security Help
