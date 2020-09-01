@@ -705,6 +705,11 @@ import org.apache.commons.cli.*;
 import org.apache.hadoop.fs.FileSystem;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Properties;
@@ -921,9 +926,16 @@ public class HadoopSession extends AbstractShell {
         }
 
         if (cmd.hasOption("env-file")) {
-            String envPropsFile = cmd.getOptionValue("env-file");
+            String envProps = cmd.getOptionValue("env-file");
+            File envPropsFile = new File(envProps);
             try {
-                InputStream inProps = new FileInputStream(envPropsFile);
+                // Resolve SymLink if necessary
+                Path envPropsPath = envPropsFile.toPath();
+                if (Files.isSymbolicLink(envPropsFile.toPath())) {
+                    // Reset path to look for 'real' file.
+                    envPropsPath = envPropsPath.toRealPath();
+                }
+                InputStream inProps = Files.newInputStream(envPropsPath);
                 Properties extProps = new Properties();
                 extProps.load(inProps);
                 getEnv().getProperties().putAll(extProps);

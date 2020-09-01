@@ -44,7 +44,7 @@ CMD_ARGS=
 VERBOSE=
 ENV_VAR_FILE=
 
-if [[ -f ${HOME}/.hadoop-cli/env-var.props ]]; then
+if [[ -f ${HOME}/.hadoop-cli/env-var.props || -L ${HOME}/.hadoop-cli/env-var.props ]]; then
     ENV_VAR_FILE=${HOME}/.hadoop-cli/env-var.props
 fi
 
@@ -146,6 +146,7 @@ fi
 
 if [[ "${SHOW_CP}x" != "x" ]]; then
     echo "Classpath: ${CMD_CP}"
+    echo "Program args: ${PRG_ARGS}"
 fi
 
 CLI_CMD="${CLI_CMD}java -cp ${CMD_CP} com.streever.hadoop.HadoopShell ${PRG_ARGS}"
