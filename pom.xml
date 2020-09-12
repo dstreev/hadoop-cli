@@ -24,21 +24,34 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.streever.hadoop</groupId>
-    <artifactId>hadoop.cli</artifactId>
+    <artifactId>hadoop-cli</artifactId>
     <version>2.2.2.0-SNAPSHOT</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Pluggins -->
+        <maven.compiler.version>3.8.1</maven.compiler.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- See Profiles for the correct version of Hadoop -->
-        <!--<hadoop.version>2.7.1.2.4.1.0-327</hadoop.version>-->
-        <!--<hadoop.version>2.6.0.2.2.8.0-3150</hadoop.version>-->
-        <junit.version>4.11</junit.version>
-        <jackson.parser>2.9.5</jackson.parser>
+        <maven.clean.version>3.1.0</maven.clean.version>
+        <maven.resources.version>3.0.2</maven.resources.version>
+        <maven.surefire.version>2.22.1</maven.surefire.version>
+        <maven.jar.version>3.0.2</maven.jar.version>
+        <maven.install.version>2.5.2</maven.install.version>
+        <maven.deploy.version>2.8.2</maven.deploy.version>
+        <maven.site.version>3.7.1</maven.site.version>
+        <maven.reports.version>3.0.0</maven.reports.version>
+        <maven.shade.plugin.version>3.2.1</maven.shade.plugin.version>
+        <maven.assembly.version>3.3.0</maven.assembly.version>
+
+        <!-- Support  Libs-->
+        <junit.version>4.12</junit.version>
+        <jackson.parser>2.11.1</jackson.parser>
         <commons-io.version>2.4</commons-io.version>
         <jcabi.manifests.version>1.1</jcabi.manifests.version>
+
         <hadoop.version>3.1.1</hadoop.version>
         <cdp.version>7.1.1.0-565</cdp.version>
         <!-- This needs to be in sync with Hadoop Common when using this cli in api mode  -->
@@ -94,11 +107,11 @@
             <version>${hadoop.version}.${cdp.version}</version>
             <scope>provided</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.knox</groupId>-->
-<!--            <artifactId>gateway-shell</artifactId>-->
-<!--            <version>${gateway-shell.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.knox</groupId>-->
+        <!--            <artifactId>gateway-shell</artifactId>-->
+        <!--            <version>${gateway-shell.version}</version>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-distcp</artifactId>
@@ -122,16 +135,73 @@
         </dependency>
     </dependencies>
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven.clean.version}</version>
+                </plugin>
+                <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven.resources.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${maven.install.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven.deploy.version}</version>
+                </plugin>
+                <!--            site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle-->
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven.site.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>${maven.reports.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven.shade.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven.assembly.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven.jar.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.1</version>
                 <configuration>
                     <archive>
                         <manifest>
- <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
- <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
                             <Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
@@ -140,9 +210,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.0</version>
                 <!--<configuration>-->
                 <!--<createDependencyReducedPom>true</createDependencyReducedPom>-->
                 <!--</configuration>-->
@@ -154,7 +222,7 @@
                         </goals>
                         <configuration>
                             <createSourcesJar>false</createSourcesJar>
-                            <finalName>hadoop-cli-full-bin</finalName>
+                            <finalName>${project.artifactId}-shaded</finalName>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <filters>
                                 <filter>
@@ -163,12 +231,17 @@
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/LICENSE</exclude>
+                                        <exclude>META-INF/**/pom.xml</exclude>
+                                        <exclude>META-INF/**/pom.properties</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ResourceBundleAppendingTransformer"/>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.streever.hadoop.HadoopSession</mainClass>
@@ -181,7 +254,9 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
                 </configuration>
                 <executions>
                     <execution>

@@ -13,12 +13,12 @@ cp -f JCECheck /usr/local/hadoop-cli/bin
 # Cleanup previous installation
 rm -f /usr/local/hadoop-cli/lib/*.jar
 
-if [ -f ../target/hadoop-cli-full-bin.jar ]; then
-    cp -f ../target/hadoop-cli-full-bin.jar /usr/local/hadoop-cli/lib
+if [ -f ../target/hadoop-cli-shaded.jar ]; then
+    cp -f ../target/hadoop-cli-shaded.jar /usr/local/hadoop-cli/lib
 fi
 
-if [ -f hadoop-cli-full-bin.jar ]; then
-    cp -f hadoop-cli-full-bin.jar /usr/local/hadoop-cli/lib
+if [ -f hadoop-cli-shaded.jar ]; then
+    cp -f hadoop-cli-shaded.jar /usr/local/hadoop-cli/lib
 fi
 
 chmod -R +r /usr/local/hadoop-cli
