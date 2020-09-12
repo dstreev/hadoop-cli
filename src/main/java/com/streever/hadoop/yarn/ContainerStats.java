@@ -43,6 +43,7 @@ import java.util.Map;
  * Using the Resource Manager JMX, collect the stats on applications since the last time this was run or up to
  * 'n' (limit).
  */
+@Deprecated
 public class ContainerStats extends AbstractStats {
 
     public ContainerStats(String name) {

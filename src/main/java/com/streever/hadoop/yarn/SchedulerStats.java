@@ -46,6 +46,7 @@ import java.util.Map;
  * Using the Resource Manager JMX, collect the queue stats .
  *
  */
+@Deprecated
 public class SchedulerStats extends AbstractStats {
 
     private String timestamp = null;

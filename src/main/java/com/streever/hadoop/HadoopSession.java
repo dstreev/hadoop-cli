@@ -888,19 +888,17 @@ public class HadoopSession extends AbstractShell {
 
     @Override
     protected boolean preProcessInitializationArguments(String[] arguments) {
-//        super.preProcessInitializationArguments(arguments);
         boolean rtn = Boolean.TRUE;
         // create Options object
         Options options = getOptions();
 
         CommandLineParser parser = new PosixParser();
         CommandLine cmd = null;
-//        System.out.println(StringUtils.arrayToString(arguments));
         try {
             cmd = parser.parse(options, arguments);
         } catch (ParseException pe) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("hadoopcli", options);
+            formatter.printHelp("<app-cmd>", options);
             System.exit(-1);
         }
 
@@ -953,13 +951,11 @@ public class HadoopSession extends AbstractShell {
             formatter.printHelp("hadoopcli", options);
             System.exit(-1);
         }
-//        System.out.println("EEE");
         return rtn;
     }
 
     @Override
     protected boolean postProcessInitializationArguments(String[] arguments) {
-//        super.postProcessInitializationArguments(arguments, reader);
         boolean rtn = Boolean.TRUE;
         // create Options object
         Options options = getOptions();
@@ -1000,13 +996,11 @@ public class HadoopSession extends AbstractShell {
             if (!cr.isError()) {
                 if ( cr.getReturn() != null) {
                     log(getEnv(), ANSI_GREEN + cr.getReturn() + ANSI_RESET);
-//                    log(getEnv(), "" );
                 }
             } else {
                 loge(getEnv(), ANSI_RESET + "ERROR CODE : " + ANSI_RED + cr.getCode());
                 loge(getEnv(), ANSI_RESET + "   Command : " + ANSI_RED + cr.getCommand());
                 loge(getEnv(), ANSI_RESET + "     ERROR : " + ANSI_RED + cr.getError() + ANSI_RESET);
-//                loge(getEnv(), "");
             }
             processInput("exit");
         }
@@ -1135,7 +1129,6 @@ public class HadoopSession extends AbstractShell {
         CommandReturn crTest = null;
         boolean rtn = true;
         try {
-//            String userHome = System.getProperty("user.name");
             crTest = processInput("connect");
             if (crTest.isError()) {
                 rtn = false;
@@ -1170,8 +1163,6 @@ public class HadoopSession extends AbstractShell {
                 future.cancel(true); // may or may not desire this
             }
 
-//            crTest = processInput("cd /user/" + userHome, reader);
-            
             if (crTest.isError()) {
                 rtn = false;
                 loge(getEnv(), crTest.getError() + ".\nAttempted to set home directory.  User home directory must exist.\nIf user is 'hdfs', consider using a proxy account for audit purposes.");
@@ -1215,14 +1206,12 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new HdfsCommand("lsr", getEnv(), Direction.NONE));
 //        env.addCommand(new HdfsCommand("find", env, Direction.NONE, 1, false));
 
-
         getEnv().addCommand(new HdfsCommand("mkdir", getEnv(), Direction.NONE));
 
         getEnv().addCommand(new HdfsCommand("count", getEnv(), Direction.NONE));
         getEnv().addCommand(new HdfsCommand("stat", getEnv(), Direction.NONE));
         getEnv().addCommand(new HdfsCommand("tail", getEnv(), Direction.NONE));
         getEnv().addCommand(new HdfsCommand("head", getEnv(), Direction.NONE));
-//        env.addCommand(new HdfsCommand("test", env, Direction.NONE));
         getEnv().addCommand(new HdfsCommand("touchz", getEnv(), Direction.NONE));
 
         getEnv().addCommand(new HdfsCommand("rm", getEnv(), Direction.NONE));
@@ -1250,16 +1239,16 @@ public class HadoopSession extends AbstractShell {
 
         // HDFS Tools
         getEnv().addCommand(new HdfsLsPlus("lsp", getEnv(), Direction.NONE));
-        getEnv().addCommand(new HdfsNNStats("nnstat", getEnv(), Direction.NONE));
+//        getEnv().addCommand(new HdfsNNStats("nnstat", getEnv(), Direction.NONE));
 
         getEnv().addCommand(new HdfsSource("source", getEnv(), this));
 
         // MapReduce Tools
-        getEnv().addCommand(new JhsStats("jhsstat", getEnv(), Direction.NONE));
+//        getEnv().addCommand(new JhsStats("jhsstat", getEnv(), Direction.NONE));
 
         // Yarn Tools
-        getEnv().addCommand(new ContainerStats("cstat", getEnv(), Direction.NONE));
-        getEnv().addCommand(new SchedulerStats("sstat", getEnv(), Direction.NONE));
+//        getEnv().addCommand(new ContainerStats("cstat", getEnv(), Direction.NONE));
+//        getEnv().addCommand(new SchedulerStats("sstat", getEnv(), Direction.NONE));
 
         getEnv().addCommand(new Exit("exit"));
         getEnv().addCommand(new LocalLs("lls", getEnv()));

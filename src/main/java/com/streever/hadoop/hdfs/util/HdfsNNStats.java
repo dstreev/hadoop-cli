@@ -43,6 +43,7 @@ import java.util.*;
  * The intent here is to provide a means of querying the Namenode and
  * producing Metadata about the directory AND the files in it.
  */
+@Deprecated
 public class HdfsNNStats extends AbstractStats {
 
     public HdfsNNStats(String name) {

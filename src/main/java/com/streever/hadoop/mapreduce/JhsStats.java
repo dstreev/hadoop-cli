@@ -41,6 +41,7 @@ import java.util.*;
  * Using the Job History Server URL, collect the stats on jobs since the last time this was run or up to
  * 'n' (limit).
  */
+@Deprecated
 public class JhsStats extends AbstractStats {
 
     public JhsStats(String name) {
