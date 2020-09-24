@@ -32,6 +32,14 @@ To use an alternate HADOOP_CONF_DIR:
 
     hadoopcli --config /var/hadoop/dev-cfg
 
+### Default or Alt JDK Usage
+
+The startup script `hadoopcli` will use `$JAVA_HOME` if defined.  When it is not available, the default `java` implementation will be used.
+
+JDK's below 1.8.0_100 are not recommended for Kerberos environments and may have issues connecting to secure clusters.  Those JDK's require additional `unlimited jce` configurations.
+
+If kerberos connections aren't working, use a more recent JDK by setting the `$JAVA_HOME` variable.
+
 ### AUX_LIBS - CLASSPATH Additions
 
 The directory `$HOME/.hadoop-cli/aux_libs` will be scanned for 'jar' files. Each 'jar' will be added the java classpath of the application.  Add any required libaries here.
