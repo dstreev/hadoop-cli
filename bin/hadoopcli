@@ -14,6 +14,12 @@ fi
 PRG_ARGS=
 CMD_CP=
 
+if [ ! -z ${JAVA_HOME} ]; then
+  JAVA="${JAVA_HOME}/bin/java"
+else
+  JAVA=java
+fi
+
 if [[ -f ./hadoop-cli-shaded.jar ]]; then
     # Look in Current Directory
     CMD_CP=$APP_DIR/hadoop-cli-shaded.jar
@@ -43,6 +49,7 @@ CMD_DIRECTIVE=
 CMD_ARGS=
 VERBOSE=
 ENV_VAR_FILE=
+APP_JAVA_OPTS=
 
 if [[ -f ${HOME}/.hadoop-cli/env-var.props || -L ${HOME}/.hadoop-cli/env-var.props ]]; then
     ENV_VAR_FILE=${HOME}/.hadoop-cli/env-var.props
@@ -54,6 +61,10 @@ fi
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    -D*)
+      APP_JAVA_OPTS="${APP_JAVA_OPTS} ${1}"
+      shift
+      ;;
     -i|--init)
       shift
       PRG_ARGS="${PRG_ARGS} -i \"${1}\""
@@ -149,6 +160,15 @@ if [[ "${SHOW_CP}x" != "x" ]]; then
     echo "Program args: ${PRG_ARGS}"
 fi
 
-CLI_CMD="${CLI_CMD}java -cp ${CMD_CP} com.streever.hadoop.HadoopShell ${PRG_ARGS}"
+if [[ "${APP_JAVA_OPTS}x" != "x" ]]; then
+    echo "Application JAVA_OPTS=${APP_JAVA_OPTS}"
+fi
+
+JV=$(${JAVA} -version)
+
+echo "Using Java Version: "
+echo $JV
+
+CLI_CMD="${JAVA} -cp ${CMD_CP} ${APP_JAVA_OPTS} com.streever.hadoop.HadoopShell ${PRG_ARGS}"
 
 eval "${CLI_CMD}"
