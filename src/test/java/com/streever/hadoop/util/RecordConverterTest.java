@@ -49,13 +49,13 @@ public class RecordConverterTest {
 
         Map<String, Object> mapOut = rc.convert(null, resourceJson, "job", null);
 
-        String header = rc.mapToRecord(mapOut, true, ",");
+//        String header = rc.mapToRecord(mapOut, true, ",");
 
-        System.out.println(header);
+//        System.out.println(header);
 
-        String record = rc.mapToRecord(mapOut,false, ",");
+//        String record = rc.mapToRecord(mapOut,false, ",");
 
-        System.out.println(record);
+//        System.out.println(record);
 
     }
 
@@ -75,13 +75,13 @@ public class RecordConverterTest {
 
         Map<String, Object> mapOut = rc.convert(null, resourceJson, "jobCounters", tp);
 
-        String header = rc.mapToRecord(mapOut, true, ",");
+//        String header = rc.mapToRecord(mapOut, true, ",");
 
-        System.out.println(header);
+//        System.out.println(header);
 
-        String record = rc.mapToRecord(mapOut,false, ",");
+//        String record = rc.mapToRecord(mapOut,false, ",");
 
-        System.out.println(record);
+//        System.out.println(record);
 
     }
 
@@ -101,13 +101,13 @@ public class RecordConverterTest {
 
         Map<String, Object> mapOut = rc.convert(null, resourceJson, "jobTaskCounters", tp);
 
-        String header = rc.mapToRecord(mapOut, true, ",");
+//        String header = rc.mapToRecord(mapOut, true, ",");
 
-        System.out.println(header);
+//        System.out.println(header);
 
-        String record = rc.mapToRecord(mapOut,false, ",");
+//        String record = rc.mapToRecord(mapOut,false, ",");
 
-        System.out.println(record);
+//        System.out.println(record);
     }
 
 
@@ -127,13 +127,13 @@ public class RecordConverterTest {
 
         Map<String, Object> mapOut = rc.convert(null, resourceJson, "jobTaskAttemptCounters", tp);
 
-        String header = rc.mapToRecord(mapOut, true, ",");
+//        String header = rc.mapToRecord(mapOut, true, ",");
 
-        System.out.println(header);
+//        System.out.println(header);
 
-        String record = rc.mapToRecord(mapOut,false, ",");
+//        String record = rc.mapToRecord(mapOut,false, ",");
 
-        System.out.println(record);
+//        System.out.println(record);
 
     }
 

@@ -176,7 +176,8 @@ public class JhsStats extends AbstractStats {
             Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
             while (rIter.hasNext()) {
                 Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
-                print(recordSet.getKey(), recordSet.getValue());
+                // TODO: Fix
+//                print(recordSet.getKey(), recordSet.getValue());
             }
 
             // Clear for next query

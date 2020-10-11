@@ -35,10 +35,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by streever on 2016-04-25.
@@ -47,6 +44,35 @@ import java.util.Map;
  *
  */
 public class SchedulerStats extends AbstractStats {
+
+    static final String QUEUES = "queues";
+    static final String QUEUE_USAGE = "queue_usage";
+
+    static final String[] QUEUES_FIELDS = {"reporting_ts", "queue.path", "type", "capacity", "usedCapacity", "maxCapacity",
+    "absoluteCapacity", "absoluteMaxCapacity", "absoluteUsedCapacity", "numApplications", "queueName", "state",
+    "resourcesUsed.memory", "resourcesUsed.vCores", "hideReservationQueues", "allocationContainers", "reservedContainers",
+    "pendingContainers", "minEffectiveCapacity.memory", "minEffectiveCapacity.vCores", "maxEffectiveCapacity.memory",
+    "maxEffectiveCapacity.vCores", "maximumAllocation.memory", "maximumAllocation.vCores", "queuePriority","orderingPolicyInfo",
+    "autoCreateChildQueueEnabled", "numActiveApplications", "numPendingApplications", "numContainers", "maxApplications",
+    "maxApplicationsPerUser", "userLimit", "userLimitFactor", "configuredMaxAMResourceLimit", "AMResourceLimit.memory",
+    "AMResourceLimit.vCores", "usedAMResource.memory", "usedAMResource.vCores", "userAMResourceLimit.memory", "userAMResourceLimit.vCores",
+    "preemptionDisabled", "intraQueuePreemptionDisabled", "defaultPriority", "isAutoCreatedLeafQueue", "maxApplicationLifetime",
+    "defaultApplicationLifetime"};
+
+    static final String[] QUEUE_USAGE_FIELDS = {"reporting_ts", "queue.path", "capacity", "usedCapacity", "maxCapacity",
+    "absoluteCapacity", "absoluteMaxCapacity", "absoluteUsedCapacity", "numApplications", "queueName", "state",
+    "hideReservationQueues", "allocatedContainers", "reservedContainers", "pendingContainers", "queuePriority",
+    "orderingPolicyInfo", "autoCreateChildQueueEnabled", "numActiveApplications", "numPendingApplications", "numContainers",
+    "maxApplications", "maxApplicationsPerUser", "userLimit", "user.numActiveApplications", "user.numPendingApplications",
+    "user.username", "user.resourcesUsed.memory", "user.resourcesUsed.vCores"};
+
+    private static Map<String, String[]> recordFieldMap;
+
+    static {
+        recordFieldMap = new HashMap<String, String[]>();
+        recordFieldMap.put(QUEUES, QUEUES_FIELDS);
+        recordFieldMap.put(QUEUE_USAGE, QUEUE_USAGE_FIELDS);
+    }
 
     private String timestamp = null;
 
@@ -108,7 +134,7 @@ public class SchedulerStats extends AbstractStats {
             Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
             while (rIter.hasNext()) {
                 Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
-                print(recordSet.getKey(), recordSet.getValue());
+                print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
             }
 
         } catch (IOException ioe) {

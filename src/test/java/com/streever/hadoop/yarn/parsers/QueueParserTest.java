@@ -111,14 +111,15 @@ public class QueueParserTest {
             else if (i % 100 == 0)
                 System.out.print(".");
 
-            String recordStr = RecordConverter.mapToRecord(record, header, ",");
-            if (header) {
-                System.out.println(recordStr);
-                // Terminate Loop.
-                break;
-            } else {
-                sb.append(recordStr).append("\n");
-            }
+            // TODO: Fix
+//            String recordStr = RecordConverter.mapToRecord(record, header, ",");
+//            if (header) {
+//                System.out.println(recordStr);
+//                // Terminate Loop.
+//                break;
+//            } else {
+//                sb.append(recordStr).append("\n");
+//            }
         }
         // If the options say to write to hdfs.
 //        if (baseOutputDir != null) {

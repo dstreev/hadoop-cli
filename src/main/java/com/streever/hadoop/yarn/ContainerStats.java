@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,28 @@ import java.util.Map;
  * 'n' (limit).
  */
 public class ContainerStats extends AbstractStats {
+    static final String APP = "app";
+    static final String ATTEMPT = "attempt";
+
+    static final String[] APP_FIELDS = {"reporting_ts", "id", "user", "name", "queue", "state", "finalStatus", "progress", "trackingUI",
+            "trackingUrl", "diagnostics", "clusterId", "applicationType", "applicationTags", "priority", "startedTime",
+            "launchTime", "finishedTime", "elapsedTime", "amContainerLogs", "amHostHttpAddress", "amRPCAddress",
+            "masterNodeId", "allocatedMB", "allocatedVCores", "runningContainers", "memorySeconds", "vcoreSeconds",
+            "queueUsagePercentage", "allocatedVCores", "reservedMB", "reservedVCores", "runningContainers",
+            "memorySeconds", "vcoreSeconds", "queueUsagePercentage", "clusterUsagePercentage", "preemptedResourceMB",
+            "preemptedResourceVCores", "numNonAMContainerPreempted", "numAMContainerPreempted", "preemptedMemorySeconds",
+            "preemptedVcoreSeconds", "logAggregationStatus", "unmanagedApplication", "amNodeLabelExpression"};
+
+    static final String[] APP_ATTEMPT_FIELDS = {"reporting_ts", "appId", "id", "startTime", "finishedTime",
+            "containerId", "nodeHttpAddress", "nodeId", "logsLink", "blacklistedNodes", "nodesBlacklistedBySystem", "appAttemptId"};
+
+    private static Map<String, String[]> recordFieldMap;
+
+    static {
+        recordFieldMap = new HashMap<String, String[]>();
+        recordFieldMap.put(APP, APP_FIELDS);
+        recordFieldMap.put(ATTEMPT, APP_ATTEMPT_FIELDS);
+    }
 
     public ContainerStats(String name) {
         super(name);
@@ -83,7 +106,7 @@ public class ContainerStats extends AbstractStats {
             Map.Entry<String, String> entry = iQ.next();
 
             String query = entry.getKey();
-            System.out.println("Query: " + entry.getValue());
+//            System.out.println("Query: " + entry.getValue());
             try {
                 URL appsUrl = new URL(getProtocol() + rootPath + "?" + query);
 
@@ -92,43 +115,13 @@ public class ContainerStats extends AbstractStats {
 
                 YarnAppRecordConverter yarnRc = new YarnAppRecordConverter();
 
-                // Get Apps List of Ids and process singularly.
-                /*
-                List<String> appIdList = yarnRc.appIdList(jobsJson);
-
-                for (String appId : appIdList) {
-                    System.out.println(appId);
-
-                    // Get App Detail   <api>/<job_id>
-                    URL appUrl = new URL(getProtocol() + rootPath + "/" + appId);
-                    URLConnection appConnection = appUrl.openConnection();
-                    String appJson = IOUtils.toString(appConnection.getInputStream());
-
-                    Map<String, String> jobDetailMap = yarnRc.detail(appJson, "app");
-                    addRecord("app", appMap);
-
-
-                    // App Attempts
-                    URL attemptsUrl = new URL(getProtocol() + rootPath + "/" + appId + "/appattempts");
-                    URLConnection attemptsConnection = attemptsUrl.openConnection();
-                    String attemptsJson = IOUtils.toString(attemptsConnection.getInputStream());
-
-                    List<Map<String,String>> attemptsList = yarnRc.appAttempts(attemptsJson, appId);
-
-                    for (Map<String,String> attemptMap: attemptsList) {
-                        addRecord("attempt", attemptMap);
-                    }
-
-                }
-                */
-
                 // Get Apps List and generate full item list.
 
                 List<Map<String, Object>> apps = yarnRc.apps(appsJson);
 
                 for (Map<String, Object> appMap : apps) {
 
-                    addRecord("app", appMap);
+                    addRecord(APP, appMap);
                     String appId = appMap.get("id").toString();
 
                     // App Attempts
@@ -139,7 +132,7 @@ public class ContainerStats extends AbstractStats {
                     List<Map<String, Object>> attemptsList = yarnRc.appAttempts(tasksJson, appId);
 
                     for (Map<String, Object> attemptMap : attemptsList) {
-                        addRecord("attempt", attemptMap);
+                        addRecord(ATTEMPT, attemptMap);
                     }
 
                 }
@@ -152,7 +145,7 @@ public class ContainerStats extends AbstractStats {
             Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
             while (rIter.hasNext()) {
                 Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
-                print(recordSet.getKey(), recordSet.getValue());
+                print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
             }
             clearCache();
         }

@@ -95,7 +95,7 @@ public class RecordConverter {
         return rtn;
     }
 
-    public static String mapToRecord(Map<String, Object> map, boolean header, String inDelimiter) {
+    public static String mapToRecord(String[] fields, Map<String, Object> map, String inDelimiter) {
         // Process Record.
         StringBuilder sb = new StringBuilder();
 
@@ -108,18 +108,13 @@ public class RecordConverter {
 
         Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
         boolean init = false;
-        while (entries.hasNext()) {
-            Map.Entry<String, Object> entry = entries.next();
-            if (header) {
-                if (init)
-                    sb.append(delimiter);
-                sb.append(entry.getKey());
-            } else {
-                if (init)
-                    sb.append(delimiter);
-                sb.append(entry.getValue());
+        for (String field : fields) {
+            Object value = map.get(field);
+            if (value != null)
+                sb.append(value);
+            if (!field.equals(fields[fields.length-1])) {
+                sb.append(delimiter);
             }
-            init = true;
         }
         return sb.toString();
     }
@@ -135,7 +130,7 @@ public class RecordConverter {
 
         if (node.isValueNode()) {
             try {
-                rtn.put(key, URLEncoder.encode(node.asText(),"UTF-8"));
+                rtn.put(key, URLEncoder.encode(node.asText(), "UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

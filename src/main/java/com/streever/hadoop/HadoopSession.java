@@ -1244,7 +1244,8 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new HdfsSource("source", getEnv(), this));
 
         // MapReduce Tools
-        getEnv().addCommand(new JhsStats("jhsstat", getEnv(), Direction.NONE));
+        // TODO: Add back once the field mappings are completed.
+//        getEnv().addCommand(new JhsStats("jhsstat", getEnv(), Direction.NONE));
 
         // Yarn Tools
         getEnv().addCommand(new ContainerStats("cstat", getEnv(), Direction.NONE));

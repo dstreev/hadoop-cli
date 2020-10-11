@@ -34,6 +34,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -250,11 +251,13 @@ public abstract class AbstractStats extends HdfsAbstract {
 
     public abstract void process(CommandLine cmdln);
 
-    protected void print(String recordSet, List<Map<String, Object>> records) {
+    protected void print(String recordSet, String[] fields, List<Map<String, Object>> records) {
         //System.out.println("Record set: " + recordSet);
         int i = 0;
         try {
             StringBuilder sb = new StringBuilder();
+            if (header)
+                sb.append(StringUtils.join(fields, delimiter));
             for (Map<String, Object> record : records) {
                 i++;
                 if (i % 8000 == 0)
@@ -262,15 +265,9 @@ public abstract class AbstractStats extends HdfsAbstract {
                 else if (i % 100 == 0)
                     System.out.print(".");
 
-                String recordStr = RecordConverter.mapToRecord(record, header, delimiter);
+                String recordStr = RecordConverter.mapToRecord(fields, record, delimiter);
 
-                if (header) {
-                    sb.append(recordStr);
-                    // Terminate Loop.
-                    break;
-                } else {
-                    sb.append(recordStr).append("\n");
-                }
+                sb.append(recordStr).append("\n");
             }
             // If the options say to write to hdfs.
             if (baseOutputDir != null) {
@@ -287,8 +284,8 @@ public abstract class AbstractStats extends HdfsAbstract {
 
     }
 
-    protected Map<String,String> getQueries(CommandLine cmd) {
-        Map<String,String> rtn = new LinkedHashMap<String,String>();
+    protected Map<String, String> getQueries(CommandLine cmd) {
+        Map<String, String> rtn = new LinkedHashMap<String, String>();
         Long begin = startTime;
         Long end = endTime;
 
@@ -302,7 +299,7 @@ public abstract class AbstractStats extends HdfsAbstract {
                 sb.append("&finishedTimeEnd=").append(begin);
                 sb2.append("&finishedTimeEnd=").append(new Date(begin));
                 begin += 1;
-                rtn.put(sb.toString(),sb2.toString());
+                rtn.put(sb.toString(), sb2.toString());
             }
         }
 
@@ -384,7 +381,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         //                .build();
         opts.addOption(delimiterOption);
 
-        Option headerOption = new Option("hdr","header", false, "Print Record Header");
+        Option headerOption = new Option("hdr", "header", false, "Print Record Header");
         headerOption.setRequired(false);
 //        Option headerOption = Option.builder("hdr").required(false)
 //                .argName("header")
@@ -404,13 +401,13 @@ public abstract class AbstractStats extends HdfsAbstract {
 
         Option incOption = new Option("inc", "increment", true, "Query Increment in minutes");
         incOption.setRequired(false);
-    //        Option incOption = Option.builder("inc").required(false)
-    //                .argName("increment")
-    //                .desc("Query Increment in Minutes")
-    //                .hasArg(true)
-    //                .numberOfArgs(1)
-    //                .longOpt("increment")
-    //                .build();
+        //        Option incOption = Option.builder("inc").required(false)
+        //                .argName("increment")
+        //                .desc("Query Increment in Minutes")
+        //                .hasArg(true)
+        //                .numberOfArgs(1)
+        //                .longOpt("increment")
+        //                .build();
         opts.addOption(incOption);
 
         Option schemaOption = new Option("sch", "schema", false, "wip - Print Record Schema");
@@ -434,7 +431,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         //                .build();
         opts.addOption(outputOption);
 
-        Option cfOption = new Option("cf","controlfile", true,
+        Option cfOption = new Option("cf", "controlfile", true,
                 "wip - Control File use to track run iterations");
         cfOption.setRequired(false);
         //        Option cfOption = Option.builder("cf").required(false)
