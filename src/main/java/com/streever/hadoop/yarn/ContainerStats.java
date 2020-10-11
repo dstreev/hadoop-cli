@@ -43,7 +43,6 @@ import java.util.Map;
  * Using the Resource Manager JMX, collect the stats on applications since the last time this was run or up to
  * 'n' (limit).
  */
-@Deprecated
 public class ContainerStats extends AbstractStats {
 
     public ContainerStats(String name) {
@@ -69,7 +68,7 @@ public class ContainerStats extends AbstractStats {
     @Override
     public void process(CommandLine cmdln) {
 
-        String hostAndPort = configuration.get("yarn.resourcemanager.webapp.address");
+        String hostAndPort = getResourceManagerWebAddress();
 
         System.out.println("Resource Manager Server URL: " + hostAndPort);
 
@@ -86,7 +85,7 @@ public class ContainerStats extends AbstractStats {
             String query = entry.getKey();
             System.out.println("Query: " + entry.getValue());
             try {
-                URL appsUrl = new URL("http://" + rootPath + "?" + query);
+                URL appsUrl = new URL(getProtocol() + rootPath + "?" + query);
 
                 URLConnection appsConnection = appsUrl.openConnection();
                 String appsJson = IOUtils.toString(appsConnection.getInputStream());
@@ -101,7 +100,7 @@ public class ContainerStats extends AbstractStats {
                     System.out.println(appId);
 
                     // Get App Detail   <api>/<job_id>
-                    URL appUrl = new URL("http://" + rootPath + "/" + appId);
+                    URL appUrl = new URL(getProtocol() + rootPath + "/" + appId);
                     URLConnection appConnection = appUrl.openConnection();
                     String appJson = IOUtils.toString(appConnection.getInputStream());
 
@@ -110,7 +109,7 @@ public class ContainerStats extends AbstractStats {
 
 
                     // App Attempts
-                    URL attemptsUrl = new URL("http://" + rootPath + "/" + appId + "/appattempts");
+                    URL attemptsUrl = new URL(getProtocol() + rootPath + "/" + appId + "/appattempts");
                     URLConnection attemptsConnection = attemptsUrl.openConnection();
                     String attemptsJson = IOUtils.toString(attemptsConnection.getInputStream());
 
@@ -133,7 +132,7 @@ public class ContainerStats extends AbstractStats {
                     String appId = appMap.get("id").toString();
 
                     // App Attempts
-                    URL tasksUrl = new URL("http://" + rootPath + "/" + appId + "/appattempts");
+                    URL tasksUrl = new URL(getProtocol() + rootPath + "/" + appId + "/appattempts");
                     URLConnection tasksConnection = tasksUrl.openConnection();
                     String tasksJson = IOUtils.toString(tasksConnection.getInputStream());
 

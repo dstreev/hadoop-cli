@@ -46,7 +46,6 @@ import java.util.Map;
  * Using the Resource Manager JMX, collect the queue stats .
  *
  */
-@Deprecated
 public class SchedulerStats extends AbstractStats {
 
     private String timestamp = null;
@@ -77,7 +76,7 @@ public class SchedulerStats extends AbstractStats {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
         this.timestamp = df.format(new Date());
 
-        String hostAndPort = configuration.get("yarn.resourcemanager.webapp.address");
+        String hostAndPort = getResourceManagerWebAddress();
 
         System.out.println("Resource Manager Server URL: " + hostAndPort);
 
@@ -85,7 +84,7 @@ public class SchedulerStats extends AbstractStats {
 
         try {
 
-            URL schUrl = new URL("http://" + rootPath);
+            URL schUrl = new URL(getProtocol() + rootPath);
 
             URLConnection schConnection = schUrl.openConnection();
             String schJson = IOUtils.toString(schConnection.getInputStream());

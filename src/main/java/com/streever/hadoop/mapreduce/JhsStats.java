@@ -41,7 +41,6 @@ import java.util.*;
  * Using the Job History Server URL, collect the stats on jobs since the last time this was run or up to
  * 'n' (limit).
  */
-@Deprecated
 public class JhsStats extends AbstractStats {
 
     public JhsStats(String name) {
@@ -86,7 +85,7 @@ public class JhsStats extends AbstractStats {
             System.out.println("Query: " + entry.getValue());
 
             try {
-                URL jobs = new URL("http://" + rootPath + "?" + query);
+                URL jobs = new URL(getProtocol() + rootPath + "?" + query);
 
                 URLConnection jobsConnection = jobs.openConnection();
                 String jobsJson = IOUtils.toString(jobsConnection.getInputStream());
@@ -99,7 +98,7 @@ public class JhsStats extends AbstractStats {
                 for (String jobId : jobIdList) {
                     System.out.println(jobId);
                     // Get Job Detail   <api>/<job_id>
-                    URL jobUrl = new URL("http://" + rootPath + "/" + jobId);
+                    URL jobUrl = new URL(getProtocol() + rootPath + "/" + jobId);
                     URLConnection jobConnection = jobUrl.openConnection();
                     String jobJson = IOUtils.toString(jobConnection.getInputStream());
 
@@ -107,7 +106,7 @@ public class JhsStats extends AbstractStats {
                     addRecord("job", jobDetailMap);
 
                     // Job Counter
-                    URL jobCounter = new URL("http://" + rootPath + "/" + jobId + "/counters");
+                    URL jobCounter = new URL(getProtocol() + rootPath + "/" + jobId + "/counters");
                     URLConnection jobCounterConnection = jobCounter.openConnection();
                     String jobCounterJson = IOUtils.toString(jobCounterConnection.getInputStream());
 
@@ -115,7 +114,7 @@ public class JhsStats extends AbstractStats {
                     addRecord("jobCounter", jobCounterMap);
 
                     // Tasks
-                    URL tasksUrl = new URL("http://" + rootPath + "/" + jobId + "/tasks");
+                    URL tasksUrl = new URL(getProtocol() + rootPath + "/" + jobId + "/tasks");
                     URLConnection tasksConnection = tasksUrl.openConnection();
                     String tasksJson = IOUtils.toString(tasksConnection.getInputStream());
 
@@ -124,7 +123,7 @@ public class JhsStats extends AbstractStats {
                     for (String taskId : taskIdList) {
 
                         // Get Task Detail  <api>/<job_id>/tasks/<task_id> (can get all this from task list above)
-                        URL taskUrl = new URL("http://" + rootPath + "/" + jobId + "/tasks/" + taskId);
+                        URL taskUrl = new URL(getProtocol() + rootPath + "/" + jobId + "/tasks/" + taskId);
                         URLConnection taskConnection = taskUrl.openConnection();
                         String taskJson = IOUtils.toString(taskConnection.getInputStream());
 
@@ -132,7 +131,7 @@ public class JhsStats extends AbstractStats {
                         addRecord("task", taskDetailMap);
 
                         // Get Task Counters <api>/<job_id>/task/<task_id>/counters
-                        URL taskCounterUrl = new URL("http://" + rootPath + "/" + jobId + "/tasks/" + taskId + "/counters");
+                        URL taskCounterUrl = new URL(getProtocol() + rootPath + "/" + jobId + "/tasks/" + taskId + "/counters");
                         URLConnection taskCounterConnection = taskCounterUrl.openConnection();
                         String taskCounterJson = IOUtils.toString(taskCounterConnection.getInputStream());
 
@@ -140,7 +139,7 @@ public class JhsStats extends AbstractStats {
                         addRecord("taskCounter", taskCounterMap);
 
                         // Task Attempts
-                        URL taskAttemptsUrl = new URL("http://" + rootPath + "/" + jobId + "/tasks/" + taskId + "/attempts");
+                        URL taskAttemptsUrl = new URL(getProtocol() + rootPath + "/" + jobId + "/tasks/" + taskId + "/attempts");
                         URLConnection taskAttemptsConnection = taskAttemptsUrl.openConnection();
                         String taskAttemptsJson = IOUtils.toString(taskAttemptsConnection.getInputStream());
 
@@ -149,7 +148,7 @@ public class JhsStats extends AbstractStats {
 
                         for (String taskAttemptId : taskAttemptIdList) {
                             // Task Attempt
-                            URL taskAttemptUrl = new URL("http://" + rootPath + "/" + jobId + "/tasks/" + taskId + "/attempts/" + taskAttemptId);
+                            URL taskAttemptUrl = new URL(getProtocol() + rootPath + "/" + jobId + "/tasks/" + taskId + "/attempts/" + taskAttemptId);
                             URLConnection taskAttemptConnection = taskAttemptUrl.openConnection();
                             String taskAttemptJson = IOUtils.toString(taskAttemptConnection.getInputStream());
 
@@ -157,7 +156,7 @@ public class JhsStats extends AbstractStats {
                             addRecord("taskAttempt", taskAttemptMap);
 
                             // Task Attempt Counter
-                            URL taskAttemptCountersUrl = new URL("http://" + rootPath + "/" + jobId + "/tasks/" + taskId + "/attempts/" + taskAttemptId + "/counters");
+                            URL taskAttemptCountersUrl = new URL(getProtocol() + rootPath + "/" + jobId + "/tasks/" + taskId + "/attempts/" + taskAttemptId + "/counters");
                             URLConnection taskAttemptCountersConnection = taskAttemptCountersUrl.openConnection();
                             String taskAttemptCounterJson = IOUtils.toString(taskAttemptCountersConnection.getInputStream());
 

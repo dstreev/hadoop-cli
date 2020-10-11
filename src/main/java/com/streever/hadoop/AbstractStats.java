@@ -54,6 +54,7 @@ public abstract class AbstractStats extends HdfsAbstract {
 
     protected FSDataOutputStream outFS = null;
     protected String baseOutputDir = null;
+    protected Boolean ssl = Boolean.FALSE;
 
     protected DistributedFileSystem fs = null;
 
@@ -93,6 +94,14 @@ public abstract class AbstractStats extends HdfsAbstract {
 
     public AbstractStats(String name, Environment env) {
         super(name, env);
+    }
+
+    public String getProtocol() {
+        if (ssl) {
+            return "https://";
+        } else {
+            return "http://";
+        }
     }
 
     public List<Map<String, Object>> getRecordList(String recordType) {
@@ -141,6 +150,10 @@ public abstract class AbstractStats extends HdfsAbstract {
 
         // Get the Filesystem
         configuration = (Configuration) env.getValue(Constants.CFG);
+
+        if (cmd.hasOption("ssl")) {
+            ssl = Boolean.TRUE;
+        }
 
         try {
 
@@ -330,6 +343,11 @@ public abstract class AbstractStats extends HdfsAbstract {
         //                .build();
         opts.addOption(formatOption);
 
+        Option sslOption = new Option("ssl", "ssl", false,
+                "https connection");
+        sslOption.setRequired(false);
+        opts.addOption(sslOption);
+
         Option startOption = new Option("s", "start", true,
                 "Start time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
         startOption.setRequired(false);
@@ -341,7 +359,6 @@ public abstract class AbstractStats extends HdfsAbstract {
         //                .longOpt("start")
         //                .build();
         opts.addOption(startOption);
-
 
         Option endOption = new Option("e", "end", true,
                 "End time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
@@ -432,4 +449,39 @@ public abstract class AbstractStats extends HdfsAbstract {
         return opts;
     }
 
+    public String getResourceManagerWebAddress() {
+        // Check for HA.
+        // yarn.resourcemanager.ha.enabled=true
+        String rmAddress = null;
+        String ha = configuration.get("yarn.resourcemanager.ha.enabled");
+        if (ha != null && Boolean.parseBoolean(ha)) {
+            // Get the RM id's
+            // yarn.resourcemanager.ha.rm-ids
+            String[] rmIds = configuration.get("yarn.resourcemanager.ha.rm-ids").split(",");
+            // Get the Host and Port Address using the first id.
+            // Is SSL?
+            if (ssl) {
+                rmAddress = configuration.get("yarn.resourcemanager.webapp.https.address." + rmIds[0]);
+            } else {
+                rmAddress = configuration.get("yarn.resourcemanager.webapp.http.address." + rmIds[0]);
+                if (rmAddress == null) {
+                    // Legacy
+                    rmAddress = configuration.get("yarn.resourcemanager.webapp.address" + rmIds[0]);
+                }
+            }
+        } else {
+            // Non HA
+            // Is SSL?
+            if (ssl) {
+                rmAddress = configuration.get("yarn.resourcemanager.webapp.https.address");
+            } else {
+                rmAddress = configuration.get("yarn.resourcemanager.webapp.http.address");
+                if (rmAddress == null) {
+                    // Legacy
+                    rmAddress = configuration.get("yarn.resourcemanager.webapp.address");
+                }
+            }
+        }
+        return rmAddress;
+    }
 }
