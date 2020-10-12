@@ -463,7 +463,7 @@ public abstract class AbstractStats extends HdfsAbstract {
                 rmAddress = configuration.get("yarn.resourcemanager.webapp.http.address." + rmIds[0]);
                 if (rmAddress == null) {
                     // Legacy
-                    rmAddress = configuration.get("yarn.resourcemanager.webapp.address" + rmIds[0]);
+                    rmAddress = configuration.get("yarn.resourcemanager.webapp.address." + rmIds[0]);
                 }
             }
         } else {
