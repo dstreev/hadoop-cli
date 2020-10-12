@@ -47,7 +47,7 @@
         <maven.assembly.version>3.3.0</maven.assembly.version>
 
         <!-- Support  Libs-->
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <jackson.parser>2.11.1</jackson.parser>
         <commons-io.version>2.4</commons-io.version>
         <jcabi.manifests.version>1.1</jcabi.manifests.version>
