@@ -1,0 +1,68 @@
+{
+  "apps": {
+    "app": [
+      {
+        "id": "application_1602471833055_0055",
+        "user": "hive",
+        "name": "HIVE-15a086aa-ccee-47b8-b6cd-6e15887651ba",
+        "queue": "alternate",
+        "state": "FINISHED",
+        "finalStatus": "SUCCEEDED",
+        "progress": 100.0,
+        "trackingUI": "History",
+        "trackingUrl": "https://m02.streever.local:8090/proxy/application_1602471833055_0055/",
+        "diagnostics": "Session timed out, lastDAGCompletionTime=1602616466417 ms, sessionTimeoutInterval=600000 ms\nSession stats:submittedDAGs=3, successfulDAGs=3, failedDAGs=0, killedDAGs=0\n",
+        "clusterId": 1602471833055,
+        "applicationType": "TEZ",
+        "applicationTags": "hive_20201013150156_215d6483-ab9a-4a71-b9ab-e75535ab524a,userid=dstreev",
+        "priority": 0,
+        "startedTime": 1602615723178,
+        "launchTime": 1602615723246,
+        "finishedTime": 1602617113183,
+        "elapsedTime": 1390005,
+        "amContainerLogs": "https://w08.streever.local:8044/node/containerlogs/container_e124_1602471833055_0055_01_000001/hive",
+        "amHostHttpAddress": "w08.streever.local:8044",
+        "amRPCAddress": "w08.streever.local:33266",
+        "masterNodeId": "w08.streever.local:45454",
+        "allocatedMB": -1,
+        "allocatedVCores": -1,
+        "reservedMB": -1,
+        "reservedVCores": -1,
+        "runningContainers": -1,
+        "memorySeconds": 30913415,
+        "vcoreSeconds": 5991,
+        "queueUsagePercentage": 0.0,
+        "clusterUsagePercentage": 0.0,
+        "resourceSecondsMap": {
+          "entry": {
+            "key": "memory-mb",
+            "value": "30913415"
+          },
+          "entry": {
+            "key": "vcores",
+            "value": "5991"
+          }
+        },
+        "preemptedResourceMB": 0,
+        "preemptedResourceVCores": 0,
+        "numNonAMContainerPreempted": 0,
+        "numAMContainerPreempted": 0,
+        "preemptedMemorySeconds": 0,
+        "preemptedVcoreSeconds": 0,
+        "preemptedResourceSecondsMap": {},
+        "logAggregationStatus": "SUCCEEDED",
+        "unmanagedApplication": false,
+        "amNodeLabelExpression": "",
+        "timeouts": {
+          "timeout": [
+            {
+              "type": "LIFETIME",
+              "expiryTime": "UNLIMITED",
+              "remainingTimeInSeconds": -1
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

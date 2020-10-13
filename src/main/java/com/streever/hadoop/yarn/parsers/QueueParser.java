@@ -175,6 +175,8 @@ public class QueueParser {
                             iRecord.put("user.numActiveApplications", userNode.get("numActiveApplications").asText());
                             iRecord.put("user.numPendingApplications", userNode.get("numPendingApplications").asText());
                             iRecord.put("user.username", userNode.get("username").asText());
+                            iRecord.put("user.userWeight", userNode.get("userWeight").asText());
+                            iRecord.put("user.isActive", userNode.get("isActive").asText());
                             JsonNode resNode = userNode.get("resourcesUsed");
                             iRecord.put("user.resourcesUsed.memory", resNode.get("memory").asText());
                             iRecord.put("user.resourcesUsed.vCores", resNode.get("vCores").asText());

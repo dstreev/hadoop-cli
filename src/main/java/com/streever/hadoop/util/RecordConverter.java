@@ -106,7 +106,7 @@ public class RecordConverter {
             delimiter = RecordConverter.delimiter;
         }
 
-        Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
+//        Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
         boolean init = false;
         for (String field : fields) {
             Object value = map.get(field);

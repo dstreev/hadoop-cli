@@ -30,11 +30,9 @@ import com.streever.hadoop.util.RecordConverter;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -56,6 +54,7 @@ public abstract class AbstractStats extends HdfsAbstract {
     protected FSDataOutputStream outFS = null;
     protected String baseOutputDir = null;
     protected Boolean ssl = Boolean.FALSE;
+    protected Boolean raw = Boolean.FALSE;
 
     protected DistributedFileSystem fs = null;
 
@@ -190,26 +189,60 @@ public abstract class AbstractStats extends HdfsAbstract {
                 this.delimiter = DEFAULT_DELIMITER;
             }
 
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            if (cmd.hasOption("start")) {
-                Date startDate = null;
-                try {
-                    startDate = df.parse(cmd.getOptionValue("start"));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    commandReturn.setCode(CODE_BAD_DATE);
-                    commandReturn.getErr().print(e.getMessage());
-                    return commandReturn;
-//                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
-                }
-                startTime = startDate.getTime();
-            } else {
-                // Set Start Time to previous day IF no config is specified.
-                Calendar startCal = Calendar.getInstance();
-                startCal.add(Calendar.DAY_OF_MONTH, -1);
-                Date startDate = startCal.getTime();
-                startTime = startDate.getTime();
+            if (cmd.hasOption("raw")) {
+                this.raw = Boolean.TRUE;
             }
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            // Default Behaviour
+            // Set Start Time to previous day IF no config is specified.
+            Calendar startCal = Calendar.getInstance();
+            Date startDate = new Date(); // default today.
+            if (cmd.hasOption("last")) {
+                String lastOption = cmd.getOptionValue("last");
+                String[] lastParts = lastOption.split("-");
+                if (lastParts.length == 2 && NumberUtils.isCreatable(lastParts[0])) {
+                    Integer window = Integer.parseInt(lastParts[0]);
+                    if (lastParts[1].toUpperCase().startsWith("MIN")) {
+                        startCal.add(Calendar.MINUTE, (-1 * window));
+                        increment = 60l * 1000l;
+                    } else if (lastParts[1].toUpperCase().startsWith("HOUR")) {
+                        startCal.add(Calendar.HOUR, (-1 * window));
+                        increment = 10l * 60l * 1000l; // ten minutes
+                    } else if (lastParts[1].toUpperCase().startsWith("DAY")) {
+                        startCal.add(Calendar.DAY_OF_MONTH, (-1 * window));
+                        increment = 60l * 60l * 1000l; // 1 hour
+                    } else {
+                        // bad.
+                        System.err.println("last option can't be parsed");
+                        throw new RuntimeException("stat option 'l|last' can't be parsed");
+                    }
+                } else {
+                    System.err.println("last option can't be parsed");
+                    throw new RuntimeException("stat option 'l|last' can't be parsed");
+                }
+                startDate = startCal.getTime();
+            } else if (cmd.hasOption("start")) {
+                if (cmd.hasOption("start")) {
+                    try {
+                        startDate = df.parse(cmd.getOptionValue("start"));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        commandReturn.setCode(CODE_BAD_DATE);
+                        commandReturn.getErr().print(e.getMessage());
+                        return commandReturn;
+                    }
+                }
+            } else {
+                // default is 1 day.
+                startCal.add(Calendar.DAY_OF_MONTH, -1);
+                startDate = startCal.getTime();
+            }
+
+            // TODO: Need to work in 'current'
+            // Set the startTime
+            startTime = startDate.getTime();
 
             if (cmd.hasOption("end")) {
                 Date endDate = null;
@@ -257,7 +290,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         try {
             StringBuilder sb = new StringBuilder();
             if (header)
-                sb.append(StringUtils.join(fields, delimiter));
+                sb.append(StringUtils.join(fields, delimiter)).append("\n");
             for (Map<String, Object> record : records) {
                 i++;
                 if (i % 8000 == 0)
@@ -320,24 +353,11 @@ public abstract class AbstractStats extends HdfsAbstract {
 
         Option helpOption = new Option("h", "help", false, "Help");
         helpOption.setRequired(false);
-        //        Option helpOption = Option.builder("h").required(false)
-        //                .argName("help")
-        //                .desc("Help")
-        //                .hasArg(false)
-        //                .longOpt("help")
-        //                .build();
         opts.addOption(helpOption);
 
         Option formatOption = new Option("ff", "fileFormat", true,
                 "Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.");
         formatOption.setRequired(false);
-        //        Option formatOption = Option.builder("ff").required(false)
-        //                .argName("fileFormat")
-        //                .desc("Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.")
-        //                .hasArg(true)
-        //                .numberOfArgs(1)
-        //                .longOpt("fileFormat")
-        //                .build();
         opts.addOption(formatOption);
 
         Option sslOption = new Option("ssl", "ssl", false,
@@ -345,103 +365,67 @@ public abstract class AbstractStats extends HdfsAbstract {
         sslOption.setRequired(false);
         opts.addOption(sslOption);
 
+        OptionGroup beginOptionGroup = new OptionGroup();
         Option startOption = new Option("s", "start", true,
                 "Start time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
         startOption.setRequired(false);
-        //        Option startOption = Option.builder("s").required(false)
-        //                .argName("start")
-        //                .desc("Start time for retrieval in 'yyyy-MM-dd HH:mm:ss'")
-        //                .hasArg(true)
-        //                .numberOfArgs(1)
-        //                .longOpt("start")
-        //                .build();
-        opts.addOption(startOption);
+        beginOptionGroup.addOption(startOption);
+
+        Option lastOption = new Option("l", "last", true,
+                "last x-DAY(S)|x-HOUR(S)|x-MIN(S). 1-HOUR=1 hour, 2-DAYS=2 days, 3-HOURS=3 hours, etc.");
+        lastOption.setRequired(false);
+        beginOptionGroup.addOption(lastOption);
+
+        opts.addOptionGroup(beginOptionGroup);
+
+        // TODO: WIP for current stats.
+//        Option currentOption = new Option("c", "current", false, "Get Current / Active Records");
+//        currentOption.setRequired(false);
+//        beginOptionGroup.addOption(currentOption);
 
         Option endOption = new Option("e", "end", true,
                 "End time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
         endOption.setRequired(false);
-        //        Option endOption = Option.builder("e").required(false)
-        //                .argName("end")
-        //                .desc("End time for retrieval in 'yyyy-MM-dd HH:mm:ss'")
-        //                .hasArg(true)
-        //                .numberOfArgs(1)
-        //                .longOpt("end")
-        //                .build();
         opts.addOption(endOption);
+
+        OptionGroup formatGroup = new OptionGroup();
 
         Option delimiterOption = new Option("d", "delimiter", true,
                 "Record Delimiter (Cntrl-A is default).");
         delimiterOption.setRequired(false);
-        //        Option delimiterOption = Option.builder("d").required(false)
-        //                .argName("delimiter")
-        //                .desc("Record Delimiter (Cntrl-A is default).")
-        //                .hasArg(true)
-        //                .numberOfArgs(1)
-        //                .longOpt("delimiter")
-        //                .build();
-        opts.addOption(delimiterOption);
+        formatGroup.addOption(delimiterOption);
+
+
+        // TODO: Need to implement.
+        Option rawOption = new Option("raw", "raw", false,
+                "Raw Record Output");
+        rawOption.setRequired(false);
+        formatGroup.addOption(rawOption);
+
+        opts.addOptionGroup(formatGroup);
 
         Option headerOption = new Option("hdr", "header", false, "Print Record Header");
         headerOption.setRequired(false);
-//        Option headerOption = Option.builder("hdr").required(false)
-//                .argName("header")
-//                .desc("Print Record Header")
-//                .longOpt("header")
-//                .build();
         opts.addOption(headerOption);
 
-        Option currentOption = new Option("c", "current", false, "Get Current / Active Records");
-        currentOption.setRequired(false);
-//        Option currentOption = Option.builder("c").required(false)
-//                .argName("current")
-//                .desc("Get Current / Active Records")
-//                .longOpt("current")
-//                .build();
-        opts.addOption(currentOption);
 
         Option incOption = new Option("inc", "increment", true, "Query Increment in minutes");
         incOption.setRequired(false);
-        //        Option incOption = Option.builder("inc").required(false)
-        //                .argName("increment")
-        //                .desc("Query Increment in Minutes")
-        //                .hasArg(true)
-        //                .numberOfArgs(1)
-        //                .longOpt("increment")
-        //                .build();
         opts.addOption(incOption);
 
-        Option schemaOption = new Option("sch", "schema", false, "wip - Print Record Schema");
-        schemaOption.setRequired(false);
-        //        Option schemaOption = Option.builder("sch").required(false)
-        //                .argName("schema")
-        //                .desc("wip - Print Record Schema")
-        //                .longOpt("schema")
-        //                .build();
-        opts.addOption(schemaOption);
+//        Option schemaOption = new Option("sch", "schema", false, "wip - Print Record Schema");
+//        schemaOption.setRequired(false);
+//        opts.addOption(schemaOption);
 
         Option outputOption = new Option("o", "output", true,
                 "Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.");
         outputOption.setRequired(false);
-        //        Option outputOption = Option.builder("o").required(false)
-        //                .argName("output")
-        //                .desc("Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.")
-        //                .hasArg(true)
-        //                .numberOfArgs(1)
-        //                .longOpt("output")
-        //                .build();
         opts.addOption(outputOption);
 
-        Option cfOption = new Option("cf", "controlfile", true,
-                "wip - Control File use to track run iterations");
-        cfOption.setRequired(false);
-        //        Option cfOption = Option.builder("cf").required(false)
-        //                .argName("controlfile")
-        //                .desc("wip - Control File use to track run iterations")
-        //                .hasArg(true)
-        //                .numberOfArgs(1)
-        //                .longOpt("controlfile")
-        //                .build();
-        opts.addOption(cfOption);
+//        Option cfOption = new Option("cf", "controlfile", true,
+//                "wip - Control File use to track run iterations");
+//        cfOption.setRequired(false);
+//        opts.addOption(cfOption);
 
         return opts;
     }

@@ -46,19 +46,24 @@ import java.util.Map;
  */
 public class ContainerStats extends AbstractStats {
     static final String APP = "app";
+    // Not helpful for workload analysis.  Leaving out for now.
     static final String ATTEMPT = "attempt";
+    // Very fine grained.  Will leave out, for now.
+    static final String ATTEMPT_CONTAINERS = "attemptContainers";
 
-    static final String[] APP_FIELDS = {"reporting_ts", "id", "user", "name", "queue", "state", "finalStatus", "progress", "trackingUI",
+    static final String[] APP_FIELDS = {"id", "user", "name", "queue", "state", "finalStatus", "progress", "trackingUI",
             "trackingUrl", "diagnostics", "clusterId", "applicationType", "applicationTags", "priority", "startedTime",
             "launchTime", "finishedTime", "elapsedTime", "amContainerLogs", "amHostHttpAddress", "amRPCAddress",
-            "masterNodeId", "allocatedMB", "allocatedVCores", "runningContainers", "memorySeconds", "vcoreSeconds",
-            "queueUsagePercentage", "allocatedVCores", "reservedMB", "reservedVCores", "runningContainers",
-            "memorySeconds", "vcoreSeconds", "queueUsagePercentage", "clusterUsagePercentage", "preemptedResourceMB",
-            "preemptedResourceVCores", "numNonAMContainerPreempted", "numAMContainerPreempted", "preemptedMemorySeconds",
-            "preemptedVcoreSeconds", "logAggregationStatus", "unmanagedApplication", "amNodeLabelExpression"};
+            "masterNodId","allocatedMB", "allocatedVCores",
+            "reservedMB", "reservedVCores",
+            "runningContainers", "memorySeconds", "vcoreSeconds", "queueUsagePercentage",
+            "clusterUsagePercentage", "preemptedResourceMB", "preemptedResourceVCores",
+            "numNonAMContainerPreempted",
+            "numAMContainerPreempted", "logAggregationStatus", "unmanagedApplication", "appNodeLabelExpression",
+            "amNodeLabelExpression"};
 
-    static final String[] APP_ATTEMPT_FIELDS = {"reporting_ts", "appId", "id", "startTime", "finishedTime",
-            "containerId", "nodeHttpAddress", "nodeId", "logsLink", "blacklistedNodes", "nodesBlacklistedBySystem", "appAttemptId"};
+    // Not using currently.  Wasn't sure this added much value for workload analysis.
+    static final String[] APP_ATTEMPT_FIELDS = {"id", "nodeId", "nodeHttpAddress", "logsLink", "containerId", "startTime"};
 
     private static Map<String, String[]> recordFieldMap;
 
@@ -102,8 +107,8 @@ public class ContainerStats extends AbstractStats {
         Iterator<Map.Entry<String, String>> iQ = queries.entrySet().iterator();
 
         while (iQ.hasNext()) {
-
             Map.Entry<String, String> entry = iQ.next();
+            System.out.println("Resource Manager Query Parameters: " + entry.getValue());
 
             String query = entry.getKey();
 //            System.out.println("Query: " + entry.getValue());
@@ -113,28 +118,33 @@ public class ContainerStats extends AbstractStats {
                 URLConnection appsConnection = appsUrl.openConnection();
                 String appsJson = IOUtils.toString(appsConnection.getInputStream());
 
-                YarnAppRecordConverter yarnRc = new YarnAppRecordConverter();
+                if (raw) {
+                    System.out.println(appsJson);
+                } else {
+                    YarnAppRecordConverter yarnRc = new YarnAppRecordConverter();
 
-                // Get Apps List and generate full item list.
+                    // Get Apps List and generate full item list.
 
-                List<Map<String, Object>> apps = yarnRc.apps(appsJson);
+                    List<Map<String, Object>> apps = yarnRc.apps(appsJson);
 
-                for (Map<String, Object> appMap : apps) {
+                    for (Map<String, Object> appMap : apps) {
 
-                    addRecord(APP, appMap);
-                    String appId = appMap.get("id").toString();
+                        addRecord(APP, appMap);
+                        String appId = appMap.get("id").toString();
 
-                    // App Attempts
-                    URL tasksUrl = new URL(getProtocol() + rootPath + "/" + appId + "/appattempts");
-                    URLConnection tasksConnection = tasksUrl.openConnection();
-                    String tasksJson = IOUtils.toString(tasksConnection.getInputStream());
+                        // App Attempts
+                        URL tasksUrl = new URL(getProtocol() + rootPath + "/" + appId + "/appattempts");
+                        URLConnection tasksConnection = tasksUrl.openConnection();
+                        String tasksJson = IOUtils.toString(tasksConnection.getInputStream());
 
-                    List<Map<String, Object>> attemptsList = yarnRc.appAttempts(tasksJson, appId);
+                        // Not sure this adds much
+//                    List<Map<String, Object>> attemptsList = yarnRc.appAttempts(tasksJson, appId);
+//
+//                    for (Map<String, Object> attemptMap : attemptsList) {
+//                        addRecord(ATTEMPT, attemptMap);
+//                    }
 
-                    for (Map<String, Object> attemptMap : attemptsList) {
-                        addRecord(ATTEMPT, attemptMap);
                     }
-
                 }
             } catch (MalformedURLException ure) {
                 ure.printStackTrace();
@@ -142,10 +152,12 @@ public class ContainerStats extends AbstractStats {
                 ioe.printStackTrace();
             }
 
-            Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
-            while (rIter.hasNext()) {
-                Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
-                print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
+            if (!raw) {
+                Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
+                while (rIter.hasNext()) {
+                    Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
+                    print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
+                }
             }
             clearCache();
         }

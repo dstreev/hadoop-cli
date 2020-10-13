@@ -48,23 +48,55 @@ public class SchedulerStats extends AbstractStats {
     static final String QUEUES = "queues";
     static final String QUEUE_USAGE = "queue_usage";
 
-    static final String[] QUEUES_FIELDS = {"reporting_ts", "queue.path", "type", "capacity", "usedCapacity", "maxCapacity",
-    "absoluteCapacity", "absoluteMaxCapacity", "absoluteUsedCapacity", "numApplications", "queueName", "state",
-    "resourcesUsed.memory", "resourcesUsed.vCores", "hideReservationQueues", "allocationContainers", "reservedContainers",
-    "pendingContainers", "minEffectiveCapacity.memory", "minEffectiveCapacity.vCores", "maxEffectiveCapacity.memory",
-    "maxEffectiveCapacity.vCores", "maximumAllocation.memory", "maximumAllocation.vCores", "queuePriority","orderingPolicyInfo",
-    "autoCreateChildQueueEnabled", "numActiveApplications", "numPendingApplications", "numContainers", "maxApplications",
-    "maxApplicationsPerUser", "userLimit", "userLimitFactor", "configuredMaxAMResourceLimit", "AMResourceLimit.memory",
-    "AMResourceLimit.vCores", "usedAMResource.memory", "usedAMResource.vCores", "userAMResourceLimit.memory", "userAMResourceLimit.vCores",
-    "preemptionDisabled", "intraQueuePreemptionDisabled", "defaultPriority", "isAutoCreatedLeafQueue", "maxApplicationLifetime",
-    "defaultApplicationLifetime"};
+    // Used the actual output.  Docs aren't accurate.
+    static final String[] QUEUES_FIELDS = {"reporting_ts", "queue.path",
+            // shcedulerinfo
+            "type",
+            // parent queue
+            "capacity", "usedCapacity", "maxCapacity", "absoluteCapacity", "absoluteMaxCapacity", "absoluteUsedCapacity",
+            "numApplications", "usedResouces", "queueName", "state",
+            // parent queue.resoucesUsed
+            "resourcesUsed.memory", "resourcesUsed.vCores",
+            // leaf queue
+            "hideReservationQueues", "allocatedContainers", "reservedContainers",
+    "pendingContainers",
+            // capacities array
 
-    static final String[] QUEUE_USAGE_FIELDS = {"reporting_ts", "queue.path", "capacity", "usedCapacity", "maxCapacity",
-    "absoluteCapacity", "absoluteMaxCapacity", "absoluteUsedCapacity", "numApplications", "queueName", "state",
-    "hideReservationQueues", "allocatedContainers", "reservedContainers", "pendingContainers", "queuePriority",
-    "orderingPolicyInfo", "autoCreateChildQueueEnabled", "numActiveApplications", "numPendingApplications", "numContainers",
-    "maxApplications", "maxApplicationsPerUser", "userLimit", "user.numActiveApplications", "user.numPendingApplications",
-    "user.username", "user.resourcesUsed.memory", "user.resourcesUsed.vCores"};
+            // resources array
+
+            // minEffectiveCapacity...
+            "minEffectiveCapacity.memory", "minEffectiveCapacity.vCores",
+            // maxEffectiveCapacity...
+            "maxEffectiveCapacity.memory", "maxEffectiveCapacity.vCores",
+            // maximumAllcation...
+            "maximumAllocation.memory", "maximumAllocation.vCores",
+            // queueAcls..
+
+            // leaf queue cont.
+            "queuePriority","orderingPolicyInfo", "autoCreateChildQueueEnabled",
+                // leafQueueTemplate
+            "numActiveApplications", "numPendingApplications", "numContainers", "maxApplications",
+    "maxApplicationsPerUser", "userLimit", "userLimitFactor", "configuredMaxAMResourceLimit",
+            // AMResourceLimit..
+            "AMResourceLimit.memory", "AMResourceLimit.vCores",
+            // usedAMResource
+            "usedAMResource.memory", "usedAMResource.vCores",
+            // userAMResourceLimit
+            "userAMResourceLimit.memory", "userAMResourceLimit.vCores",
+            // leaf cont.
+            "preemptionDisabled", "intraQueuePreemptionDisabled", "defaultPriority", "isAutoCreatedLeafQueue", "maxApplicationLifetime",
+            "defaultApplicationLifetime"};
+
+    static final String[] QUEUE_USAGE_FIELDS = {
+            // parent
+            "reporting_ts", "queue.path", "capacity", "usedCapacity", "maxCapacity",
+            "absoluteCapacity", "absoluteMaxCapacity", "absoluteUsedCapacity", "numApplications", "queueName", "state",
+            "hideReservationQueues", "allocatedContainers", "reservedContainers", "pendingContainers", "queuePriority",
+            "orderingPolicyInfo", "autoCreateChildQueueEnabled", "numActiveApplications", "numPendingApplications", "numContainers",
+            "maxApplications", "maxApplicationsPerUser", "userLimit",
+            // users in queue.
+            "user.numActiveApplications", "user.numPendingApplications",
+            "user.username", "user.userWeight", "user.isActive", "user.resourcesUsed.memory", "user.resourcesUsed.vCores"};
 
     private static Map<String, String[]> recordFieldMap;
 
@@ -114,6 +146,11 @@ public class SchedulerStats extends AbstractStats {
 
             URLConnection schConnection = schUrl.openConnection();
             String schJson = IOUtils.toString(schConnection.getInputStream());
+
+            if (raw) {
+                System.out.println(schJson);
+                return;
+            }
 
             QueueParser queueParser = new QueueParser(schJson);
             Map<String, List<Map<String,Object>>> queueSet = queueParser.getQueues(timestamp);
