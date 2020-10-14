@@ -28,7 +28,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -110,17 +112,28 @@ public class RecordConverter {
         boolean init = false;
         for (String field : fields) {
             Object value = map.get(field);
-            if (value != null)
-                sb.append(value);
-            if (!field.equals(fields[fields.length-1])) {
-                sb.append(delimiter);
+            if (value != null) {
+                try {
+                    String strValue = decode(value.toString());
+//                    String strValue = URLDecoder.decode(value.toString(), StandardCharsets.UTF_8.toString());
+                    sb.append(strValue);
+                } catch (Throwable t) {
+                    System.err.println("(App)Issue with decode: " + field + ":" + value);
+                }
+                if (!field.equals(fields[fields.length - 1])) {
+                    sb.append(delimiter);
+                }
+            } else {
+                if (!field.equals(fields[fields.length - 1])) {
+                    sb.append(delimiter);
+                }
             }
         }
         return sb.toString();
     }
 
-    protected Map<String, Object> buildInnerRecord(Map<String, Object> record, StringBuilder treeHierarchy, String key, JsonNode
-            node, TraversePath traversePath) {
+    protected Map<String, Object> buildInnerRecord(Map<String, Object> record, StringBuilder
+            treeHierarchy, String key, JsonNode node, TraversePath traversePath) {
 
         Map<String, Object> rtn = null;
         if (record != null)
@@ -130,9 +143,10 @@ public class RecordConverter {
 
         if (node.isValueNode()) {
             try {
-                rtn.put(key, URLEncoder.encode(node.asText(), "UTF-8"));
+//                rtn.put(key, URLEncoder.encode(node.asText(), "UTF-8"));
+                rtn.put(key, decode(node.asText()));
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                System.err.println("(App) Issue with decode: " + key + ":" + node.asText());
             }
         } else if (node.isArray()) {
             if (treeHierarchy == null) {
@@ -167,4 +181,10 @@ public class RecordConverter {
         return rtn;
     }
 
+    public static String decode(String value) throws UnsupportedEncodingException {
+        String rtn = value;
+        String checked = URLDecoder.decode(value, StandardCharsets.UTF_8.toString()).replaceAll("\n", " ");
+        rtn = checked;
+        return rtn;
+    }
 }

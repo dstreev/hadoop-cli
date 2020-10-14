@@ -45,11 +45,11 @@ import java.util.*;
  */
 public class SchedulerStats extends AbstractStats {
 
-    static final String QUEUES = "queues";
-    static final String QUEUE_USAGE = "queue_usage";
+    public static final String QUEUE = "queue";
+    public static final String QUEUE_USAGE = "queue_usage";
 
     // Used the actual output.  Docs aren't accurate.
-    static final String[] QUEUES_FIELDS = {"reporting_ts", "queue.path",
+    static final String[] QUEUE_FIELDS = {"reporting_ts", "queue.path",
             // shcedulerinfo
             "type",
             // parent queue
@@ -102,7 +102,7 @@ public class SchedulerStats extends AbstractStats {
 
     static {
         recordFieldMap = new HashMap<String, String[]>();
-        recordFieldMap.put(QUEUES, QUEUES_FIELDS);
+        recordFieldMap.put(QUEUE, QUEUE_FIELDS);
         recordFieldMap.put(QUEUE_USAGE, QUEUE_USAGE_FIELDS);
     }
 
@@ -171,6 +171,7 @@ public class SchedulerStats extends AbstractStats {
             Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
             while (rIter.hasNext()) {
                 Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
+                System.out.println("Key: " + recordSet.getKey());
                 print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
             }
 

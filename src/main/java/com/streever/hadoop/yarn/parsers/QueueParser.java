@@ -23,11 +23,17 @@
 
 package com.streever.hadoop.yarn.parsers;
 
+import com.streever.hadoop.util.RecordConverter;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static com.streever.hadoop.yarn.SchedulerStats.QUEUE;
+import static com.streever.hadoop.yarn.SchedulerStats.QUEUE_USAGE;
 
 /**
  * Created by streever on 2016-04-26.
@@ -66,17 +72,17 @@ public class QueueParser {
 
         for (Map<String, Object> item : queueList) {
             if (item.containsKey("maxApplications")) {
-                List<Map<String, Object>> qrList = rtn.get("queues");
+                List<Map<String, Object>> qrList = rtn.get(QUEUE);
                 if (qrList == null) {
                     qrList = new LinkedList<Map<String, Object>>();
-                    rtn.put("queues", qrList);
+                    rtn.put(QUEUE, qrList);
                 }
                 qrList.add(item);
             } else {
-                List<Map<String, Object>> qpList = rtn.get("queue_paths");
+                List<Map<String, Object>> qpList = rtn.get(QUEUE_USAGE);
                 if (qpList == null) {
                     qpList = new LinkedList<Map<String, Object>>();
-                    rtn.put("queue_paths", qpList);
+                    rtn.put(QUEUE_USAGE, qpList);
                 }
                 qpList.add(item);
             }
@@ -240,7 +246,14 @@ public class QueueParser {
                 } else {
                     if (!val.getKey().equals("users")) {
                         if (treePath.size() == 0) {
-                            rtn.put(val.getKey(), val.getValue().asText());
+                            try {
+                                String strValue = RecordConverter.decode(val.getValue().asText());
+//                                String strValue = URLDecoder.decode(val.getValue().asText(), StandardCharsets.UTF_8.toString());
+//                                String strValue =
+                                rtn.put(val.getKey(), strValue);
+                            } catch (Throwable t) {
+                                System.err.println("(Queue) Issue with decode: " + val.getKey() + ":" + val.getValue().asText());
+                            }
                         } else {
                             List<String> lclTp = new LinkedList<String>(treePath);
                             lclTp.add(val.getKey());

@@ -45,16 +45,16 @@ import java.util.Map;
  * 'n' (limit).
  */
 public class ContainerStats extends AbstractStats {
-    static final String APP = "app";
+    public static final String APP = "app";
     // Not helpful for workload analysis.  Leaving out for now.
-    static final String ATTEMPT = "attempt";
+    public static final String ATTEMPT = "attempt";
     // Very fine grained.  Will leave out, for now.
-    static final String ATTEMPT_CONTAINERS = "attemptContainers";
+    public static final String ATTEMPT_CONTAINERS = "attemptContainers";
 
-    static final String[] APP_FIELDS = {"id", "user", "name", "queue", "state", "finalStatus", "progress", "trackingUI",
+    static final String[] APP_FIELDS = {"reporting_ts", "id", "user", "name", "queue", "state", "finalStatus", "progress", "trackingUI",
             "trackingUrl", "diagnostics", "clusterId", "applicationType", "applicationTags", "priority", "startedTime",
             "launchTime", "finishedTime", "elapsedTime", "amContainerLogs", "amHostHttpAddress", "amRPCAddress",
-            "masterNodId","allocatedMB", "allocatedVCores",
+            "masterNodeId","allocatedMB", "allocatedVCores",
             "reservedMB", "reservedVCores",
             "runningContainers", "memorySeconds", "vcoreSeconds", "queueUsagePercentage",
             "clusterUsagePercentage", "preemptedResourceMB", "preemptedResourceVCores",
@@ -130,12 +130,13 @@ public class ContainerStats extends AbstractStats {
                     for (Map<String, Object> appMap : apps) {
 
                         addRecord(APP, appMap);
-                        String appId = appMap.get("id").toString();
+                        // SKipping Attempts for now.
+                        //                        String appId = appMap.get("id").toString();
 
                         // App Attempts
-                        URL tasksUrl = new URL(getProtocol() + rootPath + "/" + appId + "/appattempts");
-                        URLConnection tasksConnection = tasksUrl.openConnection();
-                        String tasksJson = IOUtils.toString(tasksConnection.getInputStream());
+//                        URL tasksUrl = new URL(getProtocol() + rootPath + "/" + appId + "/appattempts");
+//                        URLConnection tasksConnection = tasksUrl.openConnection();
+//                        String tasksJson = IOUtils.toString(tasksConnection.getInputStream());
 
                         // Not sure this adds much
 //                    List<Map<String, Object>> attemptsList = yarnRc.appAttempts(tasksJson, appId);
