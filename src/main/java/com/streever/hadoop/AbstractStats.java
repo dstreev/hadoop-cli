@@ -305,7 +305,7 @@ public abstract class AbstractStats extends HdfsAbstract {
             // If the options say to write to hdfs.
             if (baseOutputDir != null) {
                 String outputFilename = dfFile.format(new Date()) + ".txt";
-                HdfsWriter writer = new HdfsWriter(fs, baseOutputDir + "/" + recordSet.toUpperCase() + "/" + outputFilename);
+                HdfsWriter writer = new HdfsWriter(fs, baseOutputDir + "/" + recordSet.toLowerCase() + "/" + outputFilename);
                 writer.append(sb.toString().getBytes());
             } else {
                 System.out.println(sb.toString());
