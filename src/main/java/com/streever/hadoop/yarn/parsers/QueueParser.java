@@ -178,15 +178,30 @@ public class QueueParser {
                         while (userNodeIter.hasNext()) {
                             JsonNode userNode = userNodeIter.next();
                             Map<String, Object> iRecord = new LinkedHashMap<String, Object>(record);
-                            iRecord.put("user.numActiveApplications", userNode.get("numActiveApplications").asText());
-                            iRecord.put("user.numPendingApplications", userNode.get("numPendingApplications").asText());
-                            iRecord.put("user.username", userNode.get("username").asText());
-                            iRecord.put("user.userWeight", userNode.get("userWeight").asText());
-                            iRecord.put("user.isActive", userNode.get("isActive").asText());
+                            if (userNode.get("numActiveApplications") != null) {
+                                iRecord.put("user.numActiveApplications", userNode.get("numActiveApplications").asText());
+                            }
+                            if (userNode.get("numPendingApplications") != null) {
+                                iRecord.put("user.numPendingApplications", userNode.get("numPendingApplications").asText());
+                            }
+                            if (userNode.get("username") != null) {
+                                iRecord.put("user.username", userNode.get("username").asText());
+                            }
+                            if (userNode.get("userWeight") != null) {
+                                iRecord.put("user.userWeight", userNode.get("userWeight").asText());
+                            }
+                            if (userNode.get("isActive") != null) {
+                                iRecord.put("user.isActive", userNode.get("isActive").asText());
+                            }
                             JsonNode resNode = userNode.get("resourcesUsed");
-                            iRecord.put("user.resourcesUsed.memory", resNode.get("memory").asText());
-                            iRecord.put("user.resourcesUsed.vCores", resNode.get("vCores").asText());
-
+                            if (resNode != null) {
+                                if (resNode.get("memory") != null) {
+                                    iRecord.put("user.resourcesUsed.memory", resNode.get("memory").asText());
+                                }
+                                if (resNode.get("vCores") != null){
+                                    iRecord.put("user.resourcesUsed.vCores", resNode.get("vCores").asText());
+                                }
+                            }
                             rtn.add(iRecord);
                         }
                     }

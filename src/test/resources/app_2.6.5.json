@@ -1,0 +1,41 @@
+{
+  "apps": {
+    "app": [
+      {
+        "id": "application_1602641761807_0003",
+        "user": "dstreev",
+        "name": "HIVE-27b12600-5be8-474f-9396-03b5f6a9d1a7",
+        "queue": "default",
+        "state": "FINISHED",
+        "finalStatus": "SUCCEEDED",
+        "progress": 100.0,
+        "trackingUI": "History",
+        "trackingUrl": "http://k02.streever.local:8088/proxy/application_1602641761807_0003/",
+        "diagnostics": "Session stats:submittedDAGs=0, successfulDAGs=1, failedDAGs=0, killedDAGs=0\n",
+        "clusterId": 1602641761807,
+        "applicationType": "TEZ",
+        "applicationTags": "",
+        "priority": 0,
+        "startedTime": 1602777273157,
+        "finishedTime": 1602777354126,
+        "elapsedTime": 80969,
+        "amContainerLogs": "http://k03.streever.local:8042/node/containerlogs/container_e03_1602641761807_0003_01_000001/dstreev",
+        "amHostHttpAddress": "k03.streever.local:8042",
+        "allocatedMB": -1,
+        "allocatedVCores": -1,
+        "runningContainers": -1,
+        "memorySeconds": 1266835,
+        "vcoreSeconds": 94,
+        "queueUsagePercentage": 0.0,
+        "clusterUsagePercentage": 0.0,
+        "preemptedResourceMB": 0,
+        "preemptedResourceVCores": 0,
+        "numNonAMContainerPreempted": 0,
+        "numAMContainerPreempted": 0,
+        "logAggregationStatus": "SUCCEEDED",
+        "unmanagedApplication": false,
+        "amNodeLabelExpression": ""
+      }
+    ]
+  }
+}

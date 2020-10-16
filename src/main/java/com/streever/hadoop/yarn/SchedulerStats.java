@@ -41,7 +41,6 @@ import java.util.*;
  * Created by streever on 2016-04-25.
  * <p>
  * Using the Resource Manager JMX, collect the queue stats .
- *
  */
 public class SchedulerStats extends AbstractStats {
 
@@ -59,7 +58,7 @@ public class SchedulerStats extends AbstractStats {
             "resourcesUsed.memory", "resourcesUsed.vCores",
             // leaf queue
             "hideReservationQueues", "allocatedContainers", "reservedContainers",
-    "pendingContainers",
+            "pendingContainers",
             // capacities array
 
             // resources array
@@ -73,10 +72,10 @@ public class SchedulerStats extends AbstractStats {
             // queueAcls..
 
             // leaf queue cont.
-            "queuePriority","orderingPolicyInfo", "autoCreateChildQueueEnabled",
-                // leafQueueTemplate
+            "queuePriority", "orderingPolicyInfo", "autoCreateChildQueueEnabled",
+            // leafQueueTemplate
             "numActiveApplications", "numPendingApplications", "numContainers", "maxApplications",
-    "maxApplicationsPerUser", "userLimit", "userLimitFactor", "configuredMaxAMResourceLimit",
+            "maxApplicationsPerUser", "userLimit", "userLimitFactor", "configuredMaxAMResourceLimit",
             // AMResourceLimit..
             "AMResourceLimit.memory", "AMResourceLimit.vCores",
             // usedAMResource
@@ -134,15 +133,20 @@ public class SchedulerStats extends AbstractStats {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
         this.timestamp = df.format(new Date());
 
-        String hostAndPort = getResourceManagerWebAddress();
+        String baseRMUrlStr = getResourceManagerWebAddress();
+        // Test with Call.
+//        if (ResourceManagerResolvable(baseRMUrlStr)) {
+//            System.out.println("Checking Alternate RM Location. " + baseRMUrlStr + " is the standby and can't process REST API Calls");
+//            baseRMUrlStr = getResourceManagerWebAddress(true);
+//        }
 
-        System.out.println("Resource Manager Server URL: " + hostAndPort);
+        System.out.println("Resource Manager Server URL: " + baseRMUrlStr);
 
-        String rootPath = hostAndPort + "/ws/v1/cluster/scheduler";
+        String rootPath = baseRMUrlStr + "/ws/v1/cluster/scheduler";
 
         try {
 
-            URL schUrl = new URL(getProtocol() + rootPath);
+            URL schUrl = new URL(rootPath);
 
             URLConnection schConnection = schUrl.openConnection();
             String schJson = IOUtils.toString(schConnection.getInputStream());
@@ -153,12 +157,12 @@ public class SchedulerStats extends AbstractStats {
             }
 
             QueueParser queueParser = new QueueParser(schJson);
-            Map<String, List<Map<String,Object>>> queueSet = queueParser.getQueues(timestamp);
+            Map<String, List<Map<String, Object>>> queueSet = queueParser.getQueues(timestamp);
 
-            Iterator<Map.Entry<String,List<Map<String,Object>>>> qIter = queueSet.entrySet().iterator();
+            Iterator<Map.Entry<String, List<Map<String, Object>>>> qIter = queueSet.entrySet().iterator();
 
             while (qIter.hasNext()) {
-                Map.Entry<String, List<Map<String,Object>>> entry = qIter.next();
+                Map.Entry<String, List<Map<String, Object>>> entry = qIter.next();
                 addRecords(entry.getKey(), entry.getValue());
             }
 

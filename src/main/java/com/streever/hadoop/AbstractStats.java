@@ -31,12 +31,18 @@ import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.*;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +55,8 @@ import java.util.*;
  * 'n' (limit).
  */
 public abstract class AbstractStats extends HdfsAbstract {
+    protected ObjectMapper mapper = new ObjectMapper();
+
     protected Configuration configuration = null;
 
     protected FSDataOutputStream outFS = null;
@@ -153,6 +161,8 @@ public abstract class AbstractStats extends HdfsAbstract {
 
         if (cmd.hasOption("ssl")) {
             ssl = Boolean.TRUE;
+        } else {
+            ssl = Boolean.FALSE;
         }
 
         try {
@@ -430,6 +440,61 @@ public abstract class AbstractStats extends HdfsAbstract {
         return opts;
     }
 
+    protected String getInternalRMAddress(String rmId) {
+        String rmAddress = null;
+        if (ssl) {
+            rmAddress = configuration.get("yarn.resourcemanager.webapp.https.address." + rmId);
+        } else {
+            rmAddress = configuration.get("yarn.resourcemanager.webapp.http.address." + rmId);
+            if (rmAddress == null) {
+                // Legacy
+                rmAddress = configuration.get("yarn.resourcemanager.webapp.address." + rmId);
+            }
+        }
+        if (rmAddress == null) {
+            throw new RuntimeException("Could locate RM Web Address, check protocol");
+        } else {
+            rmAddress = getProtocol() + rmAddress;
+        }
+//        System.out.println("Checking Resource Manager Endpoint: " + rmAddress);
+        return rmAddress;
+    }
+
+    protected String getRMState(String urlStr) {
+        String rtn = null;
+        try {
+            URL infoUrl = new URL(urlStr + "/ws/v1/cluster/info");
+            URLConnection infoConnection = infoUrl.openConnection();
+            String infoJson = IOUtils.toString(infoConnection.getInputStream());
+            JsonNode info = mapper.readValue(infoJson, JsonNode.class);
+            JsonNode infoNode = info.get("clusterInfo");
+            JsonNode haStateNode = infoNode.get("haState");
+            rtn = haStateNode.asText();
+            System.out.println("RM: " + urlStr + " state: " + rtn);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            throw new RuntimeException("Failed to connect to RM at " + urlStr + ". Check Protocol.", ioe);
+        }
+        return rtn;
+    }
+
+    protected String getActiveRMAddress() {
+
+        String[] rmIds = configuration.get("yarn.resourcemanager.ha.rm-ids").split(",");
+        // Get the Host and Port Address using the first id.
+        // Is SSL?
+//        System.out.println("RM Ids: " + rmIds[0]);
+        // Look at the first RM's Info and check for Active.
+        String rmAddress = getInternalRMAddress(rmIds[0]);
+        if (!getRMState(rmAddress).equals("ACTIVE")) {
+            rmAddress = getInternalRMAddress(rmIds[1]);
+            if (!getRMState(rmAddress).equals("ACTIVE")) {
+                throw new RuntimeException("Could locate ACTIVE Resource Manager");
+            }
+        }
+        return rmAddress;
+    }
+
     public String getResourceManagerWebAddress() {
         // Check for HA.
         // yarn.resourcemanager.ha.enabled=true
@@ -437,32 +502,21 @@ public abstract class AbstractStats extends HdfsAbstract {
         String ha = configuration.get("yarn.resourcemanager.ha.enabled");
         if (ha != null && Boolean.parseBoolean(ha)) {
             // Get the RM id's
-            // yarn.resourcemanager.ha.rm-ids
-            String[] rmIds = configuration.get("yarn.resourcemanager.ha.rm-ids").split(",");
-            // Get the Host and Port Address using the first id.
-            // Is SSL?
-            if (ssl) {
-                rmAddress = configuration.get("yarn.resourcemanager.webapp.https.address." + rmIds[0]);
-            } else {
-                rmAddress = configuration.get("yarn.resourcemanager.webapp.http.address." + rmIds[0]);
-                if (rmAddress == null) {
-                    // Legacy
-                    rmAddress = configuration.get("yarn.resourcemanager.webapp.address." + rmIds[0]);
-                }
-            }
+            rmAddress = getActiveRMAddress();
         } else {
             // Non HA
             // Is SSL?
             if (ssl) {
-                rmAddress = configuration.get("yarn.resourcemanager.webapp.https.address");
+                rmAddress = getProtocol() + configuration.get("yarn.resourcemanager.webapp.https.address");
             } else {
-                rmAddress = configuration.get("yarn.resourcemanager.webapp.http.address");
+                rmAddress = getProtocol() + configuration.get("yarn.resourcemanager.webapp.http.address");
                 if (rmAddress == null) {
                     // Legacy
-                    rmAddress = configuration.get("yarn.resourcemanager.webapp.address");
+                    rmAddress = getProtocol() + configuration.get("yarn.resourcemanager.webapp.address");
                 }
             }
         }
         return rmAddress;
     }
+
 }

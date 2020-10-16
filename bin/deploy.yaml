@@ -1,4 +1,4 @@
-- hosts: sdlc
+- hosts: edge
   become: true
 
   vars:
@@ -23,7 +23,7 @@
 
     - name: Copy lib
       copy:
-        src: ../target/hadoop-cli-full-bin.jar
+        src: ../target/hadoop-cli-shaded.jar
         dest: /usr/local/hadoop-cli/lib
         mode: 0755
 
@@ -32,4 +32,5 @@
         src: /usr/local/hadoop-cli/bin/hadoopcli
         dest: /usr/local/bin/hadoopcli
         mode: 0755
+        state: link
 

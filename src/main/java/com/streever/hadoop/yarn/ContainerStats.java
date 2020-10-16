@@ -96,11 +96,16 @@ public class ContainerStats extends AbstractStats {
     @Override
     public void process(CommandLine cmdln) {
 
-        String hostAndPort = getResourceManagerWebAddress();
+        String baseRMUrlStr = getResourceManagerWebAddress();
+        // Test with Call.
+//        if (ResourceManagerResolvable(baseRMUrlStr)) {
+//            System.out.println("Checking Alternate RM Location. " + baseRMUrlStr + " is the standby and can't process REST API Calls");
+//            baseRMUrlStr = getResourceManagerWebAddress(true);
+//        }
 
-        System.out.println("Resource Manager Server URL: " + hostAndPort);
+        System.out.println("Resource Manager Server URL: " + baseRMUrlStr);
 
-        String rootPath = hostAndPort + "/ws/v1/cluster/apps";
+        String rootPath = baseRMUrlStr + "/ws/v1/cluster/apps";
 
         Map<String, String> queries = getQueries(cmdln);
 
@@ -111,9 +116,9 @@ public class ContainerStats extends AbstractStats {
             System.out.println("Resource Manager Query Parameters: " + entry.getValue());
 
             String query = entry.getKey();
-//            System.out.println("Query: " + entry.getValue());
+
             try {
-                URL appsUrl = new URL(getProtocol() + rootPath + "?" + query);
+                URL appsUrl = new URL(rootPath + "?" + query);
 
                 URLConnection appsConnection = appsUrl.openConnection();
                 String appsJson = IOUtils.toString(appsConnection.getInputStream());
