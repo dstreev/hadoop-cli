@@ -318,11 +318,53 @@ Delivered - Docs to come
 
 ### Scheduler Stats
 
-Delivered - Docs to come
+Collect Queue Stats from the YARN REST API.
+
+```
+usage: hadoop-cli <stats>
+ -d,--delimiter <arg>     Record Delimiter (Cntrl-A is default).
+ -e,--end <arg>           End time for retrieval in 'yyyy-MM-dd HH:mm:ss'
+ -ff,--fileFormat <arg>   Output filename format.  Value must be a pattern
+                          of 'SimpleDateFormat' format options.
+ -h,--help                Help
+ -hdr,--header            Print Record Header
+ -inc,--increment <arg>   Query Increment in minutes
+ -l,--last <arg>          last x-DAY(S)|x-HOUR(S)|x-MIN(S). 1-HOUR=1 hour,
+                          2-DAYS=2 days, 3-HOURS=3 hours, etc.
+ -o,--output <arg>        Output Base Directory (HDFS) (default
+                          System.out) from which all other sub-directories
+                          are based.
+ -raw,--raw               Raw Record Output
+ -s,--start <arg>         Start time for retrieval in 'yyyy-MM-dd
+                          HH:mm:ss'
+ -ssl,--ssl               https connection
+ -v,--verbose             show verbose output
+```
 
 ### Container Stats
 
-Delivered - Docs to come
+Collect Container Stats for the YARN REST API.
+
+```
+usage: hadoop-cli <stats>
+ -d,--delimiter <arg>     Record Delimiter (Cntrl-A is default).
+ -e,--end <arg>           End time for retrieval in 'yyyy-MM-dd HH:mm:ss'
+ -ff,--fileFormat <arg>   Output filename format.  Value must be a pattern
+                          of 'SimpleDateFormat' format options.
+ -h,--help                Help
+ -hdr,--header            Print Record Header
+ -inc,--increment <arg>   Query Increment in minutes
+ -l,--last <arg>          last x-DAY(S)|x-HOUR(S)|x-MIN(S). 1-HOUR=1 hour,
+                          2-DAYS=2 days, 3-HOURS=3 hours, etc.
+ -o,--output <arg>        Output Base Directory (HDFS) (default
+                          System.out) from which all other sub-directories
+                          are based.
+ -raw,--raw               Raw Record Output
+ -s,--start <arg>         Start time for retrieval in 'yyyy-MM-dd
+                          HH:mm:ss'
+ -ssl,--ssl               https connection
+ -v,--verbose             show verbose output
+```
 	
 ### Road Map
 

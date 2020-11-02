@@ -172,7 +172,7 @@ public class ContainerStats extends AbstractStats {
 
     protected void getHelp() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Collect Job History Server Stats for the JMX url.").append("\n");
+        sb.append("Collect Container Stats for the YARN REST API.").append("\n");
 
 
         System.out.println(sb.toString());

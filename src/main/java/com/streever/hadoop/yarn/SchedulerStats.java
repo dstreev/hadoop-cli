@@ -186,7 +186,7 @@ public class SchedulerStats extends AbstractStats {
 
     protected void getHelp() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Collect Queue Stats from the JMX url.").append("\n");
+        sb.append("Collect Queue Stats from the YARN REST API.").append("\n");
 
 
         System.out.println(sb.toString());
