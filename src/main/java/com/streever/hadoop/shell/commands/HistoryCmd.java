@@ -39,6 +39,11 @@ public class HistoryCmd extends AbstractCommand {
     }
 
     @Override
+    protected String getDescription() {
+        return "Commandline History";
+    }
+
+    @Override
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         if (env.getConsoleReader() != null) {
             jline.console.history.History history = env.getConsoleReader().getHistory();

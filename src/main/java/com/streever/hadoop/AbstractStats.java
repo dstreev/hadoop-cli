@@ -152,7 +152,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         if (cmd.hasOption("help")) {
             getHelp();
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("hadoop-cli <stats>", getOptions());
+            formatter.printHelp(getName(), getOptions());
             return commandReturn;
         }
 
@@ -349,13 +349,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         return rtn;
     }
 
-    protected void getHelp() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Collect Job History Server Stats for the JMX url.").append("\n");
-
-
-        System.out.println(sb.toString());
-    }
+    protected abstract void getHelp();
 
     @Override
     public Options getOptions() {

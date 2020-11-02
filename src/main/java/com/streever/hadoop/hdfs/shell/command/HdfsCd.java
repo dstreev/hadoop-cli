@@ -86,6 +86,11 @@ public class HdfsCd extends AbstractCommand {
     }
 
     @Override
+    protected String getDescription() {
+        return "Remote Change Directory";
+    }
+
+    @Override
     public Completer getCompleter() {
         return new FileSystemNameCompleter(this.env, false);
     }

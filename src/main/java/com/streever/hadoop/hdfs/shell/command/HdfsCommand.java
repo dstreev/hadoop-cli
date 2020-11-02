@@ -41,6 +41,11 @@ public class HdfsCommand extends HdfsAbstract {
         this(name, null, Direction.NONE);
     }
 
+    @Override
+    protected String getDescription() {
+        return "Native `hdfs` Commands";
+    }
+
     public HdfsCommand(String name, Environment env, Direction directionContext ) {
         super(name, env, directionContext);
     }

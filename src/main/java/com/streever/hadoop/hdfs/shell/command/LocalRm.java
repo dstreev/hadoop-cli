@@ -71,6 +71,11 @@ public class LocalRm extends HdfsCommand {
     }
 
     @Override
+    protected String getDescription() {
+        return "Local FS 'rm' command";
+    }
+
+    @Override
     public Options getOptions() {
         Options opts =  super.getOptions();
         opts.addOption("r", false, "delete recursively");

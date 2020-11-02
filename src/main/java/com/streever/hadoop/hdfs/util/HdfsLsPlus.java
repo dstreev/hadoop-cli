@@ -149,6 +149,11 @@ public class HdfsLsPlus extends HdfsAbstract {
         super(name);
     }
 
+    @Override
+    protected String getDescription() {
+        return "List PLUS service";
+    }
+
     public HdfsLsPlus(String name, Environment env, Direction directionContext) {
         super(name, env, directionContext);
     }

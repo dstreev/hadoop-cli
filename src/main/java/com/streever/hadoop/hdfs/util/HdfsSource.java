@@ -108,6 +108,11 @@ public class HdfsSource  extends HdfsAbstract {
 
 
     @Override
+    protected String getDescription() {
+        return "Run an external script of commands.";
+    }
+
+    @Override
     public Options getOptions() {
         Options opts = super.getOptions();
 

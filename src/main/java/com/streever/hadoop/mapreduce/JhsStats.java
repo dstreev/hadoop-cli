@@ -47,6 +47,11 @@ public class JhsStats extends AbstractStats {
         super(name);
     }
 
+    @Override
+    protected String getDescription() {
+        return "Collect Job History Server Stats for the JMX url";
+    }
+
     public JhsStats(String name, Environment env, Direction directionContext) {
         super(name, env, directionContext);
     }

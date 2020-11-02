@@ -36,6 +36,11 @@ public class Exit extends AbstractCommand {
         super(name);
     }
 
+    @Override
+    protected String getDescription() {
+        return "Exit";
+    }
+
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         System.exit(0);
         return commandReturn;

@@ -111,6 +111,11 @@ public class SchedulerStats extends AbstractStats {
         super(name);
     }
 
+    @Override
+    protected String getDescription() {
+        return "Collect Queue Stats from the YARN REST API";
+    }
+
     public SchedulerStats(String name, Environment env, Direction directionContext) {
         super(name, env, directionContext);
     }

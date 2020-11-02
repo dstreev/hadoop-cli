@@ -56,8 +56,13 @@ public abstract class AbstractCommand implements Command{
         this.name = name;
     }
 
+    protected abstract String getDescription();
+
     public String getHelpHeader() {
-        return "Options:";
+        StringBuilder sb = new StringBuilder();
+        sb.append(getDescription()).append("\n");
+        sb.append("Options:");
+        return sb.toString();
     }
 
     public String gethelpFooter() {
@@ -97,7 +102,7 @@ public abstract class AbstractCommand implements Command{
     }
 
     public String getUsage(){
-        return getName() + " [OPTION ...] [ARGS ...]";
+        return getName() + " [Options ...] [Args ...]";
     }
     
     protected static void logv(Environment env, String log){

@@ -43,6 +43,11 @@ public class HdfsRepair extends HdfsAbstract {
         super(name);
     }
 
+    @Override
+    protected String getDescription() {
+        return "HDFS Repair - Not Implemented Yet.";
+    }
+
     public HdfsRepair(String name, Environment env, Direction directionContext ) {
         super(name, env, directionContext);
     }

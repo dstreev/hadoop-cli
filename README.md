@@ -321,7 +321,7 @@ Delivered - Docs to come
 Collect Queue Stats from the YARN REST API.
 
 ```
-usage: hadoop-cli <stats>
+usage: sstat
  -d,--delimiter <arg>     Record Delimiter (Cntrl-A is default).
  -e,--end <arg>           End time for retrieval in 'yyyy-MM-dd HH:mm:ss'
  -ff,--fileFormat <arg>   Output filename format.  Value must be a pattern
@@ -346,7 +346,7 @@ usage: hadoop-cli <stats>
 Collect Container Stats for the YARN REST API.
 
 ```
-usage: hadoop-cli <stats>
+usage: cstat
  -d,--delimiter <arg>     Record Delimiter (Cntrl-A is default).
  -e,--end <arg>           End time for retrieval in 'yyyy-MM-dd HH:mm:ss'
  -ff,--fileFormat <arg>   Output filename format.  Value must be a pattern

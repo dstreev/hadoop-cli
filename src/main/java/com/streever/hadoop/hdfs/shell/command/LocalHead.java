@@ -106,6 +106,11 @@ public class LocalHead extends HdfsCommand {
     }
 
     @Override
+    protected String getDescription() {
+        return "Local `head` command";
+    }
+
+    @Override
     public Options getOptions() {
         Options opts = super.getOptions();
         opts.addOption("n", "linecount", true,

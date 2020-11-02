@@ -53,6 +53,11 @@ public class HdfsConnect extends AbstractCommand {
         this.completer = completer;
     }
 
+    @Override
+    protected String getDescription() {
+        return "Connect to HDFS";
+    }
+
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         try {
             // Get a value that over rides the default, if nothing then use default.

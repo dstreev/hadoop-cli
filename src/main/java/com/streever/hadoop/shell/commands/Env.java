@@ -39,6 +39,11 @@ public class Env extends AbstractCommand {
         super(name);
     }
 
+    @Override
+    protected String getDescription() {
+        return "Review current 'env' variables";
+    }
+
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         if (cmd.hasOption("l") || cmd.getOptions().length == 0) {
             Properties props = env.getProperties();

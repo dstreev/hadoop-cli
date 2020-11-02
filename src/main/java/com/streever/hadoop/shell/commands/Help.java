@@ -49,7 +49,11 @@ public class Help extends AbstractCommand {
         this.completer = completer;
         
     }
-    
+
+    @Override
+    protected String getDescription() {
+        return "Help";
+    }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         if (cmd.getArgs().length == 0) {
