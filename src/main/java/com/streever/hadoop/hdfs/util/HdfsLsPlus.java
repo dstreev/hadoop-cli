@@ -866,9 +866,12 @@ public class HdfsLsPlus extends HdfsAbstract {
         logv(environment, "Beginning 'lsp' collection.");
         CommandReturn cr = commandReturn;
         try {
-
+            FileSystemState fss = environment.getFileSystemOrganizer().getCurrentFileSystemState();
             // Check connect protocol
-            if (!environment.getProperties().getProperty(Constants.CONNECT_PROTOCOL).equalsIgnoreCase(Constants.HDFS)) {
+            // TODO: NEED TO ACCOUNT FOR THE NONE DEFAULT HDFS...
+            //   Right now, only looks at the defaultFS.
+            if (!fss.getProtocol().equalsIgnoreCase("hdfs://")) {
+//            if (!environment.getProperties().getProperty(Constants.CONNECT_PROTOCOL).equalsIgnoreCase(Constants.HDFS)) {
                 loge(environment, "This function is only available when connecting via 'hdfs'");
 //            loge(environment, "This function is only available when connecting via 'hdfs'");
                 cr.setCode(-1);
@@ -881,11 +884,11 @@ public class HdfsLsPlus extends HdfsAbstract {
             setTestFound(false);
 
             // Get the Filesystem
-            configuration = (Configuration) environment.getValue(Constants.CFG);
+            configuration = environment.getConfig();
 
-            String hdfs_uri = (String) environment.getProperties().getProperty(Constants.HDFS_URL);
+//            String hdfs_uri = (String) environment.getProperties().getProperty(Constants.HDFS_URL);
 
-            fs = (FileSystem) environment.getValue(Constants.HDFS);
+            fs = fss.getFileSystem();//environment.getDistributedFileSystem();//getValue(Constants.HDFS);
 
             if (fs == null) {
                 cr.setCode(CODE_NOT_CONNECTED);
@@ -933,13 +936,14 @@ public class HdfsLsPlus extends HdfsAbstract {
             String targetPath = null;
             if (cmdArgs.length > 0) {
                 String pathIn = cmdArgs[0];
-                targetPath = pathBuilder.resolveFullPath(environment.getRemoteWorkingDirectory().toString().substring(((String) environment.getProperties().getProperty(Constants.HDFS_URL)).length()), pathIn);
+                targetPath = pathBuilder.resolveFullPath(fss.getWorkingDirectory().toString(), pathIn);
             } else {
-                targetPath = environment.getRemoteWorkingDirectory().toString().substring(((String) environment.getProperties().getProperty(Constants.HDFS_URL)).length());
+                targetPath = fss.getWorkingDirectory().toString();
             }
 
             if (cmd.hasOption("output-directory")) {
-                outputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) environment.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output-directory"));
+                outputDir = pathBuilder.
+                        resolveFullPath(fss.getWorkingDirectory().toString(), cmd.getOptionValue("output-directory"));
                 outputFile = outputDir + "/" + UUID.randomUUID();
 
                 Path pof = new Path(outputFile);

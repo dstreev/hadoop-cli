@@ -23,8 +23,12 @@
 
 package com.streever.hadoop.shell;
 
+import com.streever.hadoop.hdfs.util.FileSystemOrganizer;
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.command.Command;
 import jline.console.ConsoleReader;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import java.util.Properties;
@@ -46,16 +50,24 @@ public interface Environment {
     void setValue(String key, Object value);
     Object getValue(String key);
 
-    String getCurrentPrompt();
-    void setCurrentPrompt(String prompt);
-    String getDefaultPrompt();
-    void setDefaultPrompt(String prompt);
+    void setConfig(Configuration config);
+    Configuration getConfig();
 
-    Path getRemoteWorkingDirectory();
-    void setRemoteWorkingDirectory(Path workingDirectory);
+    FileSystemOrganizer getFileSystemOrganizer();
 
-    Path getLocalWorkingDirectory();
-    void setLocalWorkingDirectory(Path workingDirectory);
+    void setPrompt(String prompt);
+    String getPrompt();
+
+//    String getCurrentPrompt();
+//    void setCurrentPrompt(String prompt);
+//    String getDefaultPrompt();
+//    void setDefaultPrompt(String prompt);
+
+//    Path getWorkingDirectory();
+//    void setWorkingDirectory(Path workingDirectory);
+//
+//    Path getLocalWorkingDirectory();
+//    void setLocalWorkingDirectory(Path workingDirectory);
 
     Boolean isVerbose();
     void setVerbose(Boolean verbose);

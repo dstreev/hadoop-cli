@@ -25,6 +25,7 @@ package com.streever.hadoop.hdfs.shell.command;
 
 import java.io.IOException;
 
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
 
@@ -54,18 +55,22 @@ public class LocalMkdir extends HdfsCommand {
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
-                        : (FileSystem) env.getValue(Constants.HDFS);
-        logv(env, "CWD: " + hdfs.getWorkingDirectory());
-        logv(env, "CWD(env): " + env.getRemoteWorkingDirectory());
+//        FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
+//                        : (FileSystem) env.getValue(Constants.HDFS);
+//        FileSystemState fss = env.getCurrentFileSystemState();
+        FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+        FileSystem lfs = lfss.getFileSystem();
+
+        logv(env, "CWD: " + lfss.getWorkingDirectory());
+//        logv(env, "CWD(env): " + fss.getWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {
 //            Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
-            Path path = new Path(env.getRemoteWorkingDirectory(), cmd.getArgs()[0]);
+            Path path = new Path(lfss.getWorkingDirectory(), cmd.getArgs()[0]);
 
             try {
                 logv(env, "Create directory: " + path);
-                hdfs.mkdirs(path);
+                lfs.mkdirs(path);
 
             }
             catch (IOException e) {

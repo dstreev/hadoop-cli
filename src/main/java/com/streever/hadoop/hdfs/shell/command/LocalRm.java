@@ -47,18 +47,20 @@ public class LocalRm extends HdfsCommand {
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         CommandReturn cr = commandReturn;
         try {
-            FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
-                            : (FileSystem) env.getValue(Constants.HDFS);
+//            FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
+//                            : (FileSystem) env.getValue(Constants.HDFS);
+            // TODO: Need to review this.  Looks like it's working partially on Remote FS and NOT Local.
+            FileSystem lfs = getEnv().getFileSystemOrganizer().getLocalFileSystem();
             String remoteFile = cmd.getArgs()[0];
 
             logv(env, "HDFS file: " + remoteFile);
 //            Path hdfsPath = new Path(hdfs.getWorkingDirectory(), remoteFile);
-            Path hdfsPath = new Path(env.getRemoteWorkingDirectory(), remoteFile);
+            Path hdfsPath = null;//new Path(env.getRemoteWorkingDirectory(), remoteFile);
             logv(env, "Remote path: " + hdfsPath);
 
             boolean recursive = cmd.hasOption("r");
             logv(env, "Deleting recursively...");
-            hdfs.delete(hdfsPath, recursive);
+            lfs.delete(hdfsPath, recursive);
 
             FSUtil.prompt(env);
 

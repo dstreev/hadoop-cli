@@ -157,7 +157,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         }
 
         // Get the Filesystem
-        configuration = (Configuration) env.getValue(Constants.CFG);
+        configuration = env.getConfig();
 
         if (cmd.hasOption("ssl")) {
             ssl = Boolean.TRUE;
@@ -167,8 +167,7 @@ public abstract class AbstractStats extends HdfsAbstract {
 
         try {
 
-            fs = (DistributedFileSystem) env.getValue(Constants.HDFS);
-
+            fs = (DistributedFileSystem) env.getFileSystemOrganizer().getDefaultFileSystemState().getFileSystem();
 
             Option[] cmdOpts = cmd.getOptions();
             String[] cmdArgs = cmd.getArgs();
@@ -181,8 +180,8 @@ public abstract class AbstractStats extends HdfsAbstract {
 
             if (cmd.hasOption("output")) {
                 // Get a handle to the FileSystem if we intent to write our results to the HDFS.
-//                baseOutputDir = pathBuilder.resolveFullPath(fs.getWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
-                baseOutputDir = pathBuilder.resolveFullPath(env.getRemoteWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+                new RuntimeException("NEEDS ATTENTION");
+//                baseOutputDir = pathBuilder.resolveFullPath(env.getRemoteWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
             } else {
                 baseOutputDir = null;
             }

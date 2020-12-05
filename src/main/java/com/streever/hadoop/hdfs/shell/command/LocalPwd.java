@@ -37,7 +37,8 @@ public class LocalPwd extends HdfsCommand {
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
+        FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();
+//                (FileSystem)env.getValue(Constants.LOCAL_FS);
         
         String wd = localfs.getWorkingDirectory().toString();
         if (cmd.hasOption("l")) {

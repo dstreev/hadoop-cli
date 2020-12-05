@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
 
@@ -57,16 +58,20 @@ public class LocalCat extends HdfsCommand {
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystem hdfs = this.local ? (FileSystem)env.getValue(Constants.LOCAL_FS) : (FileSystem)env.getValue(Constants.HDFS);
-        logv(env, "CWD: " + hdfs.getWorkingDirectory());
-        logv(env, "CWD(env): " + env.getRemoteWorkingDirectory());
+//        FileSystem hdfs = this.local ? (FileSystem)env.getValue(Constants.LOCAL_FS) : (FileSystem)env.getValue(Constants.HDFS);
+
+        FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+        FileSystem lfs = lfss.getFileSystem();
+
+//        logv(env, "CWD: " + hdfs.getWorkingDirectory());
+//        logv(env, "CWD(env): " + env.getRemoteWorkingDirectory());
 
         if(cmd.getArgs().length == 1){
 //            Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
-            Path path = new Path(env.getRemoteWorkingDirectory(), cmd.getArgs()[0]);
+            Path path = new Path(lfss.getWorkingDirectory(), cmd.getArgs()[0]);
             BufferedReader reader = null;
             try {
-                InputStream is = hdfs.open(path);
+                InputStream is = lfs.open(path);
                 InputStreamReader isr = new InputStreamReader(is);
                 reader = new BufferedReader(isr);
                 String line = null;

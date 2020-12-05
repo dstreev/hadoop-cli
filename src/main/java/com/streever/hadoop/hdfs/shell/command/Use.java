@@ -23,41 +23,42 @@
 package com.streever.hadoop.hdfs.shell.command;
 
 import com.streever.hadoop.hdfs.util.FileSystemState;
-import com.streever.hadoop.shell.command.CommandReturn;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileSystem;
-
 import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
+import jline.console.completer.Completer;
+import org.apache.commons.cli.CommandLine;
 
-public class HdfsPwd extends HdfsCommand {
+public class Use extends HdfsAbstract {
 
-    public HdfsPwd(String name) {
-        super(name);
-    }
-
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-//        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
-        FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
-        String wd = fss.getWorkingDirectory().toString();
-//        String wd = hdfs.getWorkingDirectory().toString();
-        if (!cmd.hasOption("l")) {
-            log(env, wd);
-        }
-        else {
-            log(env, fss.getURI() + wd);
-            //.substring(env.getProperties().getProperty(Constants.HDFS_URL).length()));
-        }
-        FSUtil.prompt(env);
-        return commandReturn;
+    public Use(String name, Environment environment) {
+        super(name, environment);
     }
 
     @Override
-    public Options getOptions() {
-        Options opts = super.getOptions();
-        opts.addOption("l", false, "show the full HDFS URL");
-        return opts;
+    protected String getDescription() {
+        return "Use <fs>";
     }
+
+    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+            String namespace = cmd.getArgs().length == 0 ? "" : cmd.getArgs()[0];
+            CommandReturn cr = new CommandReturn(0);
+            FileSystemState fss = env.getFileSystemOrganizer().getFileSystemState(namespace);
+            if (fss != null) {
+                env.getFileSystemOrganizer().setCurrentFileSystemState(fss);
+                cr.setCode(0);
+            } else {
+                cr.setCode(-1);
+            }
+
+            FSUtil.prompt(env);
+
+        return cr;
+    }
+
+    @Override
+    public Completer getCompleter() {
+        return this.completer;
+    }
+
 
 }

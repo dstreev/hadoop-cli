@@ -23,11 +23,14 @@
 package com.streever.hadoop.hdfs.shell.command;
 
 import java.io.IOException;
+import java.util.Locale;
 
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
@@ -45,27 +48,34 @@ public class LocalCd extends HdfsCommand {
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         try {
 
-            FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
+            FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+            FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();//(FileSystem) env.getValue(Constants.LOCAL_FS);
             String dir = cmd.getArgs().length == 0 ? System
                             .getProperty("user.home") : cmd.getArgs()[0];
             logv(env, "Change Dir to: " + dir);
-            logv(env, "CWD: " + localfs.getWorkingDirectory());
+            logv(env, "CWD: " + lfss.getWorkingDirectory());
+
             Path newPath = null;
+
             if (dir.startsWith("~/")) {
-                dir = System.getProperty("user.home") + dir.substring(1);
+                dir = System.getProperty("user.home") + (dir.substring(1).length() > 1?dir.substring(1):"");
+                newPath = new Path(dir);
+            } else if (dir.startsWith("/")) {
+                newPath = new Path(dir);
+            } else {
+                newPath = new Path(lfss.getWorkingDirectory(), dir);
             }
-            logv(env,"Dir: " + dir);
-            newPath = new Path(dir);
 
-            Path qPath = localfs.makeQualified(newPath);
-            logv(env, "Qual Path: " + qPath);
+            FileStatus fstat = lfss.getFileSystem().getFileStatus(newPath);
+            if (localfs.exists(newPath)) {
+                logv(env, "exists");
+                if (fstat.isDirectory()) {
+                    lfss.setWorkingDirectory(newPath);
+                } else {
+                    logv(env, "Is not a directory: " + dir);
+                }
+            }
 
-            if (localfs.getFileStatus(qPath).isDir() && localfs.exists(qPath)) {
-                localfs.setWorkingDirectory(qPath);
-            }
-            else {
-                log(env, "No such directory: " + dir);
-            }
             FSUtil.prompt(env);
         }
         catch (IOException e) {

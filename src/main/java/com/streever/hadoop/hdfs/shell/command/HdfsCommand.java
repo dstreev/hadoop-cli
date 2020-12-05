@@ -22,6 +22,7 @@
  */
 package com.streever.hadoop.hdfs.shell.command;
 
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import org.apache.hadoop.fs.CliFsShell;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
@@ -63,7 +64,7 @@ public class HdfsCommand extends HdfsAbstract {
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn cr) {
-        Configuration conf = (Configuration)env.getValue(Constants.CFG);
+        Configuration conf = (Configuration)env.getConfig();
         CliFsShell shell = new CliFsShell(conf);
         try {
             shell.init();
@@ -76,14 +77,15 @@ public class HdfsCommand extends HdfsAbstract {
 //        CommandReturn cr = CommandReturn.GOOD;
 
 
-        String hdfs_uri = (String)env.getProperties().getProperty(Constants.HDFS_URL);
+//        String hdfs_uri = (String)env.getProperties().getProperty(Constants.HDFS_URL);
 
-        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
+//        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
+        FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
 
-        if (hdfs == null) {
-            loge(env, "Please connect first");
-        }
-        conf.set("fs.defaultFS", hdfs_uri);
+//        if (hdfs == null) {
+//            loge(env, "Please connect first");
+//        }
+//        conf.set("fs.defaultFS", hdfs_uri);
 
         conf.setQuietMode(false);
         shell.setConf(conf);
@@ -117,8 +119,19 @@ public class HdfsCommand extends HdfsAbstract {
         }
 
         leftPath = pathBuilder.buildPath(Side.LEFT, cmdArgs);
+
+        // When the fs isn't the 'default', we need to 'fully' qualify it.
+        if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+            leftPath = fss.getURI() + leftPath;
+        }
+
         if (pathDirectives.getDirection() != Direction.NONE) {
             rightPath = pathBuilder.buildPath(Side.RIGHT, cmdArgs);
+// TODO: Need to valid whether we need the code below.
+//            if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+//                leftPath = fss.getURI() + leftPath;
+//            }
+
         }
 
         String[] newCmdArgs = new String[pathCount];

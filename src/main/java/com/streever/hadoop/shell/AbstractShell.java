@@ -118,9 +118,9 @@ public abstract class AbstractShell implements Shell {
         initialize();
 
         // if the subclass hasn't defined a prompt, do so for them.
-        if (getEnv().getDefaultPrompt() == null) {
-            getEnv().setDefaultPrompt("$");
-        }
+//        if (getEnv().getDefaultPrompt() == null) {
+//            getEnv().setDefaultPrompt("$");
+//        }
 
         // banner
         if (!getEnv().isSilent()) {
@@ -382,7 +382,7 @@ public abstract class AbstractShell implements Shell {
 
     private void acceptCommands(ConsoleReader reader) throws IOException {
         String line;
-        while ((line = reader.readLine(getEnv().getCurrentPrompt() + " ")) != null) {
+        while ((line = reader.readLine(getEnv().getPrompt() + " ")) != null) {
             if (line.trim().length() > 0) {
                 CommandReturn cr = processInput(line);
                 if (!cr.isError()) {

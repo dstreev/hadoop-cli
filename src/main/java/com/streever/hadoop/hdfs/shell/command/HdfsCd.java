@@ -22,18 +22,16 @@
  */
 package com.streever.hadoop.hdfs.shell.command;
 
-import java.io.IOException;
-
+import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.streever.hadoop.hdfs.util.FileSystemState;
+import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
-
 import org.apache.commons.cli.CommandLine;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-
-import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
-import com.streever.hadoop.shell.Environment;
 
 public class HdfsCd extends AbstractCommand {
     private Environment env;
@@ -44,41 +42,76 @@ public class HdfsCd extends AbstractCommand {
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn cr) {
-        FileSystem hdfs = null;
-//        CommandReturn cr = CommandReturn.GOOD;
         try {
-            hdfs = (FileSystem) env.getValue(Constants.HDFS);
+            if (env.getFileSystemOrganizer().isCurrentLocal()) {
+                FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+                FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();//(FileSystem) env.getValue(Constants.LOCAL_FS);
+                String dir = cmd.getArgs().length == 0 ? System
+                        .getProperty("user.home") : cmd.getArgs()[0];
+                logv(env, "Change Dir to: " + dir);
+                logv(env, "CWD: " + lfss.getWorkingDirectory());
 
-            String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
-            if (dir.startsWith("\"") & dir.endsWith("\"")) {
-                dir = dir.substring(1, dir.length()-1);
-            }
-            logv(env, "CWD before: " + hdfs.getWorkingDirectory());
-            logv(env, "CWD before (env): " + env.getRemoteWorkingDirectory());
-            logv(env, "Requested CWD: " + dir);
+                Path newPath = null;
 
-            Path newPath = null;
-            if (dir.startsWith("/")) {
-                newPath = new Path(env.getProperties().getProperty(Constants.HDFS_URL), dir);
+                if (dir.startsWith("~/")) {
+                    dir = System.getProperty("user.home") + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
+                    newPath = new Path(dir);
+                } else if (dir.startsWith("/")) {
+                    newPath = new Path(dir);
+                } else {
+                    newPath = new Path(lfss.getWorkingDirectory(), dir);
+                }
+
+                FileStatus fstat = lfss.getFileSystem().getFileStatus(newPath);
+                if (localfs.exists(newPath)) {
+                    logv(env, "exists");
+                    if (fstat.isDirectory()) {
+                        lfss.setWorkingDirectory(newPath);
+                    } else {
+                        logv(env, "Is not a directory: " + dir);
+                    }
+                }
+
+                FSUtil.prompt(env);
+
             } else {
-//                newPath = new Path(hdfs.getWorkingDirectory(), dir);
-                newPath = new Path(env.getRemoteWorkingDirectory(), dir);
-            }
+                FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+                FileSystem fs = fss.getFileSystem();
 
-            Path qPath = newPath.makeQualified(hdfs);
-            logv(env, "" + newPath);
-            if (hdfs.getFileStatus(qPath).isDir() && hdfs.exists(qPath)) {
-//                hdfs.setWorkingDirectory(qPath);
-                env.setRemoteWorkingDirectory(qPath);
-            } else {
-                log(env, "No such directory: " + dir);
-            }
+                String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
+                if (dir.startsWith("\"") & dir.endsWith("\"")) {
+                    dir = dir.substring(1, dir.length() - 1);
+                }
 
-        } catch (IOException e) {
+                Path newPath = null;
+                Path newWorking = null;
+                if (dir.startsWith("/")) {
+                    newPath = new Path(fss.getURI(), dir);
+                } else {
+                    newWorking = new Path(fss.getWorkingDirectory(), dir);
+                    newPath = new Path(fss.getURI(), newWorking);
+                }
+
+                logv(env, "" + newPath);
+                if (fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+                    FileStatus fstat = fss.getFileSystem().getFileStatus(newPath);
+                    if (fs.exists(newPath)) {
+                        logv(env, "exists");
+                        if (fstat.isDirectory()) {
+                            fss.setWorkingDirectory(newPath);
+                        } else {
+                            logv(env, "Is not a directory: " + dir);
+                        }
+                    }
+                } else {
+                    // Can't get stats from alt namespaces.
+                    fss.setWorkingDirectory(newPath);
+                }
+            }
+        } catch (Throwable throwable) {
             cr.setCode(CODE_CMD_ERROR);
-            cr.getErr().print(e.getMessage());
-//            cr.setDetails(e.getMessage());
-//            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
+            cr.getErr().print(throwable.getMessage());
+            throwable.printStackTrace();
         } finally {
             FSUtil.prompt(env);
         }

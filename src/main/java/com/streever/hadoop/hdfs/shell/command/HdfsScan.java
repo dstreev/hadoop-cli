@@ -23,6 +23,7 @@
 package com.streever.hadoop.hdfs.shell.command;
 
 import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
@@ -54,8 +55,9 @@ public class HdfsScan extends HdfsCommand {
         FileSystem hdfs = null;
         CommandReturn cr = commandReturn;
         try {
-            hdfs = (FileSystem) env.getValue(Constants.HDFS);
-
+//            hdfs = (FileSystem) env.getValue(Constants.HDFS);
+            FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+            FileSystem fs = fss.getFileSystem();
             // Run lsp -f path for a list of paths in current directory.
 
 
@@ -63,17 +65,17 @@ public class HdfsScan extends HdfsCommand {
             if (dir.startsWith("\"") & dir.endsWith("\"")) {
                 dir = dir.substring(1, dir.length()-1);
             }
-            logv(env, "CWD before: " + hdfs.getWorkingDirectory());
-            logv(env, "CWD before(env): " + env.getRemoteWorkingDirectory());
+            logv(env, "CWD before: " + fss.getWorkingDirectory());
+//            logv(env, "CWD before(env): " + env.getRemoteWorkingDirectory());
             logv(env, "Requested CWD: " + dir);
 
 
             Path newPath = null;
             if (dir.startsWith("/")) {
-                newPath = new Path(env.getProperties().getProperty(Constants.HDFS_URL), dir);
+                newPath = new Path(fss.getURI(), dir);
             } else {
 //                newPath = new Path(hdfs.getWorkingDirectory(), dir);
-                newPath = new Path(env.getRemoteWorkingDirectory(), dir);
+                newPath = new Path(fss.getWorkingDirectory(), dir);
             }
 
             Path qPath = newPath.makeQualified(hdfs);

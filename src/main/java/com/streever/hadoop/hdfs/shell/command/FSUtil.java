@@ -27,7 +27,9 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.Environment;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 
 import com.streever.hadoop.shell.format.ANSIStyle;
@@ -71,21 +73,31 @@ public class FSUtil {
     public static void prompt(Environment env) {
         try {
             StringBuilder sb = new StringBuilder();
+            FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();;
+            FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
 
-            FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
-            FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
+//            FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
+//            FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
 
 //            String hdfswd = hdfs.getWorkingDirectory().toString();
-            String hdfswd = env.getRemoteWorkingDirectory().toString();
-            String localwd = localfs.getWorkingDirectory().toString();
+            String hdfswd = fss.getWorkingDirectory().toString();
+            String localwd = lfss.getWorkingDirectory().toString();
 
             String hwd = ANSIStyle.style(hdfswd, ANSIStyle.FG_GREEN) ;
 
             String lwd = ANSIStyle.style(localwd, ANSIStyle.FG_YELLOW);
 
-            String lclPrompt = ANSIStyle.style(env.getDefaultPrompt(), ANSIStyle.FG_RED);
+            String lclPrompt = ANSIStyle.style("hdfs:>", ANSIStyle.FG_RED);
 
-            env.setCurrentPrompt(ANSIStyle.style("REMOTE: ", ANSIStyle.FG_BLUE) + hwd + "\t\t" + ANSIStyle.style("LOCAL: ", ANSIStyle.FG_BLUE) + lwd + "\n" + lclPrompt);
+            Configuration config = env.getConfig();
+            String defaultFS = config.get("fs.defaultFS");
+            String availableNamespaces = config.get("dfs.nameservices");
+            String[] namespaces = availableNamespaces.split(",");
+
+            StringBuilder prompt = new StringBuilder();
+            prompt.append(ANSIStyle.style("REMOTE: ", ANSIStyle.FG_BLUE) + hwd + "\t\t" + ANSIStyle.style("LOCAL: ", ANSIStyle.FG_BLUE) + lwd + "\n" + lclPrompt);
+
+//            env.setCurrentPrompt(prompt.toString());
 
         } catch (Exception e) {
             e.printStackTrace();

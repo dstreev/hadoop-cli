@@ -972,14 +972,14 @@ public class HadoopSession extends AbstractShell {
         }
 
         // This will allow connections through webhdfs.
-        if (cmd.hasOption("w")) {
-            getEnv().getProperties().setProperty(FileSystem.FS_DEFAULT_NAME_KEY, cmd.getOptionValue("w"));
-            getEnv().getProperties().setProperty(Constants.CONNECT_PROTOCOL, Constants.WEBHDFS);
-            getEnv().setDefaultPrompt("webhdfs-cli:$");
-        } else {
-            getEnv().getProperties().setProperty(Constants.CONNECT_PROTOCOL, Constants.HDFS);
-            getEnv().setDefaultPrompt("hdfs-cli:$");
-        }
+//        if (cmd.hasOption("w")) {
+//            getEnv().getProperties().setProperty(FileSystem.FS_DEFAULT_NAME_KEY, cmd.getOptionValue("w"));
+//            getEnv().getProperties().setProperty(Constants.CONNECT_PROTOCOL, Constants.WEBHDFS);
+//            getEnv().setDefaultPrompt("webhdfs-cli:$");
+//        } else {
+//            getEnv().getProperties().setProperty(Constants.CONNECT_PROTOCOL, Constants.HDFS);
+//            getEnv().setDefaultPrompt("hdfs-cli:$");
+//        }
 
 
         if (!autoConnect()) {
@@ -1054,7 +1054,7 @@ public class HadoopSession extends AbstractShell {
             localFile = inSet;
         } else {
             // Relative Path
-            org.apache.hadoop.fs.FileSystem localfs = (org.apache.hadoop.fs.FileSystem) getEnv().getValue(Constants.LOCAL_FS);
+            org.apache.hadoop.fs.FileSystem localfs = getEnv().getFileSystemOrganizer().getLocalFileSystem();
 
             String localwd = localfs.getWorkingDirectory().toString();
 
@@ -1135,18 +1135,20 @@ public class HadoopSession extends AbstractShell {
                 loge(getEnv(), crTest.getError());
             }
             // TODO: If Kerberos enabled, pull this from ticket and use auth_to_local to extract. There maybe a Hadoop command for this.
-            String userHome = getEnv().getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
+            String userName = getEnv().getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
 
             ExecutorService executor = Executors.newCachedThreadPool();
+            String homeDir = "/user/" + userName;
             Callable<Object> task = new Callable<Object>() {
                 public Object call() {
-                    return processInput("cd /user/" + userHome);
+                    return processInput("cd " + homeDir);
                 }
             };
             Future<Object> future = executor.submit(task);
             try {
                 Object result = future.get(30, TimeUnit.SECONDS);
                 crTest = (CommandReturn)result;
+//                org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(homeDir);
             } catch (TimeoutException ex) {
                 loge(getEnv(), "Login Timeout.  Check for a valid Kerberos Ticket.");
                 if (getEnv().isApiMode()) {
@@ -1260,6 +1262,8 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new LocalCat("lcat", getEnv(), true));
         getEnv().addCommand(new LocalMkdir("lmkdir", getEnv(), true));
         getEnv().addCommand(new LocalRm("lrm", true));
+
+        getEnv().addCommand(new Use("use", getEnv()));
 
     }
 

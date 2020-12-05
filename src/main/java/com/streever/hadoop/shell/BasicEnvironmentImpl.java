@@ -23,9 +23,14 @@
 
 package com.streever.hadoop.shell;
 
+import com.streever.hadoop.hdfs.util.FileSystemOrganizer;
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.command.Command;
 import jline.console.ConsoleReader;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import sun.security.krb5.Config;
 
 import java.util.HashMap;
 import java.util.Properties;
@@ -35,13 +40,16 @@ public class BasicEnvironmentImpl implements Environment {
 
     private String defaultPrompt = "basic:$";
     private String currentPrompt = null;
-    private Path remoteWorkingDirectory = new Path("/");
-    private Path localWorkingDirectory = new Path("/");
+//    private Path remoteWorkingDirectory = new Path("/");
+//    private Path localWorkingDirectory = new Path("/");
 
     private Boolean verbose = Boolean.FALSE;
     private Boolean debug = Boolean.FALSE;
     private Boolean silent = Boolean.FALSE;
     private Boolean apiMode = Boolean.FALSE;
+
+    private Configuration config = null;
+    private FileSystemOrganizer fileSystemOrganizer = null;
 
     private ConsoleReader consoleReader = null;
 
@@ -53,6 +61,42 @@ public class BasicEnvironmentImpl implements Environment {
     public void addCommand(Command cmd) {
         this.commands.put(cmd.getName(), cmd);
     }
+
+    @Override
+    public void setConfig(Configuration config) {
+        this.config = config;
+        this.fileSystemOrganizer = new FileSystemOrganizer(config);
+    }
+
+    @Override
+    public Configuration getConfig() {
+        return config;
+    }
+
+    @Override
+    public FileSystemOrganizer getFileSystemOrganizer() {
+        return this.fileSystemOrganizer;
+    }
+
+    public void setPrompt(String prompt) {
+        this.currentPrompt = prompt;
+    }
+
+    @Override
+    public String getPrompt() {
+        return getFileSystemOrganizer().getPrompt();
+//        return currentPrompt == null?currentPrompt:defaultPrompt;
+    }
+
+//    @Override
+//    public Path getWorkingDirectory() {
+//        return null;
+//    }
+//
+//    @Override
+//    public void setWorkingDirectory(Path workingDirectory) {
+//
+//    }
 
     public Command getCommand(String name) {
         return this.commands.get(name);
@@ -84,43 +128,43 @@ public class BasicEnvironmentImpl implements Environment {
     }
 
 
-    public String getDefaultPrompt() {
-        return this.defaultPrompt;
-    }
+//    public String getDefaultPrompt() {
+//        return this.defaultPrompt;
+//    }
+//
+//    public void setDefaultPrompt(String prompt) {
+//        this.defaultPrompt = prompt;
+//    }
+//
+//    @Override
+//    public String getCurrentPrompt() {
+//        return currentPrompt;
+//    }
+//
+//    @Override
+//    public void setCurrentPrompt(String currentPrompt) {
+//        this.currentPrompt = currentPrompt;
+//    }
 
-    public void setDefaultPrompt(String prompt) {
-        this.defaultPrompt = prompt;
-    }
+//    @Override
+//    public Path getRemoteWorkingDirectory() {
+//        return remoteWorkingDirectory;
+//    }
+//
+//    @Override
+//    public void setRemoteWorkingDirectory(Path remoteWorkingDirectory) {
+//        this.remoteWorkingDirectory = remoteWorkingDirectory;
+//    }
 
-    @Override
-    public String getCurrentPrompt() {
-        return currentPrompt;
-    }
-
-    @Override
-    public void setCurrentPrompt(String currentPrompt) {
-        this.currentPrompt = currentPrompt;
-    }
-
-    @Override
-    public Path getRemoteWorkingDirectory() {
-        return remoteWorkingDirectory;
-    }
-
-    @Override
-    public void setRemoteWorkingDirectory(Path remoteWorkingDirectory) {
-        this.remoteWorkingDirectory = remoteWorkingDirectory;
-    }
-
-    @Override
-    public Path getLocalWorkingDirectory() {
-        return localWorkingDirectory;
-    }
-
-    @Override
-    public void setLocalWorkingDirectory(Path localWorkingDirectory) {
-        this.localWorkingDirectory = localWorkingDirectory;
-    }
+//    @Override
+//    public Path getLocalWorkingDirectory() {
+//        return localWorkingDirectory;
+//    }
+//
+//    @Override
+//    public void setLocalWorkingDirectory(Path localWorkingDirectory) {
+//        this.localWorkingDirectory = localWorkingDirectory;
+//    }
 
     public Boolean isVerbose() {
         return verbose;

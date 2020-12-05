@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Enumeration;
 
+import com.streever.hadoop.hdfs.util.FileSystemOrganizer;
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
@@ -60,65 +62,74 @@ public class HdfsConnect extends AbstractCommand {
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         try {
-            // Get a value that over rides the default, if nothing then use default.
-            String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
+            if (env.getConfig() == null) {
+                // Get a value that over rides the default, if nothing then use default.
+                String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
 
-            // Set a default
-            if (hadoopConfDirProp == null)
-                hadoopConfDirProp = "/etc/hadoop/conf";
+                // Set a default
+                if (hadoopConfDirProp == null)
+                    hadoopConfDirProp = "/etc/hadoop/conf";
 
-            Configuration config = new Configuration(true);
+                Configuration config = new Configuration(true);
 
-            File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
-            for (String file : HADOOP_CONF_FILES) {
-                File f = new File(hadoopConfDir, file);
-                if (f.exists()) {
-                    config.addResource(new Path(f.getAbsolutePath()));
+                File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
+                for (String file : HADOOP_CONF_FILES) {
+                    File f = new File(hadoopConfDir, file);
+                    if (f.exists()) {
+                        config.addResource(new Path(f.getAbsolutePath()));
+                    }
                 }
-            }
 
-            // hadoop.security.authentication
-            if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
-                UserGroupInformation.setConfiguration(config);
-                env.getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
+                // hadoop.security.authentication
+                if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
+                    UserGroupInformation.setConfiguration(config);
+                    env.getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
 //                log(env, UserGroupInformation.getCurrentUser().getUserName());
 //                log(env, UserGroupInformation.getCurrentUser().getShortUserName());
-            }
+                }
 
-            Enumeration e = env.getProperties().propertyNames();
+                Enumeration e = env.getProperties().propertyNames();
 
-            while (e.hasMoreElements()) {
-                String key = (String) e.nextElement();
-                String value = env.getProperties().getProperty(key);
-                config.set(key, value);
-            }
+                while (e.hasMoreElements()) {
+                    String key = (String) e.nextElement();
+                    String value = env.getProperties().getProperty(key);
+                    config.set(key, value);
+                }
 
-            FileSystem hdfs = null;
-            try {
-                hdfs = FileSystem.get(config);
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
+                FileSystem hdfs = null;
+                try {
+                    hdfs = FileSystem.get(config);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
 
-            env.setValue(Constants.CFG, config);
-            env.setValue(Constants.HDFS, hdfs);
-            // set working dir to root
+//            env.setValue(Constants.CFG, config);
+                env.setConfig(config);
+                FileSystemOrganizer fso = env.getFileSystemOrganizer();
+
+
+//                FileSystemState fss = env.getCurrentFileSystemState();
+//                fss.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
+
+                // set working dir to root
 //            hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
-            env.setRemoteWorkingDirectory(hdfs.makeQualified(new Path("/")));
 
-            FileSystem local = FileSystem.getLocal(new Configuration());
-            env.setValue(Constants.LOCAL_FS, local);
-            env.getProperties().setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
+//                env.setRemoteWorkingDirectory(hdfs.makeQualified(new Path("/")));
 
-            FSUtil.prompt(env);
+//                FileSystem local = FileSystem.getLocal(new Configuration());
+//                env.setLocalFileSystem(local);
+
+//                env.getProperties().setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
+
+                FSUtil.prompt(env);
 
 //            if (!env.isSilent())
-            logv(env, "Connecting to default FS: " + hdfs.getUri());
-            
-            logv(env, "HDFS CWD: " + hdfs.getWorkingDirectory());
-            logv(env, "HDFS CWD(env): " + env.getRemoteWorkingDirectory());
-            logv(env, "Local CWD: " + local.getWorkingDirectory());
-
+//                logv(env, "Connecting to default FS: " + hdfs.getUri());
+//
+//                logv(env, "HDFS CWD: " + hdfs.getWorkingDirectory());
+//                logv(env, "HDFS CWD(env): " + env.getRemoteWorkingDirectory());
+//                logv(env, "Local CWD: " + local.getWorkingDirectory());
+            }
         } catch (IOException e) {
             log(env, e.getMessage());
         }

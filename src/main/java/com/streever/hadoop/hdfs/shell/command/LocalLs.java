@@ -27,6 +27,7 @@ import static com.streever.hadoop.hdfs.shell.command.FSUtil.shortFormat;
 
 import java.io.IOException;
 
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
 
@@ -48,8 +49,10 @@ public class LocalLs extends HdfsCommand {
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         try {
-            FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
-            Path srcPath = cmd.getArgs().length == 0 ? localfs.getWorkingDirectory() : new Path(localfs.getWorkingDirectory(), cmd.getArgs()[0]);
+            FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();
+            FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+
+            Path srcPath = cmd.getArgs().length == 0 ? lfss.getWorkingDirectory() : new Path(lfss.getWorkingDirectory(), cmd.getArgs()[0]);
             FileStatus[] files = localfs.listStatus(srcPath);
             for (FileStatus file : files) {
                 if (cmd.hasOption("l")) {

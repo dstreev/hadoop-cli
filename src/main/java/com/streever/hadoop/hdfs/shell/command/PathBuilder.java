@@ -1,5 +1,6 @@
 package com.streever.hadoop.hdfs.shell.command;
 
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.Environment;
 import org.apache.hadoop.fs.FileSystem;
 
@@ -16,8 +17,10 @@ public class PathBuilder {
     public String buildPath(Side side, String[] args) {
         String rtn = null;
 
-        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
+//        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
 //        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
+        FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+        FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
 
         String in = null;
 
@@ -41,11 +44,10 @@ public class PathBuilder {
                     case REMOTE_LOCAL:
                     case REMOTE_REMOTE:
                     case NONE:
-//                        rtn = resolveFullPath(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
-                        rtn = resolveFullPath(env.getRemoteWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
+                        rtn = resolveFullPath(fss.getWorkingDirectory().toString(), in);
                         break;
                     case LOCAL_REMOTE:
-                        rtn = resolveFullPath(localfs.getWorkingDirectory().toString().substring(5), in);
+                        rtn = resolveFullPath(lfss.getWorkingDirectory().toString(), in);
                         break;
                 }
                 break;
@@ -57,12 +59,12 @@ public class PathBuilder {
                         in = args[args.length-(directives.getDirectives()+1)];
                 switch (directives.getDirection()) {
                     case REMOTE_LOCAL:
-                        rtn = resolveFullPath(localfs.getWorkingDirectory().toString().substring(5), in);
+                        rtn = resolveFullPath(lfss.getWorkingDirectory().toString(), in);
                         break;
                     case LOCAL_REMOTE:
                     case REMOTE_REMOTE:
 //                        rtn = resolveFullPath(hdfs.getWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
-                        rtn = resolveFullPath(env.getRemoteWorkingDirectory().toString().substring(((String)env.getProperties().getProperty(Constants.HDFS_URL)).length()), in);
+                        rtn = resolveFullPath(fss.getWorkingDirectory().toString(), in);
                         break;
                     case NONE:
                         break;

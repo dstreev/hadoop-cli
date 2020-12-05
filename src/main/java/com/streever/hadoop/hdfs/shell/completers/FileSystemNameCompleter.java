@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.streever.hadoop.hdfs.shell.command.Constants;
+import com.streever.hadoop.hdfs.util.FileSystemState;
 import jline.console.completer.Completer;
 
 import org.apache.hadoop.fs.FileStatus;
@@ -87,19 +88,22 @@ public class FileSystemNameCompleter implements Completer {
         }
 
         logd("Check Buffer: " + checkBuffer);
-        
+
+        FileSystemState fss;
         FileSystem fs;
 
         String prefix;
 
         Path basePath = null;
         if (!this.local) {
-            fs = (FileSystem) env.getValue(Constants.HDFS);
-            prefix = env.getProperties().getProperty(Constants.HDFS_URL);
-            basePath = env.getRemoteWorkingDirectory();
+            fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+            fs = fss.getFileSystem();//(FileSystem) env.getValue(Constants.HDFS);
+            prefix = fss.getURI();//env.getProperties().getProperty(Constants.HDFS_URL);
+            basePath = fss.getWorkingDirectory();
         }
         else {
-            fs = (FileSystem) env.getValue(Constants.LOCAL_FS);
+            fss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+            fs = fss.getFileSystem();//(FileSystem) env.getValue(Constants.LOCAL_FS);
             prefix = "file:" + (checkBuffer != null && checkBuffer.startsWith("/") ? "/" : "");
             basePath = fs.getWorkingDirectory();
         }

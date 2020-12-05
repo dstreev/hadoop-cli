@@ -57,11 +57,10 @@ public class HdfsSource  extends HdfsAbstract {
         logv(env, "Beginning 'source' collection.");
 
         // Get the Filesystem
-        configuration = (Configuration) env.getValue(Constants.CFG);
+        configuration = env.getConfig();
 
-        String hdfs_uri = (String) env.getProperties().getProperty(Constants.HDFS_URL);
-
-        fs = (FileSystem) env.getValue(Constants.HDFS);
+        fs = env.getFileSystemOrganizer().getCurrentFileSystemState().getFileSystem();
+        //(FileSystem) env.getValue(Constants.HDFS);
 
         if (fs == null) {
             log(env, "Please connect first");
