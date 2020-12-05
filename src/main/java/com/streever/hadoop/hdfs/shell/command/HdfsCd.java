@@ -54,7 +54,7 @@ public class HdfsCd extends AbstractCommand {
                 Path newPath = null;
 
                 if (dir.startsWith("~/")) {
-                    dir = System.getProperty("user.home") + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
+                    dir = lfss.getHomeDir(env) + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
                     newPath = new Path(dir);
                 } else if (dir.startsWith("/")) {
                     newPath = new Path(dir);
@@ -85,7 +85,10 @@ public class HdfsCd extends AbstractCommand {
 
                 Path newPath = null;
                 Path newWorking = null;
-                if (dir.startsWith("/")) {
+                if (dir.startsWith("~")) {
+                    dir = fss.getHomeDir(env) + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
+                    newPath = new Path(fss.getURI(), dir);
+                } else if (dir.startsWith("/")) {
                     newPath = new Path(fss.getURI(), dir);
                 } else {
                     newWorking = new Path(fss.getWorkingDirectory(), dir);

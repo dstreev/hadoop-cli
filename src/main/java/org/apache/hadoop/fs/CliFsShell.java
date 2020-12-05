@@ -23,8 +23,8 @@
 
 package org.apache.hadoop.fs;
 
-import org.apache.hadoop.fs.shell.CliCommandFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.shell.CliCommandFactory;
 import org.apache.hadoop.fs.shell.CommandFactory;
 import org.apache.hadoop.fs.shell.FsCommand;
 import org.apache.hadoop.security.UserGroupInformation;

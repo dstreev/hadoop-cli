@@ -39,6 +39,10 @@ public class FileSystemOrganizer {
         this.distributedFileSystem = distributedFileSystem;
     }
 
+    public Map<String, FileSystemState> getNamespaces() {
+        return namespaces;
+    }
+
     public FileSystem getLocalFileSystem() {
         return localFileSystem;
     }

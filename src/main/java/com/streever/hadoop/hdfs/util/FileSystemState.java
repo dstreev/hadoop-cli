@@ -1,11 +1,18 @@
 package com.streever.hadoop.hdfs.util;
 
+import com.streever.hadoop.hdfs.shell.command.HdfsConnect;
+import com.streever.hadoop.shell.Environment;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
 
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class FileSystemState {
+    private static String DISTRIBUTED_USER_HOME_BASE = "/user";
+
     private boolean partOfConfig = Boolean.FALSE;
     private FileSystem fileSystem = null;
     private String namespace = null;
@@ -57,6 +64,17 @@ public class FileSystemState {
 
     public void setProtocol(String protocol) {
         this.protocol = protocol;
+    }
+
+    public String getHomeDir(Environment environment) {
+        StringBuilder sb = new StringBuilder();
+        String userName = environment.getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
+        if (fileSystem instanceof DistributedFileSystem) {
+            return DISTRIBUTED_USER_HOME_BASE + "/" + userName;
+        } else {
+            String homeDir = System.getProperty("user.home");
+            return homeDir;
+        }
     }
 
     public String getURI() {

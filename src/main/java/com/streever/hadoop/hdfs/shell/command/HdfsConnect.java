@@ -79,6 +79,9 @@ public class HdfsConnect extends AbstractCommand {
                         config.addResource(new Path(f.getAbsolutePath()));
                     }
                 }
+                // disable s3a fs cache
+//                config.set("fs.s3a.impl.disable.cache", "true");
+//                config.set("fs.s3a.bucket.probe","0");
 
                 // hadoop.security.authentication
                 if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {

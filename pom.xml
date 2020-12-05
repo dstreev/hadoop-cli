@@ -54,7 +54,7 @@
         <commons-lang.version>3.11</commons-lang.version>
 
         <hadoop.version>3.1.1</hadoop.version>
-        <cdp.version>7.1.1.0-565</cdp.version>
+        <cdp.version>7.1.5.0-257</cdp.version>
         <!-- This needs to be in sync with Hadoop Common when using this cli in api mode  -->
         <!--        <commons-cli.version>1.2</commons-cli.version>-->
         <gateway-shell.version>1.0.0</gateway-shell.version>

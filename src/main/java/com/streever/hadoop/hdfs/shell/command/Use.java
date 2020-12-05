@@ -28,6 +28,8 @@ import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
 import org.apache.commons.cli.CommandLine;
 
+import java.util.Set;
+
 public class Use extends HdfsAbstract {
 
     public Use(String name, Environment environment) {
@@ -42,6 +44,19 @@ public class Use extends HdfsAbstract {
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
             String namespace = cmd.getArgs().length == 0 ? "" : cmd.getArgs()[0];
             CommandReturn cr = new CommandReturn(0);
+            if (namespace.equalsIgnoreCase("default")) {
+                // reset to default namespace.
+                namespace = env.getFileSystemOrganizer().getDefaultFileSystemState().getNamespace();
+            } else if (namespace.equalsIgnoreCase("alt")) {
+                Set<String> namespaces = env.getFileSystemOrganizer().getNamespaces().keySet();
+                for (String lnamespace: namespaces) {
+                    FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(lnamespace);
+                    if (!lnamespace.equals(Constants.LOCAL_FS) && !lfss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+                        namespace = lnamespace;
+                        break;
+                    }
+                }
+            }
             FileSystemState fss = env.getFileSystemOrganizer().getFileSystemState(namespace);
             if (fss != null) {
                 env.getFileSystemOrganizer().setCurrentFileSystemState(fss);
