@@ -1,6 +1,7 @@
 package com.streever.hadoop.hdfs.util;
 
 import com.streever.hadoop.hdfs.shell.command.Constants;
+import com.streever.hadoop.shell.format.ANSIStyle;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -129,22 +130,28 @@ public class FileSystemOrganizer {
     }
 
     public String getPrompt() {
+//        int width = jline.TerminalFactory.get().getWidth();
+
         StringBuilder sb = new StringBuilder();
-        Set<String> lclNss = namespaces.keySet();
-        for (String namespace : lclNss) {
-            FileSystemState lclFss = namespaces.get(namespace);
-            if (lclFss.equals(currentFileSystemState)) {
-                sb.append("*");
-            }
-            if (lclFss.equals(defaultFileSystemState)) {
-                sb.append("+");
-            }
-            sb.append("\t");
-            sb.append(namespace).append(":");
-            sb.append(lclFss.toDisplay());
-            sb.append("\n");
-        }
-        sb.append("$:");
+//        Set<String> lclNss = namespaces.keySet();
+//        for (String namespace : lclNss) {
+//            FileSystemState lclFss = namespaces.get(namespace);
+//            if (lclFss.equals(defaultFileSystemState)) {
+//                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_BLUE, ANSIStyle.BLINK, ANSIStyle.UNDERSCORE)).append("\t:");
+//            } else if (namespace.equalsIgnoreCase(Constants.LOCAL_FS)) {
+//                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_YELLOW)).append("\t:");
+//            } else {
+//                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_RED)).append("\t:");
+//            }
+//            sb.append(lclFss.toDisplay());
+//            sb.append("\n");
+//        }
+        sb.append(ANSIStyle.style(this.getCurrentFileSystemState().getWorkingDirectory().toString(), ANSIStyle.FG_MAGENTA));
+        sb.append(ANSIStyle.style(" on ", ANSIStyle.FG_GREEN));
+        sb.append(ANSIStyle.style(this.getCurrentFileSystemState().getURI(),ANSIStyle.FG_YELLOW));
+        sb.append("\n");
+        sb.append(ANSIStyle.RIGHT_ARROW);
+//        sb.append(ANSIStyle.style(" $: ", ANSIStyle.FG_RED));
         return sb.toString();
     }
 }

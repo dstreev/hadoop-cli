@@ -78,8 +78,8 @@ public class ContainerStats extends AbstractStats {
     }
 
     @Override
-    protected String getDescription() {
-        return "Collect Container Stats for the YARN REST API";
+    public String getDescription() {
+        return "Collect Container Stats from the YARN REST API";
     }
 
     public ContainerStats(String name, Environment env, Direction directionContext) {

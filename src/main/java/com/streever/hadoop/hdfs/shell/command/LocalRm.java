@@ -62,7 +62,7 @@ public class LocalRm extends HdfsCommand {
             logv(env, "Deleting recursively...");
             lfs.delete(hdfsPath, recursive);
 
-            FSUtil.prompt(env);
+//            FSUtil.prompt(env);
 
         }
         catch (Throwable e) {
@@ -73,7 +73,7 @@ public class LocalRm extends HdfsCommand {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Local FS 'rm' command";
     }
 

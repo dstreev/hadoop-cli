@@ -40,7 +40,7 @@ public class Env extends AbstractCommand {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Review current 'env' variables";
     }
 

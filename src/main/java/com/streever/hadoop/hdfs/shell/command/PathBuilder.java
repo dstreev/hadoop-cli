@@ -47,7 +47,9 @@ public class PathBuilder {
                         rtn = resolveFullPath(fss.getWorkingDirectory().toString(), in);
                         break;
                     case LOCAL_REMOTE:
-                        rtn = resolveFullPath(lfss.getWorkingDirectory().toString(), in);
+                        rtn = in;
+                        // this prefixes with remote, and we don't want that.  This is a local reference.
+                        //resolveFullPath(fss.getWorkingDirectory().toString(), in);
                         break;
                 }
                 break;

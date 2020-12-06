@@ -33,6 +33,7 @@ import java.io.PrintStream;
 
 public interface Command {
 
+    String getDescription();
     String getHelpHeader();
     String gethelpFooter();
     String getUsage();

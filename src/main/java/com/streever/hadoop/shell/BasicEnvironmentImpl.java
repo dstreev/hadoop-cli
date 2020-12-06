@@ -32,9 +32,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import sun.security.krb5.Config;
 
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 public class BasicEnvironmentImpl implements Environment {
 
@@ -56,7 +54,7 @@ public class BasicEnvironmentImpl implements Environment {
     private Properties props = new Properties();
     private HashMap<String, Object> values = new HashMap<String, Object>();
 
-    private HashMap<String, Command> commands = new HashMap<String, Command>();
+    private Map<String, Command> commands = new TreeMap<String, Command>();
 
     public void addCommand(Command cmd) {
         this.commands.put(cmd.getName(), cmd);

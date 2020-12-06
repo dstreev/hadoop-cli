@@ -39,7 +39,7 @@ public class HistoryCmd extends AbstractCommand {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Commandline History";
     }
 

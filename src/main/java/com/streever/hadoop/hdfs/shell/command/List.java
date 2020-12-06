@@ -22,67 +22,54 @@
  */
 package com.streever.hadoop.hdfs.shell.command;
 
-import static com.streever.hadoop.hdfs.shell.command.FSUtil.longFormat;
-import static com.streever.hadoop.hdfs.shell.command.FSUtil.shortFormat;
-
-import java.io.IOException;
-
 import com.streever.hadoop.hdfs.util.FileSystemState;
-import com.streever.hadoop.shell.command.CommandReturn;
-import jline.console.completer.Completer;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-
-import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.streever.hadoop.shell.Environment;
+import com.streever.hadoop.shell.command.CommandReturn;
+import com.streever.hadoop.shell.format.ANSIStyle;
+import jline.console.completer.Completer;
+import org.apache.commons.cli.CommandLine;
 
-public class LocalLs extends HdfsCommand {
-    private Environment env;
+import java.util.Set;
 
-    public LocalLs(String name, Environment env) {
-        super(name, env);
+public class List extends HdfsAbstract {
+
+    public List(String name, Environment environment) {
+        super(name, environment);
+    }
+
+    @Override
+    public String getDescription() {
+        return "List available 'Namespaces'";
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-        try {
-            FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();
-            FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
 
-            Path srcPath = cmd.getArgs().length == 0 ? lfss.getWorkingDirectory() : new Path(lfss.getWorkingDirectory(), cmd.getArgs()[0]);
-            FileStatus[] files = localfs.listStatus(srcPath);
-            for (FileStatus file : files) {
-                if (cmd.hasOption("l")) {
-                    log(env, longFormat(file));
-                }
-                else {
-                    log(env, shortFormat(file));
-                }
+        CommandReturn cr = new CommandReturn(0);
+
+        StringBuilder sb = new StringBuilder();
+
+        Set<String> lclNss = env.getFileSystemOrganizer().getNamespaces().keySet();
+
+        for (String namespace : lclNss) {
+            FileSystemState lclFss = env.getFileSystemOrganizer().getNamespaces().get(namespace);
+            if (lclFss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_BLUE, ANSIStyle.BLINK, ANSIStyle.UNDERSCORE)).append("\t:");
+            } else if (namespace.equalsIgnoreCase(Constants.LOCAL_FS)) {
+                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_YELLOW)).append("\t:");
+            } else {
+                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_RED)).append("\t:");
             }
-//            FSUtil.prompt(env);
+            sb.append(lclFss.toDisplay());
+            sb.append("\n");
         }
-        catch (IOException e) {
-            log(env, e.getMessage());
-        }
-        return commandReturn;
+        System.out.println(sb.toString());
+        return cr;
     }
 
-
-    @Override
-    public Options getOptions() {
-        // TODO Auto-generated method stub
-        Options opts = super.getOptions();
-        opts.addOption("l", false, "show extended file attributes");
-        return opts;
-    }  
-    
     @Override
     public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, true);
+        return this.completer;
     }
-    
-    
+
+
 }

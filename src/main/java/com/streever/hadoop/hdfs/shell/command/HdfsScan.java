@@ -91,7 +91,7 @@ public class HdfsScan extends HdfsCommand {
             cr.getErr().print(e.getMessage());
 //            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
         } finally {
-            FSUtil.prompt(env);
+//            FSUtil.prompt(env);
         }
         return cr;
     }

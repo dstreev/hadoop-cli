@@ -48,7 +48,7 @@ public class JhsStats extends AbstractStats {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Collect Job History Server Stats for the JMX url";
     }
 

@@ -63,46 +63,46 @@ public class FSUtil {
     }
 
     public static String shortFormat(FileStatus file) {
-        String retval = (file.isDir() ? ANSIStyle.style(file.getPath()
+        String retval = (file.isDirectory() ? ANSIStyle.style(file.getPath()
                         .getName(), ANSIStyle.FG_GREEN) : file.getPath()
                         .getName());
 
         return retval;
     }
 
-    public static void prompt(Environment env) {
-        try {
-            StringBuilder sb = new StringBuilder();
-            FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();;
-            FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
-
-//            FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
-//            FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
-
-//            String hdfswd = hdfs.getWorkingDirectory().toString();
-            String hdfswd = fss.getWorkingDirectory().toString();
-            String localwd = lfss.getWorkingDirectory().toString();
-
-            String hwd = ANSIStyle.style(hdfswd, ANSIStyle.FG_GREEN) ;
-
-            String lwd = ANSIStyle.style(localwd, ANSIStyle.FG_YELLOW);
-
-            String lclPrompt = ANSIStyle.style("hdfs:>", ANSIStyle.FG_RED);
-
-            Configuration config = env.getConfig();
-            String defaultFS = config.get("fs.defaultFS");
-            String availableNamespaces = config.get("dfs.nameservices");
-            String[] namespaces = availableNamespaces.split(",");
-
-            StringBuilder prompt = new StringBuilder();
-            prompt.append(ANSIStyle.style("REMOTE: ", ANSIStyle.FG_BLUE) + hwd + "\t\t" + ANSIStyle.style("LOCAL: ", ANSIStyle.FG_BLUE) + lwd + "\n" + lclPrompt);
-
-//            env.setCurrentPrompt(prompt.toString());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void prompt(Environment env) {
+//        try {
+//            StringBuilder sb = new StringBuilder();
+//            FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();;
+//            FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+//
+////            FileSystem localfs = (FileSystem) env.getValue(Constants.LOCAL_FS);
+////            FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
+//
+////            String hdfswd = hdfs.getWorkingDirectory().toString();
+//            String hdfswd = fss.getWorkingDirectory().toString();
+//            String localwd = lfss.getWorkingDirectory().toString();
+//
+//            String hwd = ANSIStyle.style(hdfswd, ANSIStyle.FG_GREEN) ;
+//
+//            String lwd = ANSIStyle.style(localwd, ANSIStyle.FG_YELLOW);
+//
+//            String lclPrompt = ANSIStyle.style("hdfs:>", ANSIStyle.FG_RED);
+//
+//            Configuration config = env.getConfig();
+//            String defaultFS = config.get("fs.defaultFS");
+//            String availableNamespaces = config.get("dfs.nameservices");
+//            String[] namespaces = availableNamespaces.split(",");
+//
+//            StringBuilder prompt = new StringBuilder();
+//            prompt.append(ANSIStyle.style("REMOTE: ", ANSIStyle.FG_BLUE) + hwd + "\t\t" + ANSIStyle.style("LOCAL: ", ANSIStyle.FG_BLUE) + lwd + "\n" + lclPrompt);
+//
+////            env.setCurrentPrompt(prompt.toString());
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public static String formatDate(long millis){
         Date date = new Date(millis);

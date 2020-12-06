@@ -37,7 +37,7 @@ public class Exit extends AbstractCommand {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Exit";
     }
 

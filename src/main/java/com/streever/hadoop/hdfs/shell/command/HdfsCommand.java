@@ -43,8 +43,8 @@ public class HdfsCommand extends HdfsAbstract {
     }
 
     @Override
-    protected String getDescription() {
-        return "Native `hdfs` Commands";
+    public String getDescription() {
+        return "Native `hdfs` command";
     }
 
     public HdfsCommand(String name, Environment env, Direction directionContext ) {
@@ -121,16 +121,18 @@ public class HdfsCommand extends HdfsAbstract {
         leftPath = pathBuilder.buildPath(Side.LEFT, cmdArgs);
 
         // When the fs isn't the 'default', we need to 'fully' qualify it.
-        if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+        // When dealing with non-default/non-local filesystems, we need to prefix the uri with the namespace.
+        // For LOCAL_REMOTE calls, like put, don't prefix the leftPath.
+        if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState()) && pathDirectives.getDirection() != Direction.LOCAL_REMOTE) {
             leftPath = fss.getURI() + leftPath;
         }
 
         if (pathDirectives.getDirection() != Direction.NONE) {
             rightPath = pathBuilder.buildPath(Side.RIGHT, cmdArgs);
-// TODO: Need to valid whether we need the code below.
-//            if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
-//                leftPath = fss.getURI() + leftPath;
-//            }
+            // When dealing with non-default/non-local filesystems, we need to prefix the uri with the namespace.
+            if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+                rightPath = fss.getURI() + rightPath;
+            }
 
         }
 

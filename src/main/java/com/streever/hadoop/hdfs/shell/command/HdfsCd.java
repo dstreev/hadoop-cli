@@ -72,7 +72,7 @@ public class HdfsCd extends AbstractCommand {
                     }
                 }
 
-                FSUtil.prompt(env);
+//                FSUtil.prompt(env);
 
             } else {
                 FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
@@ -116,13 +116,13 @@ public class HdfsCd extends AbstractCommand {
             cr.getErr().print(throwable.getMessage());
             throwable.printStackTrace();
         } finally {
-            FSUtil.prompt(env);
+//            FSUtil.prompt(env);
         }
         return cr;
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Remote Change Directory";
     }
 

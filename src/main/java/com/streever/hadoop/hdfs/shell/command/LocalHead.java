@@ -105,12 +105,12 @@ public class LocalHead extends HdfsCommand {
         else {
             // usage();
         }
-        FSUtil.prompt(env);
+//        FSUtil.prompt(env);
         return cr;
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Local `head` command";
     }
 

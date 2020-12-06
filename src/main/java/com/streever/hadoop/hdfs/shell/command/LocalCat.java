@@ -94,7 +94,7 @@ public class LocalCat extends HdfsCommand {
         } else{
 //            usage();
         }
-        FSUtil.prompt(env);
+//        FSUtil.prompt(env);
         return commandReturn;
     }
     

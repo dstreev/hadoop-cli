@@ -28,6 +28,7 @@ import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
+import com.streever.hadoop.shell.format.ANSIStyle;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -68,25 +69,38 @@ public class HdfsLsPlus extends HdfsAbstract {
     private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     // TODO: Extended ACL's
-    private static String DEFAULT_FORMAT = "permissions_long,replication,user,group,size,block_size,ratio,mod,access,path,datanode_info,level";
+    private static String DEFAULT_FORMAT = "permissions_long,replication,user,group,size,block_size,mod,path";
     private static String DEFAULT_FILTER_FORMAT = "path";
 
     enum PRINT_OPTION {
-        PERMISSIONS_LONG,
-        PERMISSIONS_SHORT,
-        REPLICATION,
-        USER,
-        GROUP,
-        SIZE,
-        BLOCK_SIZE,
-        RATIO,
-        MOD,
-        ACCESS,
-        PARENT,
-        PATH,
-        FILE,
-        DATANODE_INFO,
-        LEVEL
+        PERMISSIONS_LONG(null, ANSIStyle.FG_BLUE),
+        PERMISSIONS_SHORT(null, ANSIStyle.FG_BLUE),
+        REPLICATION(null, ANSIStyle.FG_CYAN),
+        USER(null, ANSIStyle.BOLD),
+        GROUP(null, ANSIStyle.BOLD),
+        SIZE(null, ANSIStyle.FG_RED),
+        BLOCK_SIZE(null, null),
+        RATIO(null, null),
+        MOD(null, ANSIStyle.FG_BLUE),
+        ACCESS(null, ANSIStyle.FG_BLUE),
+        PARENT(null, ANSIStyle.FG_MAGENTA),
+        PATH(null, ANSIStyle.FG_GREEN),
+        FILE(null, ANSIStyle.FG_GREEN),
+        DATANODE_INFO(null, null),
+        LEVEL(null, null);
+
+        private String format = null;
+        private Integer[] style = null;
+
+        PRINT_OPTION(String format, Integer... style) {
+            this.format = format;
+            this.style = style;
+        }
+
+        void addStyle(List<ANSIStyle.StyleWrapper> styles) {
+            styles.add(new ANSIStyle.StyleWrapper(format, style));
+        }
+
     }
 
     // default
@@ -150,8 +164,8 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
     @Override
-    protected String getDescription() {
-        return "List PLUS service";
+    public String getDescription() {
+        return "List PLUS service for 'hdfs://' namespaces";
     }
 
     public HdfsLsPlus(String name, Environment env, Direction directionContext) {
@@ -391,6 +405,8 @@ public class HdfsLsPlus extends HdfsAbstract {
                             Double blockRatio = (double) item.stat.getLen() / item.stat.getBlockSize();
                             BigDecimal ratioBD = new BigDecimal(blockRatio, mc);
                             output.add(ratioBD.toString());
+                        } else {
+                            output.add("\t");
                         }
                         break;
                     case MOD:
@@ -400,7 +416,8 @@ public class HdfsLsPlus extends HdfsAbstract {
                         output.add(df.format(new Date(item.stat.getAccessTime())));
                         break;
                     case PARENT:
-                        output.add(item.path.getParent().toString());
+//                        if (item.stat.getPath().getParent().toString())
+                        output.add(item.stat.getPath().getParent().toString());
                         break;
                     case PATH:
                         if (!isRelative()) {
@@ -430,45 +447,76 @@ public class HdfsLsPlus extends HdfsAbstract {
                     case LEVEL:
                         output.add(Integer.toString(level));
                         break;
+                    case DATANODE_INFO:
+                        if (!item.stat.isDirectory()) {
+                            LocatedBlocks blocks = null;
+                            blocks = dfsClient.getLocatedBlocks(item.toString(), 0, Long.MAX_VALUE);
+                            StringBuilder dnSb = new StringBuilder();
+                            if (blocks.getLocatedBlocks().size() > 0) {
+//                                output.add("none");
+//                                output.add("none");
+//                                output.add("na");
+//                            } else {
+                                for (LocatedBlock block : blocks.getLocatedBlocks()) {
+                                    DatanodeInfo[] datanodeInfo = block.getLocations();
+                                    dnSb.append("[");
+                                    for (int i = 0; i < datanodeInfo.length; i++) {
+                                        dnSb.append("{");
+                                        dnSb.append(datanodeInfo[i].getIpAddr()).append(",");
+                                        dnSb.append(datanodeInfo[i].getHostName()).append(",");
+                                        dnSb.append(block.getBlock().getBlockName());
+                                        dnSb.append("}");
+                                        if (i < datanodeInfo.length - 1) {
+                                            dnSb.append(",");
+                                        }
+                                    }
+
+                                }
+                            }
+                            output.add(dnSb.toString());
+                        } else {
+                            output.add("\t");
+                        }
+                        break;
                 }
             }
             // TODO: Need to Revisit the posting of Datanode Block Details.
-            if (!item.stat.isDirectory() && Arrays.asList(print_options).contains(DATANODE_INFO)) {
-                LocatedBlocks blocks = null;
-                blocks = dfsClient.getLocatedBlocks(item.toString(), 0, Long.MAX_VALUE);
-                if (blocks.getLocatedBlocks().size() == 0) {
-                    output.add("none");
-                    output.add("none");
-                    output.add("na");
-//                    postItem(output);
-
-                } else {
-                    for (LocatedBlock block : blocks.getLocatedBlocks()) {
-                        DatanodeInfo[] datanodeInfo = block.getLocations();
-                        StringBuilder dnSb = new StringBuilder("[");
-                        for (int i = 0; i < datanodeInfo.length; i++) {
-                            dnSb.append("{");
-                            dnSb.append(datanodeInfo[i].getIpAddr()).append(",");
-                            dnSb.append(datanodeInfo[i].getHostName()).append(",");
-                            dnSb.append(block.getBlock().getBlockName());
-                            dnSb.append("}");
-                            if (i < datanodeInfo.length - 1) {
-                                dnSb.append(",");
-                            }
-                        }
-
-//                        for (DatanodeInfo dni : datanodeInfo) {
-//                            List<String> dno = new ArrayList<String>(output);
-//                            dno.add(dni.getIpAddr());
-//                            dno.add(dni.getHostName());
-//                            dno.add(block.getBlock().getBlockName());
-//                            postItem(dno);
+//            if (!item.stat.isDirectory() && Arrays.asList(print_options).contains(DATANODE_INFO)) {
+//                LocatedBlocks blocks = null;
+//                blocks = dfsClient.getLocatedBlocks(item.toString(), 0, Long.MAX_VALUE);
+//                if (blocks.getLocatedBlocks().size() == 0) {
+//                    output.add("none");
+//                    output.add("none");
+//                    output.add("na");
+////                    postItem(output);
+//
+//                } else {
+//                    for (LocatedBlock block : blocks.getLocatedBlocks()) {
+//                        DatanodeInfo[] datanodeInfo = block.getLocations();
+//                        StringBuilder dnSb = new StringBuilder("[");
+//                        for (int i = 0; i < datanodeInfo.length; i++) {
+//                            dnSb.append("{");
+//                            dnSb.append(datanodeInfo[i].getIpAddr()).append(",");
+//                            dnSb.append(datanodeInfo[i].getHostName()).append(",");
+//                            dnSb.append(block.getBlock().getBlockName());
+//                            dnSb.append("}");
+//                            if (i < datanodeInfo.length - 1) {
+//                                dnSb.append(",");
+//                            }
 //                        }
-                    }
-                }
-            } else {
-//                postItem(output);
-            }
+//
+////                        for (DatanodeInfo dni : datanodeInfo) {
+////                            List<String> dno = new ArrayList<String>(output);
+////                            dno.add(dni.getIpAddr());
+////                            dno.add(dni.getHostName());
+////                            dno.add(block.getBlock().getBlockName());
+////                            postItem(dno);
+////                        }
+//                    }
+//                }
+//            } else {
+////                postItem(output);
+//            }
 
         } catch (IOException e) {
 //            e.printStackTrace();
@@ -654,9 +702,6 @@ public class HdfsLsPlus extends HdfsAbstract {
 
                 if (path.stat.isDirectory() && (isRecursive() || currentDepth == 1) && !isSelf()) {
                     PathData[] pathDatas = new PathData[0];
-//                    if (isCount()) {
-//                        addToCounter(commandReturn, path);
-//                    }
                     try {
                         pathDatas = path.getDirectoryContents();
                     } catch (IOException e) {
@@ -677,7 +722,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                 List<String> j = new ArrayList<String>();
                 j.add("doesn't exist");
                 commandReturn.setCode(CODE_PATH_ERROR);
-//                commandReturn.getErr().println(path.path.toString() + " doesn't exist");
+                commandReturn.setError("Doesn't exists");
                 postItem(j);
             }
         } else {
@@ -701,14 +746,14 @@ public class HdfsLsPlus extends HdfsAbstract {
             commandReturn.getRecords().add(countRecord);
         }
         if (pathData.stat.isDirectory()) {
-            int dir = (Integer)countRecord.get(0);
+            int dir = (Integer) countRecord.get(0);
             dir += 1;
             countRecord.set(0, dir);
         } else {
-            int file = (Integer)countRecord.get(1);
+            int file = (Integer) countRecord.get(1);
             file += 1;
             countRecord.set(1, file);
-            long size = (Long)countRecord.get(2);
+            long size = (Long) countRecord.get(2);
             size += pathData.stat.getLen();
             countRecord.set(2, size);
         }
@@ -870,126 +915,118 @@ public class HdfsLsPlus extends HdfsAbstract {
             // Check connect protocol
             // TODO: NEED TO ACCOUNT FOR THE NONE DEFAULT HDFS...
             //   Right now, only looks at the defaultFS.
-            if (!fss.getProtocol().equalsIgnoreCase("hdfs://")) {
-//            if (!environment.getProperties().getProperty(Constants.CONNECT_PROTOCOL).equalsIgnoreCase(Constants.HDFS)) {
-                loge(environment, "This function is only available when connecting via 'hdfs'");
-//            loge(environment, "This function is only available when connecting via 'hdfs'");
-                cr.setCode(-1);
-//            cr.getErr().print("Not available with this protocol");
-//            cr = new CommandReturn(-1, "Not available with this protocol");
-                return cr;
-            }
+            if (fss.getProtocol().equalsIgnoreCase("hdfs://")) {
+                setTestFound(false);
 
-            // Reset
-            setTestFound(false);
+                // Get the Filesystem
+                configuration = environment.getConfig();
 
-            // Get the Filesystem
-            configuration = environment.getConfig();
+                fs = fss.getFileSystem();//environment.getDistributedFileSystem();//getValue(Constants.HDFS);
 
-//            String hdfs_uri = (String) environment.getProperties().getProperty(Constants.HDFS_URL);
-
-            fs = fss.getFileSystem();//environment.getDistributedFileSystem();//getValue(Constants.HDFS);
-
-            if (fs == null) {
-                cr.setCode(CODE_NOT_CONNECTED);
-                err.println("Connect first");
-                return cr;
-//            return new CommandReturn(CODE_NOT_CONNECTED, "Connect First");
-            }
-
-            URI nnURI = fs.getUri();
-
-            try {
-                dfsClient = new DFSClient(nnURI, configuration);
-            } catch (IOException e) {
-                cr.setCode(CODE_CONNECTION_ISSUE);
-                err.println(e.getMessage());
-                return cr;
-//            return new CommandReturn(CODE_CONNECTION_ISSUE, e.getMessage());
-            }
-            Option[] cmdOpts = cmd.getOptions();
-
-            List<String> cmdParts = new ArrayList<String>();
-            cmdParts.add("lsp");
-            for (Option option : cmdOpts) {
-                cmdParts.add("-" + option.getOpt());
-                // TODO: Need to rebuild commandline args.
-//            for (int a = 0; a < option.getArgs(); a++) {
-//                cmdPart
-//            }
-//            if (option.hasArgs()) {
-//                cmdParts.addAll(option.getValuesList());
-//            }
-            }
-
-            String[] cmdArgs = cmd.getArgs();
-
-            cmdParts.addAll(cmd.getArgList());
-
-            cr.setCommandArgs(cmdParts);
-
-            processCommandLine(cmd);
-
-            String outputDir = null;
-            String outputFile = null;
-
-            String targetPath = null;
-            if (cmdArgs.length > 0) {
-                String pathIn = cmdArgs[0];
-                targetPath = pathBuilder.resolveFullPath(fss.getWorkingDirectory().toString(), pathIn);
-            } else {
-                targetPath = fss.getWorkingDirectory().toString();
-            }
-
-            if (cmd.hasOption("output-directory")) {
-                outputDir = pathBuilder.
-                        resolveFullPath(fss.getWorkingDirectory().toString(), cmd.getOptionValue("output-directory"));
-                outputFile = outputDir + "/" + UUID.randomUUID();
-
-                Path pof = new Path(outputFile);
-                try {
-                    if (fs.exists(pof))
-                        fs.delete(pof, false);
-                    outFS = fs.create(pof);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (fs == null) {
+                    cr.setCode(CODE_NOT_CONNECTED);
+                    cr.setError(("Connect first"));
+                    err.println("Connect first");
+                    return cr;
                 }
-            }
 
-            PathData targetPathData = null;
-            try {
-                targetPathData = new PathData(targetPath, configuration);
-                cr.setPath(targetPathData.path.toString());
-            } catch (IOException e) {
-                cr.setCode(CODE_PATH_ERROR);
-                err.println("No such file or directory: " + targetPath);
-                return cr;
-//            return new CommandReturn(CODE_PATH_ERROR, "Error in Path");
-            }
+                URI nnURI = fs.getUri();
 
-            processPath(targetPathData, null, 1, cr);
-
-            if (outFS != null) {
                 try {
-                    outFS.close();
+                    dfsClient = new DFSClient(nnURI, configuration);
                 } catch (IOException e) {
-                    cr.setCode(CODE_FS_CLOSE_ISSUE);
+                    cr.setCode(CODE_CONNECTION_ISSUE);
+                    cr.setError(e.getMessage());
                     err.println(e.getMessage());
                     return cr;
-//                return new CommandReturn(CODE_FS_CLOSE_ISSUE, e.getMessage());
-                } finally {
-                    outFS = null;
                 }
+                Option[] cmdOpts = cmd.getOptions();
+
+                List<String> cmdParts = new ArrayList<String>();
+                cmdParts.add("lsp");
+                for (Option option : cmdOpts) {
+                    cmdParts.add("-" + option.getOpt());
+                }
+
+                String[] cmdArgs = cmd.getArgs();
+
+                cmdParts.addAll(cmd.getArgList());
+
+                cr.setCommandArgs(cmdParts);
+
+                processCommandLine(cmd);
+
+                for (PRINT_OPTION po : print_options) {
+
+                    po.addStyle(cr.getStyles());
+                }
+
+                String outputDir = null;
+                String outputFile = null;
+
+                String targetPath = null;
+                if (cmdArgs.length > 0) {
+                    String pathIn = cmdArgs[0];
+                    targetPath = pathBuilder.resolveFullPath(fss.getWorkingDirectory().toString(), pathIn);
+                } else {
+                    targetPath = fss.getWorkingDirectory().toString();
+                }
+
+                if (cmd.hasOption("output-directory")) {
+                    outputDir = pathBuilder.
+                            resolveFullPath(fss.getWorkingDirectory().toString(), cmd.getOptionValue("output-directory"));
+                    outputFile = outputDir + "/" + UUID.randomUUID();
+
+                    Path pof = new Path(outputFile);
+                    try {
+                        if (fs.exists(pof))
+                            fs.delete(pof, false);
+                        outFS = fs.create(pof);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                PathData targetPathData = null;
+                try {
+                    targetPathData = new PathData(targetPath, configuration);
+                    cr.setPath(targetPathData.path.toString());
+                } catch (IOException e) {
+                    cr.setCode(CODE_PATH_ERROR);
+                    cr.setError("No such file or directory: " + targetPath);
+                    return cr;
+                }
+
+                processPath(targetPathData, null, 1, cr);
+
+                if (outFS != null) {
+                    try {
+                        outFS.close();
+                    } catch (IOException e) {
+                        cr.setCode(CODE_FS_CLOSE_ISSUE);
+                        cr.setError(e.getMessage());
+                        return cr;
+                    } finally {
+                        outFS = null;
+                    }
+                }
+
+                logv(environment, "'lsp' complete.");
+
+                if (isTest()) {
+                    if (!isTestFound()) {
+                        cr.setCode(CODE_NOT_FOUND);
+                        cr.setError("Not Found");
+                        cr.getErr().print("Not Found");
+                    }
+                }
+            } else {
+                loge(environment, "This function is only available when connecting via 'hdfs'");
+                cr.setCode(-1);
+                cr.setError("Not available with this protocol");
+                return cr;
             }
 
-            logv(environment, "'lsp' complete.");
-
-            if (isTest()) {
-                if (!isTestFound()) {
-                    cr.setCode(CODE_NOT_FOUND);
-                    cr.getErr().print("Not Found");
-                }
-            }
         } catch (RuntimeException rt) {
             loge(environment, rt.getMessage() + " cmd:" + cmd.toString());
         }

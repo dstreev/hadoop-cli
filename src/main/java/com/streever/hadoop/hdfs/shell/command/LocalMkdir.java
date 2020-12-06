@@ -80,7 +80,7 @@ public class LocalMkdir extends HdfsCommand {
         }
         else {
         }
-        FSUtil.prompt(env);
+//        FSUtil.prompt(env);
         return commandReturn;
     }
 

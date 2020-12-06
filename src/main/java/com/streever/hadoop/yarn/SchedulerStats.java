@@ -112,7 +112,7 @@ public class SchedulerStats extends AbstractStats {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Collect Queue Stats from the YARN REST API";
     }
 

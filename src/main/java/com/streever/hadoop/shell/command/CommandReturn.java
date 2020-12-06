@@ -23,12 +23,11 @@
 
 package com.streever.hadoop.shell.command;
 
+import com.streever.hadoop.shell.format.ANSIStyle;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CommandReturn {
     public static int GOOD = 0;
@@ -37,12 +36,24 @@ public class CommandReturn {
     private int code = 0;
     private String[] commandArgs = null;
     private String path = null;
+    private String error = null;
     private List<List<Object>> records = new ArrayList<List<Object>>();
 
     private ByteArrayOutputStream baosOut = new ByteArrayOutputStream();
     private ByteArrayOutputStream baosErr = new ByteArrayOutputStream();
     private PrintStream out = new PrintStream(baosOut);
     private PrintStream err = new PrintStream(baosErr);
+
+    /*
+    Style Map. Ordered Map that should match the record content.
+    The key element<Integer> is the ANSIStyle value.
+    The value <String> is a format template.
+     */
+    private List<ANSIStyle.StyleWrapper> styles = new ArrayList<ANSIStyle.StyleWrapper>();
+
+    public List<ANSIStyle.StyleWrapper> getStyles() {
+        return styles;
+    }
 
     public List<List<Object>> getRecords() {
         if (records.size() == 0 && baosOut.size() > 0) {
@@ -126,24 +137,62 @@ public class CommandReturn {
         this.code = code;
     }
 
+    public String getStyledReturn() {
+        if (styles.size() > 0) {
+            String outString = new String(this.baosOut.toByteArray());
+            if ((outString != null && outString.length() > 0) || records.size() > 0) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(outString);
+
+                Iterator<List<Object>> rIter = records.iterator();
+                while (rIter.hasNext()) {
+                    List<Object> record = rIter.next();
+
+                    Iterator<ANSIStyle.StyleWrapper> iter = styles.iterator();
+                    Iterator<Object> iIter = record.iterator();
+                    while (iIter.hasNext()) {
+                        Object recItem = iIter.next();
+                        if (iter.hasNext()) {
+                            ANSIStyle.StyleWrapper styleWrapper = iter.next();
+                            sb.append(ANSIStyle.style(recItem.toString(), styleWrapper));
+                        } else {
+                            sb.append(recItem.toString());
+                        }
+                        if (iIter.hasNext()) {
+                            sb.append("\t");
+                        }
+                    }
+                    if (rIter.hasNext()) {
+                        sb.append("\n");
+                    }
+                }
+                return sb.toString();
+            } else {
+                return null;
+            }
+        } else {
+            return getReturn();
+        }
+    }
+
     public String getReturn() {
         String outString = new String(this.baosOut.toByteArray());
         if ((outString != null && outString.length() > 0) || records.size() > 0) {
             StringBuilder sb = new StringBuilder();
             sb.append(outString);
-            if (records.size() > 0) {
-//            for (List<String> record : records) {
-                for (int i = 0; i < records.size(); i++) {
-                    List<Object> record = records.get(i);
-                    for (int j = 0; j < record.size(); j++) {
-                        sb.append(record.get(j));
-                        if (j < record.size() - 1) {
-                            sb.append("\t");
-                        }
+            Iterator<List<Object>> rIter = records.iterator();
+            while (rIter.hasNext()) {
+                List<Object> record = rIter.next();
+                Iterator<Object> iIter = record.iterator();
+                while (iIter.hasNext()) {
+                    Object recItem = iIter.next();
+                        sb.append(recItem.toString());
+                    if (iIter.hasNext()) {
+                        sb.append("\t");
                     }
-                    if (i < records.size() - 1) {
-                        sb.append("\n");
-                    }
+                }
+                if (rIter.hasNext()) {
+                    sb.append("\n");
                 }
             }
             return sb.toString();
@@ -153,8 +202,12 @@ public class CommandReturn {
     }
 
     public String getError() {
-        String rtn = new String(this.baosErr.toByteArray());
-        return rtn;
+        if (error == null)
+            error = new String(this.baosErr.toByteArray());
+        return error;
     }
 
+    public void setError(String errorMsg) {
+        error = errorMsg;
+    }
 }

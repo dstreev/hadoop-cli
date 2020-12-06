@@ -44,7 +44,7 @@ public class HdfsRepair extends HdfsAbstract {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "HDFS Repair - Not Implemented Yet.";
     }
 

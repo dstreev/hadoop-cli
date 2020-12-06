@@ -51,7 +51,7 @@ public class HdfsNNStats extends AbstractStats {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Get Namenode Statistics from JMX URL";
     }
 

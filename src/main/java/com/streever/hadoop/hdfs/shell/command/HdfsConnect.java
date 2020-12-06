@@ -56,7 +56,7 @@ public class HdfsConnect extends AbstractCommand {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Connect to HDFS";
     }
 
@@ -124,7 +124,7 @@ public class HdfsConnect extends AbstractCommand {
 
 //                env.getProperties().setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
 
-                FSUtil.prompt(env);
+//                FSUtil.prompt(env);
 
 //            if (!env.isSilent())
 //                logv(env, "Connecting to default FS: " + hdfs.getUri());

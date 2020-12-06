@@ -56,7 +56,7 @@ public abstract class AbstractCommand implements Command{
         this.name = name;
     }
 
-    protected abstract String getDescription();
+//    public abstract String getDescription();
 
     public String getHelpHeader() {
         StringBuilder sb = new StringBuilder();

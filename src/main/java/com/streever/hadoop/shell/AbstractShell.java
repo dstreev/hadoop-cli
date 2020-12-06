@@ -387,8 +387,13 @@ public abstract class AbstractShell implements Shell {
                 CommandReturn cr = processInput(line);
                 if (!cr.isError()) {
                     if (cr.getReturn() != null) {
-                        log(getEnv(), ANSI_GREEN + cr.getReturn() + ANSI_RESET);
-//                    log(getEnv(), "" );
+                        if (cr.getStyles().size() > 0) {
+                            String out = cr.getStyledReturn();
+                            log(getEnv(), out);
+                        } else {
+                            String out = cr.getReturn();
+                            log(getEnv(), ANSI_GREEN + out + ANSI_RESET);
+                        }
                     }
                 } else {
                     loge(getEnv(), ANSI_RESET + "ERROR CODE : " + ANSI_RED + cr.getCode());

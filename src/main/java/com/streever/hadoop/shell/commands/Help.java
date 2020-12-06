@@ -27,6 +27,7 @@ import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.Command;
 import com.streever.hadoop.shell.command.CommandReturn;
+import com.streever.hadoop.shell.format.ANSIStyle;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
@@ -34,6 +35,7 @@ import jline.console.completer.StringsCompleter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.lang.StringUtils;
 
 public class Help extends AbstractCommand {
     private Environment env;
@@ -51,14 +53,19 @@ public class Help extends AbstractCommand {
     }
 
     @Override
-    protected String getDescription() {
+    public String getDescription() {
         return "Help";
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+        log(env, "----------------------------------------------------");
+        log(env, "Command Listing.  Use 'help <cmd>' for detailed help");
+        log(env, "----------------------------------------------------");
         if (cmd.getArgs().length == 0) {
             for (String str : env.commandList()) {
-                log(env, str);
+                log(env, StringUtils.rightPad(ANSIStyle.style(str, ANSIStyle.BOLD, ANSIStyle.FG_GREEN), 30) +
+                        "\t\t" + ANSIStyle.style(env.getCommand(str).getDescription(), ANSIStyle.FG_YELLOW));
+//                log(env, str);
             }
         } else {
             Command command = env.getCommand(cmd.getArgs()[0]);

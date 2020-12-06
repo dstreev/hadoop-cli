@@ -57,7 +57,7 @@ public class LocalCd extends HdfsCommand {
 
             Path newPath = null;
 
-            if (dir.startsWith("~/")) {
+            if (dir.startsWith("~")) {
                 dir = System.getProperty("user.home") + (dir.substring(1).length() > 1?dir.substring(1):"");
                 newPath = new Path(dir);
             } else if (dir.startsWith("/")) {
@@ -76,7 +76,7 @@ public class LocalCd extends HdfsCommand {
                 }
             }
 
-            FSUtil.prompt(env);
+//            FSUtil.prompt(env);
         }
         catch (IOException e) {
             log(env, e.getMessage());

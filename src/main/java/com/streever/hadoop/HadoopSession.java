@@ -1259,6 +1259,9 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new LocalRm("lrm", true));
 
         getEnv().addCommand(new Use("use", getEnv()));
+        getEnv().addCommand(new List("list", getEnv()));
+        getEnv().addCommand(new List("nss", getEnv()));
+        getEnv().addCommand(new List("namespaces", getEnv()));
 
     }
 

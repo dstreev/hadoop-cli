@@ -40,23 +40,50 @@ public class ANSIStyle {
     public static final int FG_MAGENTA = 35;
     public static final int FG_CYAN = 36;
     public static final int FG_WHITE = 37;
+    public static final String RIGHT_ARROW = "\u2794";
     static final char ESC = 27;
     
     private static final String START = "\u001B[";
     private static final String END = "m";
     
-    
-    public static String style(String input, int... styles){
-        StringBuffer buf = new StringBuffer();
-        for(int style : styles){
-            buf.append(START);
-            buf.append(style);
-            buf.append(END);
+    public static class StyleWrapper {
+        private String format;
+        private Integer[] styles;
+
+        public StyleWrapper(String format, Integer[] styles) {
+            this.format = format;
+            this.styles = styles;
         }
-        buf.append(input);
-        buf.append(START);
-        buf.append(OFF);
-        buf.append(END);
+
+        public String getFormat() {
+            return format;
+        }
+
+        public Integer[] getStyles() {
+            return styles;
+        }
+    }
+
+    public static String style(String input, StyleWrapper wrapper) {
+        // TODO: Add FORMATTING with wrapper.getFormat();
+        return style(input, wrapper.getStyles());
+    }
+
+    public static String style(String input, Integer... styles){
+        StringBuffer buf = new StringBuffer();
+        if (styles != null) {
+            for (int style : styles) {
+                buf.append(START);
+                buf.append(style);
+                buf.append(END);
+            }
+            buf.append(input);
+            buf.append(START);
+            buf.append(OFF);
+            buf.append(END);
+        } else {
+            buf.append(input);
+        }
         return buf.toString();
     }
 }
