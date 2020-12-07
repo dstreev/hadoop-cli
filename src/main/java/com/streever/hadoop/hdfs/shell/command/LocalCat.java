@@ -53,8 +53,10 @@ public class LocalCat extends HdfsCommand {
 
     public LocalCat(String name, Environment env, boolean local) {
         super(name, env);
-//        this.env = env;
         this.local = local;
+
+        // TODO: Setup Completer for local cat.
+
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
@@ -104,9 +106,9 @@ public class LocalCat extends HdfsCommand {
         return opts;
     }
     
-    @Override
-    public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, this.local);
-    }
+//    @Override
+//    public Completer getCompleter() {
+//        return new FileSystemNameCompleter(this.env, this.local);
+//    }
 
 }

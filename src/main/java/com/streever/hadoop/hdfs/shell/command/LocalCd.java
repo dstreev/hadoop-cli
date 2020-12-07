@@ -43,6 +43,8 @@ public class LocalCd extends HdfsCommand {
     public LocalCd(String name, Environment env) {
         super(name,env);
 //        this.env = env;
+
+        // TODO: Setup completer for local cd.
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
@@ -86,9 +88,9 @@ public class LocalCd extends HdfsCommand {
         return commandReturn;
     }
 
-    @Override
-    public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, true);
-    }
+//    @Override
+//    public Completer getCompleter() {
+//        return new FileSystemNameCompleter(this.env, true);
+//    }
 
 }

@@ -31,13 +31,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jcabi.manifests.Manifests;
+import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.CommandReturn;
 import jline.console.ConsoleReader;
-import jline.console.completer.AggregateCompleter;
-import jline.console.completer.ArgumentCompleter;
-import jline.console.completer.Completer;
-import jline.console.completer.StringsCompleter;
+import jline.console.completer.*;
 import jline.console.history.FileHistory;
 import jline.console.history.History;
 
@@ -158,6 +156,7 @@ public abstract class AbstractShell implements Shell {
                 ConsoleReader reader = new ConsoleReader();
                 getEnv().setConsoleReader(reader);
 
+//                initCompleters(reader, env);
                 reader.addCompleter(initCompleters(env));
                 // add history support
                 reader.setHistory(initHistory());
@@ -419,20 +418,32 @@ public abstract class AbstractShell implements Shell {
     private Completer initCompleters(Environment env) {
         // create completers
         ArrayList<Completer> completers = new ArrayList<Completer>();
+        StringsCompleter cmdCompleter = new StringsCompleter(env.commandList());
+//        NullCompleter nc = new NullCompleter();
+//        FileSystemNameCompleter fsnc = new FileSystemNameCompleter(env, false);
+//        AggregateCompleter agc = new AggregateCompleter(cmdCompleter, nc, fsnc);
+        completers.add(cmdCompleter);
+
         for (String cmdName : env.commandList()) {
             // command name
-            StringsCompleter sc = new StringsCompleter(cmdName);
+//            StringsCompleter sc = new StringsCompleter(cmdName);
+//
+//            ArrayList<Completer> cmdCompleters = new ArrayList<Completer>();
+//            // add a completer for the command name
+//            cmdCompleters.add(sc);
+//            // add the completer for the command
+            if (cmdName.equals("help")) {
+                completers.add(env.getCommand(cmdName).getCompleter());
+            }
+//            // add a terminator for the command
+//            cmdCompleters.add(new NullCompleter());
 
-            ArrayList<Completer> cmdCompleters = new ArrayList<Completer>();
-            // add a completer for the command name
-            cmdCompleters.add(sc);
-            // add the completer for the command
-            cmdCompleters.add(env.getCommand(cmdName).getCompleter());
-            // add a terminator for the command
-            // cmdCompleters.add(new NullCompleter());
+//            Completer completer = new AggregateCompleter(cmdCompleters);
+//            Completer completer = env.getCommand(cmdName).getCompleter();
+//            reader.addCompleter(completer);
 
-            ArgumentCompleter ac = new ArgumentCompleter(cmdCompleters);
-            completers.add(ac);
+//            ArgumentCompleter ac = new ArgumentCompleter(cmdCompleters);
+//            completers.add(ac);
         }
 
         AggregateCompleter aggComp = new AggregateCompleter(completers);

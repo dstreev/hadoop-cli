@@ -51,14 +51,14 @@ public class FileSystemNameCompleter implements Completer {
         return target.substring(prefix.length());
     }
 
-    protected void logv(String log){
-        if(env.isVerbose()){
+    protected void logv(String log) {
+        if (env.isVerbose()) {
             System.out.println(log);
         }
     }
 
-    protected void logd(String log){
-        if(env.isDebug()){
+    protected void logd(String log) {
+        if (env.isDebug()) {
             System.out.println(log);
         }
     }
@@ -66,12 +66,12 @@ public class FileSystemNameCompleter implements Completer {
     // TODO add ability to handle ~/ for local filesystems
     // Remember...  the completers don't work in the IDE (IntelliJ)
     public int complete(String buffer, final int cursor,
-                    final List<CharSequence> candidates) {
+                        final List<CharSequence> candidates) {
 
         // Remove directives from buffer.
         String checkBuffer = buffer;
-        logd(">>> Cursor: "+ cursor + " Candidates: " + candidates.toString());
-        
+        logd(">>> Cursor: " + cursor + " Candidates: " + candidates.toString());
+
         if (checkBuffer == null) {
             logd("Buffer null Cursor: " + cursor);
             checkBuffer = "./";
@@ -100,14 +100,13 @@ public class FileSystemNameCompleter implements Completer {
             fs = fss.getFileSystem();//(FileSystem) env.getValue(Constants.HDFS);
             prefix = fss.getURI();//env.getProperties().getProperty(Constants.HDFS_URL);
             basePath = fss.getWorkingDirectory();
-        }
-        else {
+        } else {
             fss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
             fs = fss.getFileSystem();//(FileSystem) env.getValue(Constants.LOCAL_FS);
             prefix = "file:" + (checkBuffer != null && checkBuffer.startsWith("/") ? "/" : "");
             basePath = fs.getWorkingDirectory();
         }
-        if(fs == null){
+        if (fs == null) {
 //            System.out.println("Not connected.");
             return 0;
         }
@@ -124,14 +123,14 @@ public class FileSystemNameCompleter implements Completer {
         }
 
         Path completionPath = checkBuffer.startsWith("/") ? new Path(prefix, checkBuffer)
-                        : new Path(basePath, checkBuffer);
+                : new Path(basePath, checkBuffer);
 
         logd("Comp. Path: " + completionPath);
         logd("Comp. Parent: " + completionPath.getParent());
 
         Path completionDir = (completionPath.getParent() == null || checkBuffer
-                        .endsWith("/")) ? completionPath : completionPath
-                        .getParent();
+                .endsWith("/")) ? completionPath : completionPath
+                .getParent();
         logd("Comp. Dir: " + completionDir);
         try {
             FileStatus[] entries = fs.listStatus(completionDir);
@@ -143,7 +142,7 @@ public class FileSystemNameCompleter implements Completer {
             // }
             // }
             int matchedIndex = matchFiles(checkBuffer, completionPath.toString(), entries,
-                            candidates);
+                    candidates);
             logd("MatchedIndex: " + matchedIndex);
 
             // After we've handled candidate matches, we need to reset the index to
@@ -156,8 +155,7 @@ public class FileSystemNameCompleter implements Completer {
 
             return matchedIndex;
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return -1;
         }
@@ -168,8 +166,8 @@ public class FileSystemNameCompleter implements Completer {
     }
 
     protected int matchFiles(final String buffer, final String translated,
-                    final FileStatus[] files,
-                    final List<CharSequence> candidates) {
+                             final FileStatus[] files,
+                             final List<CharSequence> candidates) {
         if (files == null) {
             return -1;
         }
@@ -187,8 +185,8 @@ public class FileSystemNameCompleter implements Completer {
         for (FileStatus file : files) {
             if (file.getPath().toString().startsWith(translated)) {
                 String name = file.getPath().getName()
-                                + (matches == 1 && file.isDir() ? separator()
-                                                : " ");
+                        + (matches == 1 && file.isDir() ? separator()
+                        : " ");
                 // System.out.println("Adding candidate: " + name);
                 candidates.add(name);
             }

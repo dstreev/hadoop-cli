@@ -34,6 +34,9 @@ public class LocalPwd extends HdfsCommand {
 
     public LocalPwd(String name) {
         super(name);
+
+        // TODO: Setup completer for local pwd
+
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {

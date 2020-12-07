@@ -27,7 +27,10 @@ import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.CommandReturn;
+import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
+import jline.console.completer.StringsCompleter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -39,6 +42,12 @@ public class HdfsCd extends AbstractCommand {
     public HdfsCd(String name, Environment env) {
         super(name);
         this.env = env;
+        // Completer
+//        StringsCompleter sc = new StringsCompleter(name);
+        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, false);
+        NullCompleter nc = new NullCompleter();
+        this.completer = new AggregateCompleter(fsc, nc);
+
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn cr) {
@@ -126,9 +135,9 @@ public class HdfsCd extends AbstractCommand {
         return "Remote Change Directory";
     }
 
-    @Override
-    public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, false);
-    }
+//    @Override
+//    public Completer getCompleter() {
+//        return new FileSystemNameCompleter(this.env, false);
+//    }
 
 }

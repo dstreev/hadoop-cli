@@ -45,6 +45,8 @@ public class LocalLs extends HdfsCommand {
 
     public LocalLs(String name, Environment env) {
         super(name, env);
+        // TODO: Setup completer for local ls
+
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
@@ -79,10 +81,10 @@ public class LocalLs extends HdfsCommand {
         return opts;
     }  
     
-    @Override
-    public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, true);
-    }
+//    @Override
+//    public Completer getCompleter() {
+//        return new FileSystemNameCompleter(this.env, true);
+//    }
     
     
 }

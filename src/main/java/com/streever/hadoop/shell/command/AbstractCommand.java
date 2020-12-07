@@ -50,7 +50,7 @@ public abstract class AbstractCommand implements Command{
     public PrintStream err = System.err;
     private String name;
 
-    protected Completer completer = new NullCompleter();
+    protected Completer completer;// = new NullCompleter();
 
     public AbstractCommand(String name){
         this.name = name;

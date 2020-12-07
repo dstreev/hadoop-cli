@@ -22,7 +22,12 @@
  */
 package com.streever.hadoop.hdfs.shell.command;
 
+import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.streever.hadoop.hdfs.util.FileSystemState;
+import jline.console.completer.AggregateCompleter;
+import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
+import jline.console.completer.StringsCompleter;
 import org.apache.hadoop.fs.CliFsShell;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
@@ -34,6 +39,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class HdfsCommand extends HdfsAbstract {
@@ -49,6 +55,20 @@ public class HdfsCommand extends HdfsAbstract {
 
     public HdfsCommand(String name, Environment env, Direction directionContext ) {
         super(name, env, directionContext);
+        // Completer
+        StringsCompleter sc = new StringsCompleter(name);
+        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, false);
+        NullCompleter nc = new NullCompleter();
+        this.completer = new AggregateCompleter(sc, fsc, nc);
+//        ArrayList<Completer> cmdCompleters = new ArrayList<Completer>();
+//        // add a completer for the command name
+//        cmdCompleters.add(sc);
+//        // add the completer for the command
+//        cmdCompleters.add(env.getCommand(cmdName).getCompleter());
+//        // add a terminator for the command
+//        cmdCompleters.add(new NullCompleter());
+//        Completer completer = new AggregateCompleter(cmdCompleters);
+
     }
 
     public HdfsCommand(String name, Environment env, Direction directionContext, int directives ) {

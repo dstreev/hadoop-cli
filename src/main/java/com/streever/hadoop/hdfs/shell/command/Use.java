@@ -36,6 +36,9 @@ public class Use extends HdfsAbstract {
 
     public Use(String name, Environment environment) {
         super(name, environment);
+
+        // TODO: Setup completer for 'use'
+
     }
 
     @Override
@@ -90,10 +93,10 @@ public class Use extends HdfsAbstract {
         return cr;
     }
 
-    @Override
-    public Completer getCompleter() {
-        return this.completer;
-    }
+//    @Override
+//    public Completer getCompleter() {
+//        return this.completer;
+//    }
 
 
 }

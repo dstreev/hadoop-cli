@@ -42,6 +42,9 @@ public class LocalRm extends HdfsCommand {
     public LocalRm(String name, boolean local) {
         super(name);
         this.local = local;
+
+        // TODO: Setup completer for local rm
+
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {

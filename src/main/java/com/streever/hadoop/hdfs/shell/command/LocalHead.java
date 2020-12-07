@@ -53,8 +53,11 @@ public class LocalHead extends HdfsCommand {
 
     public LocalHead(String name, Environment env, boolean local) {
         super(name, env);
-        this.env = env;
+//        this.env = env;
         this.local = local;
+
+        // TODO: Setup completer for local head
+        
     }
 
     @Override
@@ -122,9 +125,9 @@ public class LocalHead extends HdfsCommand {
         return opts;
     }
 
-    @Override
-    public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, this.local);
-    }
+//    @Override
+//    public Completer getCompleter() {
+//        return new FileSystemNameCompleter(this.env, this.local);
+//    }
 
 }

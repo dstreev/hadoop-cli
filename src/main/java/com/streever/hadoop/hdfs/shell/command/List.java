@@ -35,6 +35,8 @@ public class List extends HdfsAbstract {
 
     public List(String name, Environment environment) {
         super(name, environment);
+
+        // TODO: Setup Completer for "LIST"
     }
 
     @Override

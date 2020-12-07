@@ -52,12 +52,12 @@ public class LocalMkdir extends HdfsCommand {
         super(name, env);
 //        this.env = env;
         this.local = local;
+
+        // TODO: Setup completer for local mkdir
+
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-//        FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
-//                        : (FileSystem) env.getValue(Constants.HDFS);
-//        FileSystemState fss = env.getCurrentFileSystemState();
         FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
         FileSystem lfs = lfss.getFileSystem();
 
@@ -65,7 +65,6 @@ public class LocalMkdir extends HdfsCommand {
 //        logv(env, "CWD(env): " + fss.getWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {
-//            Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
             Path path = new Path(lfss.getWorkingDirectory(), cmd.getArgs()[0]);
 
             try {
@@ -80,7 +79,6 @@ public class LocalMkdir extends HdfsCommand {
         }
         else {
         }
-//        FSUtil.prompt(env);
         return commandReturn;
     }
 
@@ -90,9 +88,5 @@ public class LocalMkdir extends HdfsCommand {
         return opts;
     }
 
-    @Override
-    public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, this.local);
-    }
 
 }

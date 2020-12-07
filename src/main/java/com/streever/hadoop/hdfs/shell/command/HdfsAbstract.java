@@ -82,8 +82,8 @@ public abstract class HdfsAbstract extends AbstractCommand {
         super.processCommandLine(commandLine);
     }
     
-    @Override
-    public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, false);
-    }
+//    @Override
+//    public Completer getCompleter() {
+//        return new FileSystemNameCompleter(this.env, false);
+//    }
 }

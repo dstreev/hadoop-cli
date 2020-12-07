@@ -28,10 +28,7 @@ import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.Command;
 import com.streever.hadoop.shell.command.CommandReturn;
 import com.streever.hadoop.shell.format.ANSIStyle;
-import jline.console.completer.AggregateCompleter;
-import jline.console.completer.Completer;
-import jline.console.completer.NullCompleter;
-import jline.console.completer.StringsCompleter;
+import jline.console.completer.*;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -44,9 +41,11 @@ public class Help extends AbstractCommand {
         super(name);
         this.env = env;
         
-        StringsCompleter strCompleter = new StringsCompleter(this.env.commandList());
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(strCompleter, nullCompleter);
+        StringsCompleter strCompleter = new StringsCompleter(name);
+        NullCompleter null1 = new NullCompleter();
+        Completer argCompleter = new StringsCompleter(env.commandList());
+//        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(strCompleter, null1, argCompleter);
         
         this.completer = completer;
         

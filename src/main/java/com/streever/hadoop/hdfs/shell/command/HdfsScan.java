@@ -48,7 +48,7 @@ public class HdfsScan extends HdfsCommand {
 
     public HdfsScan(String name, Environment env) {
         super(name, env);
-        this.env = env;
+//        this.env = env;
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
