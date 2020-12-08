@@ -56,18 +56,12 @@ public class HdfsCommand extends HdfsAbstract {
     public HdfsCommand(String name, Environment env, Direction directionContext ) {
         super(name, env, directionContext);
         // Completer
-        StringsCompleter sc = new StringsCompleter(name);
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, false);
-        NullCompleter nc = new NullCompleter();
-        this.completer = new AggregateCompleter(sc, fsc, nc);
-//        ArrayList<Completer> cmdCompleters = new ArrayList<Completer>();
-//        // add a completer for the command name
-//        cmdCompleters.add(sc);
-//        // add the completer for the command
-//        cmdCompleters.add(env.getCommand(cmdName).getCompleter());
-//        // add a terminator for the command
-//        cmdCompleters.add(new NullCompleter());
-//        Completer completer = new AggregateCompleter(cmdCompleters);
+
+        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(fsc, nullCompleter);
+
+        this.completer = completer;
 
     }
 
@@ -93,19 +87,8 @@ public class HdfsCommand extends HdfsAbstract {
         }
         shell.setOut(cr.getOut());
         shell.setErr(cr.getErr());
-//        FsShell shell = new FsShell();
-//        CommandReturn cr = CommandReturn.GOOD;
 
-
-//        String hdfs_uri = (String)env.getProperties().getProperty(Constants.HDFS_URL);
-
-//        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
         FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
-
-//        if (hdfs == null) {
-//            loge(env, "Please connect first");
-//        }
-//        conf.set("fs.defaultFS", hdfs_uri);
 
         conf.setQuietMode(false);
         shell.setConf(conf);

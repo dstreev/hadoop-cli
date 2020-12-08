@@ -43,10 +43,12 @@ public class HdfsCd extends AbstractCommand {
         super(name);
         this.env = env;
         // Completer
-//        StringsCompleter sc = new StringsCompleter(name);
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, false);
-        NullCompleter nc = new NullCompleter();
-        this.completer = new AggregateCompleter(fsc, nc);
+        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(fsc, nullCompleter);
+
+        this.completer = completer;
+
 
     }
 

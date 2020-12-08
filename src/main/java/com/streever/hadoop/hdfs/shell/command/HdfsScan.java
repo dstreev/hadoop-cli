@@ -26,7 +26,9 @@ import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
+import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -48,7 +50,12 @@ public class HdfsScan extends HdfsCommand {
 
     public HdfsScan(String name, Environment env) {
         super(name, env);
-//        this.env = env;
+
+        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(fsc, nullCompleter);
+
+        this.completer = completer;
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
@@ -94,11 +101,6 @@ public class HdfsScan extends HdfsCommand {
 //            FSUtil.prompt(env);
         }
         return cr;
-    }
-
-    @Override
-    public Completer getCompleter() {
-        return new FileSystemNameCompleter(this.env, false);
     }
 
 }

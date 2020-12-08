@@ -40,15 +40,13 @@ public class Help extends AbstractCommand {
     public Help(String name, Environment env) {
         super(name);
         this.env = env;
-        
-        StringsCompleter strCompleter = new StringsCompleter(name);
-        NullCompleter null1 = new NullCompleter();
-        Completer argCompleter = new StringsCompleter(env.commandList());
-//        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(strCompleter, null1, argCompleter);
-        
+
+        StringsCompleter strCompleter = new StringsCompleter(this.env.commandList());
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(strCompleter, nullCompleter);
+
         this.completer = completer;
-        
+
     }
 
     @Override

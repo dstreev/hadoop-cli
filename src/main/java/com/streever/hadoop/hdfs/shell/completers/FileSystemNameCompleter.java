@@ -38,12 +38,12 @@ import com.streever.hadoop.shell.Environment;
 
 public class FileSystemNameCompleter implements Completer {
     private Environment env;
-    private boolean local = false;
+//    private boolean local = false;
 
-    public FileSystemNameCompleter(Environment env, boolean local) {
+    public FileSystemNameCompleter(Environment env) {
         // this.includeFiles = includeFiles;
         this.env = env;
-        this.local = local;
+//        this.local = local;
     }
 
     @SuppressWarnings("unused")
@@ -55,6 +55,10 @@ public class FileSystemNameCompleter implements Completer {
         if (env.isVerbose()) {
             System.out.println(log);
         }
+    }
+
+    protected void loge(String log) {
+        System.err.println(log);
     }
 
     protected void logd(String log) {
@@ -74,15 +78,15 @@ public class FileSystemNameCompleter implements Completer {
 
         if (checkBuffer == null) {
             logd("Buffer null Cursor: " + cursor);
-            checkBuffer = "./";
+//            checkBuffer = "./";
         } else {
             logd("Buffer: " + buffer + " Buffer Length: " + buffer.length() + " Cursor pos: " + cursor);
 
             if (checkBuffer.startsWith("-")) {
                 // If the last item is a directive, remove it.
-                checkBuffer = "./";
+                checkBuffer = null;
             } else if (checkBuffer.contains(":")) {  // In cases of chmod IE: dstreev:dstreev
-                checkBuffer = "./";
+                checkBuffer = null;
             }
 
         }
@@ -95,54 +99,48 @@ public class FileSystemNameCompleter implements Completer {
         String prefix;
 
         Path basePath = null;
-        if (!this.local) {
-            fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
-            fs = fss.getFileSystem();//(FileSystem) env.getValue(Constants.HDFS);
-            prefix = fss.getURI();//env.getProperties().getProperty(Constants.HDFS_URL);
-            basePath = fss.getWorkingDirectory();
-        } else {
-            fss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
-            fs = fss.getFileSystem();//(FileSystem) env.getValue(Constants.LOCAL_FS);
-            prefix = "file:" + (checkBuffer != null && checkBuffer.startsWith("/") ? "/" : "");
-            basePath = fs.getWorkingDirectory();
-        }
+
+        fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+        fs = fss.getFileSystem();
+        prefix = fss.getURI();
+        basePath = fs.getWorkingDirectory();
+
         if (fs == null) {
-//            System.out.println("Not connected.");
             return 0;
         }
+
         logd("Prefix: " + prefix);
 
-//        Path basePath = fs.getWorkingDirectory();
-//        Path basePath = env.getWorkingDirectory();
+        Path completionDir = null;
 
-        logd("Current Path: " + strip(prefix, basePath.toString()));
+        if (checkBuffer != null) {
+            if (checkBuffer.endsWith("/")) {
+                // Means its a directory.
+                completionDir = new Path(basePath, checkBuffer);
+            } else if (checkBuffer.contains("/")) {
+                // Means the buffer is a sub directory.
+                completionDir = new Path(basePath, checkBuffer).getParent();
+                // TODO: Need to get intermediate buffer path.
+                int lastIndex = checkBuffer.lastIndexOf("/");
+                checkBuffer = checkBuffer.substring(lastIndex);
 
-        if (checkBuffer == null) {
-            // System.out.println("Buffer was null!");
-            checkBuffer = "./";
+            } else {
+                completionDir = basePath;
+            }
+
+        } else {
+            completionDir = fs.getWorkingDirectory();
+            checkBuffer = "";
         }
 
-        Path completionPath = checkBuffer.startsWith("/") ? new Path(prefix, checkBuffer)
-                : new Path(basePath, checkBuffer);
-
-        logd("Comp. Path: " + completionPath);
-        logd("Comp. Parent: " + completionPath.getParent());
-
-        Path completionDir = (completionPath.getParent() == null || checkBuffer
-                .endsWith("/")) ? completionPath : completionPath
-                .getParent();
         logd("Comp. Dir: " + completionDir);
         try {
             FileStatus[] entries = fs.listStatus(completionDir);
-            // System.out.println("Possible matches:");
-            // for (FileStatus fStat : entries) {
-            // System.out.println(fStat.getPath().getName());
-            // if(fStat.getPath().toString().startsWith(completionPath.toString())){
-            // System.out.println("^ WOOP!");
-            // }
-            // }
-            int matchedIndex = matchFiles(checkBuffer, completionPath.toString(), entries,
+
+            int matchedIndex = matchFiles(prefix, checkBuffer, completionDir.toString(), entries,
                     candidates);
+            matchedIndex =+ completionDir.toString().length() - basePath.toString().length();
+
             logd("MatchedIndex: " + matchedIndex);
 
             // After we've handled candidate matches, we need to reset the index to
@@ -156,7 +154,8 @@ public class FileSystemNameCompleter implements Completer {
             return matchedIndex;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            loge(e.getMessage());
+            //e.printStackTrace();
             return -1;
         }
     }
@@ -165,7 +164,7 @@ public class FileSystemNameCompleter implements Completer {
         return "/";
     }
 
-    protected int matchFiles(final String buffer, final String translated,
+    protected int matchFiles(final String prefix, final String buffer, final String translated,
                              final FileStatus[] files,
                              final List<CharSequence> candidates) {
         if (files == null) {
@@ -177,22 +176,31 @@ public class FileSystemNameCompleter implements Completer {
         // first pass: just count the matches
         for (FileStatus file : files) {
             // System.out.println("Checking: " + file.getPath());
-            if (file.getPath().toString().startsWith(translated)) {
+            String checkLocation = file.getPath().toString().substring(prefix.length());
+            if (checkLocation.startsWith(translated + separator() + buffer)) {
                 // System.out.println("Found match: " + file.getPath());
                 matches++;
             }
         }
         for (FileStatus file : files) {
-            if (file.getPath().toString().startsWith(translated)) {
+            String checkLocation = file.getPath().toString().substring(prefix.length());
+            if (checkLocation.startsWith(translated + separator() + buffer)) {
                 String name = file.getPath().getName()
-                        + (matches == 1 && file.isDir() ? separator()
+                        + (matches == 1 && file.isDirectory() ? separator()
                         : " ");
                 // System.out.println("Adding candidate: " + name);
                 candidates.add(name);
             }
         }
+        int index = 0;
 
-        final int index = buffer.lastIndexOf(separator());
+        if (buffer != null)
+            // Advance to last directory in buffer.
+            index = buffer.length();
+
+//        if (index == 0) {
+//        }
+//        final int index = buffer.lastIndexOf(separator());
 
         return index + separator().length();
     }
