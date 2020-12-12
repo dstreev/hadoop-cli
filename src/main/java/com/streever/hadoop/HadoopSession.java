@@ -1192,6 +1192,10 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new HdfsCommand("chmod", getEnv(), Direction.NONE, 1));
         getEnv().addCommand(new HdfsCommand("chgrp", getEnv(), Direction.NONE, 1));
 
+        getEnv().addCommand(new HdfsAllowSnapshot("allowSnapshot", getEnv(), Direction.NONE, 1, false, true));
+        getEnv().addCommand(new HdfsDisallowSnapshot("disallowSnapshot", getEnv(), Direction.NONE, 1, false, true));
+        getEnv().addCommand(new HdfsLsSnapshottableDir("lsSnapshottableDir", getEnv(), Direction.NONE, 1, false, true));
+
         getEnv().addCommand(new HdfsCommand("createSnapshot", getEnv(), Direction.NONE, 1, false, true));
         getEnv().addCommand(new HdfsCommand("deleteSnapshot", getEnv(), Direction.NONE, 1, false, false));
         getEnv().addCommand(new HdfsCommand("renameSnapshot", getEnv(), Direction.NONE, 2, false, false));
@@ -1220,7 +1224,7 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new HdfsCommand("touchz", getEnv(), Direction.NONE));
         getEnv().addCommand(new HdfsCommand("checksum", getEnv(), Direction.NONE));
 
-        getEnv().addCommand(new HdfsCommand("usage", getEnv()));
+//        getEnv().addCommand(new HdfsCommand("usage", getEnv()));
 
         // Security Help
 //        env.addCommand(new HdfsUGI("ugi"));
@@ -1253,10 +1257,10 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new LocalPwd("lpwd"));
         getEnv().addCommand(new LocalCd("lcd", getEnv()));
 
-        getEnv().addCommand(new LocalHead("lhead", getEnv(), true));
-        getEnv().addCommand(new LocalCat("lcat", getEnv(), true));
-        getEnv().addCommand(new LocalMkdir("lmkdir", getEnv(), true));
-        getEnv().addCommand(new LocalRm("lrm", true));
+        getEnv().addCommand(new LocalHead("lhead", getEnv()));
+        getEnv().addCommand(new LocalCat("lcat", getEnv()));
+        getEnv().addCommand(new LocalMkdir("lmkdir", getEnv()));
+        getEnv().addCommand(new LocalRm("lrm", getEnv()));
 
         getEnv().addCommand(new Use("use", getEnv()));
         getEnv().addCommand(new List("list", getEnv()));

@@ -35,22 +35,19 @@ public class LocalPwd extends HdfsCommand {
     public LocalPwd(String name) {
         super(name);
 
-        // TODO: Setup completer for local pwd
-
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();
-//                (FileSystem)env.getValue(Constants.LOCAL_FS);
-        
+
         String wd = localfs.getWorkingDirectory().toString();
-        if (cmd.hasOption("l")) {
+//        if (cmd.hasOption("l")) {
             log(env, wd);
-        }
-        else {
-            // strip off prefix: "file:"
-            log(env, wd.substring(5));
-        }
+//        }
+//        else {
+//            // strip off prefix: "file:"
+//            log(env, wd.substring(5));
+//        }
 //        FSUtil.prompt(env);
         return commandReturn;
     }
@@ -58,7 +55,7 @@ public class LocalPwd extends HdfsCommand {
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();
-        opts.addOption("l", false, "show the full file system URL");
+//        opts.addOption("l", false, "show the full file system URL");
         return opts;
     }
 }

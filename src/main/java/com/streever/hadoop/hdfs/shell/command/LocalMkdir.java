@@ -27,8 +27,10 @@ import java.io.IOException;
 
 import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.command.CommandReturn;
+import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 
+import jline.console.completer.NullCompleter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
@@ -45,15 +47,14 @@ public class LocalMkdir extends HdfsCommand {
 
     public static final int LINE_COUNT = 10;
 
-    private Environment env;
-    private boolean local = false;
-
-    public LocalMkdir(String name, Environment env, boolean local) {
+    public LocalMkdir(String name, Environment env) {
         super(name, env);
-//        this.env = env;
-        this.local = local;
 
-        // TODO: Setup completer for local mkdir
+        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, true);
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(fsc, nullCompleter);
+
+        this.completer = completer;
 
     }
 

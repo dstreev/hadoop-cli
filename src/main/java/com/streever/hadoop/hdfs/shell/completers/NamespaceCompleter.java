@@ -23,36 +23,22 @@
 
 package com.streever.hadoop.hdfs.shell.completers;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.util.FileSystemState;
+import com.streever.hadoop.shell.Environment;
 import jline.console.completer.Completer;
-
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.streever.hadoop.shell.Environment;
+import java.io.IOException;
+import java.util.List;
 
-public class FileSystemNameCompleter implements Completer {
+public class NamespaceCompleter implements Completer {
     private Environment env;
-    private boolean local = false;
 
-    public FileSystemNameCompleter(Environment env) {
-        // this.includeFiles = includeFiles;
+    public NamespaceCompleter(Environment env) {
         this.env = env;
-    }
-
-    public FileSystemNameCompleter(Environment env, boolean local) {
-        this.env = env;
-        this.local = local;
-    }
-
-    @SuppressWarnings("unused")
-    private static String strip(String prefix, String target) {
-        return target.substring(prefix.length());
     }
 
     protected void logv(String log) {
@@ -77,95 +63,96 @@ public class FileSystemNameCompleter implements Completer {
                         final List<CharSequence> candidates) {
 
         // Remove directives from buffer.
-        String checkBuffer = buffer;
-        logd(">>> Cursor: " + cursor + " Candidates: " + candidates.toString());
-
-        if (checkBuffer == null) {
-            logd("Buffer null Cursor: " + cursor);
-//            checkBuffer = "./";
-        } else {
-            logd("Buffer: " + buffer + " Buffer Length: " + buffer.length() + " Cursor pos: " + cursor);
-
-            if (checkBuffer.startsWith("-")) {
-                // If the last item is a directive, remove it.
-                checkBuffer = null;
-            } else if (checkBuffer.contains(":")) {  // In cases of chmod IE: dstreev:dstreev
-                checkBuffer = null;
-            }
-
-        }
-
-        logd("Check Buffer: " + checkBuffer);
-
-        FileSystemState fss;
-        FileSystem fs;
-
-        String prefix;
-
-        Path basePath = null;
-
-        if (!local)
-            fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
-        else
-            fss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
-
-        fs = fss.getFileSystem();
-        prefix = fss.getURI();
-        basePath = fs.getWorkingDirectory();
-
-        if (fs == null) {
-            return 0;
-        }
-
-        logd("Prefix: " + prefix);
-
-        Path completionDir = null;
-
-        if (checkBuffer != null) {
-            if (checkBuffer.endsWith("/")) {
-                // Means its a directory.
-                completionDir = new Path(basePath, checkBuffer);
-            } else if (checkBuffer.contains("/")) {
-                // Means the buffer is a sub directory.
-                completionDir = new Path(basePath, checkBuffer).getParent();
-
-                int lastIndex = checkBuffer.lastIndexOf("/");
-                checkBuffer = checkBuffer.substring(lastIndex);
-
-            } else {
-                completionDir = basePath;
-            }
-
-        } else {
-            completionDir = fs.getWorkingDirectory();
-            checkBuffer = "";
-        }
-
-        logd("Comp. Dir: " + completionDir);
-        try {
-            FileStatus[] entries = fs.listStatus(completionDir);
-
-            int matchedIndex = matchFiles(prefix, checkBuffer, completionDir.toString(), entries,
-                    candidates);
-            matchedIndex =+ completionDir.toString().length() - basePath.toString().length();
-
-            logd("MatchedIndex: " + matchedIndex);
-
-            // After we've handled candidate matches, we need to reset the index to
-            // the original so items like 'dstreev:dstreev' as a param for
-            // chmod aren't erased.
-            if (buffer != null && (buffer.contains(":") || buffer.startsWith("-"))) {
-                logd("Overwriting MatchedIndex with cursor: " + cursor);
-                matchedIndex = cursor;
-            }
-
-            return matchedIndex;
-
-        } catch (IOException e) {
-            loge(e.getMessage());
-            //e.printStackTrace();
-            return -1;
-        }
+//        String checkBuffer = buffer;
+//        logd(">>> Cursor: " + cursor + " Candidates: " + candidates.toString());
+//
+//        if (checkBuffer == null) {
+//            logd("Buffer null Cursor: " + cursor);
+////            checkBuffer = "./";
+//        } else {
+//            logd("Buffer: " + buffer + " Buffer Length: " + buffer.length() + " Cursor pos: " + cursor);
+//
+//            if (checkBuffer.startsWith("-")) {
+//                // If the last item is a directive, remove it.
+//                checkBuffer = null;
+//            } else if (checkBuffer.contains(":")) {  // In cases of chmod IE: dstreev:dstreev
+//                checkBuffer = null;
+//            }
+//
+//        }
+//
+//        logd("Check Buffer: " + checkBuffer);
+//
+//        FileSystemState fss;
+//        FileSystem fs;
+//
+//        String prefix;
+//
+//        Path basePath = null;
+//
+//        if (!local)
+//            fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+//        else
+//            fss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+//
+//        fs = fss.getFileSystem();
+//        prefix = fss.getURI();
+//        basePath = fs.getWorkingDirectory();
+//
+//        if (fs == null) {
+//            return 0;
+//        }
+//
+//        logd("Prefix: " + prefix);
+//
+//        Path completionDir = null;
+//
+//        if (checkBuffer != null) {
+//            if (checkBuffer.endsWith("/")) {
+//                // Means its a directory.
+//                completionDir = new Path(basePath, checkBuffer);
+//            } else if (checkBuffer.contains("/")) {
+//                // Means the buffer is a sub directory.
+//                completionDir = new Path(basePath, checkBuffer).getParent();
+//
+//                int lastIndex = checkBuffer.lastIndexOf("/");
+//                checkBuffer = checkBuffer.substring(lastIndex);
+//
+//            } else {
+//                completionDir = basePath;
+//            }
+//
+//        } else {
+//            completionDir = fs.getWorkingDirectory();
+//            checkBuffer = "";
+//        }
+//
+//        logd("Comp. Dir: " + completionDir);
+//        try {
+//            FileStatus[] entries = fs.listStatus(completionDir);
+//
+//            int matchedIndex = matchFiles(prefix, checkBuffer, completionDir.toString(), entries,
+//                    candidates);
+//            matchedIndex =+ completionDir.toString().length() - basePath.toString().length();
+//
+//            logd("MatchedIndex: " + matchedIndex);
+//
+//            // After we've handled candidate matches, we need to reset the index to
+//            // the original so items like 'dstreev:dstreev' as a param for
+//            // chmod aren't erased.
+//            if (buffer != null && (buffer.contains(":") || buffer.startsWith("-"))) {
+//                logd("Overwriting MatchedIndex with cursor: " + cursor);
+//                matchedIndex = cursor;
+//            }
+//
+//            return matchedIndex;
+//
+//        } catch (IOException e) {
+//            loge(e.getMessage());
+//            //e.printStackTrace();
+//            return -1;
+//        }
+        return -1;
     }
 
     protected String separator() {

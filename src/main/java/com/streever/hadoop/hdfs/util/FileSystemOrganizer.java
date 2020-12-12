@@ -5,7 +5,9 @@ import com.streever.hadoop.shell.format.ANSIStyle;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +38,7 @@ public class FileSystemOrganizer {
         return distributedFileSystem;
     }
 
-    public void setDistributedFileSystem(FileSystem distributedFileSystem) {
+    public void setDistributedFileSystem(DistributedFileSystem distributedFileSystem) {
         this.distributedFileSystem = distributedFileSystem;
     }
 
@@ -118,6 +120,14 @@ public class FileSystemOrganizer {
         } catch (IOException ioe) {
             //
             ioe.printStackTrace();
+        }
+    }
+
+    public boolean isCurrentDefault() {
+        if (getCurrentFileSystemState().equals(getDefaultFileSystemState())) {
+            return Boolean.TRUE;
+        } else {
+            return Boolean.FALSE;
         }
     }
 

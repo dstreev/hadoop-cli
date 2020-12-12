@@ -23,8 +23,12 @@
 
 package com.streever.hadoop.hdfs.shell.command;
 
+import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.streever.hadoop.shell.command.CommandReturn;
 
+import jline.console.completer.AggregateCompleter;
+import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
@@ -39,11 +43,14 @@ import com.streever.hadoop.shell.Environment;
 public class LocalRm extends HdfsCommand {
     private boolean local = false;
 
-    public LocalRm(String name, boolean local) {
-        super(name);
-        this.local = local;
+    public LocalRm(String name, Environment env) {
+        super(name, env);
 
-        // TODO: Setup completer for local rm
+        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, true);
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(fsc, nullCompleter);
+
+        this.completer = completer;
 
     }
 
