@@ -133,7 +133,7 @@ public class NamespaceCompleter implements Completer {
 //
 //            int matchedIndex = matchFiles(prefix, checkBuffer, completionDir.toString(), entries,
 //                    candidates);
-//            matchedIndex =+ completionDir.toString().length() - basePath.toString().length();
+//            matchedIndex += completionDir.toString().length() - basePath.toString().length();
 //
 //            logd("MatchedIndex: " + matchedIndex);
 //

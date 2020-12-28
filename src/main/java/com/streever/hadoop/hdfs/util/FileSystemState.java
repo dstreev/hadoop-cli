@@ -17,7 +17,7 @@ public class FileSystemState {
     private FileSystem fileSystem = null;
     private String namespace = null;
     private String protocol = null;
-//    private Path workingDirectory = null;
+    private Path workingDirectory = null;
     private Date lastAccessed = null;
 
     public FileSystemState() {
@@ -87,14 +87,14 @@ public class FileSystemState {
     }
 
     public Path getWorkingDirectory() {
-        return fileSystem.getWorkingDirectory();
+        return this.workingDirectory;
     }
 
     public void setWorkingDirectory(Path workingDirectory) {
         // Strip the URI from the incoming path, if exists
-//        this.workingDirectory = new Path(workingDirectory.toString().replace(getURI(), ""));
+        this.workingDirectory = new Path(workingDirectory.toString().replace(getURI(), ""));
         // Keep the Filesystem in sync
-        fileSystem.setWorkingDirectory(new Path(workingDirectory.toString().replace(getURI(), "")));
+//        fileSystem.setWorkingDirectory(new Path(workingDirectory.toString().replace(getURI(), "")));
     }
 
     public Date getLastAccessed() {

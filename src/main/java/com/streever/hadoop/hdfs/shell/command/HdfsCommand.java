@@ -57,11 +57,11 @@ public class HdfsCommand extends HdfsAbstract {
         super(name, env, directionContext);
         // Completer
 
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
-
-        this.completer = completer;
+//        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
+//        NullCompleter nullCompleter = new NullCompleter();
+//        Completer completer = new AggregateCompleter(fsc, nullCompleter);
+//
+//        this.completer = completer;
 
     }
 
@@ -75,6 +75,16 @@ public class HdfsCommand extends HdfsAbstract {
 
     public HdfsCommand(String name, Environment env) {
         this(name,env, Direction.NONE);
+    }
+
+    @Override
+    public Completer getCompleter() {
+
+        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(fsc, nullCompleter);
+
+        return completer;
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn cr) {

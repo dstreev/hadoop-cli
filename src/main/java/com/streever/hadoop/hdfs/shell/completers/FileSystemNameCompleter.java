@@ -111,7 +111,7 @@ public class FileSystemNameCompleter implements Completer {
 
         fs = fss.getFileSystem();
         prefix = fss.getURI();
-        basePath = fs.getWorkingDirectory();
+        basePath = fss.getWorkingDirectory();
 
         if (fs == null) {
             return 0;
@@ -125,19 +125,20 @@ public class FileSystemNameCompleter implements Completer {
             if (checkBuffer.endsWith("/")) {
                 // Means its a directory.
                 completionDir = new Path(basePath, checkBuffer);
+                checkBuffer = "";
             } else if (checkBuffer.contains("/")) {
                 // Means the buffer is a sub directory.
                 completionDir = new Path(basePath, checkBuffer).getParent();
 
                 int lastIndex = checkBuffer.lastIndexOf("/");
-                checkBuffer = checkBuffer.substring(lastIndex);
+                checkBuffer = checkBuffer.substring(lastIndex+1);
 
             } else {
                 completionDir = basePath;
             }
 
         } else {
-            completionDir = fs.getWorkingDirectory();
+            completionDir = fss.getWorkingDirectory();
             checkBuffer = "";
         }
 
