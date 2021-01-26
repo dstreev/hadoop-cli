@@ -50,31 +50,18 @@ public class LocalHead extends HdfsCommand {
 
     public static final int LINE_COUNT = 10;
 
-//    private Environment env;
-//    private boolean local = false;
-
     public LocalHead(String name, Environment env) {
         super(name, env);
-
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, true);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
-
-        this.completer = completer;
-        
     }
 
     @Override
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
         CommandReturn cr = commandReturn;
-//        int rtn = CODE_SUCCESS;
-//        FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
-//                        : (FileSystem) env.getValue(Constants.HDFS);
+
         FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
         FileSystem lfs = lfss.getFileSystem();
 
         logv(env, "CWD: " + lfss.getWorkingDirectory());
-//        logv(env, "CWD(env): " + env.getRemoteWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {
             int lineCount = Integer.parseInt(cmd.getOptionValue("n",
@@ -128,10 +115,4 @@ public class LocalHead extends HdfsCommand {
                         "number of lines to display (defaults to 10)");
         return opts;
     }
-
-//    @Override
-//    public Completer getCompleter() {
-//        return new FileSystemNameCompleter(this.env, this.local);
-//    }
-
 }

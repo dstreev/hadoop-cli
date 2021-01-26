@@ -93,10 +93,4 @@ public class Use extends HdfsAbstract {
         return cr;
     }
 
-//    @Override
-//    public Completer getCompleter() {
-//        return this.completer;
-//    }
-
-
 }

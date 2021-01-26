@@ -49,13 +49,6 @@ public class LocalMkdir extends HdfsCommand {
 
     public LocalMkdir(String name, Environment env) {
         super(name, env);
-
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, true);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
-
-        this.completer = completer;
-
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {

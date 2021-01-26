@@ -50,29 +50,14 @@ public class LocalCat extends HdfsCommand {
     
     public static final int LINE_COUNT = 10;
     
-//    private Environment env;
-//    private boolean local = false;
-
     public LocalCat(String name, Environment env) {
         super(name, env);
-//        this.local = local;
-
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, true);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
-
-        this.completer = completer;
-
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
-//        FileSystem hdfs = this.local ? (FileSystem)env.getValue(Constants.LOCAL_FS) : (FileSystem)env.getValue(Constants.HDFS);
 
         FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
         FileSystem lfs = lfss.getFileSystem();
-
-//        logv(env, "CWD: " + hdfs.getWorkingDirectory());
-//        logv(env, "CWD(env): " + env.getRemoteWorkingDirectory());
 
         if(cmd.getArgs().length == 1){
 //            Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);

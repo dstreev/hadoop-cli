@@ -122,17 +122,26 @@ public class FileSystemNameCompleter implements Completer {
         Path completionDir = null;
 
         if (checkBuffer != null) {
-            if (checkBuffer.endsWith("/")) {
-                // Means its a directory.
-                completionDir = new Path(basePath, checkBuffer);
-                checkBuffer = "";
+            if (checkBuffer.startsWith("/")) {
+                // Absolute location
+                basePath = new Path("/");
+                if (checkBuffer.length() == 1) {
+                    completionDir = basePath;
+                } else {
+                    if (checkBuffer.endsWith("/")) {
+                        completionDir = new Path(basePath, checkBuffer.substring(1));
+                    } else if (checkBuffer.substring(1).contains("/")) {
+                        completionDir = new Path(basePath, checkBuffer).getParent();
+                    } else {
+                        completionDir = basePath;
+                    }
+                }
             } else if (checkBuffer.contains("/")) {
-                // Means the buffer is a sub directory.
-                completionDir = new Path(basePath, checkBuffer).getParent();
-
-                int lastIndex = checkBuffer.lastIndexOf("/");
-                checkBuffer = checkBuffer.substring(lastIndex+1);
-
+                if (checkBuffer.endsWith("/")) {
+                    completionDir = new Path(basePath, checkBuffer);
+                } else {
+                    completionDir = new Path(basePath, checkBuffer).getParent();
+                }
             } else {
                 completionDir = basePath;
             }
@@ -143,12 +152,37 @@ public class FileSystemNameCompleter implements Completer {
         }
 
         logd("Comp. Dir: " + completionDir);
+
+        // When we're not dealing with the default FS, we need exit.
+        if (env.getFileSystemOrganizer().getDefaultFileSystemState() != fss) {
+            return -1;
+        }
+
         try {
             FileStatus[] entries = fs.listStatus(completionDir);
 
             int matchedIndex = matchFiles(prefix, checkBuffer, completionDir.toString(), entries,
                     candidates);
-            matchedIndex =+ completionDir.toString().length() - basePath.toString().length();
+
+            // now that we have a matched index, we need to pull it back to the directory level
+            // and let jline fill in with matching candidates.
+            if (basePath.toString().equals(separator())) {
+                // When Absolute
+                if (!checkBuffer.substring(1).contains(separator())) {
+                    // absolute with no sub dir(s)
+                    matchedIndex = 1;
+                } else {
+                    // absolute with subdirs
+                    matchedIndex += completionDir.toString().length() - checkBuffer.length();
+                }
+            } else {
+                // Relative
+                if (!checkBuffer.contains(separator())) {
+                    matchedIndex = completionDir.toString().length() - basePath.toString().length();
+                } else {
+                    matchedIndex += checkBuffer.lastIndexOf(separator()) - checkBuffer.length();
+                }
+            }
 
             logd("MatchedIndex: " + matchedIndex);
 
@@ -182,18 +216,38 @@ public class FileSystemNameCompleter implements Completer {
 
         int matches = 0;
 
+        String bufferCheck = null;
+//                buffer.length() > 0 ? translated + separator() + buffer : translated
+
+        if (buffer != null && buffer.length() > 0) {
+            if (buffer.startsWith(separator())) {// && translated.endsWith("/")) {
+                bufferCheck = buffer;
+            } else if (buffer.contains(separator())) {
+                if (buffer.endsWith(separator())) {
+                    bufferCheck = translated;
+                } else {
+                    bufferCheck = translated + buffer.substring(buffer.indexOf(separator()));
+                }
+            } else {
+                bufferCheck = translated + separator() + buffer;
+            }
+        } else {
+            bufferCheck = translated + separator();
+        }
+
         // first pass: just count the matches
         for (FileStatus file : files) {
             // System.out.println("Checking: " + file.getPath());
             String checkLocation = file.getPath().toString().substring(prefix.length());
-            if (checkLocation.startsWith(translated + separator() + buffer)) {
+            if (checkLocation.startsWith(bufferCheck)) {
                 // System.out.println("Found match: " + file.getPath());
                 matches++;
             }
         }
+
         for (FileStatus file : files) {
             String checkLocation = file.getPath().toString().substring(prefix.length());
-            if (checkLocation.startsWith(translated + separator() + buffer)) {
+            if (checkLocation.startsWith(bufferCheck)) {
                 String name = file.getPath().getName()
                         + (matches == 1 && file.isDirectory() ? separator()
                         : " ");

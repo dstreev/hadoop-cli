@@ -26,9 +26,13 @@ package com.streever.hadoop.hdfs.util;
 import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
+import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.CommandReturn;
 import com.streever.hadoop.shell.format.ANSIStyle;
+import jline.console.completer.AggregateCompleter;
+import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -182,6 +186,15 @@ public class HdfsLsPlus extends HdfsAbstract {
 
     public HdfsLsPlus(String name, Environment env) {
         super(name, env);
+    }
+
+    @Override
+    public Completer getCompleter() {
+        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
+        NullCompleter nullCompleter = new NullCompleter();
+        Completer completer = new AggregateCompleter(fsc, nullCompleter);
+
+        return completer;
     }
 
     public boolean isRecursive() {

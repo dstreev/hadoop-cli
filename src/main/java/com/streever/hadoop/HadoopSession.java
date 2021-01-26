@@ -1224,6 +1224,8 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new HdfsCommand("touchz", getEnv(), Direction.NONE));
         getEnv().addCommand(new HdfsCommand("checksum", getEnv(), Direction.NONE));
 
+//        getEnv().addCommand(new HdfsScan("scan", getEnv()));
+
 //        getEnv().addCommand(new HdfsCommand("usage", getEnv()));
 
         // Security Help

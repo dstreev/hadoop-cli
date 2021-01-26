@@ -23,6 +23,7 @@
 
 package com.streever.hadoop.shell.commands;
 
+import com.streever.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.streever.hadoop.shell.Environment;
 import com.streever.hadoop.shell.command.AbstractCommand;
 import com.streever.hadoop.shell.command.Command;
@@ -40,13 +41,15 @@ public class Help extends AbstractCommand {
     public Help(String name, Environment env) {
         super(name);
         this.env = env;
+    }
 
+    @Override
+    public Completer getCompleter() {
         StringsCompleter strCompleter = new StringsCompleter(this.env.commandList());
         NullCompleter nullCompleter = new NullCompleter();
         Completer completer = new AggregateCompleter(strCompleter, nullCompleter);
 
-        this.completer = completer;
-
+        return completer;
     }
 
     @Override

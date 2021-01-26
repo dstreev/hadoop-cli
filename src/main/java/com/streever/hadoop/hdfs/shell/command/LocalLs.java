@@ -47,13 +47,6 @@ public class LocalLs extends HdfsCommand {
 
     public LocalLs(String name, Environment env) {
         super(name, env);
-
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env, true);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
-
-        this.completer = completer;
-
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
@@ -87,11 +80,5 @@ public class LocalLs extends HdfsCommand {
         opts.addOption("l", false, "show extended file attributes");
         return opts;
     }  
-    
-//    @Override
-//    public Completer getCompleter() {
-//        return new FileSystemNameCompleter(this.env, true);
-//    }
-    
-    
+
 }

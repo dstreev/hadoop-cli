@@ -34,7 +34,6 @@ public class LocalPwd extends HdfsCommand {
 
     public LocalPwd(String name) {
         super(name);
-
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {

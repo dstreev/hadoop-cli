@@ -24,13 +24,9 @@
 package com.streever.hadoop.shell;
 
 import com.streever.hadoop.hdfs.util.FileSystemOrganizer;
-import com.streever.hadoop.hdfs.util.FileSystemState;
 import com.streever.hadoop.shell.command.Command;
 import jline.console.ConsoleReader;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import sun.security.krb5.Config;
 
 import java.util.*;
 

@@ -49,7 +49,6 @@ public class HdfsCd extends AbstractCommand {
 
         this.completer = completer;
 
-
     }
 
     public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn cr) {
