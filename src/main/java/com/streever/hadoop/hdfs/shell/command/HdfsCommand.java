@@ -66,7 +66,7 @@ public class HdfsCommand extends HdfsAbstract {
     }
 
     public HdfsCommand(String name, Environment env) {
-        this(name,env, Direction.NONE);
+        super(name,env);
     }
 
     @Override
@@ -106,75 +106,91 @@ public class HdfsCommand extends HdfsAbstract {
         String leftPath = null;
         String rightPath = null;
 
-        switch (pathDirectives.getDirection()) {
-            case REMOTE_LOCAL:
-                pathCount += 2; // Source and Destination Path Elements.
-                break;
-            case LOCAL_REMOTE:
-                pathCount += 2; // Source and Destination Path Elements.
+        if (pathDirectives != null) {
+            switch (pathDirectives.getDirection()) {
+                case REMOTE_LOCAL:
+                    pathCount += 2; // Source and Destination Path Elements.
+                    break;
+                case LOCAL_REMOTE:
+                    pathCount += 2; // Source and Destination Path Elements.
 
-                break;
-            case REMOTE_REMOTE:
-                pathCount += 2; // Source and Destination Path Elements.
+                    break;
+                case REMOTE_REMOTE:
+                    pathCount += 2; // Source and Destination Path Elements.
 
-                break;
-            default: // NONE
-                pathCount += 1;
-        }
+                    break;
+                default: // NONE
+                    pathCount += 1;
+            }
 
-        leftPath = pathBuilder.buildPath(Side.LEFT, cmdArgs);
+            leftPath = pathBuilder.buildPath(Side.LEFT, cmdArgs);
 
-        // When the fs isn't the 'default', we need to 'fully' qualify it.
-        // When dealing with non-default/non-local filesystems, we need to prefix the uri with the namespace.
-        // For LOCAL_REMOTE calls, like put, don't prefix the leftPath.
-        if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState()) && pathDirectives.getDirection() != Direction.LOCAL_REMOTE) {
-            leftPath = fss.getURI() + leftPath;
-        }
-
-        if (pathDirectives.getDirection() != Direction.NONE) {
-            rightPath = pathBuilder.buildPath(Side.RIGHT, cmdArgs);
+            // When the fs isn't the 'default', we need to 'fully' qualify it.
             // When dealing with non-default/non-local filesystems, we need to prefix the uri with the namespace.
-            if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
-                rightPath = fss.getURI() + rightPath;
+            // For LOCAL_REMOTE calls, like put, don't prefix the leftPath.
+            if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState()) && pathDirectives.getDirection() != Direction.LOCAL_REMOTE) {
+                leftPath = fss.getURI() + leftPath;
             }
 
-        }
+            if (pathDirectives.getDirection() != Direction.NONE) {
+                rightPath = pathBuilder.buildPath(Side.RIGHT, cmdArgs);
+                // When dealing with non-default/non-local filesystems, we need to prefix the uri with the namespace.
+                if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+                    rightPath = fss.getURI() + rightPath;
+                }
 
-        String[] newCmdArgs = new String[pathCount];
-        if (rightPath != null) {
-            newCmdArgs[0] = leftPath;
-            newCmdArgs[1] = rightPath;
+            }
+
+            String[] newCmdArgs = new String[pathCount];
+            if (rightPath != null) {
+                newCmdArgs[0] = leftPath;
+                newCmdArgs[1] = rightPath;
+            } else {
+                newCmdArgs[0] = leftPath;
+            }
+
+            argv = new String[cmdOpts.length + newCmdArgs.length + 1 + pathDirectives.getDirectives()];
+
+            int pos = 1;
+
+            for (Option opt : cmdOpts) {
+                if (pos >= argv.length) {
+                    System.out.println("OUT OF BOUNDS: " + pos + " " + argv.length);
+                }
+                argv[pos++] = "-" + opt.getOpt();
+            }
+
+            if (pathDirectives.isBefore()) {
+                for (int i = 0; i < pathDirectives.getDirectives(); i++) {
+                    argv[pos++] = cmdArgs[i];
+                }
+            }
+
+            for (String arg : newCmdArgs) {
+                argv[pos++] = arg;
+            }
+
+            if (!pathDirectives.isBefore()) {
+                for (int i = pathDirectives.getDirectives(); i > 0; i--) {
+                    try {
+                        argv[pos++] = cmdArgs[cmdArgs.length - (i)];
+                    } catch (Exception e) {
+                        // Can happen when args are optional
+                    }
+                }
+            }
         } else {
-            newCmdArgs[0] = leftPath;
-        }
-
-        argv = new String[cmdOpts.length + newCmdArgs.length + 1 + pathDirectives.getDirectives()];
-
-        int pos = 1;
-
-        for (Option opt: cmdOpts) {
-            if (pos >= argv.length) {
-                System.out.println("OUT OF BOUNDS: " + pos + " " + argv.length);
+            if (cmdArgs.length == 0) {
+                argv = new String[2];
+            } else {
+                argv = new String[cmdArgs.length + 1];
             }
-            argv[pos++] = "-" + opt.getOpt();
-        }
-
-        if (pathDirectives.isBefore()) {
-            for (int i = 0; i < pathDirectives.getDirectives(); i++) {
-                argv[pos++] = cmdArgs[i];
-            }
-        }
-
-        for (String arg: newCmdArgs) {
-            argv[pos++] = arg;
-        }
-
-        if (!pathDirectives.isBefore()) {
-            for (int i = pathDirectives.getDirectives(); i > 0; i--) {
-                try {
-                    argv[pos++] = cmdArgs[cmdArgs.length - (i)];
-                } catch (Exception e) {
-                    // Can happen when args are optional
+            // Assume first parameter is a path element.
+            String path = pathBuilder.buildPath(Side.LEFT, cmdArgs);
+            argv[1] = path;
+            if (cmdArgs.length > 1) {
+                for (int i = 2; i <= argv.length - 1; i++) {
+                    argv[i] = cmdArgs[i-1];
                 }
             }
         }

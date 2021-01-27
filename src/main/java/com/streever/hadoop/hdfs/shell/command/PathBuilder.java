@@ -14,6 +14,11 @@ public class PathBuilder {
         this.directives = directives;
     }
 
+    public PathBuilder(Environment env) {
+        this.env = env;
+        this.directives = new PathDirectives();
+    }
+
     public String buildPath(Side side, String[] args) {
         String rtn = null;
 

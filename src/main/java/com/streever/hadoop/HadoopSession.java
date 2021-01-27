@@ -1196,9 +1196,9 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new HdfsDisallowSnapshot("disallowSnapshot", getEnv(), Direction.NONE, 1, false, true));
         getEnv().addCommand(new HdfsLsSnapshottableDir("lsSnapshottableDir", getEnv(), Direction.NONE, 1, false, true));
 
-        getEnv().addCommand(new HdfsCommand("createSnapshot", getEnv(), Direction.NONE, 1, false, true));
-        getEnv().addCommand(new HdfsCommand("deleteSnapshot", getEnv(), Direction.NONE, 1, false, false));
-        getEnv().addCommand(new HdfsCommand("renameSnapshot", getEnv(), Direction.NONE, 2, false, false));
+        getEnv().addCommand(new HdfsCommand("createSnapshot", getEnv()));
+        getEnv().addCommand(new HdfsCommand("deleteSnapshot", getEnv()));
+        getEnv().addCommand(new HdfsCommand("renameSnapshot", getEnv()));
         getEnv().addCommand(new SnapshotDiff("snapshotDiff", getEnv()));
 
         getEnv().addCommand(new HdfsCommand("du", getEnv(), Direction.NONE));

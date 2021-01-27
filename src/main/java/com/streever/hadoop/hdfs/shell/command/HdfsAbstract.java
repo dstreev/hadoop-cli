@@ -64,6 +64,7 @@ public abstract class HdfsAbstract extends AbstractCommand {
     public HdfsAbstract(String name, Environment env) {
         super(name);
         this.env = env;
+        this.pathBuilder = new PathBuilder(env);
     }
 
     public Environment getEnv() {

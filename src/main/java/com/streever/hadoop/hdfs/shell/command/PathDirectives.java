@@ -1,7 +1,7 @@
 package com.streever.hadoop.hdfs.shell.command;
 
 public class PathDirectives {
-    private Direction direction = null;
+    private Direction direction = Direction.NONE;
 
     private int directives = 0; //default
     private boolean before = true;  //default
@@ -45,4 +45,6 @@ public class PathDirectives {
         this.direction = direction;
     }
 
+    public PathDirectives() {
+    }
 }
