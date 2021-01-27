@@ -54,12 +54,17 @@ public class List extends HdfsAbstract {
 
         for (String namespace : lclNss) {
             FileSystemState lclFss = env.getFileSystemOrganizer().getNamespaces().get(namespace);
-            if (lclFss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
-                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_BLUE, ANSIStyle.BLINK, ANSIStyle.UNDERSCORE)).append("\t:");
-            } else if (namespace.equalsIgnoreCase(Constants.LOCAL_FS)) {
-                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_YELLOW)).append("\t:");
+            if (lclFss.equals(env.getFileSystemOrganizer().getCurrentFileSystemState())) {
+                sb.append("*\t");
             } else {
-                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_RED)).append("\t:");
+                sb.append("\t");
+            }
+            if (lclFss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_BLUE, ANSIStyle.BLINK, ANSIStyle.UNDERSCORE)).append("\t");
+            } else if (namespace.equalsIgnoreCase(Constants.LOCAL_FS)) {
+                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_YELLOW)).append("\t");
+            } else {
+                sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_RED)).append("\t");
             }
             sb.append(lclFss.toDisplay());
             sb.append("\n");

@@ -23,7 +23,7 @@
 
 package com.streever.hadoop.yarn;
 
-import com.streever.hadoop.AbstractStats;
+import com.streever.hadoop.AbstractQueryTimeFrameStats;
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.shell.Environment;
 import org.apache.commons.cli.CommandLine;
@@ -44,7 +44,7 @@ import java.util.Map;
  * Using the Resource Manager JMX, collect the stats on applications since the last time this was run or up to
  * 'n' (limit).
  */
-public class ContainerStats extends AbstractStats {
+public class ContainerStats extends AbstractQueryTimeFrameStats {
     public static final String APP = "app";
     // Not helpful for workload analysis.  Leaving out for now.
     public static final String ATTEMPT = "attempt";

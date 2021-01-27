@@ -25,6 +25,7 @@ package com.streever.hadoop;
 
 import com.streever.hadoop.hdfs.shell.command.Constants;
 import com.streever.hadoop.hdfs.shell.command.Direction;
+import com.streever.hadoop.shell.commands.Env;
 import com.streever.hadoop.util.HdfsWriter;
 import com.streever.hadoop.util.RecordConverter;
 import com.streever.hadoop.hdfs.shell.command.HdfsAbstract;
@@ -73,16 +74,8 @@ public abstract class AbstractStats extends HdfsAbstract {
     protected Map<String, List<Map<String, Object>>> records = new LinkedHashMap<String, List<Map<String, Object>>>();
     protected Boolean header = Boolean.FALSE;
 
-    protected Long increment = 60l * 60l * 1000l; // 1 hour
-
     protected static final String DEFAULT_DELIMITER = "\u0001";
     protected String delimiter = DEFAULT_DELIMITER;
-
-    /**
-     * The earliest start time to get available jobs. Time since Epoch...
-     */
-    protected Long startTime = 0l;
-    protected Long endTime = 0l;
 
     public AbstractStats(String name) {
         super(name);
@@ -147,13 +140,14 @@ public abstract class AbstractStats extends HdfsAbstract {
         list.addAll(inRecords);
     }
 
-    @Override
-    public final CommandReturn implementation(Environment environment, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn processOptions(Environment environment, CommandLine cmd, CommandReturn cr) {
+//        CommandReturn scr = processOptions(environment, cmd, cr);
+
         if (cmd.hasOption("help")) {
             getHelp();
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(getName(), getOptions());
-            return commandReturn;
+            return cr;
         }
 
         // Get the Filesystem
@@ -169,8 +163,8 @@ public abstract class AbstractStats extends HdfsAbstract {
 
             fs = (DistributedFileSystem) env.getFileSystemOrganizer().getDefaultFileSystemState().getFileSystem();
 
-            Option[] cmdOpts = cmd.getOptions();
-            String[] cmdArgs = cmd.getArgs();
+//            Option[] cmdOpts = cmd.getOptions();
+//            String[] cmdArgs = cmd.getArgs();
 
             if (cmd.hasOption("fileFormat")) {
                 dfFile = new SimpleDateFormat(cmd.getOptionValue("fileFormat"));
@@ -179,9 +173,7 @@ public abstract class AbstractStats extends HdfsAbstract {
             }
 
             if (cmd.hasOption("output")) {
-                // Get a handle to the FileSystem if we intent to write our results to the HDFS.
-                new RuntimeException("NEEDS ATTENTION");
-//                baseOutputDir = pathBuilder.resolveFullPath(env.getRemoteWorkingDirectory().toString().substring(((String) env.getProperties().getProperty(Constants.HDFS_URL)).length()), cmd.getOptionValue("output"));
+                baseOutputDir = cmd.getOptionValue("output");
             } else {
                 baseOutputDir = null;
             }
@@ -200,81 +192,20 @@ public abstract class AbstractStats extends HdfsAbstract {
 
             if (cmd.hasOption("raw")) {
                 this.raw = Boolean.TRUE;
-            }
-
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            // Default Behaviour
-            // Set Start Time to previous day IF no config is specified.
-            Calendar startCal = Calendar.getInstance();
-            Date startDate = new Date(); // default today.
-            if (cmd.hasOption("last")) {
-                String lastOption = cmd.getOptionValue("last");
-                String[] lastParts = lastOption.split("-");
-                if (lastParts.length == 2 && NumberUtils.isCreatable(lastParts[0])) {
-                    Integer window = Integer.parseInt(lastParts[0]);
-                    if (lastParts[1].toUpperCase().startsWith("MIN")) {
-                        startCal.add(Calendar.MINUTE, (-1 * window));
-                        increment = 60l * 1000l;
-                    } else if (lastParts[1].toUpperCase().startsWith("HOUR")) {
-                        startCal.add(Calendar.HOUR, (-1 * window));
-                        increment = 10l * 60l * 1000l; // ten minutes
-                    } else if (lastParts[1].toUpperCase().startsWith("DAY")) {
-                        startCal.add(Calendar.DAY_OF_MONTH, (-1 * window));
-                        increment = 60l * 60l * 1000l; // 1 hour
-                    } else {
-                        // bad.
-                        System.err.println("last option can't be parsed");
-                        throw new RuntimeException("stat option 'l|last' can't be parsed");
-                    }
-                } else {
-                    System.err.println("last option can't be parsed");
-                    throw new RuntimeException("stat option 'l|last' can't be parsed");
-                }
-                startDate = startCal.getTime();
-            } else if (cmd.hasOption("start")) {
-                if (cmd.hasOption("start")) {
-                    try {
-                        startDate = df.parse(cmd.getOptionValue("start"));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        commandReturn.setCode(CODE_BAD_DATE);
-                        commandReturn.getErr().print(e.getMessage());
-                        return commandReturn;
-                    }
-                }
             } else {
-                // default is 1 day.
-                startCal.add(Calendar.DAY_OF_MONTH, -1);
-                startDate = startCal.getTime();
+                this.raw = Boolean.FALSE;
             }
+        } catch (Throwable t) {
+            cr.setCode(CODE_STATS_ISSUE);
+            cr.getErr().print(t.getMessage());
+        }
+        return cr;
+    }
 
-            // TODO: Need to work in 'current'
-            // Set the startTime
-            startTime = startDate.getTime();
-
-            if (cmd.hasOption("end")) {
-                Date endDate = null;
-                try {
-                    endDate = df.parse(cmd.getOptionValue("end"));
-                } catch (ParseException e) {
-                    commandReturn.setCode(CODE_BAD_DATE);
-                    commandReturn.getErr().print(e.getMessage());
-                    return commandReturn;
-//                    e.printStackTrace();
-//                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
-                }
-                endTime = endDate.getTime();
-            } else {
-                // If no Config.
-                // Set to now.
-                endTime = new Date().getTime();
-            }
-
-            if (cmd.hasOption("increment")) {
-                String incStr = cmd.getOptionValue("increment");
-                increment = Long.parseLong(incStr) * 60l * 1000l;
-            }
+    @Override
+    public CommandReturn implementation(Environment environment, CommandLine cmd, CommandReturn cr) {
+        processOptions(environment, cmd, cr);
+        try {
 
             clearCache();
 
@@ -282,13 +213,10 @@ public abstract class AbstractStats extends HdfsAbstract {
 
             clearCache();
         } catch (Throwable t) {
-            commandReturn.setCode(CODE_STATS_ISSUE);
-            commandReturn.getErr().print(t.getMessage());
-            return commandReturn;
-//            t.printStackTrace();
-//            return new CommandReturn(CODE_STATS_ISSUE, t.getMessage());
+            cr.setCode(CODE_STATS_ISSUE);
+            cr.getErr().print(t.getMessage());
         }
-        return commandReturn;
+        return cr;
     }
 
     public abstract void process(CommandLine cmdln);
@@ -326,28 +254,6 @@ public abstract class AbstractStats extends HdfsAbstract {
 
     }
 
-    protected Map<String, String> getQueries(CommandLine cmd) {
-        Map<String, String> rtn = new LinkedHashMap<String, String>();
-        Long begin = startTime;
-        Long end = endTime;
-
-        if (begin + increment < end) {
-            while (begin < end) {
-                StringBuilder sb = new StringBuilder();
-                StringBuilder sb2 = new StringBuilder();
-                sb.append("finishedTimeBegin=").append(begin);
-                sb2.append("finishedTimeBegin=").append(new Date(begin));
-                begin = begin + increment - 1;
-                sb.append("&finishedTimeEnd=").append(begin);
-                sb2.append("&finishedTimeEnd=").append(new Date(begin));
-                begin += 1;
-                rtn.put(sb.toString(), sb2.toString());
-            }
-        }
-
-        return rtn;
-    }
-
     protected abstract void getHelp();
 
     @Override
@@ -368,36 +274,12 @@ public abstract class AbstractStats extends HdfsAbstract {
         sslOption.setRequired(false);
         opts.addOption(sslOption);
 
-        OptionGroup beginOptionGroup = new OptionGroup();
-        Option startOption = new Option("s", "start", true,
-                "Start time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
-        startOption.setRequired(false);
-        beginOptionGroup.addOption(startOption);
-
-        Option lastOption = new Option("l", "last", true,
-                "last x-DAY(S)|x-HOUR(S)|x-MIN(S). 1-HOUR=1 hour, 2-DAYS=2 days, 3-HOURS=3 hours, etc.");
-        lastOption.setRequired(false);
-        beginOptionGroup.addOption(lastOption);
-
-        opts.addOptionGroup(beginOptionGroup);
-
-        // TODO: WIP for current stats.
-//        Option currentOption = new Option("c", "current", false, "Get Current / Active Records");
-//        currentOption.setRequired(false);
-//        beginOptionGroup.addOption(currentOption);
-
-        Option endOption = new Option("e", "end", true,
-                "End time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
-        endOption.setRequired(false);
-        opts.addOption(endOption);
-
         OptionGroup formatGroup = new OptionGroup();
 
         Option delimiterOption = new Option("d", "delimiter", true,
                 "Record Delimiter (Cntrl-A is default).");
         delimiterOption.setRequired(false);
         formatGroup.addOption(delimiterOption);
-
 
         // TODO: Need to implement.
         Option rawOption = new Option("raw", "raw", false,
@@ -411,24 +293,10 @@ public abstract class AbstractStats extends HdfsAbstract {
         headerOption.setRequired(false);
         opts.addOption(headerOption);
 
-
-        Option incOption = new Option("inc", "increment", true, "Query Increment in minutes");
-        incOption.setRequired(false);
-        opts.addOption(incOption);
-
-//        Option schemaOption = new Option("sch", "schema", false, "wip - Print Record Schema");
-//        schemaOption.setRequired(false);
-//        opts.addOption(schemaOption);
-
         Option outputOption = new Option("o", "output", true,
                 "Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.");
         outputOption.setRequired(false);
         opts.addOption(outputOption);
-
-//        Option cfOption = new Option("cf", "controlfile", true,
-//                "wip - Control File use to track run iterations");
-//        cfOption.setRequired(false);
-//        opts.addOption(cfOption);
 
         return opts;
     }

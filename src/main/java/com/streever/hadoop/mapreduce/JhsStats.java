@@ -23,6 +23,7 @@
 
 package com.streever.hadoop.mapreduce;
 
+import com.streever.hadoop.AbstractQueryTimeFrameStats;
 import com.streever.hadoop.AbstractStats;
 import com.streever.hadoop.hdfs.shell.command.Direction;
 import com.streever.hadoop.shell.Environment;
@@ -41,7 +42,7 @@ import java.util.*;
  * Using the Job History Server URL, collect the stats on jobs since the last time this was run or up to
  * 'n' (limit).
  */
-public class JhsStats extends AbstractStats {
+public class JhsStats extends AbstractQueryTimeFrameStats {
 
     public JhsStats(String name) {
         super(name);

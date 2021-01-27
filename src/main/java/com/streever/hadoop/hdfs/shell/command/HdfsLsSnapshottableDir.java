@@ -70,23 +70,9 @@ public class HdfsLsSnapshottableDir extends HdfsAbstract {
                     return cr;
                 }
 
-//                String[] cmdArgs = cmd.getArgs();
-
-//                String targetPath = null;
-//                if (cmdArgs.length > 0) {
-//                    String pathIn = cmdArgs[0];
-//                    targetPath = pathBuilder.resolveFullPath(fss.getWorkingDirectory().toString(), pathIn);
-//                } else {
-//                    targetPath = fss.getWorkingDirectory().toString();
-//                }
-
                 // TODO: add coloring to output
                 SnapshottableDirectoryStatus[] stats = dfs.getSnapshottableDirListing();
                 SnapshottableDirectoryStatus.print(stats, cr.getOut());
-
-//                Path path = new Path(targetPath);
-
-//                dfs.allowSnapshot(path);
 
             } else {
                 loge(env, "This function is only available for the 'default' namespace");

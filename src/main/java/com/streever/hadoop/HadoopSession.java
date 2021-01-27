@@ -1199,6 +1199,7 @@ public class HadoopSession extends AbstractShell {
         getEnv().addCommand(new HdfsCommand("createSnapshot", getEnv(), Direction.NONE, 1, false, true));
         getEnv().addCommand(new HdfsCommand("deleteSnapshot", getEnv(), Direction.NONE, 1, false, false));
         getEnv().addCommand(new HdfsCommand("renameSnapshot", getEnv(), Direction.NONE, 2, false, false));
+        getEnv().addCommand(new SnapshotDiff("snapshotDiff", getEnv()));
 
         getEnv().addCommand(new HdfsCommand("du", getEnv(), Direction.NONE));
         getEnv().addCommand(new HdfsCommand("df", getEnv(), Direction.NONE));
