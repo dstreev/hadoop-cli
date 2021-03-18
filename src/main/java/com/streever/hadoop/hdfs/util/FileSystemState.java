@@ -7,8 +7,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class FileSystemState {
     private static String DISTRIBUTED_USER_HOME_BASE = "/user";

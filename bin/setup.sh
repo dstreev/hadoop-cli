@@ -17,9 +17,18 @@ if [ -f ../target/hadoop-cli-shaded.jar ]; then
     cp -f ../target/hadoop-cli-shaded.jar /usr/local/hadoop-cli/lib
 fi
 
+if [ -f ../target/hadoop-cli-shaded-no-hadoop.jar ]; then
+    cp -f ../target/hadoop-cli-shaded-no-hadoop.jar /usr/local/hadoop-cli/lib
+fi
+
 if [ -f hadoop-cli-shaded.jar ]; then
     cp -f hadoop-cli-shaded.jar /usr/local/hadoop-cli/lib
 fi
+
+if [ -f hadoop-cli-shaded-no-hadoop.jar ]; then
+    cp -f hadoop-cli-shaded-no-hadoop.jar /usr/local/hadoop-cli/lib
+fi
+
 
 chmod -R +r /usr/local/hadoop-cli
 chmod +x /usr/local/hadoop-cli/bin/hadoopcli

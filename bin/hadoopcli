@@ -49,6 +49,7 @@ CMD_DIRECTIVE=
 CMD_ARGS=
 VERBOSE=
 ENV_VAR_FILE=
+HADOOP_CLASSPATH=
 APP_JAVA_OPTS=${JAVA_OPTS:-}
 
 if [[ -f ${HOME}/.hadoop-cli/env-var.props || -L ${HOME}/.hadoop-cli/env-var.props ]]; then
@@ -111,6 +112,10 @@ while [[ $# -gt 0 ]]; do
       export AUX_LIBS_DIR=$1
       shift
       ;;
+    --hadoop-classpath)
+      shift
+      HADOOP_CLASSPATH="true"
+      ;;
     --show-cp)
       shift
       SHOW_CP="true"
@@ -143,6 +148,48 @@ fi
 
 if [[ ! -d ${AUX_LIBS_DIR} ]]; then
     mkdir -p ${AUX_LIBS_DIR}
+fi
+
+# Choose to use embedded libs (Hadoop 3+) or get Hadoop Classpath locally
+if [[ "${HADOOP_CLASSPATH}x" != "x" ]]; then
+    if [[ -f ./hadoop-cli-shaded-no-hadoop.jar ]]; then
+        # Look in Current Directory
+        CMD_CP=$APP_DIR/hadoop-cli-shaded-no-hadoop.jar
+        #echo "Using bin from same directory"
+    elif [[ -f $APP_DIR/../target/hadoop-cli-shaded-no-hadoop.jar ]]; then
+        # Look in ../target
+        CMD_CP=$APP_DIR/../target/hadoop-cli-shaded-no-hadoop.jar
+        #echo "Using bin from build directory"
+    else
+        # Look in /usr/local/hadoop-cli/lib
+        if [[ -f /usr/local/hadoop-cli/lib/hadoop-cli-shaded-no-hadoop.jar ]]; then
+            CMD_CP=/usr/local/hadoop-cli/lib/hadoop-cli-shaded-no-hadoop.jar
+            #echo "Using bin from installation directory"
+        else
+            #echo "Couldn't locate Hadoop Cli Library"
+            exit 1
+        fi
+    fi
+    CMD_CP=${CMD_CP}:`hadoop classpath`
+else
+  if [[ -f ./hadoop-cli-shaded.jar ]]; then
+      # Look in Current Directory
+      CMD_CP=$APP_DIR/hadoop-cli-shaded.jar
+      #echo "Using bin from same directory"
+  elif [[ -f $APP_DIR/../target/hadoop-cli-shaded.jar ]]; then
+      # Look in ../target
+      CMD_CP=$APP_DIR/../target/hadoop-cli-shaded.jar
+      #echo "Using bin from build directory"
+  else
+      # Look in /usr/local/hadoop-cli/lib
+      if [[ -f /usr/local/hadoop-cli/lib/hadoop-cli-shaded.jar ]]; then
+          CMD_CP=/usr/local/hadoop-cli/lib/hadoop-cli-shaded.jar
+          #echo "Using bin from installation directory"
+      else
+          #echo "Couldn't locate Hadoop Cli Library"
+          exit 1
+      fi
+  fi
 fi
 
 for jarFile in `ls -d ${AUX_LIBS_DIR}/*.jar 2> /dev/null`; do

@@ -48,7 +48,7 @@
         <fileSet>
             <directory>${project.basedir}/target</directory>
             <includes>
-                <include>*shaded.jar</include>
+                <include>*shaded*.jar</include>
             </includes>
             <outputDirectory>hadoop-cli</outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>

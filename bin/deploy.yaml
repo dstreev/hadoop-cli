@@ -27,6 +27,12 @@
         dest: /usr/local/hadoop-cli/lib
         mode: 0755
 
+    - name: Copy No Hadoop lib
+      copy:
+        src: ../target/hadoop-cli-shaded-no-hadoop.jar
+        dest: /usr/local/hadoop-cli/lib
+        mode: 0755
+
     - name: Link executable
       file:
         src: /usr/local/hadoop-cli/bin/hadoopcli
