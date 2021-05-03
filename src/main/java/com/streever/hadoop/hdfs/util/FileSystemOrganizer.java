@@ -89,26 +89,38 @@ public class FileSystemOrganizer {
             localFileSystem = FileSystem.getLocal(config);
             String defaultFS = config.get("fs.defaultFS");
             String configuredNameservices = config.get("dfs.nameservices");
-            String[] nameservices = configuredNameservices.split(",");
-            for (String nameservice : nameservices) {
-                if (defaultFS.contains(nameservice)) {
-                    // Setup Default State
-                    FileSystemState fss = new FileSystemState();
-                    fss.setFileSystem(distributedFileSystem);
-                    fss.setNamespace(nameservice);
-                    fss.setProtocol("hdfs://");
-                    fss.setWorkingDirectory(new Path("/"));
-                    namespaces.put(nameservice, fss);
-                    defaultFileSystemState = fss;
-                    currentFileSystemState = fss;
-                } else {
-                    FileSystemState fss = new FileSystemState();
-                    fss.setFileSystem(distributedFileSystem);
-                    fss.setNamespace(nameservice);
-                    fss.setProtocol("hdfs://");
-                    fss.setWorkingDirectory(new Path("/"));
-                    namespaces.put(nameservice, fss);
+            if (configuredNameservices != null) {
+                String[] nameservices = configuredNameservices.split(",");
+                for (String nameservice : nameservices) {
+                    if (defaultFS.contains(nameservice)) {
+                        // Setup Default State
+                        FileSystemState fss = new FileSystemState();
+                        fss.setFileSystem(distributedFileSystem);
+                        fss.setNamespace(nameservice);
+                        fss.setProtocol("hdfs://");
+                        fss.setWorkingDirectory(new Path("/"));
+                        namespaces.put(nameservice, fss);
+                        defaultFileSystemState = fss;
+                        currentFileSystemState = fss;
+                    } else {
+                        FileSystemState fss = new FileSystemState();
+                        fss.setFileSystem(distributedFileSystem);
+                        fss.setNamespace(nameservice);
+                        fss.setProtocol("hdfs://");
+                        fss.setWorkingDirectory(new Path("/"));
+                        namespaces.put(nameservice, fss);
+                    }
                 }
+            } else {
+                // Setup Default State
+                FileSystemState fss = new FileSystemState();
+                fss.setFileSystem(distributedFileSystem);
+                fss.setNamespace(defaultFS.replace("hdfs://",""));
+                fss.setProtocol("hdfs://");
+                fss.setWorkingDirectory(new Path("/"));
+                namespaces.put(defaultFS, fss);
+                defaultFileSystemState = fss;
+                currentFileSystemState = fss;
             }
             // Build the Local FileSystemState
             FileSystemState lfss = new FileSystemState();
