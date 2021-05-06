@@ -26,7 +26,7 @@ package com.streever.hadoop;
 public class HadoopShell {
 
     public static void main(String[] args) throws Exception {
-        HadoopSession shell = HadoopSession.get("CLI");
+        HadoopSession shell = new HadoopSession();
         if (!shell.start(args)) {
             System.err.println("Couldn't start HDFS Shell");
             System.exit(-1);

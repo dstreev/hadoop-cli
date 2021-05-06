@@ -35,8 +35,8 @@ public class TestApi {
 
     @Before
     public void before() {
-        shell = HadoopSession.get("shell1");
-        shell2 = HadoopSession.get( "shell2");
+        shell = new HadoopSession();
+        shell2 = new HadoopSession();
         try {
             String[] api = {"-api"};
 //            boolean result = Arrays.stream(alphabet).anyMatch("A"::equals);

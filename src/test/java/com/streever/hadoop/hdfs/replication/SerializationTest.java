@@ -30,20 +30,20 @@ import org.junit.Test;
  */
 public class SerializationTest {
 
-    @Test
-    public void DefinitionFromResourceTest001 () {
-        Definition definition = ReplicationHelper.definitionFromResource("/default_def.json");
-
-        System.out.println(definition.toString());
-
-    }
-
-    @Test
-    public void StateFromStringTest001 () {
-        State state = ReplicationHelper.stateFromResource("/default_state.json");
-
-        System.out.println(state.toString());
-
-    }
+//    @Test
+//    public void DefinitionFromResourceTest001 () {
+//        Definition definition = ReplicationHelper.definitionFromResource("/default_def.json");
+//
+//        System.out.println(definition.toString());
+//
+//    }
+//
+//    @Test
+//    public void StateFromStringTest001 () {
+//        State state = ReplicationHelper.stateFromResource("/default_state.json");
+//
+//        System.out.println(state.toString());
+//
+//    }
 
 }

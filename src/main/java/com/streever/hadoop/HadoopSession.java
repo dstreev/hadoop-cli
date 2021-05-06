@@ -729,7 +729,6 @@ public class HadoopSession extends AbstractShell {
         return instance;
     }
 
-
     private Options getOptions() {
         // create Options object
         Options options = new Options();

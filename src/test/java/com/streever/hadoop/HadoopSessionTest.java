@@ -14,7 +14,7 @@ public class HadoopSessionTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        shell = HadoopSession.get("shell1");
+        shell = new HadoopSession();
         try {
             String[] api = {"-api"};
             shell.start(api);

@@ -92,7 +92,7 @@ public class FileSystemState {
         // Strip the URI from the incoming path, if exists
         this.workingDirectory = new Path(workingDirectory.toString().replace(getURI(), ""));
         // Keep the Filesystem in sync
-//        fileSystem.setWorkingDirectory(new Path(workingDirectory.toString().replace(getURI(), "")));
+        fileSystem.setWorkingDirectory(new Path(workingDirectory.toString().replace(getURI(), "")));
     }
 
     public Date getLastAccessed() {
