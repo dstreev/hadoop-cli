@@ -52,18 +52,20 @@ public class HdfsWriter {
                 out = fs.create(path);
             }
             out.write(in);
-            // Newline
-//            out.write("\n".getBytes());
             out.flush();
-            out.close();
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
 
-//    public void write(byte[] bytes) {
-//
-//    }
 }

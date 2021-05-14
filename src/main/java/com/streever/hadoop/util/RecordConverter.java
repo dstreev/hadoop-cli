@@ -23,13 +23,13 @@
 
 package com.streever.hadoop.util;
 
+import com.streever.hadoop.AbstractStats;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -43,8 +43,6 @@ public class RecordConverter {
     private ObjectMapper mapper = null;
     private JsonNode root = null;
     private Boolean header = Boolean.FALSE;
-
-    private static final String delimiter = "\u0001"; // cntrl-a
 
     public RecordConverter() {
         mapper = new ObjectMapper();
@@ -105,7 +103,7 @@ public class RecordConverter {
         if (inDelimiter != null) {
             delimiter = inDelimiter;
         } else {
-            delimiter = RecordConverter.delimiter;
+            delimiter = AbstractStats.DEFAULT_DELIMITER;
         }
 
 //        Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();

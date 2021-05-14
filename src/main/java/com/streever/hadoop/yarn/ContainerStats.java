@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -126,10 +127,10 @@ public class ContainerStats extends AbstractQueryTimeFrameStats {
                 URL appsUrl = new URL(rootPath + "?" + query);
 
                 URLConnection appsConnection = appsUrl.openConnection();
-                String appsJson = IOUtils.toString(appsConnection.getInputStream());
+                String appsJson = IOUtils.toString(appsConnection.getInputStream(), StandardCharsets.UTF_8);
 
                 if (raw) {
-                    System.out.println(appsJson);
+                    print(APP + "_raw", appsJson);
                 } else {
                     YarnAppRecordConverter yarnRc = new YarnAppRecordConverter();
 

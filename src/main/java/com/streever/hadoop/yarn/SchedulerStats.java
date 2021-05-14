@@ -33,6 +33,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -154,22 +155,21 @@ public class SchedulerStats extends AbstractStats {
             URL schUrl = new URL(rootPath);
 
             URLConnection schConnection = schUrl.openConnection();
-            String schJson = IOUtils.toString(schConnection.getInputStream());
+            String schJson = IOUtils.toString(schConnection.getInputStream(), StandardCharsets.UTF_8);
 
             if (raw) {
-                System.out.println(schJson);
-                return;
-            }
+                print(QUEUE + "_raw", schJson);
+            } else {
 
-            QueueParser queueParser = new QueueParser(schJson);
-            Map<String, List<Map<String, Object>>> queueSet = queueParser.getQueues(timestamp);
+                QueueParser queueParser = new QueueParser(schJson);
+                Map<String, List<Map<String, Object>>> queueSet = queueParser.getQueues(timestamp);
 
-            Iterator<Map.Entry<String, List<Map<String, Object>>>> qIter = queueSet.entrySet().iterator();
+                Iterator<Map.Entry<String, List<Map<String, Object>>>> qIter = queueSet.entrySet().iterator();
 
-            while (qIter.hasNext()) {
-                Map.Entry<String, List<Map<String, Object>>> entry = qIter.next();
-                addRecords(entry.getKey(), entry.getValue());
-            }
+                while (qIter.hasNext()) {
+                    Map.Entry<String, List<Map<String, Object>>> entry = qIter.next();
+                    addRecords(entry.getKey(), entry.getValue());
+                }
 
                 /*
                 1. Get current queue state.
@@ -177,13 +177,13 @@ public class SchedulerStats extends AbstractStats {
                  */
 
 
-            Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
-            while (rIter.hasNext()) {
-                Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
-                System.out.println("Key: " + recordSet.getKey());
-                print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
+                Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
+                while (rIter.hasNext()) {
+                    Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
+//                    System.out.println("Key: " + recordSet.getKey());
+                    print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
+                }
             }
-
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

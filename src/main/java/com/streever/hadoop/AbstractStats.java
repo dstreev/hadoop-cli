@@ -65,6 +65,8 @@ public abstract class AbstractStats extends HdfsAbstract {
     protected Boolean ssl = Boolean.FALSE;
     protected Boolean raw = Boolean.FALSE;
 
+    private DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+
     protected DistributedFileSystem fs = null;
 
     protected static String DEFAULT_FILE_FORMAT = "yyyy-MM";
@@ -74,8 +76,13 @@ public abstract class AbstractStats extends HdfsAbstract {
     protected Map<String, List<Map<String, Object>>> records = new LinkedHashMap<String, List<Map<String, Object>>>();
     protected Boolean header = Boolean.FALSE;
 
-    protected static final String DEFAULT_DELIMITER = "\u0001";
+    public static final String DEFAULT_DELIMITER = "\u0001";
+
     protected String delimiter = DEFAULT_DELIMITER;
+
+    public Boolean isRaw() {
+        return raw;
+    }
 
     public AbstractStats(String name) {
         super(name);
@@ -221,6 +228,21 @@ public abstract class AbstractStats extends HdfsAbstract {
 
     public abstract void process(CommandLine cmdln);
 
+    protected void print(String recordSet, String rawRecord) {
+        // If the options say to write to hdfs.
+        if (baseOutputDir != null) {
+            StringBuilder sb = new StringBuilder();
+            String timestamp = dateTimeFormat.format(new Date());
+            sb.append(timestamp).append(delimiter);
+            sb.append(rawRecord).append("\n");
+            String outputFilename = dfFile.format(new Date()) + ".txt";
+            HdfsWriter writer = new HdfsWriter(fs, baseOutputDir + "/" + recordSet.toLowerCase() + "/" + outputFilename);
+            writer.append(sb.toString().getBytes());
+        } else {
+            System.out.println(rawRecord);
+        }
+    }
+
     protected void print(String recordSet, String[] fields, List<Map<String, Object>> records) {
         //System.out.println("Record set: " + recordSet);
         int i = 0;
@@ -279,15 +301,17 @@ public abstract class AbstractStats extends HdfsAbstract {
         Option delimiterOption = new Option("d", "delimiter", true,
                 "Record Delimiter (Cntrl-A is default).");
         delimiterOption.setRequired(false);
-        formatGroup.addOption(delimiterOption);
+        opts.addOption(delimiterOption);
+//        formatGroup.addOption(delimiterOption);
 
         // TODO: Need to implement.
         Option rawOption = new Option("raw", "raw", false,
                 "Raw Record Output");
         rawOption.setRequired(false);
-        formatGroup.addOption(rawOption);
+        opts.addOption(rawOption);
+//        formatGroup.addOption(rawOption);
 
-        opts.addOptionGroup(formatGroup);
+//        opts.addOptionGroup(formatGroup);
 
         Option headerOption = new Option("hdr", "header", false, "Print Record Header");
         headerOption.setRequired(false);
