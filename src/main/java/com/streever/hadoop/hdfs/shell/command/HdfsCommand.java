@@ -113,11 +113,9 @@ public class HdfsCommand extends HdfsAbstract {
                     break;
                 case LOCAL_REMOTE:
                     pathCount += 2; // Source and Destination Path Elements.
-
                     break;
                 case REMOTE_REMOTE:
                     pathCount += 2; // Source and Destination Path Elements.
-
                     break;
                 default: // NONE
                     pathCount += 1;
@@ -138,7 +136,6 @@ public class HdfsCommand extends HdfsAbstract {
                 if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
                     rightPath = fss.getURI() + rightPath;
                 }
-
             }
 
             String[] newCmdArgs = new String[pathCount];

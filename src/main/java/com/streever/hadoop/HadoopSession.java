@@ -716,19 +716,6 @@ public class HadoopSession extends AbstractShell {
     private String gatewayProxyURL = null;
     private String altEndpoint = null;
 
-    static Map<String, HadoopSession> sessions = new TreeMap<String, HadoopSession>();
-
-    public static HadoopSession get(String name) {
-        HadoopSession instance = null;
-        if (sessions.containsKey(name)) {
-            instance = sessions.get(name);
-        } else {
-            instance = new HadoopSession();
-            sessions.put(name, instance);
-        }
-        return instance;
-    }
-
     private Options getOptions() {
         // create Options object
         Options options = new Options();

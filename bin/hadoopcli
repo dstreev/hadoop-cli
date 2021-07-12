@@ -20,25 +20,6 @@ else
   JAVA=java
 fi
 
-if [[ -f ./hadoop-cli-shaded.jar ]]; then
-    # Look in Current Directory
-    CMD_CP=$APP_DIR/hadoop-cli-shaded.jar
-    #echo "Using bin from same directory"
-elif [[ -f $APP_DIR/../target/hadoop-cli-shaded.jar ]]; then
-    # Look in ../target
-    CMD_CP=$APP_DIR/../target/hadoop-cli-shaded.jar
-    #echo "Using bin from build directory"
-else
-    # Look in /usr/local/hadoop-cli/lib
-    if [[ -f /usr/local/hadoop-cli/lib/hadoop-cli-shaded.jar ]]; then
-        CMD_CP=/usr/local/hadoop-cli/lib/hadoop-cli-shaded.jar
-        #echo "Using bin from installation directory"
-    else
-        #echo "Couldn't locate Hadoop Cli Library"
-        exit 1
-    fi
-fi
-
 # Set the default.
 export HADOOP_CONF_DIR="/etc/hadoop/conf"
 
@@ -150,46 +131,31 @@ if [[ ! -d ${AUX_LIBS_DIR} ]]; then
     mkdir -p ${AUX_LIBS_DIR}
 fi
 
+SHADED=
 # Choose to use embedded libs (Hadoop 3+) or get Hadoop Classpath locally
 if [[ "${HADOOP_CLASSPATH}x" != "x" ]]; then
-    if [[ -f ./hadoop-cli-shaded-no-hadoop.jar ]]; then
-        # Look in Current Directory
-        CMD_CP=$APP_DIR/hadoop-cli-shaded-no-hadoop.jar
-        #echo "Using bin from same directory"
-    elif [[ -f $APP_DIR/../target/hadoop-cli-shaded-no-hadoop.jar ]]; then
-        # Look in ../target
-        CMD_CP=$APP_DIR/../target/hadoop-cli-shaded-no-hadoop.jar
-        #echo "Using bin from build directory"
-    else
-        # Look in /usr/local/hadoop-cli/lib
-        if [[ -f /usr/local/hadoop-cli/lib/hadoop-cli-shaded-no-hadoop.jar ]]; then
-            CMD_CP=/usr/local/hadoop-cli/lib/hadoop-cli-shaded-no-hadoop.jar
-            #echo "Using bin from installation directory"
-        else
-            #echo "Couldn't locate Hadoop Cli Library"
-            exit 1
-        fi
-    fi
-    CMD_CP=${CMD_CP}:`hadoop classpath`
+  SHADED=shaded-no-hadoop
 else
-  if [[ -f ./hadoop-cli-shaded.jar ]]; then
-      # Look in Current Directory
-      CMD_CP=$APP_DIR/hadoop-cli-shaded.jar
-      #echo "Using bin from same directory"
-  elif [[ -f $APP_DIR/../target/hadoop-cli-shaded.jar ]]; then
-      # Look in ../target
-      CMD_CP=$APP_DIR/../target/hadoop-cli-shaded.jar
-      #echo "Using bin from build directory"
-  else
-      # Look in /usr/local/hadoop-cli/lib
-      if [[ -f /usr/local/hadoop-cli/lib/hadoop-cli-shaded.jar ]]; then
-          CMD_CP=/usr/local/hadoop-cli/lib/hadoop-cli-shaded.jar
-          #echo "Using bin from installation directory"
-      else
-          #echo "Couldn't locate Hadoop Cli Library"
-          exit 1
-      fi
-  fi
+  SHADED=shaded
+fi
+
+if [[ -f ./hadoop-cli-$SHADED.jar ]]; then
+    # Look in Current Directory
+    CMD_CP=$APP_DIR/hadoop-cli-$SHADED.jar
+    #echo "Using bin from same directory"
+elif [[ -f $APP_DIR/../target/hadoop-cli-$SHADED.jar ]]; then
+    # Look in ../target
+    CMD_CP=$APP_DIR/../target/hadoop-cli-$SHADED.jar
+    #echo "Using bin from build directory"
+elif [[ -f /usr/local/hadoop-cli/lib/hadoop-cli-$SHADED.jar ]]; then
+    # Look in /usr/local/hadoop-cli/lib
+    CMD_CP=/usr/local/hadoop-cli/lib/hadoop-cli-$SHADED.jar
+    #echo "Using bin from installation directory"
+elif [[ -f $HOME/.hadoop-cli/lib/hadoop-cli-$SHADED.jar ]]; then
+    CMD_CP=$HOME/.hadoop-cli/lib/hadoop-cli-$SHADED.jar
+else
+    #echo "Couldn't locate Hadoop Cli Library"
+    exit 1
 fi
 
 for jarFile in `ls -d ${AUX_LIBS_DIR}/*.jar 2> /dev/null`; do

@@ -1,40 +1,55 @@
 #!/usr/bin/env sh
 
-# Should be run as root.
-
 cd `dirname $0`
 
-mkdir -p /usr/local/hadoop-cli/bin
-mkdir -p /usr/local/hadoop-cli/lib
+BASE_DIR=
 
-cp -f hadoopcli /usr/local/hadoop-cli/bin
-cp -f JCECheck /usr/local/hadoop-cli/bin
+if (( $EUID != 0 )); then
+  echo "Setting up as non-root user"
+  BASE_DIR=$HOME/.hadoop-cli
+else
+  echo "Setting up as root user"
+  BASE_DIR=/usr/local/hadoop-cli
+fi
+
+# Install in User bin
+mkdir -p $BASE_DIR/bin
+mkdir -p $BASE_DIR/lib
+
+cp -f hadoopcli $BASE_DIR/bin
+cp -f JCECheck $BASE_DIR/bin
 
 # Cleanup previous installation
-rm -f /usr/local/hadoop-cli/lib/*.jar
+rm -f $BASE_DIR/lib/*.jar
+rm -f $BASE_DIR/bin/*.*
 
 if [ -f ../target/hadoop-cli-shaded.jar ]; then
-    cp -f ../target/hadoop-cli-shaded.jar /usr/local/hadoop-cli/lib
+    cp -f ../target/hadoop-cli-shaded.jar $BASE_DIR/lib
 fi
 
 if [ -f ../target/hadoop-cli-shaded-no-hadoop.jar ]; then
-    cp -f ../target/hadoop-cli-shaded-no-hadoop.jar /usr/local/hadoop-cli/lib
+    cp -f ../target/hadoop-cli-shaded-no-hadoop.jar $BASE_DIR/lib
 fi
 
 if [ -f hadoop-cli-shaded.jar ]; then
-    cp -f hadoop-cli-shaded.jar /usr/local/hadoop-cli/lib
+    cp -f hadoop-cli-shaded.jar $BASE_DIR/lib
 fi
 
 if [ -f hadoop-cli-shaded-no-hadoop.jar ]; then
-    cp -f hadoop-cli-shaded-no-hadoop.jar /usr/local/hadoop-cli/lib
+    cp -f hadoop-cli-shaded-no-hadoop.jar $BASE_DIR/lib
 fi
 
 
-chmod -R +r /usr/local/hadoop-cli
-chmod +x /usr/local/hadoop-cli/bin/hadoopcli
-chmod +x /usr/local/hadoop-cli/bin/JCECheck
+chmod -R +r $BASE_DIR
+chmod +x $BASE_DIR/bin/hadoopcli
+chmod +x $BASE_DIR/bin/JCECheck
 
-ln -sf /usr/local/hadoop-cli/bin/JCECheck /usr/local/bin/JCECheck
-ln -sf /usr/local/hadoop-cli/bin/hadoopcli /usr/local/bin/hadoopcli
-
-
+if (( $EUID == 0 )); then
+  echo "Setting up global links"
+  ln -sf $BASE_DIR/bin/JCECheck /usr/local/bin/JCECheck
+  ln -sf $BASE_DIR/bin/hadoopcli /usr/local/bin/hadoopcli
+else
+  mkdir -p $HOME/bin
+  ln -sf $BASE_DIR/bin/JCECheck $HOME/bin/JCECheck
+  ln -sf $BASE_DIR/bin/hadoopcli $HOME/bin/hadoopcli
+fi
