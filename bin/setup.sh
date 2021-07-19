@@ -16,12 +16,12 @@ fi
 mkdir -p $BASE_DIR/bin
 mkdir -p $BASE_DIR/lib
 
-cp -f hadoopcli $BASE_DIR/bin
-cp -f JCECheck $BASE_DIR/bin
-
 # Cleanup previous installation
 rm -f $BASE_DIR/lib/*.jar
 rm -f $BASE_DIR/bin/*.*
+
+cp -f hadoopcli $BASE_DIR/bin
+cp -f JCECheck $BASE_DIR/bin
 
 if [ -f ../target/hadoop-cli-shaded.jar ]; then
     cp -f ../target/hadoop-cli-shaded.jar $BASE_DIR/lib
