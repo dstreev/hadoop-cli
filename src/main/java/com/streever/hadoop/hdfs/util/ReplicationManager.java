@@ -82,7 +82,7 @@ public class ReplicationManager {
      */
 
     public static final String HADOOP_CONF_DIR = "HADOOP_CONF_DIR";
-    private static final String[] HADOOP_CONF_FILES = {"core-site.xml", "hdfs-site.xml"};
+    private static final String[] HADOOP_CONF_FILES = {"core-site.xml", "hdfs-site.xml", "ozone-site.xml"};
 
     private static final String PREFIX_HA_NAMENODES = "dfs.ha.namenodes";
     private static final String PREFIX_HA_NAMENODE_RPC_ADDRESS = "dfs.namenode.rpc-address";

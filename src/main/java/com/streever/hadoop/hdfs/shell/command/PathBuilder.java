@@ -6,6 +6,24 @@ import org.apache.hadoop.fs.FileSystem;
 
 public class PathBuilder {
 
+    enum SupportedProtocol {
+        aws("s3a://","s3n://", "s3://"),
+        google("gs://"),
+        azure("wasb://","adl://","abfs://"),
+        hadoop("/", "hdfs://", "ofs://", "o3fs://");
+
+        private String[] protocols = null;
+
+        SupportedProtocol(String... protocols) {
+            this.protocols = protocols;
+        }
+
+        public String[] getProtocols() {
+            return protocols;
+        }
+
+
+    }
     private Environment env;
     private PathDirectives directives;
 
@@ -17,6 +35,21 @@ public class PathBuilder {
     public PathBuilder(Environment env) {
         this.env = env;
         this.directives = new PathDirectives();
+    }
+
+    public static boolean isProtocolSupported(String path) {
+        boolean rtn = Boolean.FALSE;
+        for (SupportedProtocol supportedProtocol: SupportedProtocol.values()) {
+            for (String protocol: supportedProtocol.getProtocols()) {
+                if (path.startsWith(protocol)) {
+                    rtn = Boolean.TRUE;
+                    break;
+                }
+            }
+            if (rtn)
+                break;
+        }
+        return rtn;
     }
 
     public String buildPath(Side side, String[] args) {
@@ -93,10 +126,9 @@ public class PathBuilder {
             } else {
                 adjusted = input;
             }
-            if (!adjusted.startsWith("/") && !adjusted.startsWith("hdfs://") && !adjusted.startsWith("s3://") &&
-                    !adjusted.startsWith("s3a://") && !adjusted.startsWith("gs://") && !adjusted.startsWith("adl://")
-                    && !adjusted.startsWith("s3n://") && !adjusted.startsWith("wasb://") && !adjusted.startsWith("abfs://"))
+            if (!isProtocolSupported(adjusted)) {
                 adjusted = current + "/" + adjusted;
+            }
         } else {
             adjusted = current;
 //            return current;

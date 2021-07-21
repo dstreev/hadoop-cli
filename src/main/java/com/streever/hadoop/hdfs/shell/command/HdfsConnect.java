@@ -47,7 +47,7 @@ public class HdfsConnect extends AbstractCommand {
     public static final String CURRENT_USER_PROP = "current.user";
 
     public static final String HADOOP_CONF_DIR = "HADOOP_CONF_DIR";
-    private static final String[] HADOOP_CONF_FILES = {"core-site.xml", "hdfs-site.xml", "mapred-site.xml", "yarn-site.xml"};
+    private static final String[] HADOOP_CONF_FILES = {"core-site.xml", "hdfs-site.xml", "mapred-site.xml", "yarn-site.xml", "ozone-site.xml"};
 
     public HdfsConnect(String name) {
         super(name);

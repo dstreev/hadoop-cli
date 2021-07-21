@@ -122,6 +122,18 @@ public class FileSystemOrganizer {
                 defaultFileSystemState = fss;
                 currentFileSystemState = fss;
             }
+            // look for Ozone Services
+            String oService = config.get("ozone.service.id");
+            if (oService != null) {
+                FileSystemState fss = new FileSystemState();
+                fss.setFileSystem(distributedFileSystem);
+                fss.setNamespace(oService);
+                fss.setProtocol("ofs://");
+                fss.setWorkingDirectory(new Path("/"));
+                namespaces.put(oService, fss);
+
+            }
+
             // Build the Local FileSystemState
             FileSystemState lfss = new FileSystemState();
             lfss.setFileSystem(localFileSystem);

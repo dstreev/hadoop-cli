@@ -41,10 +41,6 @@ public interface Environment {
     Command getCommand(String name);
 
     Set<String> commandList();
-//    void setProperty(String key, String value);
-//
-//    String getProperty(String key);
-//    String getProperty(String key, String default);
 
     Properties getProperties();
     void setValue(String key, Object value);
@@ -57,17 +53,6 @@ public interface Environment {
 
     void setPrompt(String prompt);
     String getPrompt();
-
-//    String getCurrentPrompt();
-//    void setCurrentPrompt(String prompt);
-//    String getDefaultPrompt();
-//    void setDefaultPrompt(String prompt);
-
-//    Path getWorkingDirectory();
-//    void setWorkingDirectory(Path workingDirectory);
-//
-//    Path getLocalWorkingDirectory();
-//    void setLocalWorkingDirectory(Path workingDirectory);
 
     Boolean isVerbose();
     void setVerbose(Boolean verbose);
