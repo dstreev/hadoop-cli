@@ -9,6 +9,7 @@ import org.apache.hadoop.hdfs.DistributedFileSystem;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -21,6 +22,7 @@ public class FileSystemOrganizer {
 
     private Map<String, FileSystemState> namespaces = new TreeMap<String, FileSystemState>();
     private FileSystemState defaultFileSystemState = null;
+    private FileSystemState defaultOzoneFileSystemState = null;
     private FileSystemState currentFileSystemState = null;
 //    private FileSystem distributedFileSystem = null;
 //    private FileSystem localFileSystem = null;
@@ -32,6 +34,17 @@ public class FileSystemOrganizer {
     public FileSystemOrganizer(Configuration config) {
         this.config = config;
         init();
+    }
+
+    public Boolean isDefaultFileSystemState(FileSystemState fss) {
+        Boolean rtn = Boolean.FALSE;
+        if (fss.equals(defaultFileSystemState)
+        // can't support completion on OZONE yet WHEN it's not the fs.defaultFS.
+//                || fss.equals(defaultOzoneFileSystemState)
+        ) {
+            rtn = Boolean.TRUE;
+        }
+        return rtn;
     }
 
     public FileSystem getDistributedFileSystem() {
@@ -62,6 +75,14 @@ public class FileSystemOrganizer {
         this.defaultFileSystemState = defaultFileSystemState;
     }
 
+    public FileSystemState getDefaultOzoneFileSystemState() {
+        return defaultOzoneFileSystemState;
+    }
+
+    public void setDefaultOzoneFileSystemState(FileSystemState defaultOzoneFileSystemState) {
+        this.defaultOzoneFileSystemState = defaultOzoneFileSystemState;
+    }
+
     public FileSystemState getCurrentFileSystemState() {
         return currentFileSystemState;
     }
@@ -79,7 +100,7 @@ public class FileSystemOrganizer {
         // if not:  create and set
         //  NEED to see if command was successful before adding?
 
-        return namespaces.get(uri);
+        return namespaces.get(uri.toUpperCase());
     }
 
     protected void init() {
@@ -99,8 +120,8 @@ public class FileSystemOrganizer {
                         fss.setNamespace(nameservice);
                         fss.setProtocol("hdfs://");
                         fss.setWorkingDirectory(new Path("/"));
-                        namespaces.put(nameservice, fss);
-                        defaultFileSystemState = fss;
+                        namespaces.put(nameservice.toUpperCase(), fss);
+                        setDefaultFileSystemState(fss);
                         currentFileSystemState = fss;
                     } else {
                         FileSystemState fss = new FileSystemState();
@@ -108,18 +129,18 @@ public class FileSystemOrganizer {
                         fss.setNamespace(nameservice);
                         fss.setProtocol("hdfs://");
                         fss.setWorkingDirectory(new Path("/"));
-                        namespaces.put(nameservice, fss);
+                        namespaces.put(nameservice.toUpperCase(), fss);
                     }
                 }
             } else {
                 // Setup Default State
                 FileSystemState fss = new FileSystemState();
                 fss.setFileSystem(distributedFileSystem);
-                fss.setNamespace(defaultFS.replace("hdfs://",""));
+                fss.setNamespace(defaultFS.replace("hdfs://", ""));
                 fss.setProtocol("hdfs://");
                 fss.setWorkingDirectory(new Path("/"));
-                namespaces.put(defaultFS, fss);
-                defaultFileSystemState = fss;
+                namespaces.put(defaultFS.toUpperCase(), fss);
+                setDefaultFileSystemState(fss);
                 currentFileSystemState = fss;
             }
             // look for Ozone Services
@@ -130,7 +151,8 @@ public class FileSystemOrganizer {
                 fss.setNamespace(oService);
                 fss.setProtocol("ofs://");
                 fss.setWorkingDirectory(new Path("/"));
-                namespaces.put(oService, fss);
+                setDefaultOzoneFileSystemState(fss);
+                namespaces.put(oService.toUpperCase(), fss);
 
             }
 
@@ -182,7 +204,7 @@ public class FileSystemOrganizer {
 //        }
         sb.append(ANSIStyle.style(this.getCurrentFileSystemState().getWorkingDirectory().toString(), ANSIStyle.FG_MAGENTA));
         sb.append(ANSIStyle.style(" on ", ANSIStyle.FG_GREEN));
-        sb.append(ANSIStyle.style(this.getCurrentFileSystemState().getURI(),ANSIStyle.FG_YELLOW));
+        sb.append(ANSIStyle.style(this.getCurrentFileSystemState().getURI(), ANSIStyle.FG_YELLOW));
         sb.append("\n");
         sb.append(ANSIStyle.RIGHT_ARROW);
 //        sb.append(ANSIStyle.style(" $: ", ANSIStyle.FG_RED));

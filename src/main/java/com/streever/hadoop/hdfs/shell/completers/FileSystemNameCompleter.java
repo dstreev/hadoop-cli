@@ -152,9 +152,15 @@ public class FileSystemNameCompleter implements Completer {
         }
 
         logd("Comp. Dir: " + completionDir);
+        if (env.getFileSystemOrganizer().getDefaultOzoneFileSystemState() == fss) {
+            // append the protocol
+            completionDir = new Path(prefix, completionDir);
+        }
+
+        logd("Comp. Dir: " + completionDir);
 
         // When we're not dealing with the default FS, we need exit.
-        if (env.getFileSystemOrganizer().getDefaultFileSystemState() != fss) {
+        if (!env.getFileSystemOrganizer().isDefaultFileSystemState(fss)) {
             return -1;
         }
 

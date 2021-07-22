@@ -65,6 +65,12 @@ public class Use extends HdfsAbstract {
         FileSystemState fss = env.getFileSystemOrganizer().getFileSystemState(namespace);
         if (fss != null) {
             env.getFileSystemOrganizer().setCurrentFileSystemState(fss);
+            // Was hoping this would help completion on 'non' defaultFS.  It didn't.
+            /*
+            if (fss.getProtocol().startsWith("hdfs://") || fss.getProtocol().startsWith("ofs://")) {
+                env.getConfig().set("fs.defaultFS", fss.getURI());
+            }
+            */
             cr.setCode(0);
         } else {
             cr.setCode(-1);
