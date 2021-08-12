@@ -165,6 +165,8 @@ public class FileSystemNameCompleter implements Completer {
         }
 
         try {
+            // TODO: Need to replace with getContentSummary.  fs.listStatus doesn't appear to be
+            //       a supported hcfs interface.  Because it fails when going against ofs.
             FileStatus[] entries = fs.listStatus(completionDir);
 
             int matchedIndex = matchFiles(prefix, checkBuffer, completionDir.toString(), entries,

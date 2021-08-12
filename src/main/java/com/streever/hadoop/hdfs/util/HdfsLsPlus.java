@@ -928,7 +928,10 @@ public class HdfsLsPlus extends HdfsAbstract {
             // Check connect protocol
             // TODO: NEED TO ACCOUNT FOR THE NONE DEFAULT HDFS...
             //   Right now, only looks at the defaultFS.
-            if (fss.getProtocol().equalsIgnoreCase("hdfs://")) {
+            if (fss.getProtocol().equalsIgnoreCase("hdfs://")
+                    // TODO: doesn't currently work with ofs.
+//                    || fss.getProtocol().equalsIgnoreCase("ofs://")
+            ) {
                 setTestFound(false);
 
                 // Get the Filesystem
