@@ -40,8 +40,9 @@
                 <include>hadoopcli</include>
                 <include>JCECheck</include>
                 <include>setup.sh</include>
+                <include>DO_NOT_RUN_APP_FROM_HERE.txt</include>
             </includes>
-            <outputDirectory>hadoop-cli</outputDirectory>
+            <outputDirectory>hadoop-cli-install</outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>
         </fileSet>
 
@@ -50,7 +51,7 @@
             <includes>
                 <include>*shaded*.jar</include>
             </includes>
-            <outputDirectory>hadoop-cli</outputDirectory>
+            <outputDirectory>hadoop-cli-install</outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>
         </fileSet>
     </fileSets>

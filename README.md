@@ -10,19 +10,16 @@ NOTE: The prebuilt binary was compiled against HDFS 3.1, but is backwardly compa
 ### Don't Build, Download the LATEST binary here!!!
 [![Download the LATEST Binary](./images/download.png)](https://github.com/dstreev/hadoop-cli/releases)
 
-* Download the release 'tar.gz' file to a temp location.
-* Untar the file (tar.gz).
-```
-tar xzvf <release>.tar.gz
-cd hadoop-cli
-```  
-* As a root user, chmod +x the 3 shell script files.
-* Run the 'setup.sh'.
-```
-./setup
-```  
+On the edgenode:
+- Expand the tarball `tar zxvf hadoop-cli-dist.tar.gz`.
+  > This produces a child `hadoop-cli-install` directory.
+- Two options for installation:
+  - As the root user (or `sudo`), run `hadoop-cli-install/setup.sh`. This will install the `hadoopcli` packages in `/usr/local/hadoop-cli` and create symlinks for the executables in `/usr/local/bin`.  At this point, `hadoopcli` should be available to all user and in the default path.
+  - As the local user, run `hadoop-cli-install/setup.sh`.  This will install the `hadoop-cli` packages in `$HOME/.hadoop-cli` and create symlink in `$HOME/bin`.  Ensure `$HOME/bin` is in the users path and run `hadoopcli`.
 
-This will create and install the `hadoopcli` application to your path.
+*DO NOT RUN `hadoopcli` from the installation directory.*
+
+If you install both options, your environment PATH will determine which one is run.  Make note of this because an upgrade may not be reachable.
 
 Try it out on a host with default configs (if kerberized, get a ticket first):
 
