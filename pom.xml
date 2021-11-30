@@ -23,9 +23,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.streever.hadoop</groupId>
+    <groupId>com.cloudera.utils.hadoop</groupId>
     <artifactId>hadoop-cli</artifactId>
-    <version>2.3.2.1-SNAPSHOT</version>
+    <version>2.4.0.0-SNAPSHOT</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
@@ -285,7 +285,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ResourceBundleAppendingTransformer"/>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.streever.hadoop.HadoopSession</mainClass>
+                                    <mainClass>com.cloudera.utils.hadoop.HadoopSession</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

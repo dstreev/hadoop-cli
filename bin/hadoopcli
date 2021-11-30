@@ -176,6 +176,6 @@ JV=$(${JAVA} -version)
 echo "Using Java Version: "
 echo $JV
 
-CLI_CMD="${JAVA} -cp ${CMD_CP} ${APP_JAVA_OPTS} com.streever.hadoop.HadoopShell ${PRG_ARGS}"
+CLI_CMD="${JAVA} -cp ${CMD_CP} ${APP_JAVA_OPTS} com.cloudera.utils.hadoop.HadoopShell ${PRG_ARGS}"
 
 eval "${CLI_CMD}"
