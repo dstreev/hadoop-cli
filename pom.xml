@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cloudera.utils.hadoop</groupId>
     <artifactId>hadoop-cli</artifactId>
-    <version>2.4.0.0-SNAPSHOT</version>
+    <version>2.4.0.3-SNAPSHOT</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
@@ -53,6 +53,7 @@
         <commons-pool.version>2.9.0</commons-pool.version>
         <jcabi.manifests.version>1.1</jcabi.manifests.version>
         <commons-lang.version>3.11</commons-lang.version>
+<!--        <log4j.version>2.16.0</log4j.version>-->
 
         <hadoop.version>3.1.1</hadoop.version>
         <ozone.version>1.1.0</ozone.version>
@@ -88,6 +89,12 @@
         <!--            <artifactId>commons-cli</artifactId>-->
         <!--            <version>${commons-cli.version}</version>-->
         <!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-core</artifactId>-->
+<!--            <version>${log4j.version}</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.sonatype.jline</groupId>
             <artifactId>jline</artifactId>
@@ -98,35 +105,21 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
-<!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs-client</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
-<!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
-<!--            <scope>provided</scope>-->
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.hadoop</groupId>-->
-<!--            <artifactId>hadoop-ozone-client</artifactId>-->
-<!--            <version>${ozone.version}.${cdp.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.hadoop</groupId>-->
-<!--            <artifactId>hadoop-ozone-filesystem-common</artifactId>-->
-<!--            <version>${ozone.version}.${cdp.version}</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-ozone-filesystem-hadoop3</artifactId>
             <version>${ozone.version}.${cdp.version}</version>
-            <!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -134,17 +127,6 @@
             <version>${hadoop.version}.${cdp.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.knox</groupId>-->
-        <!--            <artifactId>gateway-shell</artifactId>-->
-        <!--            <version>${gateway-shell.version}</version>-->
-        <!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.hadoop</groupId>-->
-<!--            <artifactId>hadoop-distcp</artifactId>-->
-<!--            <version>${hadoop.version}.${cdp.version}</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -275,6 +257,8 @@
                                         <exclude>META-INF/LICENSE</exclude>
                                         <exclude>META-INF/**/pom.xml</exclude>
                                         <exclude>META-INF/**/pom.properties</exclude>
+                                        <!-- CVE-2021-44228 -->
+                                        <exclude>org/apache/logging/log4j/core/lookup/JndiLookup.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -319,6 +303,8 @@
                                         <exclude>META-INF/LICENSE</exclude>
                                         <exclude>META-INF/**/pom.xml</exclude>
                                         <exclude>META-INF/**/pom.properties</exclude>
+                                        <!-- CVE-2021-44228 -->
+                                        <exclude>org/apache/logging/log4j/core/lookup/JndiLookup.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
