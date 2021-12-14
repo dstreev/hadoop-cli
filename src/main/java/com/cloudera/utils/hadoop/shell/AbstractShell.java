@@ -441,7 +441,7 @@ public abstract class AbstractShell implements Shell {
 
     private History initHistory() throws IOException {
         File dir = new File(System.getProperty("user.home"), "."
-                + this.getName());
+                + "hadoop-cli");
         if (dir.exists() && dir.isFile()) {
             throw new IllegalStateException(
                     "Default configuration file exists and is not a directory: "
