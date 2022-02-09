@@ -55,7 +55,7 @@
         <commons-lang.version>3.11</commons-lang.version>
 <!--        <log4j.version>2.16.0</log4j.version>-->
 
-        <hadoop.version>3.1.1</hadoop.version>
+        <hadoop.version>3.1.4</hadoop.version>
         <ozone.version>1.1.0</ozone.version>
         <cdp.version>7.1.7.0-551</cdp.version>
         <!-- This needs to be in sync with Hadoop Common when using this cli in api mode  -->
@@ -114,7 +114,7 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
-            <version>${hadoop.version}.${cdp.version}</version>
+            <version>${hadoop.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
