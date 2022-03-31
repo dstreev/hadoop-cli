@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cloudera.utils.hadoop</groupId>
     <artifactId>hadoop-cli</artifactId>
-    <version>2.4.0.3-SNAPSHOT</version>
+    <version>2.4.0.5-SNAPSHOT</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
@@ -57,7 +57,7 @@
 
         <hadoop.version>3.1.1</hadoop.version>
         <ozone.version>1.1.0</ozone.version>
-        <cdp.version>7.1.7.0-551</cdp.version>
+        <cdp.version>7.1.7.1000-141</cdp.version>
         <!-- This needs to be in sync with Hadoop Common when using this cli in api mode  -->
         <!--        <commons-cli.version>1.2</commons-cli.version>-->
         <gateway-shell.version>1.0.0</gateway-shell.version>
