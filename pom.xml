@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cloudera.utils.hadoop</groupId>
     <artifactId>hadoop-cli</artifactId>
-    <version>2.4.0.5-SNAPSHOT</version>
+    <version>2.4.0.5.1-SNAPSHOT</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
@@ -48,7 +48,7 @@
 
         <!-- Support  Libs-->
         <junit.version>4.13.1</junit.version>
-        <jackson.parser>2.11.1</jackson.parser>
+        <jackson.parser>2.13.3</jackson.parser>
         <commons-io.version>2.7</commons-io.version>
         <commons-pool.version>2.9.0</commons-pool.version>
         <jcabi.manifests.version>1.1</jcabi.manifests.version>
