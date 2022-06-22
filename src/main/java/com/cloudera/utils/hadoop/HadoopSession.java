@@ -1036,8 +1036,12 @@ public class HadoopSession extends AbstractShell {
 
             String localwd = localfs.getWorkingDirectory().toString();
 
-            // Remove 'file:' from working directory.
-            localFile = localwd.split(":")[1] + System.getProperty("file.separator") + inSet;
+            if (localwd.split(":").length > 1) {
+                // Remove 'file:' from working directory.
+                localFile = localwd.split(":")[1] + System.getProperty("file.separator") + inSet;
+            } else {
+                localFile = localwd.split(":")[0] + System.getProperty("file.separator") + inSet;
+            }
         }
         File setFile = new File(localFile);
 
