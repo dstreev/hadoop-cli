@@ -5,12 +5,12 @@ import com.cloudera.utils.hadoop.shell.Environment;
 
 public class PathBuilder {
 
-    enum SupportedProtocol {
+    public enum SupportedProtocol {
         aws("s3a://","s3n://", "s3://"),
         google("gs://"),
         azure("wasb://","adl://","abfs://"),
-        hadoop("/", "hdfs://", "ofs://", "o3fs://");
-
+        hadoop("hdfs://", "ofs://", "o3fs://"),
+        current_dfs("/");
         private String[] protocols = null;
 
         SupportedProtocol(String... protocols) {
@@ -44,6 +44,28 @@ public class PathBuilder {
                     rtn = Boolean.TRUE;
                     break;
                 }
+            }
+            if (rtn)
+                break;
+        }
+        return rtn;
+    }
+
+    public static boolean isPrefixWithKnownProtocol(String path) {
+        boolean rtn = Boolean.FALSE;
+        for (SupportedProtocol supportedProtocol: SupportedProtocol.values()) {
+            switch (supportedProtocol) {
+                case current_dfs:
+                    // not prefixed.
+                    break;
+                default:
+                    for (String protocol: supportedProtocol.getProtocols()) {
+                        if (path.startsWith(protocol)) {
+                            rtn = Boolean.TRUE;
+                            break;
+                        }
+                    }
+                    break;
             }
             if (rtn)
                 break;

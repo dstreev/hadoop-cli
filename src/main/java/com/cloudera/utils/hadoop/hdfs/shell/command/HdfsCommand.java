@@ -124,7 +124,10 @@ public class HdfsCommand extends HdfsAbstract {
             // When dealing with non-default/non-local filesystems, we need to prefix the uri with the namespace.
             // For LOCAL_REMOTE calls, like put, don't prefix the leftPath.
             if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState()) && pathDirectives.getDirection() != Direction.LOCAL_REMOTE) {
-                leftPath = fss.getURI() + leftPath;
+                // If leftPath starts with a known fs protocol, don't modify.
+                if (!pathBuilder.isPrefixWithKnownProtocol(leftPath)) {
+                    leftPath = fss.getURI() + leftPath;
+                }
             }
 
             if (pathDirectives.getDirection() != Direction.NONE) {

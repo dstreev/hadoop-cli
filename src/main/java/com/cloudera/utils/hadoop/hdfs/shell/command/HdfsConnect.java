@@ -43,6 +43,8 @@ import org.apache.hadoop.security.UserGroupInformation;
 public class HdfsConnect extends AbstractCommand {
 
     public static final String CURRENT_USER_PROP = "current.user";
+    public static final String DEFAULT_FS = "fs.defaultFS";
+    public static final String FS_USER_DIR = "dfs.user.home.dir.prefix";
 
     public static final String HADOOP_CONF_DIR = "HADOOP_CONF_DIR";
     private static final String[] HADOOP_CONF_FILES = {"core-site.xml", "hdfs-site.xml", "mapred-site.xml", "yarn-site.xml", "ozone-site.xml"};

@@ -104,6 +104,24 @@ public class HadoopSessionTest extends TestCase {
         }
     }
 
+    @Test
+    public void test_003() {
+        String[] commands = new String[] {
+                "use HDP50",
+                "cd /user/dstreev/datasets/avro",
+                "cp hdfs://HOME90/user/dstreev/datasets/avro/*.* ."
+        };
+        CommandReturn cr = null;
+        for (String command : commands) {
+            System.out.println("Command: " + command);
+            cr = shell.processInput(command);
+            printCommandReturn(cr);
+            if (cr.isError()) {
+                assertFalse("Issue with command: " + command, Boolean.TRUE);
+            }
+        }
+    }
+
     protected void printCommandReturn(CommandReturn cr) {
         if (cr != null) {
             if (cr.isError()) {

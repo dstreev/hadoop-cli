@@ -1118,38 +1118,42 @@ public class HadoopSession extends AbstractShell {
             }
             // TODO: If Kerberos enabled, pull this from ticket and use auth_to_local to extract. There maybe a Hadoop command for this.
             String userName = getEnv().getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
-
-            ExecutorService executor = Executors.newCachedThreadPool();
-            String homeDir = "/user/" + userName;
-            Callable<Object> task = new Callable<Object>() {
-                public Object call() {
-                    return processInput("cd " + homeDir);
-                }
-            };
-            Future<Object> future = executor.submit(task);
-            try {
-                Object result = future.get(30, TimeUnit.SECONDS);
-                crTest = (CommandReturn)result;
+            String defaultFS = getEnv().getConfig().get(HdfsConnect.DEFAULT_FS, "file://");
+            log(getEnv(), "Default Filesystem: " + defaultFS);
+            if (defaultFS.startsWith("hdfs:")) {
+                ExecutorService executor = Executors.newCachedThreadPool();
+                String userBaseDir = getEnv().getConfig().get(HdfsConnect.FS_USER_DIR, "/user");
+                String homeDir = userBaseDir + "/" + userName;
+                Callable<Object> task = new Callable<Object>() {
+                    public Object call() {
+                        return processInput("cd " + homeDir);
+                    }
+                };
+                Future<Object> future = executor.submit(task);
+                try {
+                    Object result = future.get(30, TimeUnit.SECONDS);
+                    crTest = (CommandReturn) result;
 //                org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(homeDir);
-            } catch (TimeoutException ex) {
-                loge(getEnv(), "Login Timeout.  Check for a valid Kerberos Ticket.");
-                if (getEnv().isApiMode()) {
-                    rtn = Boolean.FALSE;
-                } else {
-                    processInput("exit");
+                } catch (TimeoutException ex) {
+                    loge(getEnv(), "Login Timeout.  Check for a valid Kerberos Ticket.");
+                    if (getEnv().isApiMode()) {
+                        rtn = Boolean.FALSE;
+                    } else {
+                        processInput("exit");
+                    }
+                    // handle the timeout
+                } catch (InterruptedException e) {
+                    // handle the interrupts
+                } catch (ExecutionException e) {
+                    // handle other exceptions
+                } finally {
+                    future.cancel(true); // may or may not desire this
                 }
-                // handle the timeout
-            } catch (InterruptedException e) {
-                // handle the interrupts
-            } catch (ExecutionException e) {
-                // handle other exceptions
-            } finally {
-                future.cancel(true); // may or may not desire this
-            }
 
-            if (crTest.isError()) {
-                rtn = false;
-                loge(getEnv(), crTest.getError() + ".\nAttempted to set home directory.  User home directory must exist.\nIf user is 'hdfs', consider using a proxy account for audit purposes.");
+                if (crTest.isError()) {
+                    rtn = false;
+                    loge(getEnv(), crTest.getError() + ".\nAttempted to set home directory.  User home directory must exist.\nIf user is 'hdfs', consider using a proxy account for audit purposes.");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
