@@ -27,4 +27,9 @@ public class HadoopSessionPool {
             e.printStackTrace();
         }
     }
+
+    public void close() {
+        pool.close();
+    }
+
 }
