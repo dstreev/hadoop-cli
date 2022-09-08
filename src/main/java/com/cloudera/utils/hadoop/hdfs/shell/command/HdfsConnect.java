@@ -65,7 +65,7 @@ public class HdfsConnect extends AbstractCommand {
             if (env.getConfig() == null) {
                 // Get a value that over rides the default, if nothing then use default.
                 String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
-
+//                System.out.println("Hadoop Conf: " + hadoopConfDirProp);
                 // Set a default
                 if (hadoopConfDirProp == null)
                     hadoopConfDirProp = "/etc/hadoop/conf";

@@ -708,6 +708,8 @@ import java.text.MessageFormat;
 import java.util.Properties;
 import java.util.concurrent.*;
 
+import static com.cloudera.utils.hadoop.hdfs.shell.command.HdfsConnect.HADOOP_CONF_DIR;
+
 public class HadoopSession extends AbstractShell {
 
     private String gatewayProxyURL = null;
@@ -1118,9 +1120,9 @@ public class HadoopSession extends AbstractShell {
             }
             // TODO: If Kerberos enabled, pull this from ticket and use auth_to_local to extract. There maybe a Hadoop command for this.
             String userName = getEnv().getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
-            String defaultFS = getEnv().getConfig().get(HdfsConnect.DEFAULT_FS, "file://");
+            String defaultFS = getEnv().getConfig().get(HdfsConnect.DEFAULT_FS);
             log(getEnv(), "Default Filesystem: " + defaultFS);
-            if (defaultFS.startsWith("hdfs:")) {
+            if (!defaultFS.startsWith("file:")) {
                 ExecutorService executor = Executors.newCachedThreadPool();
                 String userBaseDir = getEnv().getConfig().get(HdfsConnect.FS_USER_DIR, "/user");
                 String homeDir = userBaseDir + "/" + userName;
@@ -1154,9 +1156,13 @@ public class HadoopSession extends AbstractShell {
                     rtn = false;
                     loge(getEnv(), crTest.getError() + ".\nAttempted to set home directory.  User home directory must exist.\nIf user is 'hdfs', consider using a proxy account for audit purposes.");
                 }
+            } else {
+                throw new RuntimeException("Configs aren't set for DFS.  Check config directory: " +
+                        System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf"));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return rtn;
     }
