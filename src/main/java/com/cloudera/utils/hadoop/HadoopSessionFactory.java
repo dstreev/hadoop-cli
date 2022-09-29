@@ -9,7 +9,9 @@ public class HadoopSessionFactory extends BasePooledObjectFactory<HadoopSession>
     public HadoopSession create() throws Exception {
         String[] api = {"-api"};
         HadoopSession rtn = new HadoopSession();
-        rtn.start(api);
+        if (!rtn.start(api)) {
+            throw new RuntimeException("Issue connecting to DFS.  Check Kerberos Auth and configs");
+        }
         return rtn;
     }
 

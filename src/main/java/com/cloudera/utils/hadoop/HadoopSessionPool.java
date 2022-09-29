@@ -10,12 +10,13 @@ public class HadoopSessionPool {
         this.pool = pool;
     }
 
-    public HadoopSession borrow() {
+    public HadoopSession borrow()  {
         HadoopSession rtn = null;
         try {
             rtn = pool.borrowObject();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return rtn;
     }

@@ -1148,6 +1148,7 @@ public class HadoopSession extends AbstractShell {
                     // handle the interrupts
                 } catch (ExecutionException e) {
                     // handle other exceptions
+                    throw new RuntimeException(e);
                 } finally {
                     future.cancel(true); // may or may not desire this
                 }
