@@ -25,6 +25,12 @@ CURR_DIR=$(pwd)
 
 echo "APP_DIR: $APP_DIR"
 
+DO_NOT_FILE="${APP_DIR}/DO_NOT_RUN_APP_FROM_HERE.txt"
+if [ -f $DO_NOT_FILE ]; then
+  echo "Do NOT run application from 'install' directory.  If properly installed, the application will be in your PATH";
+  exit 1
+fi
+
 if [[ "${APP_DIR}" == "${HOME}/.hadoop-cli/bin" ]]; then
   echo "Running from User Local Instance"
 else
@@ -153,7 +159,7 @@ SHADED=
 if [[ "${HADOOP_CLASSPATH}x" != "x" ]]; then
   echo "Picking up local Hadoop Classpath Libs."
   SHADED=shaded-no-hadoop
-  CMD_CP=${CMD_CP}:$(hadoop classpath)
+  CMD_CP=$(hadoop classpath):${CMD_CP}
 else
   SHADED=shaded
 fi

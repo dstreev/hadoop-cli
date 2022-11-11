@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cloudera.utils.hadoop</groupId>
     <artifactId>hadoop-cli</artifactId>
-    <version>2.4.0.8</version>
+    <version>2.4.1.0</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
@@ -47,14 +47,12 @@
         <commons-io.version>2.7</commons-io.version>
         <commons-pool.version>2.9.0</commons-pool.version>
         <jcabi.manifests.version>1.1</jcabi.manifests.version>
-        <commons-lang.version>3.11</commons-lang.version>
-<!--        <log4j.version>2.16.0</log4j.version>-->
+        <commons-lang.version>3.12.0</commons-lang.version>
 
         <hadoop.version>3.1.1</hadoop.version>
         <ozone.version>1.1.0</ozone.version>
         <cdp.version>7.1.7.1000-141</cdp.version>
-        <!-- This needs to be in sync with Hadoop Common when using this cli in api mode  -->
-        <!--        <commons-cli.version>1.2</commons-cli.version>-->
+
         <gateway-shell.version>1.0.0</gateway-shell.version>
         <jline.version>2.5</jline.version>
     </properties>
@@ -72,24 +70,6 @@
             <artifactId>jcabi-manifests</artifactId>
             <version>${jcabi.manifests.version}</version>
         </dependency>
-        <!--
-
-        Leveraging the Hadoop commons-cli version information here.
-        When I tried to use a newer version, it broke 'api' mode when integrating
-        more with FsShell.
-
-        -->
-        <!--        <dependency>-->
-        <!--            <groupId>commons-cli</groupId>-->
-        <!--            <artifactId>commons-cli</artifactId>-->
-        <!--            <version>${commons-cli.version}</version>-->
-        <!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-core</artifactId>-->
-<!--            <version>${log4j.version}</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.sonatype.jline</groupId>
             <artifactId>jline</artifactId>
@@ -132,7 +112,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
@@ -336,34 +315,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-assembly-plugin</artifactId>-->
-<!--&lt;!&ndash;                <version>2.4.1</version>&ndash;&gt;-->
-<!--                <configuration>-->
-<!--                    &lt;!&ndash; get all project dependencies &ndash;&gt;-->
-<!--                    <descriptorRefs>-->
-<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
-<!--                    </descriptorRefs>-->
-<!--                    &lt;!&ndash; MainClass in mainfest make a executable jar &ndash;&gt;-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <mainClass>com.streever.hadoop.HadoopSession</mainClass>-->
-<!--                        </manifest>-->
-<!--                    </archive>-->
-
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>make-assembly</id>-->
-<!--                        &lt;!&ndash; bind to the packaging phase &ndash;&gt;-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>single</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>
