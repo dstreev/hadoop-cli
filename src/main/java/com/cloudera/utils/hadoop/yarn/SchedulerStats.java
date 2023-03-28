@@ -16,12 +16,10 @@
 
 package com.cloudera.utils.hadoop.yarn;
 
-import com.cloudera.utils.hadoop.AbstractStats;
-import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.yarn.parsers.QueueParser;
-import com.cloudera.utils.hadoop.shell.Environment;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.IOUtils;
+import org.apache.hadoop.conf.Configuration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,7 +34,9 @@ import java.util.*;
  * <p>
  * Using the Resource Manager JMX, collect the queue stats .
  */
-public class SchedulerStats extends AbstractStats {
+public class SchedulerStats extends ResourceManagerStats {
+
+    public static final String URL_PATH = "/ws/v1/cluster/scheduler";
 
     public static final String QUEUE = "queue";
     public static final String QUEUE_USAGE = "queue_usage";
@@ -99,36 +99,26 @@ public class SchedulerStats extends AbstractStats {
         recordFieldMap.put(QUEUE_USAGE, QUEUE_USAGE_FIELDS);
     }
 
-    private String timestamp = null;
-
-    public SchedulerStats(String name) {
-        super(name);
+    public Map<String, String[]> getRecordFieldMap() {
+        return recordFieldMap;
     }
 
-    @Override
+    private String timestamp = null;
+
+    public SchedulerStats(Configuration configuration) {
+        super(configuration);
+    }
+
+    public SchedulerStats() {
+    }
+
+    //    @Override
     public String getDescription() {
         return "Collect Queue Stats from the YARN REST API";
     }
 
-    public SchedulerStats(String name, Environment env, Direction directionContext) {
-        super(name, env, directionContext);
-    }
-
-    public SchedulerStats(String name, Environment env, Direction directionContext, int directives) {
-        super(name, env, directionContext, directives);
-    }
-
-    public SchedulerStats(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
-        super(name, env, directionContext, directives, directivesBefore, directivesOptional);
-    }
-
-    public SchedulerStats(String name, Environment env) {
-        super(name, env);
-    }
-
     @Override
-    public void process(CommandLine cmdln) {
-
+    public void execute() {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
         this.timestamp = df.format(new Date());
 
@@ -141,7 +131,7 @@ public class SchedulerStats extends AbstractStats {
 
         System.out.println("Resource Manager Server URL: " + baseRMUrlStr);
 
-        String rootPath = baseRMUrlStr + "/ws/v1/cluster/scheduler";
+        String rootPath = baseRMUrlStr + URL_PATH;
 
         try {
 
@@ -151,7 +141,7 @@ public class SchedulerStats extends AbstractStats {
             String schJson = IOUtils.toString(schConnection.getInputStream(), StandardCharsets.UTF_8);
 
             if (raw) {
-                print(QUEUE + "_raw", schJson);
+//                print(QUEUE + "_raw", schJson);
             } else {
 
                 QueueParser queueParser = new QueueParser(schJson);
@@ -170,16 +160,22 @@ public class SchedulerStats extends AbstractStats {
                  */
 
 
-                Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
-                while (rIter.hasNext()) {
-                    Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
+//                Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
+//                while (rIter.hasNext()) {
+//                    Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
 //                    System.out.println("Key: " + recordSet.getKey());
-                    print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
-                }
+//                    print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
+//                }
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    //    @Override
+    public void process(CommandLine cmdln) {
+        init(cmdln);
+        execute();
     }
 
     protected void getHelp() {

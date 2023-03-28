@@ -28,8 +28,8 @@ import com.cloudera.utils.hadoop.shell.commands.Env;
 import com.cloudera.utils.hadoop.shell.commands.Exit;
 import com.cloudera.utils.hadoop.shell.commands.Help;
 import com.cloudera.utils.hadoop.shell.commands.HistoryCmd;
-import com.cloudera.utils.hadoop.yarn.ContainerStats;
-import com.cloudera.utils.hadoop.yarn.SchedulerStats;
+import com.cloudera.utils.hadoop.yarn.ContainerStatsCommand;
+import com.cloudera.utils.hadoop.yarn.SchedulerStatsCommand;
 import org.apache.commons.cli.*;
 
 import java.io.*;
@@ -581,8 +581,8 @@ public class HadoopSession extends AbstractShell {
 //        getEnv().addCommand(new JhsStats("jhsstat", getEnv(), Direction.NONE));
 
         // Yarn Tools
-        getEnv().addCommand(new ContainerStats("cstat", getEnv(), Direction.NONE));
-        getEnv().addCommand(new SchedulerStats("sstat", getEnv(), Direction.NONE));
+        getEnv().addCommand(new ContainerStatsCommand("cstat", getEnv(), Direction.NONE));
+        getEnv().addCommand(new SchedulerStatsCommand("sstat", getEnv(), Direction.NONE));
 
         getEnv().addCommand(new Exit("exit"));
         getEnv().addCommand(new LocalLs("lls", getEnv()));

@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cloudera.utils.hadoop</groupId>
     <artifactId>hadoop-cli</artifactId>
-    <version>2.4.1.0</version>
+    <version>2.4.3.0</version>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
     <properties>
@@ -50,8 +50,8 @@
         <commons-lang.version>3.12.0</commons-lang.version>
 
         <hadoop.version>3.1.1</hadoop.version>
-        <ozone.version>1.1.0</ozone.version>
-        <cdp.version>7.1.7.1000-141</cdp.version>
+        <ozone.version>1.2.0</ozone.version>
+        <cdp.version>7.1.8.8-3</cdp.version>
 
         <gateway-shell.version>1.0.0</gateway-shell.version>
         <jline.version>2.5</jline.version>
@@ -92,8 +92,8 @@
             <version>${hadoop.version}.${cdp.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-ozone-filesystem-hadoop3</artifactId>
+            <groupId>org.apache.ozone</groupId>
+            <artifactId>ozone-filesystem-hadoop3</artifactId>
             <version>${ozone.version}.${cdp.version}</version>
         </dependency>
         <dependency>

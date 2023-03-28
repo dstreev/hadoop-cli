@@ -16,11 +16,12 @@
 
 package com.cloudera.utils.hadoop.yarn;
 
-import com.cloudera.utils.hadoop.AbstractQueryTimeFrameStats;
-import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
-import com.cloudera.utils.hadoop.shell.Environment;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
+import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
+import org.apache.hadoop.conf.Configuration;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -38,7 +39,8 @@ import java.util.Map;
  * Using the Resource Manager JMX, collect the stats on applications since the last time this was run or up to
  * 'n' (limit).
  */
-public class ContainerStats extends AbstractQueryTimeFrameStats {
+public class ContainerStats extends ResourceManagerStats {
+    public static final String URL_PATH = "/ws/v1/cluster/apps";
     public static final String APP = "app";
     // Not helpful for workload analysis.  Leaving out for now.
     public static final String ATTEMPT = "attempt";
@@ -67,34 +69,23 @@ public class ContainerStats extends AbstractQueryTimeFrameStats {
         recordFieldMap.put(ATTEMPT, APP_ATTEMPT_FIELDS);
     }
 
-    public ContainerStats(String name) {
-        super(name);
+    public Map<String, String[]> getRecordFieldMap() {
+        return recordFieldMap;
     }
 
-    @Override
+    public ContainerStats(Configuration configuration) {
+        super(configuration);
+    }
+
+    public ContainerStats() {
+    }
+
+    //    @Override
     public String getDescription() {
-        return "Collect Container Stats from the YARN REST API";
+        return "Collect Application Container Stats from the YARN REST API";
     }
 
-    public ContainerStats(String name, Environment env, Direction directionContext) {
-        super(name, env, directionContext);
-    }
-
-    public ContainerStats(String name, Environment env, Direction directionContext, int directives) {
-        super(name, env, directionContext, directives);
-    }
-
-    public ContainerStats(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
-        super(name, env, directionContext, directives, directivesBefore, directivesOptional);
-    }
-
-    public ContainerStats(String name, Environment env) {
-        super(name, env);
-    }
-
-    @Override
-    public void process(CommandLine cmdln) {
-
+    public void execute() {
         String baseRMUrlStr = getResourceManagerWebAddress();
         // Test with Call.
 //        if (ResourceManagerResolvable(baseRMUrlStr)) {
@@ -104,9 +95,9 @@ public class ContainerStats extends AbstractQueryTimeFrameStats {
 
         System.out.println("Resource Manager Server URL: " + baseRMUrlStr);
 
-        String rootPath = baseRMUrlStr + "/ws/v1/cluster/apps";
+        String rootPath = baseRMUrlStr + URL_PATH;
 
-        Map<String, String> queries = getQueries(cmdln);
+        Map<String, String> queries = getQueries();
 
         Iterator<Map.Entry<String, String>> iQ = queries.entrySet().iterator();
 
@@ -123,7 +114,7 @@ public class ContainerStats extends AbstractQueryTimeFrameStats {
                 String appsJson = IOUtils.toString(appsConnection.getInputStream(), StandardCharsets.UTF_8);
 
                 if (raw) {
-                    print(APP + "_raw", appsJson);
+//                    print(APP + "_raw", appsJson);
                 } else {
                     YarnAppRecordConverter yarnRc = new YarnAppRecordConverter();
 
@@ -157,25 +148,59 @@ public class ContainerStats extends AbstractQueryTimeFrameStats {
                 ioe.printStackTrace();
             }
 
-            if (!raw) {
-                Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
-                while (rIter.hasNext()) {
-                    Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
-                    print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
-                }
-            }
-            clearCache();
+//            if (!raw) {
+//                Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();
+//                while (rIter.hasNext()) {
+//                    Map.Entry<String, List<Map<String, Object>>> recordSet = rIter.next();
+//                }
+//            }
         }
 
+    }
+//    @Override
+    public void process(CommandLine cmdln) {
+        init(cmdln);
+        execute();
     }
 
     protected void getHelp() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Collect Container Stats for the YARN REST API.").append("\n");
-
+        sb.append("Collect Application Container Stats for the YARN REST API.").append("\n");
 
         System.out.println(sb.toString());
     }
 
+    @Override
+    public Options getOptions() {
+        Options options = super.getOptions();
 
+        OptionGroup beginOptionGroup = new OptionGroup();
+        Option startOption = new Option("s", "start", true,
+                "Start time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
+        startOption.setRequired(false);
+        beginOptionGroup.addOption(startOption);
+
+        Option lastOption = new Option("l", "last", true,
+                "last x-DAY(S)|x-HOUR(S)|x-MIN(S). 1-HOUR=1 hour, 2-DAYS=2 days, 3-HOURS=3 hours, etc.");
+        lastOption.setRequired(false);
+        beginOptionGroup.addOption(lastOption);
+
+        options.addOptionGroup(beginOptionGroup);
+
+        // TODO: WIP for current stats.
+//        Option currentOption = new Option("c", "current", false, "Get Current / Active Records");
+//        currentOption.setRequired(false);
+//        beginOptionGroup.addOption(currentOption);
+
+        Option endOption = new Option("e", "end", true,
+                "End time for retrieval in 'yyyy-MM-dd HH:mm:ss'");
+        endOption.setRequired(false);
+        options.addOption(endOption);
+
+        Option incOption = new Option("inc", "increment", true, "Query Increment in minutes");
+        incOption.setRequired(false);
+        options.addOption(incOption);
+
+        return options;
+    }
 }

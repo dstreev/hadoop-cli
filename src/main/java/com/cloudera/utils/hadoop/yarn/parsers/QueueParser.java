@@ -16,8 +16,8 @@
 
 package com.cloudera.utils.hadoop.yarn.parsers;
 
-import com.cloudera.utils.hadoop.yarn.SchedulerStats;
 import com.cloudera.utils.hadoop.util.RecordConverter;
+import com.cloudera.utils.hadoop.yarn.SchedulerStats;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 

@@ -53,7 +53,7 @@ public abstract class AbstractShell implements Shell {
     private String bannerResource = "/banner.txt";
     private boolean apiMode = false;
 
-    protected Environment getEnv() {
+    public Environment getEnv() {
         return env;
     }
 
