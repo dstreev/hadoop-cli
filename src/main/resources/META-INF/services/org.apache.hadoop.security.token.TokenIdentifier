@@ -15,6 +15,6 @@
 #  limitations under the License.
 #
 
-#org.apache.hadoop.fs.s3a.auth.delegation.FullCredentialsTokenIdentifier
-#org.apache.hadoop.fs.s3a.auth.delegation.RoleTokenIdentifier
-#org.apache.hadoop.fs.s3a.auth.delegation.SessionTokenIdentifier
+org.apache.hadoop.fs.s3a.auth.delegation.FullCredentialsTokenIdentifier
+org.apache.hadoop.fs.s3a.auth.delegation.RoleTokenIdentifier
+org.apache.hadoop.fs.s3a.auth.delegation.SessionTokenIdentifier

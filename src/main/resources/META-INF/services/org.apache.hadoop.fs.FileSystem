@@ -14,4 +14,4 @@
 #  limitations under the License.
 #
 
-#org.apache.hadoop.fs.s3a.S3AFileSystem
+org.apache.hadoop.fs.s3a.S3AFileSystem
