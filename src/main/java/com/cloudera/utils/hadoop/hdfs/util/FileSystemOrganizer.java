@@ -158,15 +158,17 @@ public class FileSystemOrganizer {
             }
             // look for Ozone Services
             String oServices = config.get("ozone.om.service.ids");
-            String[] ozoneServices = oServices.split(",");
-            for (String ozoneService : ozoneServices) {
-                FileSystemState fss = new FileSystemState();
-                fss.setFileSystem(distributedFileSystem);
-                fss.setNamespace(ozoneService);
-                fss.setProtocol("ofs://");
-                fss.setWorkingDirectory(new Path("/"));
+            if (oServices != null) {
+                String[] ozoneServices = oServices.split(",");
+                for (String ozoneService : ozoneServices) {
+                    FileSystemState fss = new FileSystemState();
+                    fss.setFileSystem(distributedFileSystem);
+                    fss.setNamespace(ozoneService);
+                    fss.setProtocol("ofs://");
+                    fss.setWorkingDirectory(new Path("/"));
 //                setDefaultOzoneFileSystemState(fss);
-                namespaces.put(ozoneService.toUpperCase(), fss);
+                    namespaces.put(ozoneService.toUpperCase(), fss);
+                }
             }
             String oService = config.get("ozone.service.id");
             if (oService != null) {
