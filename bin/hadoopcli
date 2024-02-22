@@ -198,10 +198,8 @@ if [[ "${APP_JAVA_OPTS}x" != "x" ]]; then
     echo "Application JAVA_OPTS=${APP_JAVA_OPTS}"
 fi
 
+echo "Using Java Version:"
 JV=$(${JAVA} -version)
-
-echo "Using Java Version: "
-echo $JV
 
 CLI_CMD="${JAVA} -cp ${CMD_CP} ${APP_JAVA_OPTS} com.cloudera.utils.hadoop.HadoopShell ${PRG_ARGS}"
 
