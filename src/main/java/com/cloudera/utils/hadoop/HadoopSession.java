@@ -259,7 +259,9 @@ public class HadoopSession extends AbstractShell {
 
         if (cmd.hasOption("help")) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("hadoopcli", options);
+            String cmdline = AbstractShell.substituteVariablesFromManifest("hadoopcli <options> \nversion:${HadoopCLI-Version}");
+            formatter.printHelp(100, cmdline, "Hadoop CLI Utility", options,
+                    "\nVisit https://github.com/dstreev/hadoop-cli/blob/main/README.md for detailed docs");
             System.exit(-1);
         }
         return rtn;
