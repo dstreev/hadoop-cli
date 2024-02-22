@@ -39,22 +39,9 @@ rm -f $BASE_DIR/bin/*.*
 cp -f hadoopcli $BASE_DIR/bin
 cp -f JCECheck $BASE_DIR/bin
 
-if [ -f ../target/hadoop-cli-shaded.jar ]; then
-    cp -f ../target/hadoop-cli-shaded.jar $BASE_DIR/lib
-fi
-
-if [ -f ../target/hadoop-cli-shaded-no-hadoop.jar ]; then
-    cp -f ../target/hadoop-cli-shaded-no-hadoop.jar $BASE_DIR/lib
-fi
-
-if [ -f hadoop-cli-shaded.jar ]; then
-    cp -f hadoop-cli-shaded.jar $BASE_DIR/lib
-fi
-
-if [ -f hadoop-cli-shaded-no-hadoop.jar ]; then
-    cp -f hadoop-cli-shaded-no-hadoop.jar $BASE_DIR/lib
-fi
-
+for jar in `ls lib/*.jar`; do
+    cp -f $jar $BASE_DIR/lib
+done
 
 chmod -R +r $BASE_DIR
 chmod +x $BASE_DIR/bin/hadoopcli

@@ -18,7 +18,14 @@
 #
 
 # Resolve Symlinks of exe
-RESOLVED_EXE_PATH=`readlink -f $0`
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # Mac OSX
+  RESOLVED_EXE_PATH=`readlink $0`
+else
+  # ...
+  RESOLVED_EXE_PATH=`readlink -f $0`
+fi
+
 # Find Dir of resolved script
 APP_DIR=$(dirname $RESOLVED_EXE_PATH)
 CURR_DIR=$(pwd)
@@ -53,7 +60,10 @@ CMD_DIRECTIVE=
 CMD_ARGS=
 VERBOSE=
 ENV_VAR_FILE=
-HADOOP_CLASSPATH=
+
+# Setting this to true ALWAYS.  No longer including all the hadoop lib in a shaded jar.
+HADOOP_CLASSPATH="true"
+
 APP_JAVA_OPTS=${JAVA_OPTS:-}
 
 if [[ -f ${HOME}/.hadoop-cli/env-var.props || -L ${HOME}/.hadoop-cli/env-var.props ]]; then
@@ -154,26 +164,24 @@ if [[ ! -d ${AUX_LIBS_DIR} ]]; then
     mkdir -p ${AUX_LIBS_DIR}
 fi
 
-SHADED=
-# Choose to use embedded libs (Hadoop 3+) or get Hadoop Classpath locally
-if [[ "${HADOOP_CLASSPATH}x" != "x" ]]; then
-  echo "Picking up local Hadoop Classpath Libs."
-  SHADED=shaded-no-hadoop
-  CMD_CP=$(hadoop classpath):${CMD_CP}
-else
-  SHADED=shaded
-fi
+# Build Classpath of files in the lib directory
+CMD_CP=${CMD_CP}:${APP_DIR}/../lib/*
 
-if [[ -f $APP_DIR/../lib/hadoop-cli-$SHADED.jar ]]; then
-    CMD_CP=$APP_DIR/../lib/hadoop-cli-$SHADED.jar:${CMD_CP}
-else
-    echo "Couldn't locate Hadoop Cli Library at: ${APP_DIR}/../lib/hadoop-cli-${SHADED}.jar"
-    exit 1
-fi
-
-for jarFile in `ls -d ${AUX_LIBS_DIR}/*.jar 2> /dev/null`; do
-    CMD_CP=${CMD_CP}:$jarFile
+# Add Hadoop Libs to classpath only if hadoop-common isn't already in the classpath.
+for jarfile in $(ls ${APP_DIR}/../lib/); do
+    if [[ "${jarfile}" == "hadoop-common"* ]]; then
+      echo "Found 'hadoop-common' in lib directory.  Not adding Hadoop Classpath."
+      HADOOP_CLASSPATH="false"
+    fi
 done
+
+if [[ "${HADOOP_CLASSPATH}x" == "truex" ]]; then
+    echo "Picking up local Hadoop Classpath Libs."
+    CMD_CP=${CMD_CP}:$(hadoop classpath)
+fi
+
+# Add Aux Libs to Classpath
+CMD_CP=${CMD_CP}:${AUX_LIBS_DIR}/*
 
 CLI_CMD=""
 

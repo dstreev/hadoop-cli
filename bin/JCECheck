@@ -16,36 +16,27 @@
 #  limitations under the License.
 #
 
-#cd `dirname $0`
-
-APP_DIR=`dirname $0`
+# Resolve Symlinks of exe
+RESOLVED_EXE_PATH=`readlink -f $0`
+# Find Dir of resolved script
+APP_DIR=$(dirname $RESOLVED_EXE_PATH)
 
 PRG_ARGS=
 CMD_CP=
 
-if [ -f ./hadoop-cli-full-bin.jar ]; then
-    # Look in Current Directory
-    CMD_CP=$APP_DIR/hadoop-cli-full-bin.jar
-    #echo "Using bin from same directory"
-elif [ -f $APP_DIR/../target/hadoop-cli-full-bin.jar ]; then
-    # Look in ../target
-    CMD_CP=$APP_DIR/../target/hadoop-cli-full-bin.jar
-    #echo "Using bin from build directory"
-else
-    # Look in /usr/local/hadoop-cli/lib
-    if [ -f /usr/local/hadoop-cli/lib/hadoop-cli-full-bin.jar ]; then
-        CMD_CP=/usr/local/hadoop-cli/lib/hadoop-cli-full-bin.jar
-        #echo "Using bin from installation directory"
-    else
-        #echo "Couldn't locate Hadoop Cli Library"
-        exit 1
-    fi
-fi
+# Build Classpath of files in the lib directory
+CMD_CP=${CMD_CP}:${APP_DIR}/../lib/*
+echo "CMD_CP: ${CMD_CP}"
 
 AUTO=false
 
-CLI_CMD=""
+if [ ! -z ${JAVA_HOME} ]; then
+  JAVA="${JAVA_HOME}/bin/java"
+else
+  JAVA=java
+fi
 
-CLI_CMD="${CLI_CMD}java -cp ${CMD_CP} JCECheck"
+CLI_CMD="${JAVA} -cp ${CMD_CP} JCECheck"
+echo "CLI_CMD: ${CLI_CMD}"
 
 eval "${CLI_CMD}"

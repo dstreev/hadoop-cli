@@ -19,15 +19,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cloudera.utils.hadoop</groupId>
-    <artifactId>hadoop-cli</artifactId>
-    <version>2.4.3.3</version>
+    <artifactId>hadoop-cli${distro.type}</artifactId>
+
+    <!--    Picked up from the profile -->
+    <version>${global.version}</version>
+    <packaging>jar</packaging>
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jdk.version>8</jdk.version>
 
         <!-- Pluggins -->
         <maven.compiler.version>3.8.1</maven.compiler.version>
+        <maven.toolchains.version>3.1.0</maven.toolchains.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.clean.version>3.1.0</maven.clean.version>
@@ -49,6 +55,7 @@
         <jcabi.manifests.version>1.1</jcabi.manifests.version>
         <commons-lang.version>3.12.0</commons-lang.version>
 
+        <cdp.version>7.1.9.3-4</cdp.version>
         <hadoop.version>3.1.1</hadoop.version>
         <ozone.version>1.2.0</ozone.version>
 
@@ -79,27 +86,31 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
+            <scope>${profile.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs-client</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
+            <scope>${profile.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
+            <scope>${profile.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.ozone</groupId>
             <artifactId>ozone-filesystem-hadoop3</artifactId>
             <version>${ozone.version}.${cdp.version}</version>
+            <scope>${profile.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-aws</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
-            <scope>provided</scope>
+            <scope>${profile.scope}</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -117,11 +128,6 @@
             <version>${commons-pool.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.parser}</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
@@ -130,27 +136,30 @@
     </dependencies>
     <profiles>
         <profile>
-            <id>pvc</id>
+            <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <maven.compiler.source>1.8</maven.compiler.source>
-                <maven.compiler.target>1.8</maven.compiler.target>
-                <cdp.version>7.1.8.8-3</cdp.version>
+                <profile.scope>provided</profile.scope>
+                <distro.type></distro.type>
+                <global.version>3.0.0.0</global.version>
             </properties>
         </profile>
         <profile>
-            <id>cloud</id>
+            <id>standalone</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <properties>
-                <maven.compiler.source>1.8</maven.compiler.source>
-                <maven.compiler.target>1.8</maven.compiler.target>
-                <cdp.version>7.2.16.0-287</cdp.version>
+                <profile.scope>compile</profile.scope>
+                <distro.type>-standalone</distro.type>
+                <global.version>3.0.0.0-${cdp.version}</global.version>
             </properties>
         </profile>
     </profiles>
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${project.artifactId}${distro.type}-${project.version}</finalName>
         <pluginManagement>
             <plugins>
                 <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
@@ -166,6 +175,10 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven.compiler.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-toolchains-plugin</artifactId>
+                    <version>${maven.toolchains.version}</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -205,10 +218,29 @@
 
         <plugins>
             <plugin>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>${jdk.version}</version>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
             <plugin>
@@ -216,106 +248,169 @@
                 <configuration>
                     <archive>
                         <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
                             <Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
+                            <HadoopCLI-Version>${project.version}</HadoopCLI-Version>
+                            <HadoopCLI-Title>Hadoop CLI</HadoopCLI-Title>
                         </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-shade-plugin</artifactId>
-                <!--<configuration>-->
-                <!--<createDependencyReducedPom>true</createDependencyReducedPom>-->
-                <!--</configuration>-->
-                <executions>
-                    <execution>
-                        <id>full-shaded</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>false</createSourcesJar>
-                            <finalName>${project.artifactId}-shaded</finalName>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>META-INF/LICENSE</exclude>
-                                        <exclude>META-INF/**/pom.xml</exclude>
-                                        <exclude>META-INF/**/pom.properties</exclude>
-                                        <!-- CVE-2021-44228 -->
-                                        <exclude>org/apache/logging/log4j/core/lookup/JndiLookup.class</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ResourceBundleAppendingTransformer"/>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.cloudera.utils.hadoop.HadoopSession</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>shaded-no-hadoop</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>false</createSourcesJar>
-                            <finalName>${project.artifactId}-shaded-no-hadoop</finalName>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <artifactSet>
-                                <includes>
-                                    <include>com.jcabi:*</include>
-                                    <include>org.sonatype.jline:jline</include>
-                                    <include>commons-io:commons-io</include>
-                                    <include>org.apache.commons:commons-lang3</include>
-                                    <include>com.fasterxml.jackson.core:jackson-core</include>
-                                    <include>org.yaml:snakeyaml</include>
-                                </includes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>META-INF/*.INF</exclude>
-                                        <exclude>META-INF/LICENSE</exclude>
-                                        <exclude>META-INF/**/pom.xml</exclude>
-                                        <exclude>META-INF/**/pom.properties</exclude>
-                                        <!-- CVE-2021-44228 -->
-                                        <exclude>org/apache/logging/log4j/core/lookup/JndiLookup.class</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ResourceBundleAppendingTransformer"/>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.streever.hive.Sre</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-dependency-plugin</artifactId>-->
+<!--&lt;!&ndash;                <version>2.1</version>&ndash;&gt;-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copy-dependencies</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>copy-dependencies</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+<!--                            <overWriteReleases>false</overWriteReleases>-->
+<!--                            <overWriteSnapshots>false</overWriteSnapshots>-->
+<!--                            <overWriteIfNewer>true</overWriteIfNewer>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                &lt;!&ndash;<configuration>&ndash;&gt;-->
+<!--                &lt;!&ndash;<createDependencyReducedPom>true</createDependencyReducedPom>&ndash;&gt;-->
+<!--                &lt;!&ndash;</configuration>&ndash;&gt;-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>full-shaded</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <createSourcesJar>false</createSourcesJar>-->
+<!--&lt;!&ndash;                            <finalName>${project.artifactId}-shaded</finalName>&ndash;&gt;-->
+<!--                            <finalName>${project.artifactId}-shaded-${project.version}</finalName>-->
+<!--                            <shadedArtifactAttached>true</shadedArtifactAttached>-->
+<!--                            <filters>-->
+<!--                                <filter>-->
+<!--                                    <artifact>*:*</artifact>-->
+<!--                                    <excludes>-->
+<!--                                        <exclude>META-INF/*.SF</exclude>-->
+<!--                                        <exclude>META-INF/*.DSA</exclude>-->
+<!--                                        <exclude>META-INF/*.RSA</exclude>-->
+<!--                                        <exclude>META-INF/LICENSE</exclude>-->
+<!--                                        <exclude>META-INF/**/pom.xml</exclude>-->
+<!--                                        <exclude>META-INF/**/pom.properties</exclude>-->
+<!--                                        &lt;!&ndash; CVE-2021-44228 &ndash;&gt;-->
+<!--                                        <exclude>org/apache/logging/log4j/core/lookup/JndiLookup.class</exclude>-->
+<!--                                    </excludes>-->
+<!--                                </filter>-->
+<!--                            </filters>-->
+<!--                            <transformers>-->
+<!--                                <transformer-->
+<!--                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>-->
+<!--                                <transformer-->
+<!--                                        implementation="org.apache.maven.plugins.shade.resource.ResourceBundleAppendingTransformer"/>-->
+<!--                                <transformer-->
+<!--                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+<!--                                    <mainClass>com.cloudera.utils.hadoop.HadoopSession</mainClass>-->
+<!--                                </transformer>-->
+<!--                            </transformers>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>shaded-no-hadoop</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <createSourcesJar>false</createSourcesJar>-->
+<!--                            <finalName>${project.artifactId}-shaded-no-hadoop-${project.version}</finalName>-->
+<!--                            <shadedArtifactAttached>true</shadedArtifactAttached>-->
+<!--                            <artifactSet>-->
+<!--                                <includes>-->
+<!--                                    <include>com.jcabi:*</include>-->
+<!--                                    <include>org.sonatype.jline:jline</include>-->
+<!--                                    <include>commons-io:commons-io</include>-->
+<!--                                    <include>org.apache.commons:commons-lang3</include>-->
+<!--                                    <include>com.fasterxml.jackson.core:jackson-core</include>-->
+<!--                                    <include>org.yaml:snakeyaml</include>-->
+<!--                                </includes>-->
+<!--                            </artifactSet>-->
+<!--                            <filters>-->
+<!--                                <filter>-->
+<!--                                    <excludes>-->
+<!--                                        <exclude>META-INF/*.SF</exclude>-->
+<!--                                        <exclude>META-INF/*.RSA</exclude>-->
+<!--                                        <exclude>META-INF/*.INF</exclude>-->
+<!--                                        <exclude>META-INF/LICENSE</exclude>-->
+<!--                                        <exclude>META-INF/**/pom.xml</exclude>-->
+<!--                                        <exclude>META-INF/**/pom.properties</exclude>-->
+<!--                                        &lt;!&ndash; CVE-2021-44228 &ndash;&gt;-->
+<!--                                        <exclude>org/apache/logging/log4j/core/lookup/JndiLookup.class</exclude>-->
+<!--                                    </excludes>-->
+<!--                                </filter>-->
+<!--                            </filters>-->
+<!--                            <transformers>-->
+<!--                                <transformer-->
+<!--                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>-->
+<!--                                <transformer-->
+<!--                                        implementation="org.apache.maven.plugins.shade.resource.ResourceBundleAppendingTransformer"/>-->
+<!--                                <transformer-->
+<!--                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+<!--                                    <mainClass>com.streever.hive.Sre</mainClass>-->
+<!--                                </transformer>-->
+<!--                            </transformers>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--                <plugin>-->
+<!--                    <groupId>org.codehaus.mojo</groupId>-->
+<!--                    <artifactId>build-helper-maven-plugin</artifactId>-->
+<!--                    <version>3.2.0</version>-->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <id>add-source</id>-->
+<!--                            <phase>generate-sources</phase>-->
+<!--                            <goals>-->
+<!--                                <goal>add-source</goal>-->
+<!--                            </goals>-->
+<!--                            <configuration>-->
+<!--                                <sources>-->
+<!--                                    <source>../src/main/java/</source>-->
+<!--                                </sources>-->
+<!--                            </configuration>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
+<!--                </plugin>-->
+<!--            <plugin>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <descriptors>-->
+<!--                        <descriptor>assembly/src/main/assembly/assembly.xml</descriptor>-->
+<!--                    </descriptors>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>make-assembly</id>-->
+<!--                        &lt;!&ndash; this is used for inheritance merges &ndash;&gt;-->
+<!--                        <phase>package</phase>-->
+<!--                        &lt;!&ndash; bind to the packaging phase &ndash;&gt;-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>

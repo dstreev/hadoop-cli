@@ -22,8 +22,8 @@
                  .#&%%&&(...,*%#               *******   .******. ************...*****      ,************,
                         %&%%(*
 
-     Product: ${Implementation-Title}
-     Version: ${Implementation-Version}
+     Product: ${HadoopCLI-Title}
+     Version: ${HadoopCLI-Version}
   For Hadoop: ${Apache-Hadoop-Version}
 
  Get it here: https://github.com/dstreev/hadoop-cli
