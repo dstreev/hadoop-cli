@@ -19,11 +19,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cloudera.utils.hadoop</groupId>
-    <artifactId>hadoop-cli${distro.type}</artifactId>
-
-    <!--    Picked up from the profile -->
-    <version>${global.version}</version>
+    <artifactId>hadoop-cli</artifactId>
+    <version>3.0.1.0</version>
     <packaging>jar</packaging>
+
     <name>Hadoop CLI</name>
     <description>Hadoop Command Line Interface</description>
 
@@ -47,14 +46,20 @@
         <maven.shade.plugin.version>3.2.1</maven.shade.plugin.version>
         <maven.assembly.version>3.3.0</maven.assembly.version>
 
+        <!-- Spring -->
+        <springboot.version>2.7.18</springboot.version>
+
         <!-- Support  Libs-->
         <junit.version>4.13.1</junit.version>
-        <jackson.parser>2.13.3</jackson.parser>
+<!--        <jackson.version>2.16.1</jackson.version>-->
+
+        <lombok.version>1.18.30</lombok.version>
         <commons-io.version>2.7</commons-io.version>
         <commons-pool.version>2.9.0</commons-pool.version>
         <jcabi.manifests.version>1.1</jcabi.manifests.version>
         <commons-lang.version>3.12.0</commons-lang.version>
 
+        <cdp.scope>provided</cdp.scope>
         <cdp.version>7.1.9.3-4</cdp.version>
         <hadoop.version>3.1.1</hadoop.version>
         <ozone.version>1.2.0</ozone.version>
@@ -70,7 +75,29 @@
         </repository>
     </repositories>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>${springboot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${springboot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-manifests</artifactId>
@@ -86,31 +113,31 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
-            <scope>${profile.scope}</scope>
+            <scope>${cdp.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs-client</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
-            <scope>${profile.scope}</scope>
+            <scope>${cdp.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
-            <scope>${profile.scope}</scope>
+            <scope>${cdp.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.ozone</groupId>
             <artifactId>ozone-filesystem-hadoop3</artifactId>
             <version>${ozone.version}.${cdp.version}</version>
-            <scope>${profile.scope}</scope>
+            <scope>${cdp.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-aws</artifactId>
             <version>${hadoop.version}.${cdp.version}</version>
-            <scope>${profile.scope}</scope>
+            <scope>${cdp.scope}</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -134,35 +161,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <profile.scope>provided</profile.scope>
-                <distro.type></distro.type>
-                <global.version>3.0.0.0</global.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>standalone</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <profile.scope>compile</profile.scope>
-                <distro.type>-standalone</distro.type>
-                <global.version>3.0.0.0-${cdp.version}</global.version>
-            </properties>
-        </profile>
-    </profiles>
     <build>
-        <finalName>${project.artifactId}${distro.type}-${project.version}</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <pluginManagement>
             <plugins>
                 <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${springboot.version}</version>
+                </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>${maven.clean.version}</version>
@@ -218,23 +226,6 @@
 
         <plugins>
             <plugin>
-                <artifactId>maven-toolchains-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>toolchain</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <toolchains>
-                        <jdk>
-                            <version>${jdk.version}</version>
-                        </jdk>
-                    </toolchains>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>${jdk.version}</source>
@@ -248,8 +239,6 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
@@ -261,156 +250,90 @@
                     </archive>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-dependency-plugin</artifactId>-->
-<!--&lt;!&ndash;                <version>2.1</version>&ndash;&gt;-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>copy-dependencies</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>copy-dependencies</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <outputDirectory>${project.build.directory}/lib</outputDirectory>-->
-<!--                            <overWriteReleases>false</overWriteReleases>-->
-<!--                            <overWriteSnapshots>false</overWriteSnapshots>-->
-<!--                            <overWriteIfNewer>true</overWriteIfNewer>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <artifactId>maven-shade-plugin</artifactId>-->
-<!--                &lt;!&ndash;<configuration>&ndash;&gt;-->
-<!--                &lt;!&ndash;<createDependencyReducedPom>true</createDependencyReducedPom>&ndash;&gt;-->
-<!--                &lt;!&ndash;</configuration>&ndash;&gt;-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>full-shaded</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>shade</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <createSourcesJar>false</createSourcesJar>-->
-<!--&lt;!&ndash;                            <finalName>${project.artifactId}-shaded</finalName>&ndash;&gt;-->
-<!--                            <finalName>${project.artifactId}-shaded-${project.version}</finalName>-->
-<!--                            <shadedArtifactAttached>true</shadedArtifactAttached>-->
-<!--                            <filters>-->
-<!--                                <filter>-->
-<!--                                    <artifact>*:*</artifact>-->
-<!--                                    <excludes>-->
-<!--                                        <exclude>META-INF/*.SF</exclude>-->
-<!--                                        <exclude>META-INF/*.DSA</exclude>-->
-<!--                                        <exclude>META-INF/*.RSA</exclude>-->
-<!--                                        <exclude>META-INF/LICENSE</exclude>-->
-<!--                                        <exclude>META-INF/**/pom.xml</exclude>-->
-<!--                                        <exclude>META-INF/**/pom.properties</exclude>-->
-<!--                                        &lt;!&ndash; CVE-2021-44228 &ndash;&gt;-->
-<!--                                        <exclude>org/apache/logging/log4j/core/lookup/JndiLookup.class</exclude>-->
-<!--                                    </excludes>-->
-<!--                                </filter>-->
-<!--                            </filters>-->
-<!--                            <transformers>-->
-<!--                                <transformer-->
-<!--                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>-->
-<!--                                <transformer-->
-<!--                                        implementation="org.apache.maven.plugins.shade.resource.ResourceBundleAppendingTransformer"/>-->
-<!--                                <transformer-->
-<!--                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
-<!--                                    <mainClass>com.cloudera.utils.hadoop.HadoopSession</mainClass>-->
-<!--                                </transformer>-->
-<!--                            </transformers>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>shaded-no-hadoop</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>shade</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <createSourcesJar>false</createSourcesJar>-->
-<!--                            <finalName>${project.artifactId}-shaded-no-hadoop-${project.version}</finalName>-->
-<!--                            <shadedArtifactAttached>true</shadedArtifactAttached>-->
-<!--                            <artifactSet>-->
-<!--                                <includes>-->
-<!--                                    <include>com.jcabi:*</include>-->
-<!--                                    <include>org.sonatype.jline:jline</include>-->
-<!--                                    <include>commons-io:commons-io</include>-->
-<!--                                    <include>org.apache.commons:commons-lang3</include>-->
-<!--                                    <include>com.fasterxml.jackson.core:jackson-core</include>-->
-<!--                                    <include>org.yaml:snakeyaml</include>-->
-<!--                                </includes>-->
-<!--                            </artifactSet>-->
-<!--                            <filters>-->
-<!--                                <filter>-->
-<!--                                    <excludes>-->
-<!--                                        <exclude>META-INF/*.SF</exclude>-->
-<!--                                        <exclude>META-INF/*.RSA</exclude>-->
-<!--                                        <exclude>META-INF/*.INF</exclude>-->
-<!--                                        <exclude>META-INF/LICENSE</exclude>-->
-<!--                                        <exclude>META-INF/**/pom.xml</exclude>-->
-<!--                                        <exclude>META-INF/**/pom.properties</exclude>-->
-<!--                                        &lt;!&ndash; CVE-2021-44228 &ndash;&gt;-->
-<!--                                        <exclude>org/apache/logging/log4j/core/lookup/JndiLookup.class</exclude>-->
-<!--                                    </excludes>-->
-<!--                                </filter>-->
-<!--                            </filters>-->
-<!--                            <transformers>-->
-<!--                                <transformer-->
-<!--                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>-->
-<!--                                <transformer-->
-<!--                                        implementation="org.apache.maven.plugins.shade.resource.ResourceBundleAppendingTransformer"/>-->
-<!--                                <transformer-->
-<!--                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
-<!--                                    <mainClass>com.streever.hive.Sre</mainClass>-->
-<!--                                </transformer>-->
-<!--                            </transformers>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--                <plugin>-->
-<!--                    <groupId>org.codehaus.mojo</groupId>-->
-<!--                    <artifactId>build-helper-maven-plugin</artifactId>-->
-<!--                    <version>3.2.0</version>-->
-<!--                    <executions>-->
-<!--                        <execution>-->
-<!--                            <id>add-source</id>-->
-<!--                            <phase>generate-sources</phase>-->
-<!--                            <goals>-->
-<!--                                <goal>add-source</goal>-->
-<!--                            </goals>-->
-<!--                            <configuration>-->
-<!--                                <sources>-->
-<!--                                    <source>../src/main/java/</source>-->
-<!--                                </sources>-->
-<!--                            </configuration>-->
-<!--                        </execution>-->
-<!--                    </executions>-->
-<!--                </plugin>-->
-<!--            <plugin>-->
-<!--                <artifactId>maven-assembly-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <descriptors>-->
-<!--                        <descriptor>assembly/src/main/assembly/assembly.xml</descriptor>-->
-<!--                    </descriptors>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>make-assembly</id>-->
-<!--                        &lt;!&ndash; this is used for inheritance merges &ndash;&gt;-->
-<!--                        <phase>package</phase>-->
-<!--                        &lt;!&ndash; bind to the packaging phase &ndash;&gt;-->
-<!--                        <goals>-->
-<!--                            <goal>single</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.cloudera.utils.hadoop.HadoopCliApplication</mainClass>
+                            <!-- layout needs to be zip in order to support '-Dload.path..'  -->
+                            <layout>ZIP</layout>
+                            <classifier>exec</classifier>
+                            <executable>true</executable>
+                            <!-- Remove the Hadoop based dependencies from the repackaged jar,
+                             they'll be a part of the classpath at runtime. -->
+                            <excludeGroupIds>
+                                com.amazonaws,
+                                com.fasterxml.woodstox,
+                                com.google.code.findbugs,
+                                com.google.code.gson,
+                                com.google.guava,
+                                com.google.j2objc,
+                                com.google.protobuf,
+                                com.google.re2j,
+                                com.jcraft,
+                                com.nimbusds,
+                                com.squareup.okhttp3,
+                                com.squareup.okio,
+                                com.sun.jersey,
+                                com.sun.xml.bind,
+                                commons-beanutils,
+                                commons-collections,
+                                commons-net,
+                                io.dropwizard.metrics,
+                                io.netty,
+                                javax.servlet,
+                                javax.servlet.jsp,
+                                javax.ws.rs,
+                                jdk.tools,
+                                om.github.stephenc.jcip,
+                                org.apache.avro,
+                                org.apache.curator,
+                                org.apache.hadoop,
+                                org.apache.httpcomponents,
+                                org.apache.kerby,
+                                org.apache.ozone,
+                                org.apache.yetus,
+                                org.apache.zookeeper,
+                                org.codehaus.jackson,
+                                org.codehaus.jettison,
+                                org.codehaus.woodstox,
+                                org.eclipse.jetty,
+                                org.fusesource.leveldbjni,
+                                org.jetbrains.kotlin,
+                                org.jline,
+                                org.lz4,
+                                org.mariadb.jdbc,
+                                org.postgresql,
+                                org.wildfly.openssl,
+                                org.xerial.snappy
+                            </excludeGroupIds>
+                            <excludes>
+                                <exclude>
+                                    <groupId>org.apache.commons</groupId>
+                                    <artifactId>commons-math3</artifactId>
+                                </exclude>
+                                <exclude>
+                                    <groupId>org.apache.commons</groupId>
+                                    <artifactId>commons-configuration2</artifactId>
+                                </exclude>
+                                <exclude>
+                                    <groupId>org.apache.commons</groupId>
+                                    <artifactId>commons-lang3</artifactId>
+                                </exclude>
+                                <exclude>
+                                    <groupId>org.apache.commons</groupId>
+                                    <artifactId>commons-compress</artifactId>
+                                </exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>

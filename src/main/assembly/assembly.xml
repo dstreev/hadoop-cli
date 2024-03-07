@@ -22,12 +22,6 @@
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
-        <!--fileSet>
-            <directory>${project.basedir}/src</directory>
-            <outputDirectory>/${project.name}/src</outputDirectory>
-            <useDefaultExcludes>true</useDefaultExcludes>
-        </fileSet-->
-
         <fileSet>
             <directory>bin</directory>
             <includes>
@@ -39,25 +33,13 @@
             <outputDirectory>hadoop-cli-install-${project.version}</outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>
         </fileSet>
-
-<!--        <fileSet>-->
-<!--            <directory>target</directory>-->
-<!--            <includes>-->
-<!--                <include>*.jar</include>-->
-<!--            </includes>-->
-<!--            <outputDirectory>hadoop-cli-install</outputDirectory>-->
-<!--            <useDefaultExcludes>true</useDefaultExcludes>-->
-<!--        </fileSet>-->
-    </fileSets>
-
-    <dependencySets>
-        <dependencySet>
-            <useProjectArtifact>true</useProjectArtifact>
-<!--            <scope></scope>-->
+        <fileSet>
+            <directory>${project.basedir}/target</directory>
+            <includes>
+                <include>hadoop-cli-${project.version}-exec.jar</include>
+            </includes>
             <outputDirectory>hadoop-cli-install-${project.version}/lib</outputDirectory>
-<!--            <useProjectArtifact>false</useProjectArtifact>-->
-            <unpack>false</unpack>
-        </dependencySet>
-    </dependencySets>
-
+            <useDefaultExcludes>true</useDefaultExcludes>
+        </fileSet>
+    </fileSets>
 </assembly>

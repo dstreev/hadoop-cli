@@ -64,7 +64,9 @@ ENV_VAR_FILE=
 # Setting this to true ALWAYS.  No longer including all the hadoop lib in a shaded jar.
 HADOOP_CLASSPATH="true"
 
-APP_JAVA_OPTS=${JAVA_OPTS:-}
+APP_JAVA_OPTS=${JAVA_OPTS:-"-Xms2048m -Xmx4096m -XX:+UseG1GC"}
+LOGGING_THRESHOLD=${LOGGING_THRESHOLD:-"DEBUG"}
+APP_LOG_FILE=${APP_LOG_FILE:-"hadoop-cli.log"}
 
 if [[ -f ${HOME}/.hadoop-cli/env-var.props || -L ${HOME}/.hadoop-cli/env-var.props ]]; then
     ENV_VAR_FILE=${HOME}/.hadoop-cli/env-var.props
@@ -159,35 +161,28 @@ if [[ "${ENV_VAR_FILE}x" != "x" ]]; then
 fi
 
 #echo "Program Args: ${PRG_ARGS}"
+APP_JAVA_OPTS="${APP_JAVA_OPTS} -Dapp.path.dir=${HOME}/.hadoop-cli/logs -Dlogging.threshold=${LOGGING_THRESHOLD} -Dapp.log.file=\"$APP_LOG_FILE\""
 
 if [[ ! -d ${AUX_LIBS_DIR} ]]; then
     mkdir -p ${AUX_LIBS_DIR}
 fi
 
-# Build Classpath of files in the lib directory
-CMD_CP=${CMD_CP}:${APP_DIR}/../lib/*
-
-# Add Hadoop Libs to classpath only if hadoop-common isn't already in the classpath.
-for jarfile in $(ls ${APP_DIR}/../lib/); do
-    if [[ "${jarfile}" == "hadoop-common"* ]]; then
-      echo "Found 'hadoop-common' in lib directory.  Not adding Hadoop Classpath."
-      HADOOP_CLASSPATH="false"
-    fi
-done
+# Add Aux Libs to Classpath
+CMD_CP=${CMD_CP}:${AUX_LIBS_DIR}/*
 
 if [[ "${HADOOP_CLASSPATH}x" == "truex" ]]; then
     echo "Picking up local Hadoop Classpath Libs."
     CMD_CP=${CMD_CP}:$(hadoop classpath)
 fi
 
-# Add Aux Libs to Classpath
-CMD_CP=${CMD_CP}:${AUX_LIBS_DIR}/*
-
 CLI_CMD=""
 
 if [[ "${VERBOSE}x" != "x" ]]; then
     echo "Passing app Params: ${PRG_ARGS}"
 fi
+
+# Replace colon with comma in $CMD_CP
+CMD_CP=$(echo $CMD_CP | sed 's/:/,/g')
 
 if [[ "${SHOW_CP}x" != "x" ]]; then
     echo "Classpath: ${CMD_CP}"
@@ -201,6 +196,8 @@ fi
 echo "Using Java Version:"
 JV=$(${JAVA} -version)
 
-CLI_CMD="${JAVA} -cp ${CMD_CP} ${APP_JAVA_OPTS} com.cloudera.utils.hadoop.HadoopShell ${PRG_ARGS}"
+CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -jar ${APP_DIR}/../lib/* ${PRG_ARGS}"
+
+echo "CLI_CMD: ${CLI_CMD}"
 
 eval "${CLI_CMD}"
