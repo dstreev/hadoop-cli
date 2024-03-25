@@ -61,8 +61,9 @@ CMD_ARGS=
 VERBOSE=
 ENV_VAR_FILE=
 
-# Setting this to true ALWAYS.  No longer including all the hadoop lib in a shaded jar.
-HADOOP_CLASSPATH="true"
+# The new default is to run using the `hadoop classpath`, which assumes that the host has Hadoop installed and
+#  we'll use the classpath from the host to include the current hadoop libraries.
+STANDALONE="false"
 
 APP_JAVA_OPTS=${JAVA_OPTS:-"-Xms2048m -Xmx4096m -XX:+UseG1GC"}
 LOGGING_THRESHOLD=${LOGGING_THRESHOLD:-"DEBUG"}
@@ -130,7 +131,16 @@ while [[ $# -gt 0 ]]; do
       ;;
     --hadoop-classpath)
       shift
-      HADOOP_CLASSPATH="true"
+      echo "--hadoop-classpath is `deprecated`.  The hadoop dependencies are pulled from the host by default using `hadoop classpath`"
+      echo "If you want to use your own hadoop dependencies, use the --standalone option and place those libraries in the"
+      echo " ${HOME}/.hms-mirror/hadoop_libs directory."
+  #    HADOOP_CLASSPATH="true"
+      ;;
+    --standalone)
+      shift
+      echo "Running in Standalone Mode.  Collect and place the appropriate hadoop libraries in ${HOME}/.hms-mirror/hadoop_libs directory."
+      echo " The application will use the libraries in that directory instead of the host hadoop libraries (which may not be available)."
+      STANDALONE="true"
       ;;
     --show-cp)
       shift
@@ -164,15 +174,17 @@ fi
 APP_JAVA_OPTS="${APP_JAVA_OPTS} -Dapp.path.dir=${HOME}/.hadoop-cli/logs -Dlogging.threshold=${LOGGING_THRESHOLD} -Dapp.log.file=\"$APP_LOG_FILE\""
 
 if [[ ! -d ${AUX_LIBS_DIR} ]]; then
-    mkdir -p ${AUX_LIBS_DIR}
+  mkdir -p ${AUX_LIBS_DIR}
 fi
 
-# Add Aux Libs to Classpath
+# Add aux_libs to classpath
 CMD_CP=${CMD_CP}:${AUX_LIBS_DIR}/*
 
-if [[ "${HADOOP_CLASSPATH}x" == "truex" ]]; then
-    echo "Picking up local Hadoop Classpath Libs."
-    CMD_CP=${CMD_CP}:$(hadoop classpath)
+if [[ "${STANDALONE}x" == "truex" ]]; then
+  echo "Picking up local Hadoop Classpath Libs."
+  CMD_CP=${CMD_CP}:${HOME}/.hadoop-cli/hadoop_libs/*
+else
+  CMD_CP=${CMD_CP}:$(hadoop classpath)
 fi
 
 CLI_CMD=""

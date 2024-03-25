@@ -36,6 +36,7 @@
         <fileSet>
             <directory>${project.basedir}/target</directory>
             <includes>
+                <include>hadoop-cli-${project.version}.jar</include>
                 <include>hadoop-cli-${project.version}-exec.jar</include>
             </includes>
             <outputDirectory>hadoop-cli-install-${project.version}/lib</outputDirectory>
