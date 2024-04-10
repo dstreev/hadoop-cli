@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.util;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Map;
 

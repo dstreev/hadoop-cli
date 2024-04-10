@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop.mapreduce.parsers;
 
 import com.cloudera.utils.hadoop.util.NodeParser;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -32,11 +32,11 @@ public class JobCounterGroupParser implements NodeParser {
     public Map<String, String> parse(JsonNode node) {
         Map<String, String> rtn = new LinkedHashMap<String, String>();
         if (node.isArray()) {
-            Iterator<JsonNode> nodes = node.getElements();
+            Iterator<JsonNode> nodes = node.iterator();
             while (nodes.hasNext()) {
                 JsonNode groupCounterNode = nodes.next();
                 String groupCounterName = groupCounterNode.get("counterGroupName").asText();
-                Iterator<JsonNode> counters = groupCounterNode.get("counter").getElements();
+                Iterator<JsonNode> counters = groupCounterNode.get("counter").iterator();
                 while (counters.hasNext()) {
                     JsonNode counter = counters.next();
                     rtn.put(groupCounterName+":"+counter.get("name").asText() + ":map", counter.get("mapCounterValue").asText());

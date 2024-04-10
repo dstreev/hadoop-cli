@@ -16,8 +16,8 @@
 
 package com.cloudera.utils.hadoop.hdfs.util;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -59,13 +59,13 @@ public class JmxJsonParser {
                 if (beanNode.get(NAME).asText().equals(name)) {
                     Map<String, Object> content = new TreeMap<String, Object>();
 //                    Iterator<JsonNode> iNodes = beanNode.iterator();
-                    Iterator<Map.Entry<String, JsonNode>> iEntries = beanNode.getFields();
+                    Iterator<Map.Entry<String, JsonNode>> iEntries = beanNode.fields();
 
                     while (iEntries.hasNext()) {
                         Map.Entry<String, JsonNode> entry = iEntries.next();
 
                         if (entry.getValue().isNumber()) {
-                            content.put(entry.getKey(), entry.getValue().getNumberValue());
+                            content.put(entry.getKey(), entry.getValue().numberValue());
                         } else {
                             content.put(entry.getKey(), entry.getValue().asText());
                         }

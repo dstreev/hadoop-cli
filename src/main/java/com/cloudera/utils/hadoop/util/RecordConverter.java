@@ -17,8 +17,8 @@
 package com.cloudera.utils.hadoop.util;
 
 import com.cloudera.utils.hadoop.AbstractStats;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -155,7 +155,7 @@ public class RecordConverter {
                 }
             }
         } else if (node.isContainerNode()) {
-            Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
+            Iterator<Map.Entry<String, JsonNode>> iter = node.fields();
             if (treeHierarchy == null) {
                 treeHierarchy = new StringBuilder();
                 treeHierarchy.append(key);

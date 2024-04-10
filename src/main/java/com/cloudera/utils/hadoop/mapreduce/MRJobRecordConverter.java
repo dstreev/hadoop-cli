@@ -21,8 +21,8 @@ import com.cloudera.utils.hadoop.mapreduce.parsers.TaskCounterGroupParser;
 import com.cloudera.utils.hadoop.util.RecordConverter;
 import com.cloudera.utils.hadoop.util.TraverseBehavior;
 import com.cloudera.utils.hadoop.util.TraversePath;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.*;
@@ -91,7 +91,7 @@ public class MRJobRecordConverter {
                 if (jobsArrayNode != null) {
 
                     if (jobsArrayNode.isArray()) {
-                        Iterator<JsonNode> jobIter = jobsArrayNode.getElements();
+                        Iterator<JsonNode> jobIter = jobsArrayNode.iterator();
                         while (jobIter.hasNext()) {
                             JsonNode jobNode = jobIter.next();
                             rtn.add(jobNode.get("id").asText());
@@ -172,7 +172,7 @@ public class MRJobRecordConverter {
 
                 if (tasksArrayNode != null) {
                     if (tasksArrayNode.isArray()) {
-                        Iterator<JsonNode> taskIter = tasksArrayNode.getElements();
+                        Iterator<JsonNode> taskIter = tasksArrayNode.iterator();
                         while (taskIter.hasNext()) {
                             JsonNode taskNode = taskIter.next();
                             rtn.add(taskNode.get("id").asText());
@@ -609,7 +609,7 @@ public class MRJobRecordConverter {
                 if (attemptsArrayNode != null) {
 
                     if (attemptsArrayNode.isArray()) {
-                        Iterator<JsonNode> attemptIter = attemptsArrayNode.getElements();
+                        Iterator<JsonNode> attemptIter = attemptsArrayNode.iterator();
                         while (attemptIter.hasNext()) {
                             JsonNode attemptNode = attemptIter.next();
                             rtn.add(attemptNode.get("id").asText());

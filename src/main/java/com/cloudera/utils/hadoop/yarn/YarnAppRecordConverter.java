@@ -17,8 +17,8 @@
 package com.cloudera.utils.hadoop.yarn;
 
 import com.cloudera.utils.hadoop.util.RecordConverter;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -111,7 +111,7 @@ public class YarnAppRecordConverter {
                 if (appsArrayNode != null) {
 
                     if (appsArrayNode.isArray()) {
-                        Iterator<JsonNode> appIter = appsArrayNode.getElements();
+                        Iterator<JsonNode> appIter = appsArrayNode.iterator();
                         while (appIter.hasNext()) {
                             JsonNode appNode = appIter.next();
                             rtn.add(appNode.get("id").asText());
@@ -195,7 +195,7 @@ public class YarnAppRecordConverter {
                 if (appsArrayNode != null) {
 
                     if (appsArrayNode.isArray()) {
-                        Iterator<JsonNode> appIter = appsArrayNode.getElements();
+                        Iterator<JsonNode> appIter = appsArrayNode.iterator();
                         while (appIter.hasNext()) {
                             JsonNode appNode = appIter.next();
 
@@ -243,7 +243,7 @@ public class YarnAppRecordConverter {
 
                 if (attemptsArrayNode != null) {
                     if (attemptsArrayNode.isArray()) {
-                        Iterator<JsonNode> attemptsIter = attemptsArrayNode.getElements();
+                        Iterator<JsonNode> attemptsIter = attemptsArrayNode.iterator();
                         while (attemptsIter.hasNext()) {
                             JsonNode attemptNode = attemptsIter.next();
                             Map<String, Object> attemptMap = new LinkedHashMap<String, Object>();

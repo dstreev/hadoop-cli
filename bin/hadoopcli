@@ -183,8 +183,8 @@ CMD_CP=${CMD_CP}:${AUX_LIBS_DIR}/*
 if [[ "${STANDALONE}x" == "truex" ]]; then
   echo "Picking up local Hadoop Classpath Libs."
   CMD_CP=${CMD_CP}:${HOME}/.hadoop-cli/hadoop_libs/*
-else
-  CMD_CP=${CMD_CP}:$(hadoop classpath)
+#else
+#  CMD_CP=${CMD_CP}:$(hadoop classpath)
 fi
 
 CLI_CMD=""

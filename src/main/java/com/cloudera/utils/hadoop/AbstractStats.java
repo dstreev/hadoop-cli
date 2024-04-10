@@ -23,14 +23,14 @@ import com.cloudera.utils.hadoop.util.HdfsWriter;
 import com.cloudera.utils.hadoop.util.RecordConverter;
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URL;

@@ -25,7 +25,7 @@ import jline.console.completer.*;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Help extends AbstractCommand {
     private Environment env;

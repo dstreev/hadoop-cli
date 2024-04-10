@@ -18,8 +18,8 @@ package com.cloudera.utils.hadoop.yarn.parsers;
 
 import com.cloudera.utils.hadoop.util.RecordConverter;
 import com.cloudera.utils.hadoop.yarn.SchedulerStats;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.*;
@@ -87,7 +87,7 @@ public class QueueParser {
 
         JsonNode queueArray = queuesNode.get("queue");
         if (queueArray.isArray()) {
-            Iterator<JsonNode> qAryIter = queueArray.getElements();
+            Iterator<JsonNode> qAryIter = queueArray.iterator();
             while (qAryIter.hasNext()) {
                 JsonNode queueNode = qAryIter.next();
                 String queueName = queueNode.get("queueName").asText();
@@ -119,7 +119,7 @@ public class QueueParser {
 
         JsonNode queueArray = queuesNode.get("queue");
         if (queueArray.isArray()) {
-            Iterator<JsonNode> qAryIter = queueArray.getElements();
+            Iterator<JsonNode> qAryIter = queueArray.iterator();
             while (qAryIter.hasNext()) {
                 JsonNode queueNode = qAryIter.next();
                 String queueName = queueNode.get("queueName").asText();
@@ -157,13 +157,13 @@ public class QueueParser {
 
         if (node.isContainerNode()) {
 
-            Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
+            Iterator<Map.Entry<String, JsonNode>> iter = node.fields();
             while (iter.hasNext()) {
                 Map.Entry<String, JsonNode> val = iter.next();
 
                 if (val.getValue().isArray()) {
                     if (val.getKey().equals("user")) {
-                        Iterator<JsonNode> userNodeIter = val.getValue().getElements();
+                        Iterator<JsonNode> userNodeIter = val.getValue().iterator();
                         while (userNodeIter.hasNext()) {
                             JsonNode userNode = userNodeIter.next();
                             Map<String, Object> iRecord = new LinkedHashMap<String, Object>(record);
@@ -234,7 +234,7 @@ public class QueueParser {
         Map<String, Object> rtn = record;
 
         if (node.isContainerNode()) {
-            Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
+            Iterator<Map.Entry<String, JsonNode>> iter = node.fields();
             while (iter.hasNext()) {
                 Map.Entry<String, JsonNode> val = iter.next();
                 if (val.getValue().isArray()) {
