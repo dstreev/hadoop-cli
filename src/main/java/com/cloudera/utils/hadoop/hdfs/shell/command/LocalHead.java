@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
@@ -38,12 +38,12 @@ public class LocalHead extends HdfsCommand {
 
     public static final int LINE_COUNT = 10;
 
-    public LocalHead(String name, Environment env) {
+    public LocalHead(String name, CliEnvironment env) {
         super(name, env);
     }
 
     @Override
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         CommandReturn cr = commandReturn;
 
         FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);

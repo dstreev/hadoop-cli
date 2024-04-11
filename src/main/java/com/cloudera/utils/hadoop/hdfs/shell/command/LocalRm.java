@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
@@ -31,11 +31,11 @@ import org.apache.hadoop.fs.Path;
 public class LocalRm extends HdfsCommand {
     private boolean local = false;
 
-    public LocalRm(String name, Environment env) {
+    public LocalRm(String name, CliEnvironment env) {
         super(name, env);
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         CommandReturn cr = commandReturn;
         try {
 //            FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)

@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
 import org.apache.commons.cli.CommandLine;
@@ -27,8 +27,8 @@ import java.util.Set;
 
 public class Use extends HdfsAbstract {
 
-    public Use(String name, Environment environment) {
-        super(name, environment);
+    public Use(String name, CliEnvironment cliEnvironment) {
+        super(name, cliEnvironment);
 
         // TODO: Setup completer for 'use'
 
@@ -39,7 +39,7 @@ public class Use extends HdfsAbstract {
         return "Change current 'namespace'.  Use 'list' to review options.";
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         String namespace = cmd.getArgs().length == 0 ? "" : cmd.getArgs()[0];
         CommandReturn cr = new CommandReturn(0);
         if (namespace.equalsIgnoreCase("default")) {

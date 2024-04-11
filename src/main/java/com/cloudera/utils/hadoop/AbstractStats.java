@@ -17,7 +17,7 @@
 
 package com.cloudera.utils.hadoop;
 
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.util.HdfsWriter;
 import com.cloudera.utils.hadoop.util.RecordConverter;
@@ -78,19 +78,19 @@ public abstract class AbstractStats extends HdfsAbstract {
         super(name);
     }
 
-    public AbstractStats(String name, Environment env, Direction directionContext) {
+    public AbstractStats(String name, CliEnvironment env, Direction directionContext) {
         super(name, env, directionContext);
     }
 
-    public AbstractStats(String name, Environment env, Direction directionContext, int directives) {
+    public AbstractStats(String name, CliEnvironment env, Direction directionContext, int directives) {
         super(name, env, directionContext, directives);
     }
 
-    public AbstractStats(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+    public AbstractStats(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
         super(name, env, directionContext, directives, directivesBefore, directivesOptional);
     }
 
-    public AbstractStats(String name, Environment env) {
+    public AbstractStats(String name, CliEnvironment env) {
         super(name, env);
     }
 
@@ -137,7 +137,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         list.addAll(inRecords);
     }
 
-    public CommandReturn processOptions(Environment environment, CommandLine cmd, CommandReturn cr) {
+    public CommandReturn processOptions(CliEnvironment cliEnvironment, CommandLine cmd, CommandReturn cr) {
 //        CommandReturn scr = processOptions(environment, cmd, cr);
 
         if (cmd.hasOption("help")) {
@@ -200,8 +200,8 @@ public abstract class AbstractStats extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn implementation(Environment environment, CommandLine cmd, CommandReturn cr) {
-        processOptions(environment, cmd, cr);
+    public CommandReturn implementation(CliEnvironment cliEnvironment, CommandLine cmd, CommandReturn cr) {
+        processOptions(cliEnvironment, cmd, cr);
         try {
 
             clearCache();

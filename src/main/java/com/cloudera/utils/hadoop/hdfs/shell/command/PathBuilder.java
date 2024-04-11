@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 
 public class PathBuilder {
 
@@ -39,15 +39,15 @@ public class PathBuilder {
 
 
     }
-    private Environment env;
+    private CliEnvironment env;
     private PathDirectives directives;
 
-    public PathBuilder(Environment env, PathDirectives directives) {
+    public PathBuilder(CliEnvironment env, PathDirectives directives) {
         this.env = env;
         this.directives = directives;
     }
 
-    public PathBuilder(Environment env) {
+    public PathBuilder(CliEnvironment env) {
         this.env = env;
         this.directives = new PathDirectives();
     }

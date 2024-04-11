@@ -18,7 +18,7 @@ package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsAbstract;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -41,24 +41,24 @@ public class HdfsRepair extends HdfsAbstract {
         return "HDFS Repair - Not Implemented Yet.";
     }
 
-    public HdfsRepair(String name, Environment env, Direction directionContext ) {
+    public HdfsRepair(String name, CliEnvironment env, Direction directionContext ) {
         super(name, env, directionContext);
     }
 
-    public HdfsRepair(String name, Environment env, Direction directionContext, int directives ) {
+    public HdfsRepair(String name, CliEnvironment env, Direction directionContext, int directives ) {
         super(name,env,directionContext,directives);
     }
 
-    public HdfsRepair(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
+    public HdfsRepair(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
         super(name,env,directionContext,directives,directivesBefore,directivesOptional);
     }
 
-    public HdfsRepair(String name, Environment env) {
+    public HdfsRepair(String name, CliEnvironment env) {
         super(name,env);
     }
 
     @Override
-    public CommandReturn implementation(Environment environment, CommandLine commandLine, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment cliEnvironment, CommandLine commandLine, CommandReturn commandReturn) {
         System.out.println("Not implemented yet... :( ");
         /*
 

@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
@@ -38,11 +38,11 @@ public class LocalCat extends HdfsCommand {
     
     public static final int LINE_COUNT = 10;
     
-    public LocalCat(String name, Environment env) {
+    public LocalCat(String name, CliEnvironment env) {
         super(name, env);
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
 
         FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
         FileSystem lfs = lfss.getFileSystem();

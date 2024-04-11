@@ -37,7 +37,8 @@
             <directory>${project.basedir}/target</directory>
             <includes>
                 <include>hadoop-cli-${project.version}.jar</include>
-                <include>hadoop-cli-${project.version}-exec.jar</include>
+                <include>hadoop-cli-${project.version}-standalone.jar</include>
+                <include>hadoop-cli-${project.version}-thin.jar</include>
             </includes>
             <outputDirectory>hadoop-cli-install-${project.version}/lib</outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>

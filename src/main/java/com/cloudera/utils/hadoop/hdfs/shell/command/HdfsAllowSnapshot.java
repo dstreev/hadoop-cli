@@ -18,7 +18,7 @@ package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
@@ -42,7 +42,7 @@ public class HdfsAllowSnapshot extends HdfsAbstract {
         return "Allow HDFS Snapshots on a Directory";
     }
 
-    public HdfsAllowSnapshot(String name, Environment env, Direction directionContext) {
+    public HdfsAllowSnapshot(String name, CliEnvironment env, Direction directionContext) {
         super(name, env, directionContext);
         // Completer
 
@@ -54,21 +54,21 @@ public class HdfsAllowSnapshot extends HdfsAbstract {
 
     }
 
-    public HdfsAllowSnapshot(String name, Environment env, Direction directionContext, int directives) {
+    public HdfsAllowSnapshot(String name, CliEnvironment env, Direction directionContext, int directives) {
         super(name, env, directionContext, directives);
     }
 
-    public HdfsAllowSnapshot(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+    public HdfsAllowSnapshot(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
         super(name, env, directionContext, directives, directivesBefore, directivesOptional);
     }
 
-    public HdfsAllowSnapshot(String name, Environment env) {
+    public HdfsAllowSnapshot(String name, CliEnvironment env) {
         this(name, env, Direction.NONE);
     }
 
 
     @Override
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         CommandReturn cr = commandReturn;
         try {
             // Check connect protocol

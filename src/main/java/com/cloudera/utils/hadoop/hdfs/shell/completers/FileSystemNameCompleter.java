@@ -27,18 +27,18 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 
 public class FileSystemNameCompleter implements Completer {
-    private Environment env;
+    private CliEnvironment env;
     private boolean local = false;
 
-    public FileSystemNameCompleter(Environment env) {
+    public FileSystemNameCompleter(CliEnvironment env) {
         // this.includeFiles = includeFiles;
         this.env = env;
     }
 
-    public FileSystemNameCompleter(Environment env, boolean local) {
+    public FileSystemNameCompleter(CliEnvironment env, boolean local) {
         this.env = env;
         this.local = local;
     }

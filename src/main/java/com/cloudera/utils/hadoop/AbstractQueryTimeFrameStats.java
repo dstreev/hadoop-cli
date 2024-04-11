@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop;
 
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -46,25 +46,25 @@ public abstract class AbstractQueryTimeFrameStats extends AbstractStats {
         super(name);
     }
 
-    public AbstractQueryTimeFrameStats(String name, Environment env, Direction directionContext) {
+    public AbstractQueryTimeFrameStats(String name, CliEnvironment env, Direction directionContext) {
         super(name, env, directionContext);
     }
 
-    public AbstractQueryTimeFrameStats(String name, Environment env, Direction directionContext, int directives) {
+    public AbstractQueryTimeFrameStats(String name, CliEnvironment env, Direction directionContext, int directives) {
         super(name, env, directionContext, directives);
     }
 
-    public AbstractQueryTimeFrameStats(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+    public AbstractQueryTimeFrameStats(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
         super(name, env, directionContext, directives, directivesBefore, directivesOptional);
     }
 
-    public AbstractQueryTimeFrameStats(String name, Environment env) {
+    public AbstractQueryTimeFrameStats(String name, CliEnvironment env) {
         super(name, env);
     }
 
     @Override
-    public CommandReturn processOptions(Environment environment, CommandLine cmd, CommandReturn cr) {
-        cr = super.processOptions(environment, cmd, cr);
+    public CommandReturn processOptions(CliEnvironment cliEnvironment, CommandLine cmd, CommandReturn cr) {
+        cr = super.processOptions(cliEnvironment, cmd, cr);
 
         try {
 

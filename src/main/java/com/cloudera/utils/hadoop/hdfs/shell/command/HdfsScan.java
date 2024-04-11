@@ -18,7 +18,7 @@ package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
@@ -40,9 +40,9 @@ would do an 'ls' operation on each of the sub-directories.
 
  */
 public class HdfsScan extends HdfsCommand {
-    private Environment env;
+    private CliEnvironment env;
 
-    public HdfsScan(String name, Environment env) {
+    public HdfsScan(String name, CliEnvironment env) {
         super(name, env);
 
         FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
@@ -52,7 +52,7 @@ public class HdfsScan extends HdfsCommand {
         this.completer = completer;
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         FileSystem hdfs = null;
         CommandReturn cr = commandReturn;
         try {

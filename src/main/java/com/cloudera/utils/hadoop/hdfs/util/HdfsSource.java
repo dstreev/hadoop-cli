@@ -16,9 +16,8 @@
 
 package com.cloudera.utils.hadoop.hdfs.util;
 
-import com.cloudera.utils.hadoop.HadoopSession;
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsAbstract;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
@@ -35,17 +34,17 @@ public class HdfsSource  extends HdfsAbstract {
 
     private FileSystem fs = null;
 
-    private HadoopSession shell;
+//    private HadoopSession shell;
     private Configuration configuration = null;
     private DFSClient dfsClient = null;
 
-    public HdfsSource(String name, Environment env, HadoopSession shell) {
+    public HdfsSource(String name, CliEnvironment env) {
         super(name, env);
-        this.shell = shell;
+//        this.shell = shell;
     }
 
     @Override
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
 
         AbstractCommand.logv(env, "Beginning 'source' collection.");
 
@@ -95,7 +94,7 @@ public class HdfsSource  extends HdfsAbstract {
     }
 
     private void runSource(String sourceFile, String template, String delimiter) {
-        this.shell.runFile(sourceFile,template, delimiter);
+        env.runFile(sourceFile,template, delimiter);
     }
 
 

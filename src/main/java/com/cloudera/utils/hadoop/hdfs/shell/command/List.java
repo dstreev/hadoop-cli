@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
 import jline.console.completer.Completer;
@@ -27,8 +27,8 @@ import java.util.Set;
 
 public class List extends HdfsAbstract {
 
-    public List(String name, Environment environment) {
-        super(name, environment);
+    public List(String name, CliEnvironment cliEnvironment) {
+        super(name, cliEnvironment);
 
         // TODO: Setup Completer for "LIST"
     }
@@ -38,7 +38,7 @@ public class List extends HdfsAbstract {
         return "List available 'Namespaces'";
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
 
         CommandReturn cr = new CommandReturn(0);
 

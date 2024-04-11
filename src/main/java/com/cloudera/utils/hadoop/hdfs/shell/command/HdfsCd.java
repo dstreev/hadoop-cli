@@ -18,7 +18,7 @@ package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import jline.console.completer.AggregateCompleter;
@@ -30,9 +30,9 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 public class HdfsCd extends AbstractCommand {
-    private Environment env;
+    private CliEnvironment env;
 
-    public HdfsCd(String name, Environment env) {
+    public HdfsCd(String name, CliEnvironment env) {
         super(name);
         this.env = env;
         // Completer
@@ -44,7 +44,7 @@ public class HdfsCd extends AbstractCommand {
 
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn cr) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn cr) {
         try {
             if (env.getFileSystemOrganizer().isCurrentLocal()) {
                 FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);

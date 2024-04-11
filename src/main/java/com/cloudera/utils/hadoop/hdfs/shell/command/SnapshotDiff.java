@@ -18,7 +18,7 @@ package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
@@ -34,7 +34,7 @@ public class SnapshotDiff extends HdfsAbstract {
     /**
      * Construct a SnapshotDiff object.
      */
-    public SnapshotDiff(String name, Environment env) {
+    public SnapshotDiff(String name, CliEnvironment env) {
         super(name);
         this.env = env;
         // Completer
@@ -64,7 +64,7 @@ public class SnapshotDiff extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn implementation(Environment env, CommandLine cmdr, CommandReturn cr) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmdr, CommandReturn cr) {
         String fromSnapshot, toSnapshot = null;
         Path snapshotRoot = null;
 

@@ -19,7 +19,7 @@ package com.cloudera.utils.hadoop.shell.commands;
 import java.util.ListIterator;
 
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import jline.console.history.History.Entry;
 
@@ -37,7 +37,7 @@ public class HistoryCmd extends AbstractCommand {
     }
 
     @Override
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         if (env.getConsoleReader() != null) {
             jline.console.history.History history = env.getConsoleReader().getHistory();
             ListIterator<Entry> it = history.entries();

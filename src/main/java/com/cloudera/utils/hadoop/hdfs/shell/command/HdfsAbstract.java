@@ -16,14 +16,14 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
 public abstract class HdfsAbstract extends AbstractCommand {
 
-    protected Environment env;
+    protected CliEnvironment env;
     
     protected PathBuilder pathBuilder;
     protected PathDirectives pathDirectives;
@@ -32,34 +32,34 @@ public abstract class HdfsAbstract extends AbstractCommand {
         super(name);
     }
 
-    public HdfsAbstract(String name, Environment env, Direction directionContext ) {
+    public HdfsAbstract(String name, CliEnvironment env, Direction directionContext ) {
         super(name);
         pathDirectives = new PathDirectives(directionContext);
         pathBuilder = new PathBuilder(env, pathDirectives);
         this.env = env;
     }
 
-    public HdfsAbstract(String name, Environment env, Direction directionContext, int directives ) {
+    public HdfsAbstract(String name, CliEnvironment env, Direction directionContext, int directives ) {
         super(name);
         this.env = env;
         pathDirectives = new PathDirectives(directionContext, directives);
         pathBuilder = new PathBuilder(env, pathDirectives);
     }
 
-    public HdfsAbstract(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
+    public HdfsAbstract(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
         super(name);
         this.env = env;
         pathDirectives = new PathDirectives(directionContext, directives, directivesBefore, directivesOptional);
         pathBuilder = new PathBuilder(env, pathDirectives);
     }
 
-    public HdfsAbstract(String name, Environment env) {
+    public HdfsAbstract(String name, CliEnvironment env) {
         super(name);
         this.env = env;
         this.pathBuilder = new PathBuilder(env);
     }
 
-    public Environment getEnv() {
+    public CliEnvironment getEnv() {
         return env;
     }
 

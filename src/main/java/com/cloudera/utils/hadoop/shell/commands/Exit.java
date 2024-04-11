@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.shell.commands;
 
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
@@ -33,7 +33,7 @@ public class Exit extends AbstractCommand {
         return "Exit";
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         System.exit(0);
         return commandReturn;
     }

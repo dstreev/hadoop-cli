@@ -16,29 +16,32 @@
 
 package com.cloudera.utils.hadoop;
 
+import com.cloudera.utils.hadoop.cli.CommandLineOptions;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
+@SpringBootApplication
 @Slf4j
-public class HadoopCliApplication implements CommandLineRunner {
+public class HadoopCliApplication {
 
     public static void main(String[] args) {
         log.info("STARTING THE APPLICATION");
-        SpringApplication.run(HadoopCliApplication.class, args);
+
+        log.info("Translating command line arguments to Spring Boot arguments");
+        CommandLineOptions commandLineOptions = new CommandLineOptions();
+        String[] springArgs = commandLineOptions.toSpringBootOption(args);
+        log.info("Translated Spring Boot arguments: " + String.join(" ", springArgs));
+        log.info("STARTING THE APPLICATION");
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(HadoopCliApplication.class, springArgs);
+
         log.info("APPLICATION FINISHED");
+
+        // TODO: Need to get return code from the application.
+        System.exit(0);
+
+
     }
 
-    @Override
-    public void run(String... args) {
-        HadoopSession shell = new HadoopSession();
-        try {
-            if (!shell.start(args)) {
-                System.err.println("Couldn't start HDFS Shell");
-                System.exit(-1);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

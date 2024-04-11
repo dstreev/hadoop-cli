@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop.shell.commands;
 
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.Command;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
@@ -28,9 +28,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.lang3.StringUtils;
 
 public class Help extends AbstractCommand {
-    private Environment env;
+    private CliEnvironment env;
 
-    public Help(String name, Environment env) {
+    public Help(String name, CliEnvironment env) {
         super(name);
         this.env = env;
     }
@@ -49,7 +49,7 @@ public class Help extends AbstractCommand {
         return "Help";
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         log(env, "----------------------------------------------------");
         log(env, "Command Listing.  Use 'help <cmd>' for detailed help");
         log(env, "----------------------------------------------------");

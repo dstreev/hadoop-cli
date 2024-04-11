@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.shell.command;
 
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 
@@ -98,21 +98,21 @@ public abstract class AbstractCommand implements Command{
         return getName() + " [Options ...] [Args ...]";
     }
     
-    protected static void logv(Environment env, String log){
+    protected static void logv(CliEnvironment env, String log){
         if(env.isVerbose()){
             System.out.println(log);
         }
     }
     
-    protected static void log(Environment env, String log){
+    protected static void log(CliEnvironment env, String log){
         System.out.println(log);
     }
 
-    protected static void loge(Environment env, String log){
+    protected static void loge(CliEnvironment env, String log){
         System.err.println(log);
     }
 
-    protected static void logd(Environment env, String log){
+    protected static void logd(CliEnvironment env, String log){
         if(env.isDebug()){
             System.out.println(log);
         }
@@ -123,7 +123,7 @@ public abstract class AbstractCommand implements Command{
     }
     
     @Override
-    public CommandReturn execute(Environment env, CommandLine cmd, CommandReturn cr) {
+    public CommandReturn execute(CliEnvironment env, CommandLine cmd, CommandReturn cr) {
         CommandReturn lclCr = cr;
         if (lclCr == null) {
             lclCr = new CommandReturn(CommandReturn.GOOD);
@@ -146,6 +146,6 @@ public abstract class AbstractCommand implements Command{
     }
 
     @Override
-    public abstract CommandReturn implementation(Environment env, CommandLine cmdr, CommandReturn commandReturn);
+    public abstract CommandReturn implementation(CliEnvironment env, CommandLine cmdr, CommandReturn commandReturn);
 
 }

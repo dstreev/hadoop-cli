@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsAbstract;
@@ -158,19 +158,19 @@ public class HdfsLsPlus extends HdfsAbstract {
         return "List PLUS service for 'hdfs://' namespaces";
     }
 
-    public HdfsLsPlus(String name, Environment env, Direction directionContext) {
+    public HdfsLsPlus(String name, CliEnvironment env, Direction directionContext) {
         super(name, env, directionContext);
     }
 
-    public HdfsLsPlus(String name, Environment env, Direction directionContext, int directives) {
+    public HdfsLsPlus(String name, CliEnvironment env, Direction directionContext, int directives) {
         super(name, env, directionContext, directives);
     }
 
-    public HdfsLsPlus(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+    public HdfsLsPlus(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
         super(name, env, directionContext, directives, directivesBefore, directivesOptional);
     }
 
-    public HdfsLsPlus(String name, Environment env) {
+    public HdfsLsPlus(String name, CliEnvironment env) {
         super(name, env);
     }
 
@@ -904,13 +904,13 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn implementation(Environment environment, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment cliEnvironment, CommandLine cmd, CommandReturn commandReturn) {
         // reset counter.
         processPosition = 0;
-        logv(environment, "Beginning 'lsp' collection.");
+        logv(cliEnvironment, "Beginning 'lsp' collection.");
         CommandReturn cr = commandReturn;
         try {
-            FileSystemState fss = environment.getFileSystemOrganizer().getCurrentFileSystemState();
+            FileSystemState fss = cliEnvironment.getFileSystemOrganizer().getCurrentFileSystemState();
             // Check connect protocol
             // TODO: NEED TO ACCOUNT FOR THE NONE DEFAULT HDFS...
             //   Right now, only looks at the defaultFS.
@@ -921,7 +921,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                 setTestFound(false);
 
                 // Get the Filesystem
-                configuration = environment.getConfig();
+                configuration = cliEnvironment.getConfig();
 
                 fs = fss.getFileSystem();//environment.getDistributedFileSystem();//getValue(Constants.HDFS);
 
@@ -1013,7 +1013,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                     }
                 }
 
-                logv(environment, "'lsp' complete.");
+                logv(cliEnvironment, "'lsp' complete.");
 
                 if (isTest()) {
                     if (!isTestFound()) {
@@ -1023,14 +1023,14 @@ public class HdfsLsPlus extends HdfsAbstract {
                     }
                 }
             } else {
-                loge(environment, "This function is only available when connecting via 'hdfs'");
+                loge(cliEnvironment, "This function is only available when connecting via 'hdfs'");
                 cr.setCode(-1);
                 cr.setError("Not available with this protocol");
                 return cr;
             }
 
         } catch (RuntimeException rt) {
-            loge(environment, rt.getMessage() + " cmd:" + cmd.toString());
+            loge(cliEnvironment, rt.getMessage() + " cmd:" + cmd.toString());
         }
         return cr;
     }

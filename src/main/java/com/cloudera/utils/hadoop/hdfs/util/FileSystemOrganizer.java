@@ -18,10 +18,12 @@ package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.cloudera.utils.hadoop.hdfs.shell.command.Constants;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hdfs.DistributedFileSystem;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Map;
@@ -31,6 +33,9 @@ import java.util.TreeMap;
 Used to track the current state of available and accessed namespaces during the session.
 
  */
+@Component
+@Getter
+@Setter
 public class FileSystemOrganizer {
 
     private Map<String, FileSystemState> namespaces = new TreeMap<String, FileSystemState>();
@@ -44,15 +49,10 @@ public class FileSystemOrganizer {
     private FileSystem distributedFileSystem = null;
     private FileSystem localFileSystem = null;
 
-    public FileSystemOrganizer(Configuration config) {
-        this.config = config;
-        init();
-    }
-
     public Boolean isDefaultFileSystemState(FileSystemState fss) {
         Boolean rtn = Boolean.FALSE;
         if (fss.equals(defaultFileSystemState)
-        // can't support completion on OZONE yet WHEN it's not the fs.defaultFS.
+            // can't support completion on OZONE yet WHEN it's not the fs.defaultFS.
 //                || fss.equals(defaultOzoneFileSystemState)
         ) {
             rtn = Boolean.TRUE;
@@ -60,49 +60,6 @@ public class FileSystemOrganizer {
         return rtn;
     }
 
-    public FileSystem getDistributedFileSystem() {
-        return distributedFileSystem;
-    }
-
-    public void setDistributedFileSystem(DistributedFileSystem distributedFileSystem) {
-        this.distributedFileSystem = distributedFileSystem;
-    }
-
-    public Map<String, FileSystemState> getNamespaces() {
-        return namespaces;
-    }
-
-    public FileSystem getLocalFileSystem() {
-        return localFileSystem;
-    }
-
-    public void setLocalFileSystem(FileSystem localFileSystem) {
-        this.localFileSystem = localFileSystem;
-    }
-
-    public FileSystemState getDefaultFileSystemState() {
-        return defaultFileSystemState;
-    }
-
-    public void setDefaultFileSystemState(FileSystemState defaultFileSystemState) {
-        this.defaultFileSystemState = defaultFileSystemState;
-    }
-
-    public FileSystemState getDefaultOzoneFileSystemState() {
-        return defaultOzoneFileSystemState;
-    }
-
-    public void setDefaultOzoneFileSystemState(FileSystemState defaultOzoneFileSystemState) {
-        this.defaultOzoneFileSystemState = defaultOzoneFileSystemState;
-    }
-
-    public FileSystemState getCurrentFileSystemState() {
-        return currentFileSystemState;
-    }
-
-    public void setCurrentFileSystemState(FileSystemState currentFileSystemState) {
-        this.currentFileSystemState = currentFileSystemState;
-    }
 
     public FileSystemState getFileSystemState(String uri) {
         // Extract the namespace from the uri
@@ -116,8 +73,9 @@ public class FileSystemOrganizer {
         return namespaces.get(uri.toUpperCase());
     }
 
-    protected void init() {
-        // Get the defaultFS.
+    // Called from Environment Setup Bean.
+    public void init(Configuration config) {
+        setConfig(config);
         try {
             distributedFileSystem = FileSystem.get(config);
             localFileSystem = FileSystem.getLocal(config);
@@ -192,6 +150,7 @@ public class FileSystemOrganizer {
             //
             ioe.printStackTrace();
         }
+
     }
 
     public boolean isCurrentDefault() {

@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsConnect;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -80,9 +80,9 @@ public class FileSystemState {
         this.protocol = protocol;
     }
 
-    public String getHomeDir(Environment environment) {
+    public String getHomeDir(CliEnvironment cliEnvironment) {
         StringBuilder sb = new StringBuilder();
-        String userName = environment.getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
+        String userName = cliEnvironment.getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
         if (fileSystem instanceof DistributedFileSystem) {
             return DISTRIBUTED_USER_HOME_BASE + "/" + userName;
         } else {

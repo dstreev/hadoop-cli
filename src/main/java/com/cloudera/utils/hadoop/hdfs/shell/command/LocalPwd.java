@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
@@ -29,7 +29,7 @@ public class LocalPwd extends HdfsCommand {
         super(name);
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();
 
         String wd = localfs.getWorkingDirectory().toString();

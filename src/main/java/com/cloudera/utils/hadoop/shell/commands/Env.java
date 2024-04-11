@@ -19,7 +19,7 @@ package com.cloudera.utils.hadoop.shell.commands;
 import java.util.Properties;
 
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
@@ -37,7 +37,7 @@ public class Env extends AbstractCommand {
         return "Review current 'env' variables";
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         if (cmd.hasOption("l") || cmd.getOptions().length == 0) {
             Properties props = env.getProperties();
             log(env, "Local Properties:");

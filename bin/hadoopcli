@@ -61,9 +61,7 @@ CMD_ARGS=
 VERBOSE=
 ENV_VAR_FILE=
 
-# The new default is to run using the `hadoop classpath`, which assumes that the host has Hadoop installed and
-#  we'll use the classpath from the host to include the current hadoop libraries.
-STANDALONE="false"
+HADOOP_CLASSPATH=false
 
 APP_JAVA_OPTS=${JAVA_OPTS:-"-Xms2048m -Xmx4096m -XX:+UseG1GC"}
 LOGGING_THRESHOLD=${LOGGING_THRESHOLD:-"DEBUG"}
@@ -131,16 +129,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --hadoop-classpath)
       shift
-      echo "--hadoop-classpath is `deprecated`.  The hadoop dependencies are pulled from the host by default using `hadoop classpath`"
-      echo "If you want to use your own hadoop dependencies, use the --standalone option and place those libraries in the"
-      echo " ${HOME}/.hms-mirror/hadoop_libs directory."
-  #    HADOOP_CLASSPATH="true"
-      ;;
-    --standalone)
-      shift
-      echo "Running in Standalone Mode.  Collect and place the appropriate hadoop libraries in ${HOME}/.hms-mirror/hadoop_libs directory."
-      echo " The application will use the libraries in that directory instead of the host hadoop libraries (which may not be available)."
-      STANDALONE="true"
+      HADOOP_CLASSPATH="true"
       ;;
     --show-cp)
       shift
@@ -157,7 +146,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     -e|--execute)
       shift
-      PRG_ARGS="${PRG_ARGS} -e \"${1}\""
+      PRG_ARGS="${PRG_ARGS} -e ${1}"
       shift
       ;;
     *)
@@ -167,7 +156,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "${ENV_VAR_FILE}x" != "x" ]]; then
-    PRG_ARGS="${PRG_ARGS} -ef \"${ENV_VAR_FILE}\""
+    PRG_ARGS="${PRG_ARGS} -ef '${ENV_VAR_FILE}'"
 fi
 
 #echo "Program Args: ${PRG_ARGS}"
@@ -178,14 +167,15 @@ if [[ ! -d ${AUX_LIBS_DIR} ]]; then
 fi
 
 # Add aux_libs to classpath
-CMD_CP=${CMD_CP}:${AUX_LIBS_DIR}/*
+CMD_CP=${AUX_LIBS_DIR}/*
 
-if [[ "${STANDALONE}x" == "truex" ]]; then
+if [[ "${HADOOP_CLASSPATH}x" == "truex" ]]; then
   echo "Picking up local Hadoop Classpath Libs."
-  CMD_CP=${CMD_CP}:${HOME}/.hadoop-cli/hadoop_libs/*
-#else
-#  CMD_CP=${CMD_CP}:$(hadoop classpath)
+  CMD_CP=${CMD_CP}:$(hadoop classpath)
 fi
+
+# Replace colon with comma in $CMD_CP so it can be used with Spring loader.path
+CMD_CP=$(echo $CMD_CP | sed 's/:/,/g')
 
 CLI_CMD=""
 
@@ -193,8 +183,6 @@ if [[ "${VERBOSE}x" != "x" ]]; then
     echo "Passing app Params: ${PRG_ARGS}"
 fi
 
-# Replace colon with comma in $CMD_CP
-CMD_CP=$(echo $CMD_CP | sed 's/:/,/g')
 
 if [[ "${SHOW_CP}x" != "x" ]]; then
     echo "Classpath: ${CMD_CP}"
@@ -208,7 +196,11 @@ fi
 echo "Using Java Version:"
 JV=$(${JAVA} -version)
 
-CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -jar ${APP_DIR}/../lib/* ${PRG_ARGS}"
+if [[ "${HADOOP_CLASSPATH}x" == "truex" ]]; then
+  CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApplication -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-thin.jar"
+else
+  CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApplication -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-standalone.jar"
+fi
 
 echo "CLI_CMD: ${CLI_CMD}"
 

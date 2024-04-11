@@ -18,7 +18,7 @@ package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.cloudera.utils.hadoop.AbstractStats;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -48,19 +48,19 @@ public class HdfsNNStats extends AbstractStats {
         return "Get Namenode Statistics from JMX URL";
     }
 
-    public HdfsNNStats(String name, Environment env, Direction directionContext) {
+    public HdfsNNStats(String name, CliEnvironment env, Direction directionContext) {
         super(name, env, directionContext);
     }
 
-    public HdfsNNStats(String name, Environment env, Direction directionContext, int directives) {
+    public HdfsNNStats(String name, CliEnvironment env, Direction directionContext, int directives) {
         super(name, env, directionContext, directives);
     }
 
-    public HdfsNNStats(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+    public HdfsNNStats(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
         super(name, env, directionContext, directives, directivesBefore, directivesOptional);
     }
 
-    public HdfsNNStats(String name, Environment env) {
+    public HdfsNNStats(String name, CliEnvironment env) {
         super(name, env);
     }
 

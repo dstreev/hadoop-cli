@@ -22,7 +22,7 @@ import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 import org.apache.hadoop.fs.CliFsShell;
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -44,19 +44,19 @@ public class HdfsCommand extends HdfsAbstract {
         return "Native `hdfs` command";
     }
 
-    public HdfsCommand(String name, Environment env, Direction directionContext ) {
+    public HdfsCommand(String name, CliEnvironment env, Direction directionContext ) {
         super(name, env, directionContext);
     }
 
-    public HdfsCommand(String name, Environment env, Direction directionContext, int directives ) {
+    public HdfsCommand(String name, CliEnvironment env, Direction directionContext, int directives ) {
         super(name,env,directionContext,directives);
     }
 
-    public HdfsCommand(String name, Environment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
+    public HdfsCommand(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
         super(name,env,directionContext,directives,directivesBefore,directivesOptional);
     }
 
-    public HdfsCommand(String name, Environment env) {
+    public HdfsCommand(String name, CliEnvironment env) {
         super(name,env);
     }
 
@@ -69,7 +69,7 @@ public class HdfsCommand extends HdfsAbstract {
         return completer;
     }
 
-    public CommandReturn implementation(Environment env, CommandLine cmd, CommandReturn cr) {
+    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn cr) {
         Configuration conf = (Configuration)env.getConfig();
         CliFsShell shell = new CliFsShell(conf);
         try {

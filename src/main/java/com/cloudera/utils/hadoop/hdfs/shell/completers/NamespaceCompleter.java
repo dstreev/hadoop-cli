@@ -16,16 +16,16 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.completers;
 
-import com.cloudera.utils.hadoop.shell.Environment;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import jline.console.completer.Completer;
 import org.apache.hadoop.fs.FileStatus;
 
 import java.util.List;
 
 public class NamespaceCompleter implements Completer {
-    private Environment env;
+    private CliEnvironment env;
 
-    public NamespaceCompleter(Environment env) {
+    public NamespaceCompleter(CliEnvironment env) {
         this.env = env;
     }
 
