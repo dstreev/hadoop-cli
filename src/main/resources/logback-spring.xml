@@ -17,29 +17,29 @@
 
 <configuration>
 
-    <property name="LOGS" value="${user.home}/.hadoop-cli/logs" />
+    <property name="LOGS" value="${logging.dir:-${user.home}/.hadoop-cli/logs}" />
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
-                %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
+                %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] [%boldYellow(%class{1})]: %msg%n%throwable
             </Pattern>
         </layout>
     </appender>
 
     <appender name="RollingFile"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/hadoop-cli.log</file>
+        <file>${LOGS}/${logging.filename-prefix:-hadoop-cli}.log</file>
         <encoder
                 class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+            <Pattern>%d %p %class{1} [%t] %m%n</Pattern>
         </encoder>
 
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOGS}/archived/hadoop-cli-%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>${LOGS}/archived/${logging.filename-prefix:-hadoop-cli}-%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -49,10 +49,8 @@
     </appender>
 
     <!-- LOG everything at INFO level -->
-    <root level="${logging.threshold:INFO}">
-        <appender-ref ref="RollingFile"/>
-    </root>
-    <root level="fatal">
+    <root level="info">
+        <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </root>
 
@@ -61,8 +59,11 @@
     </logger>
     <logger name="org.apache.hadoop" level="warn" additivity="false">
         <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
     </logger>
-    <logger name="org.apache.hive.org.apache" level="warn" additivity="false">
+
+    <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener" level="debug" additivity="false">
         <appender-ref ref="RollingFile" />
     </logger>
+
 </configuration>

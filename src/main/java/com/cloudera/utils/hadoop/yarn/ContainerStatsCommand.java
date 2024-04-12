@@ -61,7 +61,7 @@ public class ContainerStatsCommand extends AbstractStats {
 
     protected ContainerStats getContainerStats() {
         if (containerStats == null)
-            containerStats = new ContainerStats(env.getConfig());
+            containerStats = new ContainerStats(env.getHadoopConfig());
         return containerStats;
     }
     @Override

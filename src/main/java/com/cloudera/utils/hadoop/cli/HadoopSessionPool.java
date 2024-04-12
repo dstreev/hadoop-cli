@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2022. David W. Streever All Rights Reserved
+ * Copyright (c) 2022-2024. David W. Streever All Rights Reserved
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package com.cloudera.utils.hadoop;
+package com.cloudera.utils.hadoop.cli;
 
 import org.apache.commons.pool2.ObjectPool;
 

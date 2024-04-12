@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2024. Cloudera, Inc. All Rights Reserved
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  -->
+
+<!--https://logging.apache.org/log4j/2.x/manual/configuration.html#PropertySubstitution -->
+<Configuration>
+    <Appenders>
+        <Console name="CliConsole" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{2.}}{bright,yellow}: %msg%n%throwable" />
+        </Console>
+
+        <RollingFile name="CliRollingFile"
+                     fileName="${env:APP_OUTPUT_PATH:-${env:HOME}/.hadoop-cli/logs}/${env:APP_LOG_FILE:-hadoop-cli}.log"
+                     filePattern="${env:APP_OUTPUT_PATH:-${env:HOME}/.hadoop-cli/logs}/$${date:yyyy-MM}/${env:APP_LOG_FILE:-hadoop-cli}-%d{-dd-MMMM-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- rollover on startup, daily and when the file reaches
+                    10 MegaBytes -->
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy
+                        size="10 MB" />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root>
+            <AppenderRef level="warn" ref="CliConsole"  />
+            <AppenderRef level="${env:LOGGING_THRESHOLD:INFO}" ref="CliRollingFile"  />
+        </Root>
+
+        <Logger name="com.jcabi" level="warn" additivity="false">
+            <appender-ref ref="CliRollingFile" />
+        </Logger>
+        <Logger name="org.apache.hadoop" level="warn" additivity="false">
+            <appender-ref ref="CliRollingFile" />
+        </Logger>
+        <Logger name="org.apache.hive.org.apache" level="warn" additivity="false">
+            <appender-ref ref="CliRollingFile" />
+        </Logger>
+
+    </Loggers>
+
+</Configuration>

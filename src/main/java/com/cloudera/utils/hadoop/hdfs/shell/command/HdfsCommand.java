@@ -70,7 +70,7 @@ public class HdfsCommand extends HdfsAbstract {
     }
 
     public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn cr) {
-        Configuration conf = (Configuration)env.getConfig();
+        Configuration conf = (Configuration)env.getHadoopConfig();
         CliFsShell shell = new CliFsShell(conf);
         try {
             shell.init();

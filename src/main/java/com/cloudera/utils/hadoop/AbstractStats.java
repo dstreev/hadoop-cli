@@ -148,7 +148,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         }
 
         // Get the Filesystem
-        configuration = env.getConfig();
+        configuration = env.getHadoopConfig();
 
         if (cmd.hasOption("ssl")) {
             ssl = Boolean.TRUE;

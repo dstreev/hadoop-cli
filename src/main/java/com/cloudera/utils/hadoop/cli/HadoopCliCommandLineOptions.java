@@ -33,12 +33,12 @@ import java.util.List;
 @Slf4j
 @Getter
 @Setter
-public class CommandLineOptions {
+public class HadoopCliCommandLineOptions {
 
     public static String SPRING_CONFIG_PREFIX = "hadoop.cli";
 
     public static void main(String[] args) {
-        CommandLineOptions pcli = new CommandLineOptions();
+        HadoopCliCommandLineOptions pcli = new HadoopCliCommandLineOptions();
         String[] convertedArgs = pcli.toSpringBootOption(args);
         String newCmdLn = String.join(" ", convertedArgs);
         System.out.println(newCmdLn);

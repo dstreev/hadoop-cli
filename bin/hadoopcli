@@ -64,8 +64,11 @@ ENV_VAR_FILE=
 HADOOP_CLASSPATH=false
 
 APP_JAVA_OPTS=${JAVA_OPTS:-"-Xms2048m -Xmx4096m -XX:+UseG1GC"}
+
+# Ultimately passed on to logback configuration
+LOGGING_DIR=${LOGGING_DIR:-"${HOME}/.hadoop-cli/logs"}
 LOGGING_THRESHOLD=${LOGGING_THRESHOLD:-"DEBUG"}
-APP_LOG_FILE=${APP_LOG_FILE:-"hadoop-cli.log"}
+LOGGING_FILE_PREFIX=${LOGGING_FILE_PREFIX:-"hadoop-cli"}
 
 if [[ -f ${HOME}/.hadoop-cli/env-var.props || -L ${HOME}/.hadoop-cli/env-var.props ]]; then
     ENV_VAR_FILE=${HOME}/.hadoop-cli/env-var.props
@@ -160,7 +163,9 @@ if [[ "${ENV_VAR_FILE}x" != "x" ]]; then
 fi
 
 #echo "Program Args: ${PRG_ARGS}"
-APP_JAVA_OPTS="${APP_JAVA_OPTS} -Dapp.path.dir=${HOME}/.hadoop-cli/logs -Dlogging.threshold=${LOGGING_THRESHOLD} -Dapp.log.file=\"$APP_LOG_FILE\""
+APP_JAVA_OPTS="${APP_JAVA_OPTS} -Dlogging.dir='${LOGGING_DIR}' -Dlogging.threshold=${LOGGING_THRESHOLD} -Dlogging.filename-prefix='${LOGGING_FILE_PREFIX}'"
+
+#APP_JAVA_OPTS="${APP_JAVA_OPTS} -Dapp.path.dir=${HOME}/.hadoop-cli/logs -Dlogging.threshold=${LOGGING_THRESHOLD} -Dapp.log.file=\"$APP_LOG_FILE\""
 
 if [[ ! -d ${AUX_LIBS_DIR} ]]; then
   mkdir -p ${AUX_LIBS_DIR}
@@ -197,9 +202,9 @@ echo "Using Java Version:"
 JV=$(${JAVA} -version)
 
 if [[ "${HADOOP_CLASSPATH}x" == "truex" ]]; then
-  CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApplication -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-thin.jar"
+  CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApp -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-thin.jar"
 else
-  CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApplication -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-standalone.jar"
+  CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApp -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-standalone.jar"
 fi
 
 echo "CLI_CMD: ${CLI_CMD}"

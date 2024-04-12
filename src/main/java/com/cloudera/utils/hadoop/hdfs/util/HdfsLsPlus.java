@@ -921,7 +921,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                 setTestFound(false);
 
                 // Get the Filesystem
-                configuration = cliEnvironment.getConfig();
+                configuration = cliEnvironment.getHadoopConfig();
 
                 fs = fss.getFileSystem();//environment.getDistributedFileSystem();//getValue(Constants.HDFS);
 

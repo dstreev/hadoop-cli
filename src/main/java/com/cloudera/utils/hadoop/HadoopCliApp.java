@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop;
 
-import com.cloudera.utils.hadoop.cli.CommandLineOptions;
+import com.cloudera.utils.hadoop.cli.HadoopCliCommandLineOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,17 +24,16 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 @Slf4j
-public class HadoopCliApplication {
+public class HadoopCliApp {
 
     public static void main(String[] args) {
         log.info("STARTING THE APPLICATION");
 
         log.info("Translating command line arguments to Spring Boot arguments");
-        CommandLineOptions commandLineOptions = new CommandLineOptions();
-        String[] springArgs = commandLineOptions.toSpringBootOption(args);
+        HadoopCliCommandLineOptions hadoopCliCommandLineOptions = new HadoopCliCommandLineOptions();
+        String[] springArgs = hadoopCliCommandLineOptions.toSpringBootOption(args);
         log.info("Translated Spring Boot arguments: " + String.join(" ", springArgs));
-        log.info("STARTING THE APPLICATION");
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(HadoopCliApplication.class, springArgs);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(HadoopCliApp.class, springArgs);
 
         log.info("APPLICATION FINISHED");
 

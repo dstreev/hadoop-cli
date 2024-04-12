@@ -16,6 +16,7 @@
 
 package com.cloudera.utils.hadoop.hdfs.util;
 
+import com.cloudera.utils.hadoop.cli.DisabledException;
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
@@ -49,7 +50,7 @@ public class HdfsSource  extends HdfsAbstract {
         AbstractCommand.logv(env, "Beginning 'source' collection.");
 
         // Get the Filesystem
-        configuration = env.getConfig();
+        configuration = env.getHadoopConfig();
 
         fs = env.getFileSystemOrganizer().getCurrentFileSystemState().getFileSystem();
         //(FileSystem) env.getValue(Constants.HDFS);
@@ -85,7 +86,11 @@ public class HdfsSource  extends HdfsAbstract {
         }
         if (cmd.hasOption("lf")) {
             // TODO: FIX THIS
-            runSource(cmd.getOptionValue("lf"), template, delimiter);
+            try {
+                runSource(cmd.getOptionValue("lf"), template, delimiter);
+            } catch (DisabledException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         AbstractCommand.logv(env,"'Source' complete.");
@@ -93,7 +98,7 @@ public class HdfsSource  extends HdfsAbstract {
         return commandReturn;
     }
 
-    private void runSource(String sourceFile, String template, String delimiter) {
+    private void runSource(String sourceFile, String template, String delimiter) throws DisabledException {
         env.runFile(sourceFile,template, delimiter);
     }
 

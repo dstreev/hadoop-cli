@@ -129,9 +129,4 @@ public class HdfsCd extends AbstractCommand {
         return "Remote Change Directory";
     }
 
-//    @Override
-//    public Completer getCompleter() {
-//        return new FileSystemNameCompleter(this.env, false);
-//    }
-
 }

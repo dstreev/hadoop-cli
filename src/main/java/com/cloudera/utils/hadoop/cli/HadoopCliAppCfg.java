@@ -31,7 +31,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.security.UserGroupInformation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -53,7 +52,7 @@ import static com.cloudera.utils.hadoop.hdfs.shell.command.HdfsConnect.*;
 @Slf4j
 @Getter
 @Setter
-public class ApplicationConfig {
+public class HadoopCliAppCfg {
 
     @Bean
     @Order(100)
@@ -62,7 +61,11 @@ public class ApplicationConfig {
     CommandLineRunner configInit(CliEnvironment cliEnvironment, @Value("${hadoop.cli.init}") String value) {
         return args -> {
             log.info("Setting Init: {}", value);
-            cliEnvironment.runFile(value, null, null);
+            try {
+                cliEnvironment.runFile(value, null, null);
+            } catch (DisabledException e) {
+                throw new RuntimeException(e);
+            }
         };
     }
 
@@ -73,7 +76,11 @@ public class ApplicationConfig {
     CommandLineRunner configExecute(CliEnvironment cliEnvironment, @Value("${hadoop.cli.execute}") String value) {
         return args -> {
             log.info("Setting Execute: {}", value);
-            cliEnvironment.processInput(value);
+            try {
+                cliEnvironment.processInput(value);
+            } catch (DisabledException e) {
+                throw new RuntimeException(e);
+            }
         };
     }
 
@@ -105,7 +112,8 @@ public class ApplicationConfig {
             name = "hadoop.cli.stdin")
     CommandLineRunner configStdIn(CliEnvironment cliEnvironment, @Value("${hadoop.cli.stdin}") String value) {
         return args -> {
-            log.info("StdIn: " + value);
+            log.info("Setting StdIn: {}", value);
+            // TODO: Work out how to handle StdIn
         };
     }
 
@@ -126,10 +134,22 @@ public class ApplicationConfig {
             name = "hadoop.cli.api")
     CommandLineRunner configApiMode(CliEnvironment cliEnvironment, @Value("${hadoop.cli.api}") String value) {
         return args -> {
-            log.info("Api: " + value);
+            log.info("Setting ApiMode: {}", value);
             cliEnvironment.setApiMode(Boolean.parseBoolean(value));
         };
     }
+
+    @Bean
+    @Order(1)
+    @ConditionalOnProperty(
+            name = "hadoop.cli.disabled")
+    CommandLineRunner configDisabled(CliEnvironment cliEnvironment, @Value("${hadoop.cli.disabled}") String value) {
+        return args -> {
+            log.info("Setting Disabled: {}", value);
+            cliEnvironment.setDisabled(Boolean.parseBoolean(value));
+        };
+    }
+
 
     @Bean
     @Order(1)
@@ -195,57 +215,58 @@ public class ApplicationConfig {
     }
 
     @Bean
-    @Order(100)
+    @Order(10)
     CommandLineRunner initHadoopConfiguration(CliEnvironment cliEnvironment, FileSystemOrganizer fileSystemOrganizer) {
         return args -> {
             // TODO: Need to see if this attempts a connection to HDFS.
-            try {
-                // Get a value that over rides the default, if nothing then use default.
-                String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
+            if (!cliEnvironment.isDisabled()) {
+                try {
+                    // Get a value that over rides the default, if nothing then use default.
+                    String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
 
-                org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration(true);
-                cliEnvironment.setConfig(config);
+                    org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration(true);
+                    cliEnvironment.setHadoopConfig(config);
 
-                File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
-                for (String file : HADOOP_CONF_FILES) {
-                    File f = new File(hadoopConfDir, file);
-                    if (f.exists()) {
-                        config.addResource(new org.apache.hadoop.fs.Path(f.getAbsolutePath()));
+                    File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
+                    for (String file : HADOOP_CONF_FILES) {
+                        File f = new File(hadoopConfDir, file);
+                        if (f.exists()) {
+                            config.addResource(new org.apache.hadoop.fs.Path(f.getAbsolutePath()));
+                        }
                     }
-                }
-                // disable s3a fs cache
+                    // disable s3a fs cache
 //                config.set("fs.s3a.impl.disable.cache", "true");
 //                config.set("fs.s3a.bucket.probe","0");
 
-                // hadoop.security.authentication
-                if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
-                    UserGroupInformation.setConfiguration(config);
-                    cliEnvironment.getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
-                }
+                    // hadoop.security.authentication
+                    if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
+                        UserGroupInformation.setConfiguration(config);
+                        cliEnvironment.getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
+                    }
 
-                cliEnvironment.getProperties().stringPropertyNames().forEach(k -> {
-                    config.set(k, cliEnvironment.getProperties().getProperty(k));
-                });
+                    cliEnvironment.getProperties().stringPropertyNames().forEach(k -> {
+                        config.set(k, cliEnvironment.getProperties().getProperty(k));
+                    });
 
 //                this.fileSystemOrganizer = fileSystemOrganizer;
-                fileSystemOrganizer.init(config);
+                    fileSystemOrganizer.init(config);
 
-                FileSystem hdfs = null;
-                try {
-                    hdfs = FileSystem.get(config);
-                } catch (Throwable t) {
-                    t.printStackTrace();
+                    FileSystem hdfs = null;
+                    try {
+                        hdfs = FileSystem.get(config);
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+
+                } catch (IOException e) {
+                    log.error(e.getMessage());
                 }
-
-            } catch (IOException e) {
-                log.error(e.getMessage());
             }
         };
-
     }
 
     @Bean
-    @Order(50)
+    @Order(5)
     CommandLineRunner initCommands(CliEnvironment cliEnvironment) {
         return args -> {
 //            setBannerResource("/hadoop_banner_0.txt");
@@ -348,13 +369,18 @@ public class ApplicationConfig {
             cliEnvironment.addCommand(new List("namespaces", cliEnvironment));
         };
     }
+
     @Bean
-//    @Order(100)
+    @Order(100)
     CommandLineRunner runInteractiveShell(CliEnvironment cliEnvironment, Shell shell) {
         return args -> {
             if (!cliEnvironment.isApiMode()) {
                 log.info("Launching Interactive Shell");
-                shell.startShell(cliEnvironment);
+                try {
+                    shell.startShell(cliEnvironment);
+                } catch (DisabledException e) {
+                    throw new RuntimeException(e);
+                }
             }
         };
     }

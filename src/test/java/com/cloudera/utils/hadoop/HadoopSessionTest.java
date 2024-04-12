@@ -16,6 +16,7 @@
 
 package com.cloudera.utils.hadoop;
 
+import com.cloudera.utils.hadoop.cli.HadoopSession;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import junit.framework.TestCase;
 import org.junit.Test;

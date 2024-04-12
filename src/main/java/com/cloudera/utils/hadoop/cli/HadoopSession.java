@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2022. David W. Streever All Rights Reserved
+ * Copyright (c) 2022-2024. David W. Streever All Rights Reserved
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,18 +15,11 @@
  *  limitations under the License.
  */
 
-package com.cloudera.utils.hadoop;
+package com.cloudera.utils.hadoop.cli;
 
-import com.cloudera.utils.hadoop.hdfs.shell.command.*;
-import com.cloudera.utils.hadoop.cli.Shell;
-import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.*;
-
-import static com.cloudera.utils.hadoop.hdfs.shell.command.HdfsConnect.HADOOP_CONF_DIR;
 
 //@Component
 @Slf4j

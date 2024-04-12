@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.cli;
 
-public enum CommandLineOptionsEnum {
+public enum HadoopCliCommandLineOptionsEnum {
 
     INIT("i","init","file","Initialize the environment with the specified file"),
     EXECUTE("e","execute","command","Execute Command"),
@@ -35,7 +35,7 @@ public enum CommandLineOptionsEnum {
     private final String argumentName;
     private final String description;
 
-    CommandLineOptionsEnum(String shortName, String longName, String argumentName, String description) {
+    HadoopCliCommandLineOptionsEnum(String shortName, String longName, String argumentName, String description) {
         this.shortName = shortName;
         this.longName = longName;
         this.argumentName = argumentName;

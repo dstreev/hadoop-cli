@@ -54,21 +54,19 @@ public class CliEnvironment {
 
     private String defaultPrompt = "basic:$";
     private String currentPrompt = null;
-//    private Path remoteWorkingDirectory = new Path("/");
-//    private Path localWorkingDirectory = new Path("/");
 
     private boolean verbose = Boolean.FALSE;
     private boolean debug = Boolean.FALSE;
     private boolean silent = Boolean.FALSE;
     private boolean apiMode = Boolean.FALSE;
+    private boolean disabled = Boolean.FALSE;
     private String template = null;
     private String templateDelimiter = ",";
     private FileSystemOrganizer fileSystemOrganizer = null;
 
-    private Configuration config = null;
-//    private CommandLineOptions commandLineOptions = null;
+    private Configuration hadoopConfig = null;
+
     private ConsoleReader consoleReader = null;
-//    private Shell shell = null;
 
     private Properties properties = new Properties();
     private HashMap<String, Object> values = new HashMap<String, Object>();
@@ -86,7 +84,6 @@ public class CliEnvironment {
 
     public String getPrompt() {
         return getFileSystemOrganizer().getPrompt();
-//        return currentPrompt == null?currentPrompt:defaultPrompt;
     }
 
     public Command getCommand(String name) {
@@ -116,7 +113,7 @@ public class CliEnvironment {
         return retval;
     }
 
-    protected CommandReturn processCommand(String line, CommandReturn commandReturn) {
+    protected CommandReturn processCommand(String line, CommandReturn commandReturn) throws DisabledException {
         // Deal with args that are in quotes and don't split them.
 //        String[] argv = line.split("\\s+(?=((\\\\[\\\\\"]|[^\\\\\"])*\"(\\\\[\\\\\"]|[^\\\\\"])*\")*(\\\\[\\\\\"]|[^\\\\\"])*$)");
 //        String[] argv = line.split("[^\\s\\\"']+|\\\"([^\\\"]*)\\\"|'([^']*)'");
@@ -124,6 +121,10 @@ public class CliEnvironment {
         CommandReturn cr = commandReturn;
         if (cr == null) {
             cr = new CommandReturn(CommandReturn.GOOD);
+        }
+
+        if (disabled) {
+            throw new DisabledException("CLI Environment is disabled.");
         }
 
         // Looking for escape chars and quotes that allow for special chars and spaces
@@ -146,19 +147,14 @@ public class CliEnvironment {
         String[] argv = new String[matchList.size()];
         matchList.toArray(argv);
 
-//        CommandReturn cr = null;
 
         if (matchList.isEmpty()) {
             cr.setCode(AbstractCommand.CODE_CMD_ERROR);
             cr.getErr().print("Match List is Empty");
-//            cr.setDetails("Match List = 0");
-//            cr = CommandReturn.BAD;
             return cr;
         }
 
         String cmdName = argv[0];
-
-//        cr = new CommandReturn(0);
 
         Command command = getCommand(cmdName);
 
@@ -175,14 +171,9 @@ public class CliEnvironment {
             if (cl != null) {
                 try {
                     cr = command.execute(this, cl, cr);
-//                    if (cr.isError()) {
-//                        loge(env, cr.getError());
-//                    } else {
-//                        logv(env, cr.getReturn());
-//                    }
                 } catch (Throwable e) {
-//                    e.printStackTrace();
                     log.error("Command failed with error: {}", e.getMessage());
+                    // TODO: Does this need to go to the screen?
                 } finally {
                 }
             }
@@ -195,7 +186,7 @@ public class CliEnvironment {
         return cr;
     }
 
-    public CommandReturn processInput(String line) {
+    public CommandReturn processInput(String line) throws DisabledException {
         // Check for Pipelining.
         // Pipelining are used to string commands together.
         // https://en.wikipedia.org/wiki/Pipeline_%28Unix%29
@@ -228,7 +219,7 @@ public class CliEnvironment {
                 CommandReturn innerCR = new CommandReturn(CommandReturn.GOOD);
                 while (true) {
                     try {
-                        if (!((adjustVarLine = bufferedReader.readLine()) != null)) break;
+                        if ((adjustVarLine = bufferedReader.readLine()) == null) break;
                     } catch (IOException e) {
 //                        e.printStackTrace();
                         break;
@@ -249,7 +240,7 @@ public class CliEnvironment {
         return previousCR;
     }
 
-    public void runFile(String inSet, String template, String delimiter) {
+    public void runFile(String inSet, String template, String delimiter) throws DisabledException {
         log.info("-- Running source file: " + inSet);
 
         String localFile = null;
@@ -295,7 +286,7 @@ public class CliEnvironment {
                 while ((line = br.readLine()) != null) {
                     log.debug("Running: {}", line);
                     String line2 = line.trim();
-                    if (line2.length() > 0 && !line2.startsWith("#")) {
+                    if (!line2.isEmpty() && !line2.startsWith("#")) {
                         if (messageFormat != null) {
                             String[] items = line2.split(lclDelimiter);
                             line2 = messageFormat.format(items);

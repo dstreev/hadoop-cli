@@ -66,7 +66,7 @@ public class SchedulerStatsCommand extends AbstractStats {
 
     protected SchedulerStats getSchedulerStats() {
         if (schedulerStats == null)
-            schedulerStats = new SchedulerStats(env.getConfig());
+            schedulerStats = new SchedulerStats(env.getHadoopConfig());
         return schedulerStats;
     }
 
