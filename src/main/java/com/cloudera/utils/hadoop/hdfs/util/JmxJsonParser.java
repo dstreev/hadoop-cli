@@ -18,6 +18,7 @@ package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -27,26 +28,23 @@ import java.util.TreeMap;
 /**
  * Created by streever on 2016-03-21.
  */
+@Slf4j
 public class JmxJsonParser {
 
-    private ObjectMapper mapper = null;
-    private JsonNode root = null;
     private JsonNode beanArrayNode = null;
 
-    private static String NAME = "name";
-
-    private Map<String, Map<String, Object>> beanMap = new TreeMap<String, Map<String,Object>>();
+    private final Map<String, Map<String, Object>> beanMap = new TreeMap<String, Map<String,Object>>();
 
     public JmxJsonParser(String input) throws Exception {
-        mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
         try {
-            root = mapper.readValue(input, JsonNode.class);
+            JsonNode root = mapper.readValue(input, JsonNode.class);
             beanArrayNode = root.get("beans");
             if (beanArrayNode == null) {
                 throw new Exception("Couldn't locate Jmx 'Beans' array.");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error parsing Jmx JSON", e);
         }
 
     }
@@ -56,6 +54,7 @@ public class JmxJsonParser {
         rtn = beanMap.get(name);
         if (rtn == null) {
             for (JsonNode beanNode : beanArrayNode) {
+                String NAME = "name";
                 if (beanNode.get(NAME).asText().equals(name)) {
                     Map<String, Object> content = new TreeMap<String, Object>();
 //                    Iterator<JsonNode> iNodes = beanNode.iterator();

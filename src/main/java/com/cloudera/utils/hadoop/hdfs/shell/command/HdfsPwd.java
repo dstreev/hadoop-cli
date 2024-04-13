@@ -20,9 +20,11 @@ import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
+@Slf4j
 public class HdfsPwd extends HdfsCommand {
 
     public HdfsPwd(String name) {
@@ -39,9 +41,7 @@ public class HdfsPwd extends HdfsCommand {
         }
         else {
             log(env, fss.getURI() + wd);
-            //.substring(env.getProperties().getProperty(Constants.HDFS_URL).length()));
         }
-//        FSUtil.prompt(env);
         return commandReturn;
     }
 

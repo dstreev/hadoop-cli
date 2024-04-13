@@ -17,6 +17,7 @@
 
 package com.cloudera.utils.hadoop.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.shell.PathData;
@@ -36,10 +37,9 @@ import java.util.Date;
  * Created by streever on 2016-02-15.
  */
 
+@Slf4j
 public class DirectoryReaderTest {
-    private static String SEPARATOR = ",";
-    private static String NEW_LINE = "\n";
-    private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     //@Test
     public void ConnectToNamenode() {
         Long start = null; //= System.currentTimeMillis();
@@ -74,6 +74,7 @@ public class DirectoryReaderTest {
                     if (itemStatus.isDirectory()) {
                         System.out.println(itemStatus.getPath() + " is a directory");
                     } else {
+                        String SEPARATOR = ",";
                         sb.append(item.toString()).append(SEPARATOR);
                         System.out.println(item);
                         LocatedBlocks blocks = client.getLocatedBlocks(item.toString(), 0, Long.MAX_VALUE);
@@ -95,6 +96,7 @@ public class DirectoryReaderTest {
                                 StringBuilder sb1 = new StringBuilder(sb);
                                 sb1.append(dni.getIpAddr()).append(SEPARATOR);
                                 sb1.append(dni.getHostName()).append(SEPARATOR);
+                                String NEW_LINE = "\n";
                                 sb1.append(block.getBlock().getBlockName()).append(NEW_LINE);
                                 out.write(sb1.toString().getBytes());
                             }
@@ -118,7 +120,7 @@ public class DirectoryReaderTest {
             }
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error: {}", e.getMessage());
         }
         Long end = System.currentTimeMillis();
         System.out.println("Time Lapse: " + Long.toString(end - start));

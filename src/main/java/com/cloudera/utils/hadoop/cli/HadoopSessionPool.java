@@ -21,7 +21,7 @@ import org.apache.commons.pool2.ObjectPool;
 
 public class HadoopSessionPool {
 
-    private ObjectPool<HadoopSession> pool;
+    private final ObjectPool<HadoopSession> pool;
 
     public HadoopSessionPool(ObjectPool<HadoopSession> pool) {
         this.pool = pool;

@@ -28,7 +28,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.lang3.StringUtils;
 
 public class Help extends AbstractCommand {
-    private CliEnvironment env;
+    private final CliEnvironment env;
 
     public Help(String name, CliEnvironment env) {
         super(name);
@@ -69,6 +69,6 @@ public class Help extends AbstractCommand {
     
     private void printHelp(Command cmd){
         HelpFormatter hf = new HelpFormatter();
-        hf.printHelp(cmd.getUsage(), cmd.getHelpHeader(), cmd.getOptions(), cmd.gethelpFooter());
+        hf.printHelp(cmd.getUsage(), cmd.getHelpHeader(), cmd.getOptions(), cmd.getHelpFooter());
     }
 }

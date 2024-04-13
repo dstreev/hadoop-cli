@@ -29,7 +29,7 @@ import java.net.URL;
 
 public class ReplicationHelper {
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public static Definition definitionFromString(String source) {
         Definition definition = null;

@@ -18,7 +18,6 @@ package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
@@ -33,17 +32,10 @@ public class LocalPwd extends HdfsCommand {
         FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();
 
         String wd = localfs.getWorkingDirectory().toString();
-//        if (cmd.hasOption("l")) {
-            log(env, wd);
-//        }
-//        else {
-//            // strip off prefix: "file:"
-//            log(env, wd.substring(5));
-//        }
-//        FSUtil.prompt(env);
+        log(env, wd);
         return commandReturn;
     }
-    
+
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();

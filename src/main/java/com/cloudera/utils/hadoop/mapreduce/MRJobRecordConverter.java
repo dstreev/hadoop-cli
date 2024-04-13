@@ -23,6 +23,7 @@ import com.cloudera.utils.hadoop.util.TraverseBehavior;
 import com.cloudera.utils.hadoop.util.TraversePath;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,6 +31,7 @@ import java.util.*;
 /**
  * Created by streever on 2016-04-25.
  */
+@Slf4j
 public class MRJobRecordConverter {
 
     private ObjectMapper mapper = null;
@@ -405,7 +407,7 @@ public class MRJobRecordConverter {
         try {
             rtn = recordConverter.convert(null, counterJson, "jobCounters", tp);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error converting Job Counters", e);
         }
 
         return rtn;

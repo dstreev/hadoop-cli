@@ -91,7 +91,7 @@ public class SchedulerStats extends ResourceManagerStats {
             "user.numActiveApplications", "user.numPendingApplications",
             "user.username", "user.userWeight", "user.isActive", "user.resourcesUsed.memory", "user.resourcesUsed.vCores"};
 
-    private static Map<String, String[]> recordFieldMap;
+    private static final Map<String, String[]> recordFieldMap;
 
     static {
         recordFieldMap = new HashMap<String, String[]>();
@@ -102,8 +102,6 @@ public class SchedulerStats extends ResourceManagerStats {
     public Map<String, String[]> getRecordFieldMap() {
         return recordFieldMap;
     }
-
-    private String timestamp = null;
 
     public SchedulerStats(Configuration configuration) {
         super(configuration);
@@ -120,7 +118,7 @@ public class SchedulerStats extends ResourceManagerStats {
     @Override
     public void execute() {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-        this.timestamp = df.format(new Date());
+        String timestamp = df.format(new Date());
 
         String baseRMUrlStr = getResourceManagerWebAddress();
         // Test with Call.

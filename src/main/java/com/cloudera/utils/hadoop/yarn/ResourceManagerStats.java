@@ -19,7 +19,7 @@ import java.util.*;
 
 public abstract class ResourceManagerStats implements Stats {
 
-    protected ObjectMapper mapper = new ObjectMapper();
+    protected final ObjectMapper mapper = new ObjectMapper();
 
     protected Configuration configuration = null;
 
@@ -34,7 +34,7 @@ public abstract class ResourceManagerStats implements Stats {
     protected Long startTime = 0l;
     protected Long endTime = 0l;
 
-    protected Map<String, List<Map<String, Object>>> records = new LinkedHashMap<String, List<Map<String, Object>>>();
+    protected final Map<String, List<Map<String, Object>>> records = new LinkedHashMap<String, List<Map<String, Object>>>();
 
     private Options options;
 

@@ -24,17 +24,17 @@ import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+@Slf4j
 public class HdfsCd extends AbstractCommand {
-    private CliEnvironment env;
 
     public HdfsCd(String name, CliEnvironment env) {
         super(name);
-        this.env = env;
         // Completer
         FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
         NullCompleter nullCompleter = new NullCompleter();
@@ -117,9 +117,7 @@ public class HdfsCd extends AbstractCommand {
         } catch (Throwable throwable) {
             cr.setCode(CODE_CMD_ERROR);
             cr.getErr().print(throwable.getMessage());
-            throwable.printStackTrace();
-        } finally {
-//            FSUtil.prompt(env);
+            log.error("Error: {}",throwable.getMessage(), throwable);
         }
         return cr;
     }

@@ -30,7 +30,7 @@ import org.apache.hadoop.fs.Path;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 
 public class FileSystemNameCompleter implements Completer {
-    private CliEnvironment env;
+    private final CliEnvironment env;
     private boolean local = false;
 
     public FileSystemNameCompleter(CliEnvironment env) {

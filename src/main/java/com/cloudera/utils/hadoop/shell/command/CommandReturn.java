@@ -17,32 +17,34 @@
 package com.cloudera.utils.hadoop.shell.command;
 
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.util.*;
 
+@Slf4j
 public class CommandReturn {
-    public static int GOOD = 0;
-    public static int BAD = -1;
+    public static final int GOOD = 0;
+    public static final int BAD = -1;
 
     private int code = 0;
     private String[] commandArgs = null;
     private String path = null;
     private String error = null;
-    private List<List<Object>> records = new ArrayList<List<Object>>();
+    private final List<List<Object>> records = new ArrayList<List<Object>>();
 
-    private ByteArrayOutputStream baosOut = new ByteArrayOutputStream();
-    private ByteArrayOutputStream baosErr = new ByteArrayOutputStream();
-    private PrintStream out = new PrintStream(baosOut);
-    private PrintStream err = new PrintStream(baosErr);
+    private final ByteArrayOutputStream baosOut = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream baosErr = new ByteArrayOutputStream();
+    private final PrintStream out = new PrintStream(baosOut);
+    private final PrintStream err = new PrintStream(baosErr);
 
     /*
     Style Map. Ordered Map that should match the record content.
     The key element<Integer> is the ANSIStyle value.
     The value <String> is a format template.
      */
-    private List<ANSIStyle.StyleWrapper> styles = new ArrayList<ANSIStyle.StyleWrapper>();
+    private final List<ANSIStyle.StyleWrapper> styles = new ArrayList<ANSIStyle.StyleWrapper>();
 
     public List<ANSIStyle.StyleWrapper> getStyles() {
         return styles;
@@ -72,9 +74,8 @@ public class CommandReturn {
         return records;
     }
 
-    public boolean addRecord(List<Object> record) {
-        boolean rtn = records.add(record);
-        return rtn;
+    public void addRecord(List<Object> record) {
+        records.add(record);
     }
 
     public String[] getCommandArgs() {

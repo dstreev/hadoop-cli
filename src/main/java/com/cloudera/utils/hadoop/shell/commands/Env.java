@@ -22,10 +22,12 @@ import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+@Slf4j
 public class Env extends AbstractCommand {
 
     public Env(String name) {
@@ -40,14 +42,14 @@ public class Env extends AbstractCommand {
     public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         if (cmd.hasOption("l") || cmd.getOptions().length == 0) {
             Properties props = env.getProperties();
-            log(env, "Local Properties:");
+            log.debug("Local Properties:");
             for (Object key : props.keySet()) {
-                log(env, "\t" + key + "=" + props.get(key));
+                log.debug("\t{}={}", key, props.get(key));
             }
-            log(env, "System Properties:");
+            log.debug("System Properties:");
             props = System.getProperties();
             for (Object key : props.keySet()) {
-                log(env, "\t" + key + "=" + props.get(key));
+                log.debug("\t{}={}", key, props.get(key));
             }
         }
         if (cmd.hasOption("s")) {

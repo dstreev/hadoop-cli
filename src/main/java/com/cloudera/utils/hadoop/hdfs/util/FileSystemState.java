@@ -18,14 +18,17 @@ package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsConnect;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 
 import java.util.Date;
 
+@Getter
+@Setter
 public class FileSystemState {
-    private static String DISTRIBUTED_USER_HOME_BASE = "/user";
 
     private boolean partOfConfig = Boolean.FALSE;
     private FileSystem fileSystem = null;
@@ -34,56 +37,47 @@ public class FileSystemState {
     private Path workingDirectory = null;
     private Date lastAccessed = null;
 
-    public FileSystemState() {
+//    public FileSystemState() {
+//
+//    }
 
-    }
-
-    public FileSystemState(String uri) {
-        // Break up uri into components;
-
-    }
-
-    public FileSystemState(String uri, FileSystem fileSystem) {
-        // Break up uri into components;
-
-    }
-
-    public FileSystem getFileSystem() {
-        return fileSystem;
-    }
-
-    public void setFileSystem(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
-    public boolean isPartOfConfig() {
-        return partOfConfig;
-    }
-
-    public void setPartOfConfig(boolean partOfConfig) {
-        this.partOfConfig = partOfConfig;
-    }
-
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
+//    public FileSystem getFileSystem() {
+//        return fileSystem;
+//    }
+//
+//    public void setFileSystem(FileSystem fileSystem) {
+//        this.fileSystem = fileSystem;
+//    }
+//
+//    public boolean isPartOfConfig() {
+//        return partOfConfig;
+//    }
+//
+//    public void setPartOfConfig(boolean partOfConfig) {
+//        this.partOfConfig = partOfConfig;
+//    }
+//
+//    public String getNamespace() {
+//        return namespace;
+//    }
+//
+//    public void setNamespace(String namespace) {
+//        this.namespace = namespace;
+//    }
+//
+//    public String getProtocol() {
+//        return protocol;
+//    }
+//
+//    public void setProtocol(String protocol) {
+//        this.protocol = protocol;
+//    }
 
     public String getHomeDir(CliEnvironment cliEnvironment) {
         StringBuilder sb = new StringBuilder();
         String userName = cliEnvironment.getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
         if (fileSystem instanceof DistributedFileSystem) {
+            String DISTRIBUTED_USER_HOME_BASE = "/user";
             return DISTRIBUTED_USER_HOME_BASE + "/" + userName;
         } else {
             String homeDir = System.getProperty("user.home");
@@ -100,9 +94,9 @@ public class FileSystemState {
         return sb.toString();
     }
 
-    public Path getWorkingDirectory() {
-        return this.workingDirectory;
-    }
+//    public Path getWorkingDirectory() {
+//        return this.workingDirectory;
+//    }
 
     public void setWorkingDirectory(Path workingDirectory) {
         // Strip the URI from the incoming path, if exists
@@ -111,13 +105,13 @@ public class FileSystemState {
         fileSystem.setWorkingDirectory(new Path(workingDirectory.toString().replace(getURI(), "")));
     }
 
-    public Date getLastAccessed() {
-        return lastAccessed;
-    }
+//    public Date getLastAccessed() {
+//        return lastAccessed;
+//    }
 
-    public void setLastAccessed(Date lastAccessed) {
-        this.lastAccessed = lastAccessed;
-    }
+//    public void setLastAccessed(Date lastAccessed) {
+//        this.lastAccessed = lastAccessed;
+//    }
 
     @Override
     public boolean equals(Object o) {

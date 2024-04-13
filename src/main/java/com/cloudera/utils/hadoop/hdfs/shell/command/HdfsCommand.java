@@ -21,6 +21,7 @@ import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.fs.CliFsShell;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
@@ -33,6 +34,7 @@ import org.apache.hadoop.util.ToolRunner;
 import java.io.IOException;
 import java.util.Arrays;
 
+@Slf4j
 public class HdfsCommand extends HdfsAbstract {
 
     public HdfsCommand(String name) {
@@ -75,7 +77,7 @@ public class HdfsCommand extends HdfsAbstract {
         try {
             shell.init();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error initializing shell", e);
         }
         shell.setOut(cr.getOut());
         shell.setErr(cr.getErr());
@@ -119,7 +121,7 @@ public class HdfsCommand extends HdfsAbstract {
             // For LOCAL_REMOTE calls, like put, don't prefix the leftPath.
             if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState()) && pathDirectives.getDirection() != Direction.LOCAL_REMOTE) {
                 // If leftPath starts with a known fs protocol, don't modify.
-                if (!pathBuilder.isPrefixWithKnownProtocol(leftPath)) {
+                if (!PathBuilder.isPrefixWithKnownProtocol(leftPath)) {
                     leftPath = fss.getURI() + leftPath;
                 }
             }
@@ -188,7 +190,7 @@ public class HdfsCommand extends HdfsAbstract {
 
         argv[0] = "-" + getName();
 
-        logv(env, "HDFS Command: " + Arrays.toString(argv));
+        log.debug("HDFS Command: {}", Arrays.toString(argv));
 
         try {
             cr.setCommandArgs(argv);
@@ -208,12 +210,12 @@ public class HdfsCommand extends HdfsAbstract {
 //                this.loge(env, sb.toString());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error running command: {}", e.getMessage(), e);
         } finally {
             try {
                 shell.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Error closing shell", e);
             }
         }
         return cr;

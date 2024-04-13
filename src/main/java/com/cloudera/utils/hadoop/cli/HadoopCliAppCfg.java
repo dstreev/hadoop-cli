@@ -255,7 +255,7 @@ public class HadoopCliAppCfg {
                     try {
                         hdfs = FileSystem.get(config);
                     } catch (Throwable t) {
-                        t.printStackTrace();
+                        log.error("Error connecting to HDFS: {}", t.getMessage());
                     }
 
                 } catch (IOException e) {

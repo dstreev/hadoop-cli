@@ -30,16 +30,7 @@ public enum HadoopCliCommandLineOptionsEnum {
     ENV_FILE("ef","env-file","file","Environment File(java properties format) with a list of key=values"),
     HELP("h","help",null,"Help");
 
-    private final String shortName;
-    private final String longName;
-    private final String argumentName;
-    private final String description;
-
     HadoopCliCommandLineOptionsEnum(String shortName, String longName, String argumentName, String description) {
-        this.shortName = shortName;
-        this.longName = longName;
-        this.argumentName = argumentName;
-        this.description = description;
     }
 
 }

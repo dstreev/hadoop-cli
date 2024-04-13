@@ -24,6 +24,7 @@ import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -33,6 +34,7 @@ import org.apache.hadoop.ipc.RemoteException;
 
 import java.io.IOException;
 
+@Slf4j
 public class HdfsLsSnapshottableDir extends HdfsAbstract {
 
     public HdfsLsSnapshottableDir(String name) {
@@ -92,19 +94,15 @@ public class HdfsLsSnapshottableDir extends HdfsAbstract {
                 SnapshottableDirectoryStatus.print(stats, cr.getOut());
 
             } else {
-                AbstractCommand.loge(env, "This function is only available for the 'default' namespace");
+                log.error("This function is only available for the 'default' namespace");
                 cr.setCode(-1);
                 cr.setError("Not available for alternate namespace: " +
                         env.getFileSystemOrganizer().getCurrentFileSystemState().getNamespace());
                 return cr;
             }
 
-        } catch (RuntimeException rt) {
-            AbstractCommand.loge(env, rt.getMessage() + " cmd:" + cmd.toString());
-            rt.printStackTrace();
-        } catch (IOException e) {
-            AbstractCommand.loge(env, e.getMessage() + " cmd:" + cmd.toString());
-            e.printStackTrace();
+        } catch (RuntimeException | IOException rt) {
+            log.error("Issue with command: {}", cmd.toString(), rt);
         }
         return cr;
     }

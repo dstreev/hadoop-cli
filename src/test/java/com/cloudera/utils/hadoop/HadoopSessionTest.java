@@ -18,15 +18,16 @@ package com.cloudera.utils.hadoop;
 
 import com.cloudera.utils.hadoop.cli.HadoopSession;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
-import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-public class HadoopSessionTest extends TestCase {
+public class HadoopSessionTest {
 
     private HadoopSession shell = null;
 
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         shell = new HadoopSession();

@@ -29,14 +29,13 @@ import java.util.*;
  */
 public class QueueParser {
 
-    private List<String> skipAttrList = new LinkedList<String>();
+    private final List<String> skipAttrList = new LinkedList<String>();
 
 
-    private ObjectMapper mapper = null;
     private JsonNode rootNode = null;
 
     public QueueParser(String json) throws IOException {
-        mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
         rootNode = mapper.readValue(json, JsonNode.class);
         skipAttrList.add("type");
     }

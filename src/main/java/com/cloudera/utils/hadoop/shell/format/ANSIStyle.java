@@ -38,8 +38,8 @@ public class ANSIStyle {
     private static final String END = "m";
     
     public static class StyleWrapper {
-        private String format;
-        private Integer[] styles;
+        private final String format;
+        private final Integer[] styles;
 
         public StyleWrapper(String format, Integer[] styles) {
             this.format = format;

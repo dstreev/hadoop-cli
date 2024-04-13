@@ -19,6 +19,7 @@ package com.cloudera.utils.hadoop.hdfs.util;
 import com.cloudera.utils.hadoop.AbstractStats;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -37,6 +38,7 @@ import java.util.*;
  * producing Metadata about the directory AND the files in it.
  */
 @Deprecated
+@Slf4j
 public class HdfsNNStats extends AbstractStats {
 
     public HdfsNNStats(String name) {
@@ -128,7 +130,7 @@ public class HdfsNNStats extends AbstractStats {
 
                 }
             } catch (Throwable e) {
-                e.printStackTrace();
+                log.error("Error processing URL: " + entry.getKey(), e);
             }
 
         }
@@ -162,7 +164,7 @@ public class HdfsNNStats extends AbstractStats {
                         URL statusURL = new URL("http://" + hostAndPort + "/jmx?qry=" + NamenodeJmxParser.NN_STATUS_JMX_BEAN);
                         rtn.put(statusURL, getURLMap(hostAndPort));
                     } catch (MalformedURLException e) {
-                        e.printStackTrace();
+                        log.error("Error creating URL: {}", hostAndPort, e);
                     }
                 }
             }
@@ -173,7 +175,7 @@ public class HdfsNNStats extends AbstractStats {
                 URL statusURL = new URL("http://" + hostAndPort + "/jmx?qry=" + NamenodeJmxParser.NN_STATUS_JMX_BEAN);
                 rtn.put(statusURL, getURLMap(hostAndPort));
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                log.error("Error creating URL: {}", hostAndPort, e);
             }
         }
 
@@ -187,7 +189,7 @@ public class HdfsNNStats extends AbstractStats {
                 rtn.put(target_bean, new URL("http://" + hostAndPort + "/jmx?qry=" + target_bean.getBeanName()));
             }
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            log.error("Error creating URL: {}", hostAndPort, e);
         }
         return rtn;
     }

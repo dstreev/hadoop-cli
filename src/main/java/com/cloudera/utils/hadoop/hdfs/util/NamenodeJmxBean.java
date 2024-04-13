@@ -23,7 +23,7 @@ public enum NamenodeJmxBean {
     FS_STATE_JMX_BEAN("Hadoop:service=NameNode,name=FSNamesystemState"),
     NN_INFO_JMX_BEAN("Hadoop:service=NameNode,name=NameNodeInfo");
 
-    private String beanName;
+    private final String beanName;
 
     public String getBeanName() {
         return beanName;

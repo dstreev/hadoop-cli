@@ -20,6 +20,7 @@ import com.cloudera.utils.hadoop.hdfs.shell.command.Constants;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -34,6 +35,7 @@ Used to track the current state of available and accessed namespaces during the 
 
  */
 @Component
+@Slf4j
 @Getter
 @Setter
 public class FileSystemOrganizer {
@@ -147,8 +149,7 @@ public class FileSystemOrganizer {
             lfss.setWorkingDirectory(localFileSystem.getWorkingDirectory());
             namespaces.put(Constants.LOCAL_FS, lfss);
         } catch (IOException ioe) {
-            //
-            ioe.printStackTrace();
+            log.error("Error initializing FileSystemOrganizer: {}", ioe.getMessage());
         }
 
     }

@@ -18,6 +18,7 @@ package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -29,16 +30,15 @@ import java.util.*;
 /**
  * Created by streever on 2016-03-21.
  */
+@Slf4j
 public class NamenodeJmxParser {
 
-    public static String NN_STATUS_JMX_BEAN = "Hadoop:service=NameNode,name=NameNodeStatus";
-
-    private static String TOP_USER_OPS_COUNT = "TopUserOpCounts";
+    public static final String NN_STATUS_JMX_BEAN = "Hadoop:service=NameNode,name=NameNodeStatus";
 
     private JmxJsonParser jjp = null;
     private String delimiter = "\u0001";
 
-    private Map<String, Object> metadata = new LinkedHashMap<String, Object>();
+    private final Map<String, Object> metadata = new LinkedHashMap<String, Object>();
 
 
     public NamenodeJmxParser(String resource) throws Exception {
@@ -130,13 +130,14 @@ public class NamenodeJmxParser {
         Map<String, Object> fsState = jjp.getJmxBeanContent(NamenodeJmxBean.FS_STATE_JMX_BEAN.getBeanName());
 
         ObjectMapper mapper = new ObjectMapper();
+        String TOP_USER_OPS_COUNT = "TopUserOpCounts";
         String tuocStr = fsState.get(TOP_USER_OPS_COUNT).toString();
 
         try {
             JsonNode tuocNode = mapper.readValue(tuocStr.getBytes(), JsonNode.class);
             rtn = buildTopUserOpsCountRecords(tuocNode);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error parsing TopUserOpCounts", e);
         }
 
         return rtn;
@@ -266,7 +267,7 @@ public class NamenodeJmxParser {
                 }
 
             } catch (Throwable t) {
-                t.printStackTrace();
+                log.error("Error processing TopUserOpCounts", t);
             }
         }
         return rtn;

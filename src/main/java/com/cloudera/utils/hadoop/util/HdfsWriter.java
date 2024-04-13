@@ -16,6 +16,7 @@
 
 package com.cloudera.utils.hadoop.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -25,6 +26,7 @@ import java.io.IOException;
 /**
  * Created by streever on 2016-04-26.
  */
+@Slf4j
 public class HdfsWriter {
 
     private DistributedFileSystem fs = null;
@@ -48,13 +50,13 @@ public class HdfsWriter {
             out.flush();
 
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            log.error("Error writing to HDFS: " + pathStr, ioe);
         } finally {
             if (out != null) {
                 try {
                     out.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Error closing HDFS output stream: " + pathStr, e);
                 }
             }
         }

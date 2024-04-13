@@ -16,6 +16,7 @@
 
 package com.cloudera.utils.hadoop.hdfs.util;
 
+import com.cloudera.utils.hadoop.hdfs.shell.command.PathBuilder;
 import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
@@ -25,6 +26,7 @@ import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -52,14 +54,13 @@ import java.util.regex.Pattern;
 
 import static com.cloudera.utils.hadoop.hdfs.util.HdfsLsPlus.PRINT_OPTION.*;
 
+@Slf4j
 public class HdfsLsPlus extends HdfsAbstract {
 
-    private FileSystem fs = null;
-
-    private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     // TODO: Extended ACL's
-    private static String DEFAULT_FORMAT = "permissions_long,replication,user,group,size,block_size,mod,path";
+    private static final String DEFAULT_FORMAT = "permissions_long,replication,user,group,size,block_size,mod,path";
     private static String DEFAULT_FILTER_FORMAT = "path";
 
     enum PRINT_OPTION {
@@ -112,9 +113,9 @@ public class HdfsLsPlus extends HdfsAbstract {
             new PRINT_OPTION[]{
                     PATH};
 
-    private static int DEFAULT_DEPTH = 5;
-    private static String DEFAULT_SEPARATOR = "\t";
-    private static String DEFAULT_NEWLINE = "\n";
+    private static final int DEFAULT_DEPTH = 5;
+    private static final String DEFAULT_SEPARATOR = "\t";
+    private static final String DEFAULT_NEWLINE = "\n";
     private String separator = DEFAULT_SEPARATOR;
     private String newLine = DEFAULT_NEWLINE;
     //    private int currentDepth = 0;
@@ -137,15 +138,11 @@ public class HdfsLsPlus extends HdfsAbstract {
     private boolean count = false;
     private String comment = null;
     private int maxDepth = DEFAULT_DEPTH;
-    //    private Boolean recurse = Boolean.TRUE;
-    private String format = DEFAULT_FORMAT;
-    private String filterFormat = DEFAULT_FILTER_FORMAT;
-    private Configuration configuration = null;
     private DFSClient dfsClient = null;
     private FSDataOutputStream outFS = null;
-    private static MathContext mc = new MathContext(4, RoundingMode.HALF_UP);
+    private static final MathContext mc = new MathContext(4, RoundingMode.HALF_UP);
     private int processPosition = 0;
-    private static Pattern invisiblePattern = Pattern.compile("(.*/\\..*)|(.*/_orc_acid_version$)");
+    private static final Pattern invisiblePattern = Pattern.compile("(.*/\\..*)|(.*/_orc_acid_version$)");
 //    private static Pattern invisibleRegEx = Pattern.compile("(.*/\\..*)");
 //    private PathBuilder pathBuilder;
 
@@ -318,8 +315,8 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
     public void setFormat(String format) {
-        this.format = format;
-        String[] strOptions = this.format.split(",");
+        //    private Boolean recurse = Boolean.TRUE;
+        String[] strOptions = format.split(",");
         List<PRINT_OPTION> options_list = new ArrayList<>();
         for (String strOption : strOptions) {
             PRINT_OPTION in = PRINT_OPTION.valueOf(strOption.toUpperCase());
@@ -332,8 +329,7 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
     public void setFilterFormat(String format) {
-        this.filterFormat = format;
-        String[] strOptions = this.filterFormat.split(",");
+        String[] strOptions = format.split(",");
         List<PRINT_OPTION> options_list = new ArrayList<>();
         for (String strOption : strOptions) {
             PRINT_OPTION in = PRINT_OPTION.valueOf(strOption.toUpperCase());
@@ -921,9 +917,9 @@ public class HdfsLsPlus extends HdfsAbstract {
                 setTestFound(false);
 
                 // Get the Filesystem
-                configuration = cliEnvironment.getHadoopConfig();
+                Configuration configuration = cliEnvironment.getHadoopConfig();
 
-                fs = fss.getFileSystem();//environment.getDistributedFileSystem();//getValue(Constants.HDFS);
+                FileSystem fs = fss.getFileSystem();//environment.getDistributedFileSystem();//getValue(Constants.HDFS);
 
                 if (fs == null) {
                     cr.setCode(CODE_NOT_CONNECTED);
@@ -969,13 +965,13 @@ public class HdfsLsPlus extends HdfsAbstract {
                 String targetPath = null;
                 if (cmdArgs.length > 0) {
                     String pathIn = cmdArgs[0];
-                    targetPath = pathBuilder.resolveFullPath(fss.getWorkingDirectory().toString(), pathIn);
+                    targetPath = PathBuilder.resolveFullPath(fss.getWorkingDirectory().toString(), pathIn);
                 } else {
                     targetPath = fss.getWorkingDirectory().toString();
                 }
 
                 if (cmd.hasOption("output-directory")) {
-                    outputDir = pathBuilder.
+                    outputDir = PathBuilder.
                             resolveFullPath(fss.getWorkingDirectory().toString(), cmd.getOptionValue("output-directory"));
                     outputFile = outputDir + "/" + UUID.randomUUID();
 
@@ -985,7 +981,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                             fs.delete(pof, false);
                         outFS = fs.create(pof);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.error("Issue with output file: {}", outputFile, e);
                     }
                 }
 
@@ -1023,14 +1019,14 @@ public class HdfsLsPlus extends HdfsAbstract {
                     }
                 }
             } else {
-                loge(cliEnvironment, "This function is only available when connecting via 'hdfs'");
+                log.error("This function is only available when connecting via 'hdfs'");
                 cr.setCode(-1);
                 cr.setError("Not available with this protocol");
                 return cr;
             }
 
         } catch (RuntimeException rt) {
-            loge(cliEnvironment, rt.getMessage() + " cmd:" + cmd.toString());
+            log.error("{} cmd: {}", rt.getMessage(), cmd.toString());
         }
         return cr;
     }

@@ -19,6 +19,7 @@ package com.cloudera.utils.hadoop.mapreduce;
 import com.cloudera.utils.hadoop.AbstractQueryTimeFrameStats;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.IOUtils;
 
@@ -34,6 +35,7 @@ import java.util.*;
  * Using the Job History Server URL, collect the stats on jobs since the last time this was run or up to
  * 'n' (limit).
  */
+@Slf4j
 public class JhsStats extends AbstractQueryTimeFrameStats {
 
     public JhsStats(String name) {
@@ -166,9 +168,9 @@ public class JhsStats extends AbstractQueryTimeFrameStats {
 
                 }
             } catch (MalformedURLException ure) {
-                ure.printStackTrace();
+                log.error("URL Exception: ", ure);
             } catch (IOException ioe) {
-                ioe.printStackTrace();
+                log.error("IO Exception: ", ioe);
             }
 
             Iterator<Map.Entry<String, List<Map<String, Object>>>> rIter = getRecords().entrySet().iterator();

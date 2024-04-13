@@ -20,36 +20,36 @@ import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
 import java.io.PrintStream;
 
+@Slf4j
 public abstract class AbstractCommand implements Command{
-    public static int CODE_BAD_DATE = -321;
-    public static int CODE_SUCCESS = 0;
-    public static int CODE_LOCAL_FS_ISSUE = -123;
-    public static int CODE_NOT_CONNECTED = -10;
-    public static int CODE_CONNECTION_ISSUE = -11;
-    public static int CODE_CMD_ERROR = -1;
-    public static int CODE_PATH_ERROR = -20;
-    public static int CODE_FS_CLOSE_ISSUE = -100;
-    public static int CODE_STATS_ISSUE = -200;
-    public static int CODE_NOT_FOUND = 1;
+    public static final int CODE_BAD_DATE = -321;
+    public static final int CODE_SUCCESS = 0;
+    public static final int CODE_LOCAL_FS_ISSUE = -123;
+    public static final int CODE_NOT_CONNECTED = -10;
+    public static final int CODE_CONNECTION_ISSUE = -11;
+    public static final int CODE_CMD_ERROR = -1;
+    public static final int CODE_PATH_ERROR = -20;
+    public static final int CODE_FS_CLOSE_ISSUE = -100;
+    public static final int CODE_STATS_ISSUE = -200;
+    public static final int CODE_NOT_FOUND = 1;
 
     /** allows stdout to be captured if necessary */
     public PrintStream out = System.out;
     /** allows stderr to be captured if necessary */
     public PrintStream err = System.err;
-    private String name;
+    private final String name;
 
     protected Completer completer = new NullCompleter();
 
     public AbstractCommand(String name){
         this.name = name;
     }
-
-//    public abstract String getDescription();
 
     public String getHelpHeader() {
         StringBuilder sb = new StringBuilder();
@@ -58,7 +58,7 @@ public abstract class AbstractCommand implements Command{
         return sb.toString();
     }
 
-    public String gethelpFooter() {
+    public String getHelpFooter() {
         return null;
     }
 
@@ -103,15 +103,15 @@ public abstract class AbstractCommand implements Command{
             System.out.println(log);
         }
     }
-    
+//
     protected static void log(CliEnvironment env, String log){
         System.out.println(log);
     }
-
-    protected static void loge(CliEnvironment env, String log){
-        System.err.println(log);
-    }
-
+//
+//    protected static void loge(CliEnvironment env, String log){
+//        System.err.println(log);
+//    }
+//
     protected static void logd(CliEnvironment env, String log){
         if(env.isDebug()){
             System.out.println(log);
@@ -137,7 +137,8 @@ public abstract class AbstractCommand implements Command{
 
 //                System.out.flush();
             } catch (Throwable t) {
-                t.printStackTrace();
+                log.error("Error in Command: {}", getName(), t);
+//                t.printStackTrace();
             } finally {
                 // Revert Buffered Output
 //                System.setOut(orig);

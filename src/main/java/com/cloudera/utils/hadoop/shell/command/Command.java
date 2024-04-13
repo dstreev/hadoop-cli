@@ -28,7 +28,7 @@ public interface Command {
 
     String getDescription();
     String getHelpHeader();
-    String gethelpFooter();
+    String getHelpFooter();
     String getUsage();
     
     String getName();

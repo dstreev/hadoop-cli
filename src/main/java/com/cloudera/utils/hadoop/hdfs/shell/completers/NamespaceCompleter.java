@@ -23,7 +23,7 @@ import org.apache.hadoop.fs.FileStatus;
 import java.util.List;
 
 public class NamespaceCompleter implements Completer {
-    private CliEnvironment env;
+    private final CliEnvironment env;
 
     public NamespaceCompleter(CliEnvironment env) {
         this.env = env;

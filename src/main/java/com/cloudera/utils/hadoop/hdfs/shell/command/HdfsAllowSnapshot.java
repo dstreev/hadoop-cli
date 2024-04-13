@@ -23,6 +23,7 @@ import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -31,6 +32,7 @@ import org.apache.hadoop.ipc.RemoteException;
 
 import java.io.IOException;
 
+@Slf4j
 public class HdfsAllowSnapshot extends HdfsAbstract {
 
     public HdfsAllowSnapshot(String name) {
@@ -90,7 +92,7 @@ public class HdfsAllowSnapshot extends HdfsAbstract {
                 String targetPath = null;
                 if (cmdArgs.length > 0) {
                     String pathIn = cmdArgs[0];
-                    targetPath = pathBuilder.resolveFullPath(fss.getWorkingDirectory().toString(), pathIn);
+                    targetPath = PathBuilder.resolveFullPath(fss.getWorkingDirectory().toString(), pathIn);
                 } else {
                     targetPath = fss.getWorkingDirectory().toString();
                 }
@@ -100,19 +102,15 @@ public class HdfsAllowSnapshot extends HdfsAbstract {
                 dfs.allowSnapshot(path);
 
             } else {
-                loge(env, "This function is only available for the 'default' namespace");
+                log.warn("This function is only available for the 'default' namespace");
                 cr.setCode(-1);
                 cr.setError("Not available for alternate namespace: " +
                         env.getFileSystemOrganizer().getCurrentFileSystemState().getNamespace());
                 return cr;
             }
 
-        } catch (RuntimeException rt) {
-            loge(env, rt.getMessage() + " cmd:" + cmd.toString());
-            rt.printStackTrace();
-        } catch (IOException e) {
-            loge(env, e.getMessage() + " cmd:" + cmd.toString());
-            e.printStackTrace();
+        } catch (RuntimeException | IOException rt) {
+            log.error("Issue running command: {}, {}", cmd.toString(), rt.getMessage());
         }
         return cr;
     }

@@ -16,6 +16,7 @@
 
 package com.cloudera.utils.hadoop.yarn;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
@@ -39,6 +40,7 @@ import java.util.Map;
  * Using the Resource Manager JMX, collect the stats on applications since the last time this was run or up to
  * 'n' (limit).
  */
+@Slf4j
 public class ContainerStats extends ResourceManagerStats {
     public static final String URL_PATH = "/ws/v1/cluster/apps";
     public static final String APP = "app";
@@ -61,7 +63,7 @@ public class ContainerStats extends ResourceManagerStats {
     // Not using currently.  Wasn't sure this added much value for workload analysis.
     static final String[] APP_ATTEMPT_FIELDS = {"id", "nodeId", "nodeHttpAddress", "logsLink", "containerId", "startTime"};
 
-    private static Map<String, String[]> recordFieldMap;
+    private static final Map<String, String[]> recordFieldMap;
 
     static {
         recordFieldMap = new HashMap<String, String[]>();
@@ -143,9 +145,9 @@ public class ContainerStats extends ResourceManagerStats {
                     }
                 }
             } catch (MalformedURLException ure) {
-                ure.printStackTrace();
+                log.error("Error in URL: {}", ure.getMessage());
             } catch (IOException ioe) {
-                ioe.printStackTrace();
+                log.error("Error in IO: {}", ioe.getMessage());
             }
 
 //            if (!raw) {

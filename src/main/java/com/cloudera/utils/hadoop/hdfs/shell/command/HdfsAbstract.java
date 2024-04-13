@@ -66,8 +66,6 @@ public abstract class HdfsAbstract extends AbstractCommand {
     @Override
     public Options getOptions() {
         Options options = super.getOptions();
-
-
         return options;
     }
 

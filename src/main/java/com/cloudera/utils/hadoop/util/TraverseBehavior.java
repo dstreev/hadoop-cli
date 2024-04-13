@@ -25,8 +25,8 @@ public class TraverseBehavior {
         FLATTEN
     }
 
-    private TRAVERSE_MODE mode;
-    private NodeParser nodeParser;
+    private final TRAVERSE_MODE mode;
+    private final NodeParser nodeParser;
 
     public TraverseBehavior(TRAVERSE_MODE mode, NodeParser nodeParser) {
         this.mode = mode;

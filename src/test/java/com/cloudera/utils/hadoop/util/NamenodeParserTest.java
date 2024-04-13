@@ -18,18 +18,19 @@
 package com.cloudera.utils.hadoop.util;
 
 import com.cloudera.utils.hadoop.hdfs.util.NamenodeJmxParser;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by streever on 2016-03-21.
  */
+@Slf4j
 public class NamenodeParserTest {
 
     @Test
@@ -45,7 +46,7 @@ public class NamenodeParserTest {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error parsing Jmx JSON", e);
             assertTrue(false);
         }
     }
@@ -55,14 +56,12 @@ public class NamenodeParserTest {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_active.json");
             Map<String,Object> map = njp.getFSState();
-            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
-            while (iEntries.hasNext()) {
-                Map.Entry<String, Object> item = iEntries.next();
-                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            for (Map.Entry<String, Object> item : map.entrySet()) {
+                log.info("{}:{}", item.getKey(), item.getValue().toString());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
+            log.error("Error parsing Jmx JSON", e);
+            fail();
         }
     }
 
@@ -71,14 +70,12 @@ public class NamenodeParserTest {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_active.json");
             Map<String,Object> map = njp.getNamenodeInfo();
-            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
-            while (iEntries.hasNext()) {
-                Map.Entry<String, Object> item = iEntries.next();
-                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            for (Map.Entry<String, Object> item : map.entrySet()) {
+                log.info("{}:{}", item.getKey(), item.getValue().toString());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
+            log.error("Error parsing Jmx JSON", e);
+            fail();
         }
     }
 
@@ -88,15 +85,13 @@ public class NamenodeParserTest {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_standby.json");
             List<Map<String,Object>> list = njp.getTopUserOpRecords();
             for (Map<String,Object> map: list) {
-                Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
-                while (iEntries.hasNext()) {
-                    Map.Entry<String, Object> item = iEntries.next();
-                    System.out.println(item.getKey() + ":" + item.getValue().toString());
+                for (Map.Entry<String, Object> item : map.entrySet()) {
+                    log.info("{}:{}", item.getKey(), item.getValue().toString());
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
+            log.error("Error parsing Jmx JSON", e);
+            fail();
         }
     }
 
@@ -107,8 +102,8 @@ public class NamenodeParserTest {
             Map<String,Object> fsState = njp.getFSState();
 //            System.out.println(fsState);
         } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
+            log.error("Error parsing Jmx JSON", e);
+            fail();
         }
     }
 
@@ -117,14 +112,12 @@ public class NamenodeParserTest {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.5.1_standby.json");
             Map<String,Object> map = njp.getNamenodeInfo();
-            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
-            while (iEntries.hasNext()) {
-                Map.Entry<String, Object> item = iEntries.next();
-                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            for (Map.Entry<String, Object> item : map.entrySet()) {
+                log.info("{}:{}", item.getKey(), item.getValue().toString());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
+            log.error("Error parsing Jmx JSON", e);
+            fail();
         }
     }
 
@@ -134,15 +127,13 @@ public class NamenodeParserTest {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.2.0_standalone.json");
             List<Map<String,Object>> list = njp.getTopUserOpRecords();
             for (Map<String,Object> map: list) {
-                Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
-                while (iEntries.hasNext()) {
-                    Map.Entry<String, Object> item = iEntries.next();
-                    System.out.println(item.getKey() + ":" + item.getValue().toString());
+                for (Map.Entry<String, Object> item : map.entrySet()) {
+                    log.info("{}:{}", item.getKey(), item.getValue().toString());
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
+            log.error("Error parsing Jmx JSON", e);
+            fail();
         }
     }
 
@@ -151,14 +142,12 @@ public class NamenodeParserTest {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.2.0_standalone.json");
             Map<String,Object> map = njp.getFSState();
-            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
-            while (iEntries.hasNext()) {
-                Map.Entry<String, Object> item = iEntries.next();
-                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            for (Map.Entry<String, Object> item : map.entrySet()) {
+                log.info("{}:{}", item.getKey(), item.getValue().toString());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
+            log.error("Error parsing Jmx JSON", e);
+            fail();
         }
     }
 
@@ -167,14 +156,12 @@ public class NamenodeParserTest {
         try {
             NamenodeJmxParser njp = new NamenodeJmxParser("nn_2.3.2.0_standalone.json");
             Map<String,Object> map = njp.getNamenodeInfo();
-            Iterator<Map.Entry<String, Object>> iEntries = map.entrySet().iterator();
-            while (iEntries.hasNext()) {
-                Map.Entry<String, Object> item = iEntries.next();
-                System.out.println(item.getKey() + ":" + item.getValue().toString());
+            for (Map.Entry<String, Object> item : map.entrySet()) {
+                log.info("{}:{}", item.getKey(), item.getValue().toString());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
+            log.error("Error parsing Jmx JSON", e);
+            fail();
         }
     }
 

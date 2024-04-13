@@ -16,6 +16,8 @@
 
 package com.cloudera.utils.tools;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.net.URI;
 import java.nio.file.*;
@@ -27,6 +29,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipOutputStream;
 
+@Slf4j
 public class ClasspathToZip {
 
     public ClasspathToZip() {
@@ -75,7 +78,7 @@ public class ClasspathToZip {
                         zipOut.write(bytes, 0, length);
                     }
                 } catch (ZipException ze) {
-                    ze.printStackTrace();
+                    log.error("Error zipping file: {}", srcFile);
                 } finally {
                     fis.close();
                 }

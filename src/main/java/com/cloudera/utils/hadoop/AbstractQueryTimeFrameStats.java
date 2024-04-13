@@ -19,6 +19,7 @@ package com.cloudera.utils.hadoop;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -33,6 +34,7 @@ import java.util.*;
  * Using the Resource Manager JMX, collect the stats on applications since the last time this was run or up to
  * 'n' (limit).
  */
+@Slf4j
 public abstract class AbstractQueryTimeFrameStats extends AbstractStats {
     protected Long increment = 60l * 60l * 1000l; // 1 hour
 
@@ -106,7 +108,7 @@ public abstract class AbstractQueryTimeFrameStats extends AbstractStats {
                     try {
                         startDate = df.parse(cmd.getOptionValue("start"));
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        log.error("Error parsing start date: {} - {} - {}", cmd.getOptionValue("start"), e.getMessage(), e.getClass().getName());
                         cr.setCode(CODE_BAD_DATE);
                         cr.getErr().print(e.getMessage());
                         return cr;

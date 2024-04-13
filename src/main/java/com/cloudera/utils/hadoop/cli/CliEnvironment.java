@@ -318,11 +318,9 @@ public class CliEnvironment {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Error running file: {}", inSet);
             }
-
         }
-
     }
 
     public String substituteVariables(String template) {

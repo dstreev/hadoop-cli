@@ -25,6 +25,7 @@ import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
@@ -34,6 +35,7 @@ import org.apache.hadoop.fs.Path;
  * Created by streever on 2015-11-22.
  */
 
+@Slf4j
 public class LocalCat extends HdfsCommand {
     
     public static final int LINE_COUNT = 10;
@@ -69,7 +71,7 @@ public class LocalCat extends HdfsCommand {
                     }
                 }
                 catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Error closing reader: {} - {}", e.getMessage(), e.getCause(), e);
                 }
             }
         } else{

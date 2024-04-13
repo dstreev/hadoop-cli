@@ -79,7 +79,10 @@ public class Shell {
         reader.setHistory(initHistory());
 
         AnsiConsole.systemInstall();
-//        cliEnvironment.processInput("connect");
+
+        // Attempt to change to the default home directory.
+        cliEnvironment.processInput("cd "
+                + cliEnvironment.getFileSystemOrganizer().getDefaultFileSystemState().getHomeDir(cliEnvironment));
 
         acceptCommands(reader, cliEnvironment);
 

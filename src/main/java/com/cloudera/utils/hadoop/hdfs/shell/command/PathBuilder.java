@@ -39,8 +39,8 @@ public class PathBuilder {
 
 
     }
-    private CliEnvironment env;
-    private PathDirectives directives;
+    private final CliEnvironment env;
+    private final PathDirectives directives;
 
     public PathBuilder(CliEnvironment env, PathDirectives directives) {
         this.env = env;

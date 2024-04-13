@@ -25,6 +25,7 @@ import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,8 +46,9 @@ import java.util.*;
  * Using the Resource Manager JMX, collect the stats on applications since the last time this was run or up to
  * 'n' (limit).
  */
+@Slf4j
 public abstract class AbstractStats extends HdfsAbstract {
-    protected ObjectMapper mapper = new ObjectMapper();
+    protected final ObjectMapper mapper = new ObjectMapper();
 
     protected Configuration configuration = null;
 
@@ -55,15 +57,15 @@ public abstract class AbstractStats extends HdfsAbstract {
     protected Boolean ssl = Boolean.FALSE;
     protected Boolean raw = Boolean.FALSE;
 
-    private DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+    private final DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
 
     protected DistributedFileSystem fs = null;
 
-    protected static String DEFAULT_FILE_FORMAT = "yyyy-MM";
+    protected static final String DEFAULT_FILE_FORMAT = "yyyy-MM";
 
     protected DateFormat dfFile = null;
 
-    protected Map<String, List<Map<String, Object>>> records = new LinkedHashMap<String, List<Map<String, Object>>>();
+    protected final Map<String, List<Map<String, Object>>> records = new LinkedHashMap<String, List<Map<String, Object>>>();
     protected Boolean header = Boolean.FALSE;
 
     public static final String DEFAULT_DELIMITER = "\u0001";
@@ -260,7 +262,7 @@ public abstract class AbstractStats extends HdfsAbstract {
                 System.out.println(sb.toString());
             }
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.error("Error processing record set: {}", recordSet, t);
             throw t;
         }
 
@@ -347,7 +349,7 @@ public abstract class AbstractStats extends HdfsAbstract {
             rtn = haStateNode.asText();
             System.out.println("RM: " + urlStr + " state: " + rtn);
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            log.error("Failed to connect to RM at {}. Check Protocol.", urlStr, ioe);
             throw new RuntimeException("Failed to connect to RM at " + urlStr + ". Check Protocol.", ioe);
         }
         return rtn;

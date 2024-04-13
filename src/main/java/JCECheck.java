@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.crypto.Cipher;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
@@ -23,6 +25,7 @@ import java.util.Iterator;
 /**
  * Created by streever on 2015-09-29.
  */
+@Slf4j
 public class JCECheck {
     public static void main(final String[] args) {
         final Provider[] providers = Security.getProviders();
@@ -48,7 +51,7 @@ public class JCECheck {
                 System.out.println("JCE is NOT available for Unlimited encryption. ["+keyLength+"]");
             }
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            log.error("Error checking JCE", e);
         }
     }
 }

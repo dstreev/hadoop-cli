@@ -21,6 +21,7 @@ import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -31,13 +32,8 @@ import org.apache.hadoop.hdfs.DFSClient;
 import java.io.IOException;
 import java.net.URI;
 
+@Slf4j
 public class HdfsSource  extends HdfsAbstract {
-
-    private FileSystem fs = null;
-
-//    private HadoopSession shell;
-    private Configuration configuration = null;
-    private DFSClient dfsClient = null;
 
     public HdfsSource(String name, CliEnvironment env) {
         super(name, env);
@@ -50,9 +46,10 @@ public class HdfsSource  extends HdfsAbstract {
         AbstractCommand.logv(env, "Beginning 'source' collection.");
 
         // Get the Filesystem
-        configuration = env.getHadoopConfig();
+        //    private HadoopSession shell;
+        Configuration configuration = env.getHadoopConfig();
 
-        fs = env.getFileSystemOrganizer().getCurrentFileSystemState().getFileSystem();
+        FileSystem fs = env.getFileSystemOrganizer().getCurrentFileSystemState().getFileSystem();
         //(FileSystem) env.getValue(Constants.HDFS);
 
         if (fs == null) {
@@ -65,9 +62,9 @@ public class HdfsSource  extends HdfsAbstract {
         URI nnURI = fs.getUri();
 
         try {
-            dfsClient = new DFSClient(nnURI, configuration);
+            DFSClient dfsClient = new DFSClient(nnURI, configuration);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error connecting to HDFS: {} - {}", e.getMessage(), e.getCause(), e);
             CommandReturn cr = new CommandReturn(AbstractCommand.CODE_CONNECTION_ISSUE);
             cr.getErr().print(e.getMessage());
             return cr;
