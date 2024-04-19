@@ -17,6 +17,7 @@
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
@@ -72,20 +73,24 @@ public class HdfsCommand extends HdfsAbstract {
     }
 
     public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn cr) {
-        Configuration conf = (Configuration)env.getHadoopConfig();
-        CliFsShell shell = new CliFsShell(conf);
-        try {
-            shell.init();
-        } catch (IOException e) {
-            log.error("Error initializing shell", e);
-        }
+//        Configuration conf = (Configuration)env.getHadoopConfig();
+        CliFsShell shell = env.getShell();//new CliFsShell(conf);
+//        try {
+//            shell.init();
+//        } catch (IOException e) {
+//            log.error("Error initializing shell", e);
+//        }
+
+        // Set the IO streams for the shell.
         shell.setOut(cr.getOut());
         shell.setErr(cr.getErr());
 
-        FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+        FileSystemOrganizer fso = env.getFileSystemOrganizer();
 
-        conf.setQuietMode(false);
-        shell.setConf(conf);
+        FileSystemState currentFileSystemState = fso.getCurrentFileSystemState();
+
+//        conf.setQuietMode(false);
+//        shell.setConf(conf);
         int res = CODE_SUCCESS;
         String[] argv = null;
 
@@ -119,18 +124,18 @@ public class HdfsCommand extends HdfsAbstract {
             // When the fs isn't the 'default', we need to 'fully' qualify it.
             // When dealing with non-default/non-local filesystems, we need to prefix the uri with the namespace.
             // For LOCAL_REMOTE calls, like put, don't prefix the leftPath.
-            if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState()) && pathDirectives.getDirection() != Direction.LOCAL_REMOTE) {
+            if (!currentFileSystemState.equals(fso.getDefaultFileSystemState()) && pathDirectives.getDirection() != Direction.LOCAL_REMOTE) {
                 // If leftPath starts with a known fs protocol, don't modify.
                 if (!PathBuilder.isPrefixWithKnownProtocol(leftPath)) {
-                    leftPath = fss.getURI() + leftPath;
+                    leftPath = currentFileSystemState.getURI() + leftPath;
                 }
             }
 
             if (pathDirectives.getDirection() != Direction.NONE) {
                 rightPath = pathBuilder.buildPath(Side.RIGHT, cmdArgs);
                 // When dealing with non-default/non-local filesystems, we need to prefix the uri with the namespace.
-                if (!fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
-                    rightPath = fss.getURI() + rightPath;
+                if (!currentFileSystemState.equals(fso.getDefaultFileSystemState())) {
+                    rightPath = currentFileSystemState.getURI() + rightPath;
                 }
             }
 

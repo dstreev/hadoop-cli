@@ -174,7 +174,7 @@ public class HadoopCliAppCfg {
     }
 
     @Bean
-    @Order(1)
+    @Order(50)
     @ConditionalOnProperty(
             name = "hadoop.cli.env-file")
     CommandLineRunner configEnvFile(CliEnvironment cliEnvironment, @Value("${hadoop.cli.env-file}") String value) {
@@ -216,7 +216,7 @@ public class HadoopCliAppCfg {
 
     @Bean
     @Order(10)
-    CommandLineRunner initHadoopConfiguration(CliEnvironment cliEnvironment, FileSystemOrganizer fileSystemOrganizer) {
+    CommandLineRunner initHadoopConfiguration(CliEnvironment cliEnvironment) {
         return args -> {
             // TODO: Need to see if this attempts a connection to HDFS.
             if (!cliEnvironment.isDisabled()) {
@@ -249,7 +249,7 @@ public class HadoopCliAppCfg {
                     });
 
 //                this.fileSystemOrganizer = fileSystemOrganizer;
-                    fileSystemOrganizer.init(config);
+//                    fileSystemOrganizer.init(config);
 
                     FileSystem hdfs = null;
                     try {

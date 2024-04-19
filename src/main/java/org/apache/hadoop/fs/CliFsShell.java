@@ -16,6 +16,7 @@
 
 package org.apache.hadoop.fs;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.shell.CliCommandFactory;
 import org.apache.hadoop.fs.shell.CommandFactory;
@@ -28,6 +29,7 @@ import java.io.PrintStream;
 /**
  * Extending to allow us to override the PrintStreams for native 'Commands'.
  */
+@Slf4j
 public class CliFsShell extends FsShell {
 
     /** allows stdout to be captured if necessary */

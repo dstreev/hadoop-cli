@@ -1,0 +1,3 @@
+hadoop:
+  cli:
+    api: "true"

@@ -16,12 +16,14 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
+import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
 import org.apache.commons.cli.CommandLine;
 
+import java.nio.file.FileSystem;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -42,22 +44,23 @@ public class Use extends HdfsAbstract {
     public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         String namespace = cmd.getArgs().length == 0 ? "" : cmd.getArgs()[0];
         CommandReturn cr = new CommandReturn(0);
+        FileSystemOrganizer fso = env.getFileSystemOrganizer();
         if (namespace.equalsIgnoreCase("default")) {
             // reset to default namespace.
-            namespace = env.getFileSystemOrganizer().getDefaultFileSystemState().getNamespace();
+            namespace = fso.getDefaultFileSystemState().getNamespace();
         } else if (namespace.equalsIgnoreCase("alt")) {
-            Set<String> namespaces = env.getFileSystemOrganizer().getNamespaces().keySet();
+            Set<String> namespaces = fso.getNamespaces().keySet();
             for (String lnamespace : namespaces) {
-                FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(lnamespace);
-                if (!lnamespace.equals(Constants.LOCAL_FS) && !lfss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+                FileSystemState lfss = fso.getFileSystemState(lnamespace);
+                if (!lnamespace.equals(Constants.LOCAL_FS) && !lfss.equals(fso.getDefaultFileSystemState())) {
                     namespace = lnamespace;
                     break;
                 }
             }
         }
-        FileSystemState fss = env.getFileSystemOrganizer().getFileSystemState(namespace);
+        FileSystemState fss = fso.getFileSystemState(namespace);
         if (fss != null) {
-            env.getFileSystemOrganizer().setCurrentFileSystemState(fss);
+            fso.setCurrentFileSystemState(fss);
             // Was hoping this would help completion on 'non' defaultFS.  It didn't.
             /*
             if (fss.getProtocol().startsWith("hdfs://") || fss.getProtocol().startsWith("ofs://")) {
@@ -68,11 +71,11 @@ public class Use extends HdfsAbstract {
         } else {
             cr.setCode(-1);
             StringBuilder sb = new StringBuilder();
-            Set<String> namespaces = env.getFileSystemOrganizer().getNamespaces().keySet();
+            Set<String> namespaces = fso.getNamespaces().keySet();
             for (Iterator i = namespaces.iterator(); i.hasNext(); ) {
                 String ns = (String) i.next();
-                FileSystemState sfss = env.getFileSystemOrganizer().getFileSystemState(ns);
-                if (sfss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+                FileSystemState sfss = fso.getFileSystemState(ns);
+                if (sfss.equals(fso.getDefaultFileSystemState())) {
                     sb.append(ns + "(default)");
                 } else if (ns.equals(Constants.LOCAL_FS)) {
                     sb.append("LOCAL");

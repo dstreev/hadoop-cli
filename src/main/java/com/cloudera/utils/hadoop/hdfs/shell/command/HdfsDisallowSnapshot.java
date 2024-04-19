@@ -17,6 +17,7 @@
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
@@ -71,11 +72,12 @@ public class HdfsDisallowSnapshot extends HdfsAbstract {
     @Override
     public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
         CommandReturn cr = commandReturn;
+        FileSystemOrganizer fso = env.getFileSystemOrganizer();
         try {
             // Check connect protocol
-            if (env.getFileSystemOrganizer().isCurrentDefault()) {
+            if (fso.isCurrentDefault()) {
 
-                FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+                FileSystemState fss = fso.getCurrentFileSystemState();
 
                 DistributedFileSystem dfs = (DistributedFileSystem) fss.getFileSystem();//environment.getDistributedFileSystem();//getValue(Constants.HDFS);
 
@@ -104,7 +106,7 @@ public class HdfsDisallowSnapshot extends HdfsAbstract {
                 log.info("This function is only available for the 'default' namespace");
                 cr.setCode(-1);
                 cr.setError("Not available for alternate namespace: " +
-                        env.getFileSystemOrganizer().getCurrentFileSystemState().getNamespace());
+                        fso.getCurrentFileSystemState().getNamespace());
                 return cr;
             }
 

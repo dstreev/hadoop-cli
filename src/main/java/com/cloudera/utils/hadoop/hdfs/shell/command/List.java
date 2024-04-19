@@ -16,15 +16,18 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
+import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
 import jline.console.completer.Completer;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 
 import java.util.Set;
 
+@Slf4j
 public class List extends HdfsAbstract {
 
     public List(String name, CliEnvironment cliEnvironment) {
@@ -39,21 +42,24 @@ public class List extends HdfsAbstract {
     }
 
     public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
-
+        log.debug("List Namespaces");
+        FileSystemOrganizer fso = env.getFileSystemOrganizer();
         CommandReturn cr = new CommandReturn(0);
 
         StringBuilder sb = new StringBuilder();
 
-        Set<String> lclNss = env.getFileSystemOrganizer().getNamespaces().keySet();
+        Set<String> lclNss = fso.getNamespaces().keySet();
 
         for (String namespace : lclNss) {
-            FileSystemState lclFss = env.getFileSystemOrganizer().getNamespaces().get(namespace);
-            if (lclFss.equals(env.getFileSystemOrganizer().getCurrentFileSystemState())) {
+            FileSystemState lclFss = fso.getNamespaces().get(namespace);
+            if (lclFss.equals(fso.getCurrentFileSystemState())) {
+                log.debug("Current Namespace: {}", namespace);
                 sb.append("*\t");
             } else {
+                log.debug("Namespace: {}", namespace);
                 sb.append("\t");
             }
-            if (lclFss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+            if (lclFss.equals(fso.getDefaultFileSystemState())) {
                 sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_BLUE, ANSIStyle.BLINK, ANSIStyle.UNDERSCORE)).append("\t");
             } else if (namespace.equalsIgnoreCase(Constants.LOCAL_FS)) {
                 sb.append(ANSIStyle.style(namespace, ANSIStyle.FG_YELLOW)).append("\t");

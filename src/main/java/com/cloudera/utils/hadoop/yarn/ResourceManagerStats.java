@@ -2,6 +2,7 @@ package com.cloudera.utils.hadoop.yarn;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -17,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Slf4j
 public abstract class ResourceManagerStats implements Stats {
 
     protected final ObjectMapper mapper = new ObjectMapper();
@@ -288,10 +290,10 @@ public abstract class ResourceManagerStats implements Stats {
             JsonNode infoNode = info.get("clusterInfo");
             JsonNode haStateNode = infoNode.get("haState");
             rtn = haStateNode.asText();
-            System.out.println("RM: " + urlStr + " state: " + rtn);
+            log.debug("RM: {} state: {}", urlStr, rtn);
         } catch (IOException ioe) {
-            ioe.printStackTrace();
-            throw new RuntimeException("Failed to connect to RM at " + urlStr + ". Check Protocol.", ioe);
+            log.error("Failed to connect to RM at {}. Check Protocol.", urlStr, ioe);
+            throw new RuntimeException(ioe);
         }
         return rtn;
     }
@@ -306,6 +308,7 @@ public abstract class ResourceManagerStats implements Stats {
         if (!getRMState(rmAddress).equals("ACTIVE")) {
             rmAddress = getInternalRMAddress(rmIds[1]);
             if (!getRMState(rmAddress).equals("ACTIVE")) {
+                log.error("Could locate ACTIVE Resource Manager");
                 throw new RuntimeException("Could locate ACTIVE Resource Manager");
             }
         }

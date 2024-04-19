@@ -26,6 +26,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CliFsShell;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,7 +63,7 @@ public class CliEnvironment {
     private boolean disabled = Boolean.FALSE;
     private String template = null;
     private String templateDelimiter = ",";
-    private FileSystemOrganizer fileSystemOrganizer = null;
+//    private FileSystemOrganizer fileSystemOrganizer = null;
 
     private Configuration hadoopConfig = null;
 
@@ -73,9 +74,32 @@ public class CliEnvironment {
     private Map<String, Command> commands = new TreeMap<String, Command>();
     private CommandLineParser parser = new PosixParser();
 
-    @Autowired
-    public void setFileSystemOrganizer(FileSystemOrganizer fileSystemOrganizer) {
-        this.fileSystemOrganizer = fileSystemOrganizer;
+    private ThreadLocal<CliSession> sessionContext = new ThreadLocal<CliSession>();
+
+    private CliSession getSessionContext() {
+        CliSession context = sessionContext.get();
+        if (context == null) {
+            log.debug("Creation Session Context");
+            CliSession cliSession = new CliSession();
+            cliSession.init(getHadoopConfig());
+            sessionContext.set(cliSession);
+            return cliSession;
+        }
+        return context;
+    }
+
+    public CliFsShell getShell() {
+        log.debug("Getting Shell");
+        CliSession context = getSessionContext();
+        return context.getShell();
+    }
+
+    public FileSystemOrganizer getFileSystemOrganizer() {
+        log.debug("Getting FileSystemOrganizer");
+        CliSession context = getSessionContext();
+        log.debug("Current FileSystem {}: ", context.getFileSystemOrganizer().getCurrentFileSystemState().getFileSystem().getUri());
+        log.debug("Current FileSystem Working Directory: {}", context.getFileSystemOrganizer().getCurrentFileSystemState().getWorkingDirectory());
+        return context.getFileSystemOrganizer();
     }
 
     public void addCommand(Command cmd) {

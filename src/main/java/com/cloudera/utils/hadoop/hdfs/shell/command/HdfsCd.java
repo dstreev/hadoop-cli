@@ -17,6 +17,7 @@
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
@@ -46,9 +47,11 @@ public class HdfsCd extends AbstractCommand {
 
     public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn cr) {
         try {
-            if (env.getFileSystemOrganizer().isCurrentLocal()) {
-                FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
-                FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();//(FileSystem) env.getValue(Constants.LOCAL_FS);
+            log.debug("HdfsCd: {}", cmd);
+            FileSystemOrganizer fso = env.getFileSystemOrganizer();
+            if (fso.isCurrentLocal()) {
+                FileSystemState lfss = fso.getFileSystemState(Constants.LOCAL_FS);
+                FileSystem localfs = fso.getLocalFileSystem();//(FileSystem) env.getValue(Constants.LOCAL_FS);
                 String dir = cmd.getArgs().length == 0 ? System
                         .getProperty("user.home") : cmd.getArgs()[0];
                 logv(env, "Change Dir to: " + dir);
@@ -78,7 +81,7 @@ public class HdfsCd extends AbstractCommand {
 //                FSUtil.prompt(env);
 
             } else {
-                FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+                FileSystemState fss = fso.getCurrentFileSystemState();
                 FileSystem fs = fss.getFileSystem();
 
                 String dir = cmd.getArgs().length == 0 ? "/" : cmd.getArgs()[0];
@@ -99,7 +102,7 @@ public class HdfsCd extends AbstractCommand {
                 }
 
                 logv(env, "" + newPath);
-                if (fss.equals(env.getFileSystemOrganizer().getDefaultFileSystemState())) {
+                if (fss.equals(fso.getDefaultFileSystemState())) {
                     FileStatus fstat = fss.getFileSystem().getFileStatus(newPath);
                     if (fs.exists(newPath)) {
                         logv(env, "exists");

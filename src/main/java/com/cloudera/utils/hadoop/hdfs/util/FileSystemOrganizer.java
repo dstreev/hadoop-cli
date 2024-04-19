@@ -34,7 +34,7 @@ import java.util.TreeMap;
 Used to track the current state of available and accessed namespaces during the session.
 
  */
-@Component
+//@Component
 @Slf4j
 @Getter
 @Setter

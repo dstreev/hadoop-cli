@@ -37,42 +37,6 @@ public class FileSystemState {
     private Path workingDirectory = null;
     private Date lastAccessed = null;
 
-//    public FileSystemState() {
-//
-//    }
-
-//    public FileSystem getFileSystem() {
-//        return fileSystem;
-//    }
-//
-//    public void setFileSystem(FileSystem fileSystem) {
-//        this.fileSystem = fileSystem;
-//    }
-//
-//    public boolean isPartOfConfig() {
-//        return partOfConfig;
-//    }
-//
-//    public void setPartOfConfig(boolean partOfConfig) {
-//        this.partOfConfig = partOfConfig;
-//    }
-//
-//    public String getNamespace() {
-//        return namespace;
-//    }
-//
-//    public void setNamespace(String namespace) {
-//        this.namespace = namespace;
-//    }
-//
-//    public String getProtocol() {
-//        return protocol;
-//    }
-//
-//    public void setProtocol(String protocol) {
-//        this.protocol = protocol;
-//    }
-
     public String getHomeDir(CliEnvironment cliEnvironment) {
         StringBuilder sb = new StringBuilder();
         String userName = cliEnvironment.getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
@@ -94,24 +58,12 @@ public class FileSystemState {
         return sb.toString();
     }
 
-//    public Path getWorkingDirectory() {
-//        return this.workingDirectory;
-//    }
-
     public void setWorkingDirectory(Path workingDirectory) {
         // Strip the URI from the incoming path, if exists
         this.workingDirectory = new Path(workingDirectory.toString().replace(getURI(), ""));
         // Keep the Filesystem in sync
         fileSystem.setWorkingDirectory(new Path(workingDirectory.toString().replace(getURI(), "")));
     }
-
-//    public Date getLastAccessed() {
-//        return lastAccessed;
-//    }
-
-//    public void setLastAccessed(Date lastAccessed) {
-//        this.lastAccessed = lastAccessed;
-//    }
 
     @Override
     public boolean equals(Object o) {
@@ -142,9 +94,7 @@ public class FileSystemState {
         StringBuilder sb = new StringBuilder();
         sb.append(getURI());
         if (getWorkingDirectory() != null) {
-//            sb.append("(");
             sb.append(getWorkingDirectory());
-//            sb.append(")");
         }
         return sb.toString();
     }

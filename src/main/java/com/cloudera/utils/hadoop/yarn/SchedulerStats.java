@@ -17,6 +17,7 @@
 package com.cloudera.utils.hadoop.yarn;
 
 import com.cloudera.utils.hadoop.yarn.parsers.QueueParser;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -34,6 +35,7 @@ import java.util.*;
  * <p>
  * Using the Resource Manager JMX, collect the queue stats .
  */
+@Slf4j
 public class SchedulerStats extends ResourceManagerStats {
 
     public static final String URL_PATH = "/ws/v1/cluster/scheduler";
@@ -117,6 +119,7 @@ public class SchedulerStats extends ResourceManagerStats {
 
     @Override
     public void execute() {
+        log.debug("Executing SchedulerStats");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
         String timestamp = df.format(new Date());
 
@@ -127,7 +130,7 @@ public class SchedulerStats extends ResourceManagerStats {
 //            baseRMUrlStr = getResourceManagerWebAddress(true);
 //        }
 
-        System.out.println("Resource Manager Server URL: " + baseRMUrlStr);
+        log.debug("Resource Manager Server URL: {}", baseRMUrlStr);
 
         String rootPath = baseRMUrlStr + URL_PATH;
 
@@ -165,8 +168,10 @@ public class SchedulerStats extends ResourceManagerStats {
 //                    print(recordSet.getKey(), recordFieldMap.get(recordSet.getKey()), recordSet.getValue());
 //                }
             }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (Throwable t) {
+            log.error("Error processing SchedulerStats", t);
+//        } catch (IOException ioe) {
+//            log.error("Error processing SchedulerStats", ioe);
         }
     }
 

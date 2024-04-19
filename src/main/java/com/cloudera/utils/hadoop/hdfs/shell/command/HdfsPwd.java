@@ -33,6 +33,7 @@ public class HdfsPwd extends HdfsCommand {
 
     public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
 //        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
+        log.debug("HdfsPwd: {}", cmd);
         FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
         String wd = fss.getWorkingDirectory().toString();
 //        String wd = hdfs.getWorkingDirectory().toString();

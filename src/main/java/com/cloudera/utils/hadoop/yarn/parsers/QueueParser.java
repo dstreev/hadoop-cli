@@ -85,7 +85,7 @@ public class QueueParser {
         List<Map<String, Object>> rtn = new LinkedList<Map<String, Object>>();
 
         JsonNode queueArray = queuesNode.get("queue");
-        if (queueArray.isArray()) {
+        if (queueArray != null && queueArray.isArray()) {
             Iterator<JsonNode> qAryIter = queueArray.iterator();
             while (qAryIter.hasNext()) {
                 JsonNode queueNode = qAryIter.next();
@@ -117,7 +117,7 @@ public class QueueParser {
         List<Map<String, Object>> rtn = new LinkedList<Map<String, Object>>();
 
         JsonNode queueArray = queuesNode.get("queue");
-        if (queueArray.isArray()) {
+        if (queueArray != null && queueArray.isArray()) {
             Iterator<JsonNode> qAryIter = queueArray.iterator();
             while (qAryIter.hasNext()) {
                 JsonNode queueNode = qAryIter.next();

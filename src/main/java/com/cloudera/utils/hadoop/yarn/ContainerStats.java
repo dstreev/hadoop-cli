@@ -95,7 +95,7 @@ public class ContainerStats extends ResourceManagerStats {
 //            baseRMUrlStr = getResourceManagerWebAddress(true);
 //        }
 
-        System.out.println("Resource Manager Server URL: " + baseRMUrlStr);
+        log.debug("Resource Manager Server URL: {}", baseRMUrlStr);
 
         String rootPath = baseRMUrlStr + URL_PATH;
 
@@ -105,7 +105,7 @@ public class ContainerStats extends ResourceManagerStats {
 
         while (iQ.hasNext()) {
             Map.Entry<String, String> entry = iQ.next();
-            System.out.println("Resource Manager Query Parameters: " + entry.getValue());
+            log.debug("Resource Manager Query Parameters: {}", entry.getValue());
 
             String query = entry.getKey();
 

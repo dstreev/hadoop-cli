@@ -25,9 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by streever on 2016-04-26.
- */
+
 public class QueueParserTest {
 
     private boolean header = false;
@@ -40,7 +38,7 @@ public class QueueParserTest {
         this.header = header;
     }
 
-    //    @Test
+    @Test
     public void queueTest001() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022. David W. Streever All Rights Reserved
+ * Copyright (c) 2022-2024. David W. Streever All Rights Reserved
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,39 +14,43 @@
  *  limitations under the License.
  */
 
-package com.cloudera.utils.hadoop;
+package com.cloudera.utils.hadoop.api;
 
-import com.cloudera.utils.hadoop.cli.HadoopSession;
+import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.DisabledException;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
-import org.junit.Before;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
-public class HadoopSessionTest {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
-    private HadoopSession shell = null;
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = com.cloudera.utils.hadoop.HadoopCliApp.class)
+@ActiveProfiles("test")
+@Slf4j
+public class CliEnvironmentTestcase01 {
 
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        shell = new HadoopSession();
-        try {
-            String[] api = {"-api"};
-            shell.start(api);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private CliEnvironment cliEnvironment;
 
-    }
-
-    public void tearDown() throws Exception {
+    @Autowired
+    public void setCliEnvironment(CliEnvironment cliEnvironment) {
+        this.cliEnvironment = cliEnvironment;
     }
 
     @Test
     public void test_001() {
-        String[] commands = new String[] {
+        String[] commands = new String[]{
                 "use default",
+                "cd /user/dstreev",
                 "ls",
                 "rm -r -f temp_api",
                 "mkdir temp_api",
@@ -71,20 +75,12 @@ public class HadoopSessionTest {
                 "ls",
                 "lsp"
         };
-        CommandReturn cr = null;
-        for (String command : commands) {
-            System.out.println("Command: " + command);
-            cr = shell.processInput(command);
-            if (cr.isError()) {
-                assertFalse("Issue with command: " + command, Boolean.TRUE);
-            }
-            printCommandReturn(cr);
-        }
+        runThreadedCommandList(commands, 5);
     }
 
     @Test
     public void test_002() {
-        String[] commands = new String[] {
+        String[] commands = new String[]{
                 "use alt",
                 "cd ~",
                 "ls",
@@ -111,31 +107,54 @@ public class HadoopSessionTest {
                 "ls",
                 "lsp"
         };
-        CommandReturn cr = null;
-        for (String command : commands) {
-            System.out.println("Command: " + command);
-            cr = shell.processInput(command);
-            printCommandReturn(cr);
-            if (cr.isError()) {
-                assertFalse("Issue with command: " + command, Boolean.TRUE);
-            }
-        }
+        runCommandList(commands);
     }
 
     @Test
     public void test_003() {
-        String[] commands = new String[] {
+        String[] commands = new String[]{
                 "use HDP50",
                 "cd /user/dstreev/datasets/avro",
                 "cp hdfs://HOME90/user/dstreev/datasets/avro/*.* ."
         };
+        runCommandList(commands);
+    }
+
+    protected void runThreadedCommandList(String[]commands, int threadCount) {
+        for (int i = 0; i < threadCount; i++) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    runCommandList(commands);
+                }
+            });
+            t.start();
+            try {
+                Thread.sleep(500L);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            Thread.sleep(threadCount * 2000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected void runCommandList(String[] commands) {
         CommandReturn cr = null;
         for (String command : commands) {
-            System.out.println("Command: " + command);
-            cr = shell.processInput(command);
-            printCommandReturn(cr);
-            if (cr.isError()) {
-                assertFalse("Issue with command: " + command, Boolean.TRUE);
+            log.info("Command: {}", command);
+            try {
+                cr = cliEnvironment.processInput(command);
+                if (cr.isError()) {
+                    assertFalse("Issue with command: " + command, Boolean.TRUE);
+                }
+                printCommandReturn(cr);
+            } catch (DisabledException e) {
+                log.error("CLI Disabled", e);
+                fail();
             }
         }
     }
@@ -148,7 +167,7 @@ public class HadoopSessionTest {
             } else {
                 if (cr.getRecords() != null) {
                     List records = cr.getRecords();
-                    for (Object record: records) {
+                    for (Object record : records) {
                         System.out.println(record.toString());
                     }
                 }

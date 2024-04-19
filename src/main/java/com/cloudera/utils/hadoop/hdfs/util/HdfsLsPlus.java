@@ -905,8 +905,9 @@ public class HdfsLsPlus extends HdfsAbstract {
         processPosition = 0;
         logv(cliEnvironment, "Beginning 'lsp' collection.");
         CommandReturn cr = commandReturn;
+        FileSystemOrganizer fso = cliEnvironment.getFileSystemOrganizer();
         try {
-            FileSystemState fss = cliEnvironment.getFileSystemOrganizer().getCurrentFileSystemState();
+            FileSystemState fss = fso.getCurrentFileSystemState();
             // Check connect protocol
             // TODO: NEED TO ACCOUNT FOR THE NONE DEFAULT HDFS...
             //   Right now, only looks at the defaultFS.
