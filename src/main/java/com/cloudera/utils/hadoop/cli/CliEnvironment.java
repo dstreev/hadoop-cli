@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CliFsShell;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -35,6 +35,8 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.cloudera.utils.hadoop.hdfs.shell.command.HdfsConnect.*;
 
 @Component
 @Slf4j
@@ -61,6 +63,7 @@ public class CliEnvironment {
     private boolean silent = Boolean.FALSE;
     private boolean apiMode = Boolean.FALSE;
     private boolean disabled = Boolean.FALSE;
+    private boolean initialized = Boolean.FALSE;
     private String template = null;
     private String templateDelimiter = ",";
 //    private FileSystemOrganizer fileSystemOrganizer = null;
@@ -86,6 +89,55 @@ public class CliEnvironment {
             return cliSession;
         }
         return context;
+    }
+
+    public synchronized void init() {
+        if (!isDisabled() && !isInitialized()) {
+            try {
+                log.info("Initializing Hadoop Configuration");
+                // Get a value that over rides the default, if nothing then use default.
+                String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
+
+                org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration(true);
+                setHadoopConfig(config);
+
+                File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
+                for (String file : HADOOP_CONF_FILES) {
+                    File f = new File(hadoopConfDir, file);
+                    if (f.exists()) {
+                        config.addResource(new org.apache.hadoop.fs.Path(f.getAbsolutePath()));
+                    }
+                }
+                // disable s3a fs cache
+//                config.set("fs.s3a.impl.disable.cache", "true");
+//                config.set("fs.s3a.bucket.probe","0");
+
+                // hadoop.security.authentication
+                if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
+                    UserGroupInformation.setConfiguration(config);
+                    getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
+                }
+
+                getProperties().stringPropertyNames().forEach(k -> {
+                    config.set(k, getProperties().getProperty(k));
+                });
+
+//                this.fileSystemOrganizer = fileSystemOrganizer;
+//                    fileSystemOrganizer.init(config);
+
+                org.apache.hadoop.fs.FileSystem hdfs = null;
+                try {
+                    hdfs = org.apache.hadoop.fs.FileSystem.get(config);
+                } catch (Throwable t) {
+                    log.error("Error connecting to HDFS: {}", t.getMessage());
+                }
+                setInitialized(Boolean.TRUE);
+
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
+
     }
 
     public CliFsShell getShell() {

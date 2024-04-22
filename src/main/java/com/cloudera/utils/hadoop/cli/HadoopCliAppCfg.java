@@ -219,48 +219,8 @@ public class HadoopCliAppCfg {
     CommandLineRunner initHadoopConfiguration(CliEnvironment cliEnvironment) {
         return args -> {
             // TODO: Need to see if this attempts a connection to HDFS.
-            if (!cliEnvironment.isDisabled()) {
-                try {
-                    // Get a value that over rides the default, if nothing then use default.
-                    String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
-
-                    org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration(true);
-                    cliEnvironment.setHadoopConfig(config);
-
-                    File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
-                    for (String file : HADOOP_CONF_FILES) {
-                        File f = new File(hadoopConfDir, file);
-                        if (f.exists()) {
-                            config.addResource(new org.apache.hadoop.fs.Path(f.getAbsolutePath()));
-                        }
-                    }
-                    // disable s3a fs cache
-//                config.set("fs.s3a.impl.disable.cache", "true");
-//                config.set("fs.s3a.bucket.probe","0");
-
-                    // hadoop.security.authentication
-                    if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
-                        UserGroupInformation.setConfiguration(config);
-                        cliEnvironment.getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
-                    }
-
-                    cliEnvironment.getProperties().stringPropertyNames().forEach(k -> {
-                        config.set(k, cliEnvironment.getProperties().getProperty(k));
-                    });
-
-//                this.fileSystemOrganizer = fileSystemOrganizer;
-//                    fileSystemOrganizer.init(config);
-
-                    FileSystem hdfs = null;
-                    try {
-                        hdfs = FileSystem.get(config);
-                    } catch (Throwable t) {
-                        log.error("Error connecting to HDFS: {}", t.getMessage());
-                    }
-
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                }
+            if (!cliEnvironment.isInitialized()) {
+                cliEnvironment.init();
             }
         };
     }

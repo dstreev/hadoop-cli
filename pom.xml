@@ -27,7 +27,7 @@
 
     <groupId>com.cloudera.utils.hadoop</groupId>
     <artifactId>hadoop-cli</artifactId>
-    <version>3.0.2.0</version>
+    <version>3.1.0.0</version>
     <packaging>jar</packaging>
 
 
