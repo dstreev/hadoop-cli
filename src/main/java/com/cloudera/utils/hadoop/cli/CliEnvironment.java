@@ -149,8 +149,8 @@ public class CliEnvironment {
     public FileSystemOrganizer getFileSystemOrganizer() {
         log.debug("Getting FileSystemOrganizer");
         CliSession context = getSessionContext();
-        log.debug("Current FileSystem {}: ", context.getFileSystemOrganizer().getCurrentFileSystemState().getFileSystem().getUri());
-        log.debug("Current FileSystem Working Directory: {}", context.getFileSystemOrganizer().getCurrentFileSystemState().getWorkingDirectory());
+        log.trace("Current FileSystem {}: ", context.getFileSystemOrganizer().getCurrentFileSystemState().getFileSystem().getUri());
+        log.trace("Current FileSystem Working Directory: {}", context.getFileSystemOrganizer().getCurrentFileSystemState().getWorkingDirectory());
         return context.getFileSystemOrganizer();
     }
 
@@ -159,7 +159,7 @@ public class CliEnvironment {
     }
 
     public String getPrompt() {
-        return getFileSystemOrganizer().getPrompt();
+        return getSessionContext().getFileSystemOrganizer().getPrompt();
     }
 
     public Command getCommand(String name) {
