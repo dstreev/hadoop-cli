@@ -25,7 +25,7 @@ public class PathBuilder {
         aws("s3a://","s3n://", "s3://"),
         google("gs://"),
         azure("wasb://","adl://","abfs://"),
-        hadoop("hdfs://", "ofs://", "o3fs://"),
+        hadoop("hdfs://", "ofs://", "o3fs://", "viewfs://"),
         current_dfs("/");
         private String[] protocols = null;
 
