@@ -47,10 +47,67 @@ fi
 PRG_ARGS=
 CMD_CP=
 
-if [ ! -z ${JAVA_HOME} ]; then
-  JAVA="${JAVA_HOME}/bin/java"
+#!/bin/bash
+
+# Minimum required Java version
+MIN_JAVA_VERSION=17
+
+# Function to extract major version number from java -version output
+get_java_version() {
+    local version_output=$($1 -version 2>&1)
+    # Extract version number, handling both 1.8.0_xxx and 17.0.1+ formats
+    local version=$(echo "$version_output" | head -n 1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+|[0-9]+' | head -n 1)
+    # For 1.x style, return the minor version (e.g., 8 for 1.8.0); for 17+ style, return major number
+    if [[ "$version" =~ ^1\.[0-9]+\.[0-9]+$ ]]; then
+        echo "$version" | cut -d'.' -f2
+    else
+        # Take only the major version (before the first dot)
+        echo "$version" | cut -d'.' -f1
+    fi
+}
+
+# Function to check if version meets minimum requirement
+check_version() {
+    local version=$1
+    if [ -z "$version" ]; then
+        return 1
+    fi
+    # Use numeric comparison to properly handle versions
+    if [ "$version" -ge "$MIN_JAVA_VERSION" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Determine which Java to use
+if [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/java" ]; then
+    JAVA_CMD="$JAVA_HOME/bin/java"
+    echo "Using JAVA_HOME: $JAVA_HOME"
 else
-  JAVA=java
+    JAVA_CMD="java"
+    echo "JAVA_HOME not set, using default system Java"
+fi
+
+# Check if Java is available
+if ! command -v "$JAVA_CMD" &> /dev/null; then
+    echo "Error: Java not found on system!"
+    echo "Please install Java $MIN_JAVA_VERSION or higher and set JAVA_HOME or ensure it's in PATH"
+    exit 1
+fi
+
+# Get Java version for comparison
+JAVA_VERSION=$(get_java_version "$JAVA_CMD")
+# Get full version string for display
+FULL_VERSION=$("$JAVA_CMD" -version 2>&1 | head -n 1 | grep -oE '"[^"]+"')
+
+echo "Detected Java version: $FULL_VERSION (major version: $JAVA_VERSION)"
+
+# Check if version meets requirements
+if ! check_version "$JAVA_VERSION"; then
+    echo "Error: Java version $FULL_VERSION is too old!"
+    echo "Please upgrade to Java $MIN_JAVA_VERSION or higher"
+    exit 1
 fi
 
 AUX_LIBS_DIR=${HADOOP_CLI_AUX_LIBS:-${HOME}/.hadoop-cli/aux_libs}
@@ -198,13 +255,10 @@ if [[ "${APP_JAVA_OPTS}x" != "x" ]]; then
     echo "Application JAVA_OPTS=${APP_JAVA_OPTS}"
 fi
 
-echo "Using Java Version:"
-JV=$(${JAVA} -version)
-
 if [[ "${HADOOP_CLASSPATH}x" == "truex" ]]; then
-  CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApp -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-thin.jar"
+  CLI_CMD="${JAVA_CMD} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApp -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-thin.jar"
 else
-  CLI_CMD="${JAVA} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApp -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-standalone.jar"
+  CLI_CMD="${JAVA_CMD} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApp -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-standalone.jar"
 fi
 
 echo "CLI_CMD: ${CLI_CMD}"
