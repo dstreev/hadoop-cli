@@ -69,7 +69,7 @@ public class CliFsShell extends FsShell {
 
 
     @Override
-    public void init() throws IOException {
+    public void init() {
         getConf().setQuietMode(true);
         UserGroupInformation.setConfiguration(getConf());
         if (commandFactory == null) {
@@ -92,7 +92,7 @@ public class CliFsShell extends FsShell {
     }
 
     @Override
-    public int run(String[] argv) throws Exception {
+    public int run(String[] argv) {
         return super.run(argv);
     }
 }

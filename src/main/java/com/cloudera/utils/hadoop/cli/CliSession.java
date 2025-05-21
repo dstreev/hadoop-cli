@@ -35,12 +35,7 @@ public class CliSession {
 
     public void init(Configuration conf) {
         this.shell = new CliFsShell(conf);
-        try {
-            this.shell.init();
-        } catch (IOException e) {
-            log.error("Error initializing the shell", e);
-            throw new RuntimeException(e);
-        }
+        this.shell.init();
         this.fileSystemOrganizer = new FileSystemOrganizer();
         this.fileSystemOrganizer.init(conf);
     }
