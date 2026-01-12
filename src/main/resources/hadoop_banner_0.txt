@@ -32,7 +32,7 @@
                             /%@@%           @@@@@@%
 
 ======================================================================================================
-                                                                 Product: ${HadoopCLI-Title}
-  Get it here: https://github.com/dstreev/hadoop-cli             Version: ${HadoopCLI-Version}
+                                                                 Product: ${HCFSCLI-Title}
+  Get it here: https://github.com/dstreev/hadoop-cli             Version: ${HCFSCLI-Version}
                                                          Build Timestamp: ${Build-Timestamp}
 ======================================================================================================

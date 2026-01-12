@@ -7,36 +7,36 @@
   tasks:
     - name: Check Directories
       file:
-        path: /usr/local/hadoop-cli/bin
+        path: /usr/local/hcfs-cli/bin
         state: directory
 
     - name: Check Directories
       file:
-        path: /usr/local/hadoop-cli/lib
+        path: /usr/local/hcfs-cli/lib
         state: directory
 
     - name: Copy bin
       copy:
         src: hadoopcli
-        dest: /usr/local/hadoop-cli/bin
+        dest: /usr/local/hcfs-cli/bin
         mode: 0755
 
     - name: Copy lib
       copy:
-        src: ../target/hadoop-cli-shaded.jar
-        dest: /usr/local/hadoop-cli/lib
+        src: ../target/hcfs-cli-shaded.jar
+        dest: /usr/local/hcfs-cli/lib
         mode: 0755
 
     - name: Copy No Hadoop lib
       copy:
-        src: ../target/hadoop-cli-shaded-no-hadoop.jar
-        dest: /usr/local/hadoop-cli/lib
+        src: ../target/hcfs-cli-shaded-no-hadoop.jar
+        dest: /usr/local/hcfs-cli/lib
         mode: 0755
 
     - name: Link executable
       file:
-        src: /usr/local/hadoop-cli/bin/hadoopcli
-        dest: /usr/local/bin/hadoopcli
+        src: /usr/local/hcfs-cli/bin/hcfs-cli
+        dest: /usr/local/bin/hcfs-cli
         mode: 0755
         state: link
 

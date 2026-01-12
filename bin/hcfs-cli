@@ -2,7 +2,7 @@
 
 
 #
-# Copyright (c) 2022. David W. Streever All Rights Reserved
+# Copyright (c) 2025. David W. Streever All Rights Reserved
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -26,11 +26,27 @@ else
   RESOLVED_EXE_PATH=`readlink -f $0`
 fi
 
+# Banner for HCFS Interactive CLI
+echo ""
+echo "╔════════════════════════════════════════════════════════════════╗"
+echo "║                                                                ║"
+echo "║       HCFS Interactive Command-Line Interface (CLI)            ║"
+echo "║                                                                ║"
+echo "║  Hadoop Compatible File System - Interactive Shell             ║"
+echo "║                                                                ║"
+echo "║  • Navigate and manage HDFS/S3/Azure/GCS filesystems           ║"
+echo "║  • Execute filesystem commands interactively                   ║"
+echo "║  • File operations, permissions, and directory management      ║"
+echo "║                                                                ║"
+echo "╚════════════════════════════════════════════════════════════════╝"
+echo ""
+
 # Find Dir of resolved script
 APP_DIR=$(dirname $RESOLVED_EXE_PATH)
 CURR_DIR=$(pwd)
 
 echo "APP_DIR: $APP_DIR"
+
 
 DO_NOT_FILE="${APP_DIR}/DO_NOT_RUN_APP_FROM_HERE.txt"
 if [ -f $DO_NOT_FILE ]; then
@@ -38,7 +54,7 @@ if [ -f $DO_NOT_FILE ]; then
   exit 1
 fi
 
-if [[ "${APP_DIR}" == "${HOME}/.hadoop-cli/bin" ]]; then
+if [[ "${APP_DIR}" == "${HOME}/.hcfs-cli/bin" ]]; then
   echo "Running from User Local Instance"
 else
   echo "Running Host instance"
@@ -46,6 +62,7 @@ fi
 
 PRG_ARGS=
 CMD_CP=
+APP_MAIN_CLASS="com.cloudera.utils.hadoop.HadoopCliApp"
 
 #!/bin/bash
 
@@ -110,7 +127,7 @@ if ! check_version "$JAVA_VERSION"; then
     exit 1
 fi
 
-AUX_LIBS_DIR=${HADOOP_CLI_AUX_LIBS:-${HOME}/.hadoop-cli/aux_libs}
+AUX_LIBS_DIR=${HADOOP_CLI_AUX_LIBS:-${HOME}/.hms-mirror/aux_libs}
 
 SHOW_CP=
 CMD_DIRECTIVE=
@@ -123,16 +140,16 @@ HADOOP_CLASSPATH=false
 APP_JAVA_OPTS=${JAVA_OPTS:-"-Xms2048m -Xmx4096m -XX:+UseG1GC"}
 
 # Ultimately passed on to logback configuration
-LOGGING_DIR=${LOGGING_DIR:-"${HOME}/.hadoop-cli/logs"}
-LOGGING_THRESHOLD=${LOGGING_THRESHOLD:-"DEBUG"}
-LOGGING_FILE_PREFIX=${LOGGING_FILE_PREFIX:-"hadoop-cli"}
+LOGGING_DIR=${LOGGING_DIR:-"${HOME}/.hcfs-cli/logs"}
+LOGGING_THRESHOLD=${LOGGING_THRESHOLD:-"WARN"}
+LOGGING_FILE_PREFIX=${LOGGING_FILE_PREFIX:-"hcfs-cli"}
 
-if [[ -f ${HOME}/.hadoop-cli/env-var.props || -L ${HOME}/.hadoop-cli/env-var.props ]]; then
-    ENV_VAR_FILE=${HOME}/.hadoop-cli/env-var.props
+if [[ -f ${HOME}/.hcfs-cli/env-var.props || -L ${HOME}/.hcfs-cli/env-var.props ]]; then
+    ENV_VAR_FILE=${HOME}/.hcfs-cli/env-var.props
 fi
 
-if [[ ! -d ${HOME}/.hadoop-cli/aux_libs ]]; then
-    mkdir -p ${HOME}/.hadoop-cli/aux_libs
+if [[ ! -d ${HOME}/.hcfs-cli/aux_libs ]]; then
+    mkdir -p ${HOME}/.hcfs-cli/aux_libs
 fi
 
 while [[ $# -gt 0 ]]; do
@@ -220,9 +237,7 @@ if [[ "${ENV_VAR_FILE}x" != "x" ]]; then
 fi
 
 #echo "Program Args: ${PRG_ARGS}"
-APP_JAVA_OPTS="${APP_JAVA_OPTS} -Dlogging.dir='${LOGGING_DIR}' -Dlogging.threshold=${LOGGING_THRESHOLD} -Dlogging.filename-prefix='${LOGGING_FILE_PREFIX}'"
-
-#APP_JAVA_OPTS="${APP_JAVA_OPTS} -Dapp.path.dir=${HOME}/.hadoop-cli/logs -Dlogging.threshold=${LOGGING_THRESHOLD} -Dapp.log.file=\"$APP_LOG_FILE\""
+APP_JAVA_OPTS="${APP_JAVA_OPTS} -Dhadoop.cli.api=false -Dspring.main.web-application-type=NONE -Dlogging.dir='${LOGGING_DIR}' -Dlogging.threshold=${LOGGING_THRESHOLD} -Dlogging.filename.prefix='${LOGGING_FILE_PREFIX}'"
 
 if [[ ! -d ${AUX_LIBS_DIR} ]]; then
   mkdir -p ${AUX_LIBS_DIR}
@@ -255,11 +270,18 @@ if [[ "${APP_JAVA_OPTS}x" != "x" ]]; then
     echo "Application JAVA_OPTS=${APP_JAVA_OPTS}"
 fi
 
-if [[ "${HADOOP_CLASSPATH}x" == "truex" ]]; then
-  CLI_CMD="${JAVA_CMD} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApp -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-thin.jar"
+export LOADER_PATH=${CMD_CP}
+
+# TODO: Check for HADOOP_CLASSPATH
+if ls ${APP_DIR}/../lib/*-standalone.jar 1> /dev/null 2>&1; then
+  JAR_FILE="${APP_DIR}/../lib/*-standalone.jar"
 else
-  CLI_CMD="${JAVA_CMD} -Dloader.path=${CMD_CP} ${APP_JAVA_OPTS} -Dloader.main=com.cloudera.utils.hadoop.HadoopCliApp -Dloader.args=\"${PRG_ARGS}\" -jar ${APP_DIR}/../lib/*-standalone.jar"
+  echo "ERROR: No Standalone cli jar found in ${APP_DIR}/../lib/"
+  exit 1
 fi
+
+# Build the command with JAVA_OPTS, loader.main to override Spring Boot main class, and program args
+CLI_CMD="${JAVA_CMD} ${APP_JAVA_OPTS} -Dloader.main=${APP_MAIN_CLASS} -jar ${JAR_FILE} ${PRG_ARGS}"
 
 echo "CLI_CMD: ${CLI_CMD}"
 

@@ -1,3 +1,9 @@
+logging:
+  config: "classpath:/logback-hcfs-cli.xml"
+  # Beware that ${user.home} used here is resolved at BUILD time
+  # dir: "${user.home}/.hms-mirror/logs"
+  filename.prefix: "hcfs-cli"
+  threshold: "debug"
 spring:
   main:
     banner-mode: "off"

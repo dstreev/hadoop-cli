@@ -22,10 +22,10 @@ BASE_DIR=
 
 if (( $EUID != 0 )); then
   echo "Setting up as non-root user"
-  BASE_DIR=$HOME/.hadoop-cli
+  BASE_DIR=$HOME/.hcfs-cli
 else
   echo "Setting up as root user"
-  BASE_DIR=/usr/local/hadoop-cli
+  BASE_DIR=/usr/local/hcfs-cli
 fi
 
 # Install in User bin
@@ -36,23 +36,19 @@ mkdir -p $BASE_DIR/lib
 rm -f $BASE_DIR/lib/*.jar
 rm -f $BASE_DIR/bin/*.*
 
-cp -f hadoopcli $BASE_DIR/bin
-cp -f JCECheck $BASE_DIR/bin
+cp -f hcfs-cli $BASE_DIR/bin
 
 for jar in `ls lib/*.jar`; do
     cp -f $jar $BASE_DIR/lib
 done
 
 chmod -R +r $BASE_DIR
-chmod +x $BASE_DIR/bin/hadoopcli
-chmod +x $BASE_DIR/bin/JCECheck
+chmod +x $BASE_DIR/bin/hcfs-cli
 
 if (( $EUID == 0 )); then
   echo "Setting up global links"
-  ln -sf $BASE_DIR/bin/JCECheck /usr/local/bin/JCECheck
-  ln -sf $BASE_DIR/bin/hadoopcli /usr/local/bin/hadoopcli
+  ln -sf $BASE_DIR/bin/hcfs-cli /usr/local/bin/hcfs-cli
 else
   mkdir -p $HOME/bin
-  ln -sf $BASE_DIR/bin/JCECheck $HOME/bin/JCECheck
-  ln -sf $BASE_DIR/bin/hadoopcli $HOME/bin/hadoopcli
+  ln -sf $BASE_DIR/bin/hcfs-cli $HOME/bin/hcfs-cli
 fi

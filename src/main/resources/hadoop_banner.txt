@@ -30,8 +30,8 @@ ________________________________________________________________________________
      /Md      /N/              .            .               -N: .Nd
      `hMo      :No             -:          `s              .mo   dN. ________________________________________
       `yMd:     -Ny            -NmddhhhddmNmy             -ms    hM. |
-        :yMms:../Mh            :Mo`..smMms- `            /N+     yM: |         Product: ${HadoopCLI-Title}
-          `/ydmNMM/           `dN:  -MM-               `ym:      -Md |         Version: ${HadoopCLI-Version}
+        :yMms:../Mh            :Mo`..smMms- `            /N+     yM: |         Product: ${HCFSCLI-Title}
+          `/ydmNMM/           `dN:  -MM-               `ym:      -Md |         Version: ${HCFSCLI-Version}
                oMh           -mm-    dMo             :hNd:-----.-sMy |      For Hadoop: ${Apache-Hadoop-Version}
               .NM/           dM:     `dMs         .omNoosyhhhhhhhy/  | Build Timestamp: ${Build-Timestamp}
                oNMds/:.`    `NN.       sMh.     .hMh/                |_______________________________________

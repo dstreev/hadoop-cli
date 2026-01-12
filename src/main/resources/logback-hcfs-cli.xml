@@ -17,7 +17,10 @@
 
 <configuration>
 
-    <property name="LOGS" value="${logging.dir:-${user.home}/.hadoop-cli/logs}" />
+    <springProperty name="LOGS" source="LOGGING_DIR" defaultValue="${user.home}/.hcfs-cli/logs" />
+    <springProperty name="LOG_FILE_PREFIX" source="LOGGING_FILE_PREFIX" defaultValue="hcfs-cli" />
+    <springProperty name="LOG_THRESHOLD" source="LOGGING_THRESHOLD" defaultValue="WARN" />
+
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
@@ -30,26 +33,21 @@
 
     <appender name="RollingFile"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/${logging.filename-prefix:-hadoop-cli}.log</file>
+        <file>${LOGS}/${LOG_FILE_PREFIX}.log</file>
         <encoder
                 class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %class{1} [%t] %m%n</Pattern>
         </encoder>
-
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOGS}/archived/${logging.filename-prefix:-hadoop-cli}-%d{yyyy-MM-dd}.%i.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/${LOG_FILE_PREFIX}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
     </appender>
 
-    <!-- LOG everything at INFO level -->
-    <root level="info">
+    <!-- LOG everything at WARN level -->
+    <root level="${LOG_THRESHOLD}">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </root>

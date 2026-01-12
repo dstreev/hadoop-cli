@@ -25,22 +25,21 @@
         <fileSet>
             <directory>bin</directory>
             <includes>
-                <include>hadoopcli</include>
-                <include>JCECheck</include>
+                <include>hcfs-cli</include>
                 <include>setup.sh</include>
                 <include>DO_NOT_RUN_APP_FROM_HERE.txt</include>
             </includes>
-            <outputDirectory>hadoop-cli-install-${project.version}</outputDirectory>
+            <outputDirectory>hcfs-cli-install-${project.version}</outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/target</directory>
             <includes>
-                <include>hadoop-cli-${project.version}.jar</include>
-                <include>hadoop-cli-${project.version}-standalone.jar</include>
-                <include>hadoop-cli-${project.version}-thin.jar</include>
+                <include>hcfs-cli-${project.version}.jar</include>
+                <include>hcfs-cli-${project.version}-standalone.jar</include>
+                <include>hcfs-cli-${project.version}-thin.jar</include>
             </includes>
-            <outputDirectory>hadoop-cli-install-${project.version}/lib</outputDirectory>
+            <outputDirectory>hcfs-cli-install-${project.version}/lib</outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>
         </fileSet>
     </fileSets>

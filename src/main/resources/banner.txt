@@ -23,7 +23,7 @@
            | __ | >< | o | o | o | __/_| (__| |__ | |
            |_||_| || |__/ \_/ \_/|_|    \___|____|___|
 --------------------------------------------------------------------
-                Product: ${HadoopCLI-Title}
-                Version: ${HadoopCLI-Version}
+                Product: ${HCFSCLI-Title}
+                Version: ${HCFSCLI-Version}
              For Hadoop: ${Apache-Hadoop-Version}
 --------------------------------------------------------------------
