@@ -17,6 +17,7 @@
 package com.cloudera.utils.hadoop.shell.commands;
 
 import com.cloudera.utils.hadoop.cli.CliSession;
+import com.cloudera.utils.hadoop.cli.CommandRegistry;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.Command;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
@@ -29,8 +30,11 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Help extends AbstractCommand {
 
-    public Help(String name) {
+    private final CommandRegistry registry;
+
+    public Help(String name, CommandRegistry registry) {
         super(name);
+        this.registry = registry;
     }
 
     @Override
@@ -48,12 +52,12 @@ public class Help extends AbstractCommand {
         log(session, "Command Listing.  Use 'help <cmd>' for detailed help");
         log(session, "----------------------------------------------------");
         if (cmd.getArgs().length == 0) {
-            for (String str : session.commandList()) {
+            for (String str : registry.commandList()) {
                 log(session, StringUtils.rightPad(ANSIStyle.style(str, ANSIStyle.BOLD, ANSIStyle.FG_GREEN), 30) +
-                        "\t\t" + ANSIStyle.style(session.getCommand(str).getDescription(), ANSIStyle.FG_YELLOW));
+                        "\t\t" + ANSIStyle.style(registry.getCommand(str).getDescription(), ANSIStyle.FG_YELLOW));
             }
         } else {
-            Command command = session.getCommand(cmd.getArgs()[0]);
+            Command command = registry.getCommand(cmd.getArgs()[0]);
             logv(session, "Get Help for command: " + command.getName() + "(" + command.getClass().getName() + ")");
             printHelp(command);
         }

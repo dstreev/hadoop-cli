@@ -294,7 +294,7 @@ public class HadoopCliAppCfg {
 
             cliEnvironment.addCommand(new Env("env"));
             cliEnvironment.addCommand(new HdfsConnect("connect"));
-            cliEnvironment.addCommand(new Help("help"));
+            cliEnvironment.addCommand(new Help("help", cliEnvironment.getDefaultRegistry()));
             cliEnvironment.addCommand(new HistoryCmd("history"));
 
             // HDFS Tools
