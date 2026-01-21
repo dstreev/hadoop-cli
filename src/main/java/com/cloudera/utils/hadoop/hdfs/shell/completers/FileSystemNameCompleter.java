@@ -18,7 +18,9 @@ package com.cloudera.utils.hadoop.hdfs.shell.completers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Supplier;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Constants;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import jline.console.completer.Completer;
@@ -27,19 +29,16 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
-
 public class FileSystemNameCompleter implements Completer {
-    private final CliEnvironment env;
+    private final Supplier<CliSession> sessionSupplier;
     private boolean local = false;
 
-    public FileSystemNameCompleter(CliEnvironment env) {
-        // this.includeFiles = includeFiles;
-        this.env = env;
+    public FileSystemNameCompleter(Supplier<CliSession> sessionSupplier) {
+        this.sessionSupplier = sessionSupplier;
     }
 
-    public FileSystemNameCompleter(CliEnvironment env, boolean local) {
-        this.env = env;
+    public FileSystemNameCompleter(Supplier<CliSession> sessionSupplier, boolean local) {
+        this.sessionSupplier = sessionSupplier;
         this.local = local;
     }
 
@@ -48,8 +47,8 @@ public class FileSystemNameCompleter implements Completer {
         return target.substring(prefix.length());
     }
 
-    protected void logv(String log) {
-        if (env.isVerbose()) {
+    protected void logv(CliSession session, String log) {
+        if (session.isVerbose()) {
             System.out.println(log);
         }
     }
@@ -58,8 +57,8 @@ public class FileSystemNameCompleter implements Completer {
         System.err.println(log);
     }
 
-    protected void logd(String log) {
-        if (env.isDebug()) {
+    protected void logd(CliSession session, String log) {
+        if (session.isDebug()) {
             System.out.println(log);
         }
     }
@@ -68,16 +67,18 @@ public class FileSystemNameCompleter implements Completer {
     // Remember...  the completers don't work in the IDE (IntelliJ)
     public int complete(String buffer, final int cursor,
                         final List<CharSequence> candidates) {
+        CliSession session = sessionSupplier.get();
+        if (session == null) return 0;
 
         // Remove directives from buffer.
         String checkBuffer = buffer;
-        logd(">>> Cursor: " + cursor + " Candidates: " + candidates.toString());
+        logd(session, ">>> Cursor: " + cursor + " Candidates: " + candidates.toString());
 
         if (checkBuffer == null) {
-            logd("Buffer null Cursor: " + cursor);
+            logd(session, "Buffer null Cursor: " + cursor);
 //            checkBuffer = "./";
         } else {
-            logd("Buffer: " + buffer + " Buffer Length: " + buffer.length() + " Cursor pos: " + cursor);
+            logd(session, "Buffer: " + buffer + " Buffer Length: " + buffer.length() + " Cursor pos: " + cursor);
 
             if (checkBuffer.startsWith("-")) {
                 // If the last item is a directive, remove it.
@@ -88,7 +89,7 @@ public class FileSystemNameCompleter implements Completer {
 
         }
 
-        logd("Check Buffer: " + checkBuffer);
+        logd(session, "Check Buffer: " + checkBuffer);
 
         FileSystemState fss;
         FileSystem fs;
@@ -98,9 +99,9 @@ public class FileSystemNameCompleter implements Completer {
         Path basePath = null;
 
         if (!local)
-            fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+            fss = session.getFileSystemOrganizer().getCurrentFileSystemState();
         else
-            fss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+            fss = session.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
 
         fs = fss.getFileSystem();
         prefix = fss.getURI();
@@ -110,7 +111,7 @@ public class FileSystemNameCompleter implements Completer {
             return 0;
         }
 
-        logd("Prefix: " + prefix);
+        logd(session, "Prefix: " + prefix);
 
         Path completionDir = null;
 
@@ -144,16 +145,16 @@ public class FileSystemNameCompleter implements Completer {
             checkBuffer = "";
         }
 
-        logd("Comp. Dir: " + completionDir);
-        if (env.getFileSystemOrganizer().getDefaultOzoneFileSystemState() == fss) {
+        logd(session, "Comp. Dir: " + completionDir);
+        if (session.getFileSystemOrganizer().getDefaultOzoneFileSystemState() == fss) {
             // append the protocol
             completionDir = new Path(prefix, completionDir);
         }
 
-        logd("Comp. Dir: " + completionDir);
+        logd(session, "Comp. Dir: " + completionDir);
 
         // When we're not dealing with the default FS, we need exit.
-        if (!env.getFileSystemOrganizer().isDefaultFileSystemState(fss)) {
+        if (!session.getFileSystemOrganizer().isDefaultFileSystemState(fss)) {
             return -1;
         }
 
@@ -185,13 +186,13 @@ public class FileSystemNameCompleter implements Completer {
                 }
             }
 
-            logd("MatchedIndex: " + matchedIndex);
+            logd(session, "MatchedIndex: " + matchedIndex);
 
             // After we've handled candidate matches, we need to reset the index to
             // the original so items like 'dstreev:dstreev' as a param for
             // chmod aren't erased.
             if (buffer != null && (buffer.contains(":") || buffer.startsWith("-"))) {
-                logd("Overwriting MatchedIndex with cursor: " + cursor);
+                logd(session, "Overwriting MatchedIndex with cursor: " + cursor);
                 matchedIndex = cursor;
             }
 
