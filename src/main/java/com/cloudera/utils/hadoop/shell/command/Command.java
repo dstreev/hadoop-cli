@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.shell.command;
 
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import jline.console.completer.Completer;
 
 import org.apache.commons.cli.CommandLine;
@@ -36,7 +36,7 @@ public interface Command {
     void setErr(PrintStream err);
     void setOut(PrintStream out);
 
-    CommandReturn execute(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn);
+    CommandReturn execute(CliSession session, CommandLine cmd, CommandReturn commandReturn);
 
 //    void processCommandLine(CommandLine commandLine);
 
@@ -44,5 +44,5 @@ public interface Command {
     
     Completer getCompleter();
 
-    CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn);
+    CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn);
 }
