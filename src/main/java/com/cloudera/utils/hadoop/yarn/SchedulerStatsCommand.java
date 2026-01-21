@@ -18,7 +18,6 @@ package com.cloudera.utils.hadoop.yarn;
 
 import com.cloudera.utils.hadoop.AbstractStats;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
@@ -47,26 +46,21 @@ public class SchedulerStatsCommand extends AbstractStats {
         return "Collect Queue Stats from the YARN REST API";
     }
 
-    public SchedulerStatsCommand(String name, CliEnvironment env, Direction directionContext) {
-        super(name, env, directionContext);
-//        schedulerStats = new SchedulerStatsImpl(env.getConfig());
+    public SchedulerStatsCommand(String name, Direction directionContext) {
+        super(name, directionContext);
     }
 
-    public SchedulerStatsCommand(String name, CliEnvironment env, Direction directionContext, int directives) {
-        super(name, env, directionContext, directives);
+    public SchedulerStatsCommand(String name, Direction directionContext, int directives) {
+        super(name, directionContext, directives);
     }
 
-    public SchedulerStatsCommand(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
-        super(name, env, directionContext, directives, directivesBefore, directivesOptional);
-    }
-
-    public SchedulerStatsCommand(String name, CliEnvironment env) {
-        super(name, env);
+    public SchedulerStatsCommand(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+        super(name, directionContext, directives, directivesBefore, directivesOptional);
     }
 
     protected SchedulerStats getSchedulerStats() {
         if (schedulerStats == null)
-            schedulerStats = new SchedulerStats(env.getHadoopConfig());
+            schedulerStats = new SchedulerStats(configuration);
         return schedulerStats;
     }
 

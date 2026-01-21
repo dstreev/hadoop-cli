@@ -18,7 +18,6 @@ package com.cloudera.utils.hadoop.mapreduce;
 
 import com.cloudera.utils.hadoop.AbstractQueryTimeFrameStats;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.io.IOUtils;
@@ -47,20 +46,16 @@ public class JhsStats extends AbstractQueryTimeFrameStats {
         return "Collect Job History Server Stats for the JMX url";
     }
 
-    public JhsStats(String name, CliEnvironment env, Direction directionContext) {
-        super(name, env, directionContext);
+    public JhsStats(String name, Direction directionContext) {
+        super(name, directionContext);
     }
 
-    public JhsStats(String name, CliEnvironment env, Direction directionContext, int directives) {
-        super(name, env, directionContext, directives);
+    public JhsStats(String name, Direction directionContext, int directives) {
+        super(name, directionContext, directives);
     }
 
-    public JhsStats(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
-        super(name, env, directionContext, directives, directivesBefore, directivesOptional);
-    }
-
-    public JhsStats(String name, CliEnvironment env) {
-        super(name, env);
+    public JhsStats(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+        super(name, directionContext, directives, directivesBefore, directivesOptional);
     }
 
 

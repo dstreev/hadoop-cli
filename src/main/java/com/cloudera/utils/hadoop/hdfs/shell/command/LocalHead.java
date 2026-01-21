@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,23 +39,22 @@ public class LocalHead extends HdfsCommand {
 
     public static final int LINE_COUNT = 10;
 
-    public LocalHead(String name, CliEnvironment env) {
-        super(name, env);
+    public LocalHead(String name) {
+        super(name);
     }
 
     @Override
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         CommandReturn cr = commandReturn;
 
-        FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+        FileSystemState lfss = session.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
         FileSystem lfs = lfss.getFileSystem();
 
-        logv(env, "CWD: " + lfss.getWorkingDirectory());
+        logv(session, "CWD: " + lfss.getWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {
             int lineCount = Integer.parseInt(cmd.getOptionValue("n",
                             String.valueOf(LINE_COUNT)));
-//            Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
             Path path = new Path(lfss.getWorkingDirectory(), cmd.getArgs()[0]);
             BufferedReader reader = null;
             try {
@@ -64,12 +63,10 @@ public class LocalHead extends HdfsCommand {
                 reader = new BufferedReader(isr);
                 String line = null;
                 for (int i = 0; ((i <= lineCount) && (line = reader.readLine()) != null); i++) {
-                    log(env, line);
+                    log(session, line);
                 }
             }
             catch (IOException e) {
-//                log(env, "Error reading file '" + cmd.getArgs()[0]
-//                                + "': " + e.getMessage());
                 cr.setCode(CODE_CMD_ERROR);
                 cr.getErr().print("Error reading file '" + cmd.getArgs()[0]
                                 + "': " + e.getMessage());
@@ -86,9 +83,7 @@ public class LocalHead extends HdfsCommand {
             }
         }
         else {
-            // usage();
         }
-//        FSUtil.prompt(env);
         return cr;
     }
 

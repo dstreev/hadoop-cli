@@ -16,8 +16,8 @@
 
 package com.cloudera.utils.hadoop.shell.commands;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.Command;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
@@ -28,20 +28,14 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.lang3.StringUtils;
 
 public class Help extends AbstractCommand {
-    private final CliEnvironment env;
 
-    public Help(String name, CliEnvironment env) {
+    public Help(String name) {
         super(name);
-        this.env = env;
     }
 
     @Override
     public Completer getCompleter() {
-        StringsCompleter strCompleter = new StringsCompleter(this.env.commandList());
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(strCompleter, nullCompleter);
-
-        return completer;
+        return new NullCompleter();
     }
 
     @Override
@@ -49,24 +43,23 @@ public class Help extends AbstractCommand {
         return "Help";
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
-        log(env, "----------------------------------------------------");
-        log(env, "Command Listing.  Use 'help <cmd>' for detailed help");
-        log(env, "----------------------------------------------------");
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
+        log(session, "----------------------------------------------------");
+        log(session, "Command Listing.  Use 'help <cmd>' for detailed help");
+        log(session, "----------------------------------------------------");
         if (cmd.getArgs().length == 0) {
-            for (String str : env.commandList()) {
-                log(env, StringUtils.rightPad(ANSIStyle.style(str, ANSIStyle.BOLD, ANSIStyle.FG_GREEN), 30) +
-                        "\t\t" + ANSIStyle.style(env.getCommand(str).getDescription(), ANSIStyle.FG_YELLOW));
-//                log(env, str);
+            for (String str : session.commandList()) {
+                log(session, StringUtils.rightPad(ANSIStyle.style(str, ANSIStyle.BOLD, ANSIStyle.FG_GREEN), 30) +
+                        "\t\t" + ANSIStyle.style(session.getCommand(str).getDescription(), ANSIStyle.FG_YELLOW));
             }
         } else {
-            Command command = env.getCommand(cmd.getArgs()[0]);
-            logv(env, "Get Help for command: " + command.getName() + "(" + command.getClass().getName() + ")");
+            Command command = session.getCommand(cmd.getArgs()[0]);
+            logv(session, "Get Help for command: " + command.getName() + "(" + command.getClass().getName() + ")");
             printHelp(command);
         }
         return commandReturn;
     }
-    
+
     private void printHelp(Command cmd){
         HelpFormatter hf = new HelpFormatter();
         hf.printHelp(cmd.getUsage(), cmd.getHelpHeader(), cmd.getOptions(), cmd.getHelpFooter());

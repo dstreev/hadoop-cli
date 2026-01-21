@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop;
 
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
@@ -48,25 +48,21 @@ public abstract class AbstractQueryTimeFrameStats extends AbstractStats {
         super(name);
     }
 
-    public AbstractQueryTimeFrameStats(String name, CliEnvironment env, Direction directionContext) {
-        super(name, env, directionContext);
+    public AbstractQueryTimeFrameStats(String name, Direction directionContext) {
+        super(name, directionContext);
     }
 
-    public AbstractQueryTimeFrameStats(String name, CliEnvironment env, Direction directionContext, int directives) {
-        super(name, env, directionContext, directives);
+    public AbstractQueryTimeFrameStats(String name, Direction directionContext, int directives) {
+        super(name, directionContext, directives);
     }
 
-    public AbstractQueryTimeFrameStats(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
-        super(name, env, directionContext, directives, directivesBefore, directivesOptional);
-    }
-
-    public AbstractQueryTimeFrameStats(String name, CliEnvironment env) {
-        super(name, env);
+    public AbstractQueryTimeFrameStats(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+        super(name, directionContext, directives, directivesBefore, directivesOptional);
     }
 
     @Override
-    public CommandReturn processOptions(CliEnvironment cliEnvironment, CommandLine cmd, CommandReturn cr) {
-        cr = super.processOptions(cliEnvironment, cmd, cr);
+    public CommandReturn processOptions(CliSession session, CommandLine cmd, CommandReturn cr) {
+        cr = super.processOptions(session, cmd, cr);
 
         try {
 
@@ -132,8 +128,6 @@ public abstract class AbstractQueryTimeFrameStats extends AbstractStats {
                     cr.setCode(CODE_BAD_DATE);
                     cr.getErr().print(e.getMessage());
                     return cr;
-//                    e.printStackTrace();
-//                    return new CommandReturn(CODE_BAD_DATE, e.getMessage()); // Bad Date
                 }
                 endTime = endDate.getTime();
             } else {
@@ -195,11 +189,6 @@ public abstract class AbstractQueryTimeFrameStats extends AbstractStats {
         beginOptionGroup.addOption(lastOption);
 
         opts.addOptionGroup(beginOptionGroup);
-
-        // TODO: WIP for current stats.
-//        Option currentOption = new Option("c", "current", false, "Get Current / Active Records");
-//        currentOption.setRequired(false);
-//        beginOptionGroup.addOption(currentOption);
 
         Option endOption = new Option("e", "end", true,
                 "End time for retrieval in 'yyyy-MM-dd HH:mm:ss'");

@@ -18,7 +18,6 @@ package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.cloudera.utils.hadoop.AbstractStats;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -50,20 +49,16 @@ public class HdfsNNStats extends AbstractStats {
         return "Get Namenode Statistics from JMX URL";
     }
 
-    public HdfsNNStats(String name, CliEnvironment env, Direction directionContext) {
-        super(name, env, directionContext);
+    public HdfsNNStats(String name, Direction directionContext) {
+        super(name, directionContext);
     }
 
-    public HdfsNNStats(String name, CliEnvironment env, Direction directionContext, int directives) {
-        super(name, env, directionContext, directives);
+    public HdfsNNStats(String name, Direction directionContext, int directives) {
+        super(name, directionContext, directives);
     }
 
-    public HdfsNNStats(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
-        super(name, env, directionContext, directives, directivesBefore, directivesOptional);
-    }
-
-    public HdfsNNStats(String name, CliEnvironment env) {
-        super(name, env);
+    public HdfsNNStats(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+        super(name, directionContext, directives, directivesBefore, directivesOptional);
     }
 
     protected void getHelp() {
@@ -94,13 +89,11 @@ public class HdfsNNStats extends AbstractStats {
         // For each URL.
         for (Map.Entry<URL, Map<NamenodeJmxBean, URL>> entry : namenodeJmxUrls.entrySet()) {
             try {
-//                System.out.println("Checking URL: " + entry.getKey());
                 URLConnection statusConnection = entry.getKey().openConnection();
                 String statusJson = IOUtils.toString(statusConnection.getInputStream());
 
 
                 for (Map.Entry<NamenodeJmxBean, URL> innerEntry : entry.getValue().entrySet()) {
-//                    System.out.println(innerEntry.getKey() + ": " + innerEntry.getValue());
 
                     URLConnection httpConnection = innerEntry.getValue().openConnection();
                     String beanJson = IOUtils.toString(httpConnection.getInputStream());
@@ -200,36 +193,16 @@ public class HdfsNNStats extends AbstractStats {
 
         Option helpOption = new Option("h", "help", false, "Help");
         helpOption.setRequired(false);
-        //        Option helpOption = Option.builder("h").required(false)
-        //                .argName("help")
-        //                .desc("Help")
-        //                .hasArg(false)
-        //                .longOpt("help")
-        //                .build();
         opts.addOption(helpOption);
 
         Option formatOption = new Option("ff", "fileFormat", true,
                 "Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.");
         formatOption.setRequired(false);
-        //        Option formatOption = Option.builder("ff").required(false)
-        //                .argName("fileFormat")
-        //                .desc("Output filename format.  Value must be a pattern of 'SimpleDateFormat' format options.")
-        //                .hasArg(true)
-        //                .numberOfArgs(1)
-        //                .longOpt("fileFormat")
-        //                .build();
         opts.addOption(formatOption);
 
         Option outputOption = new Option("o", "output", true,
                 "Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.");
         outputOption.setRequired(false);
-        //        Option outputOption = Option.builder("o").required(false)
-        //                .argName("output")
-        //                .desc("Output Base Directory (HDFS) (default System.out) from which all other sub-directories are based.")
-        //                .hasArg(true)
-        //                .numberOfArgs(1)
-        //                .longOpt("output")
-        //                .build();
         opts.addOption(outputOption);
 
         return opts;

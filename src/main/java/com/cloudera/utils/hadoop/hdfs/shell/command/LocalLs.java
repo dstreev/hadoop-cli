@@ -21,8 +21,8 @@ import static com.cloudera.utils.hadoop.hdfs.shell.command.FSUtil.shortFormat;
 
 import java.io.IOException;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
@@ -32,31 +32,29 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 public class LocalLs extends HdfsCommand {
-//    private Environment env;
 
-    public LocalLs(String name, CliEnvironment env) {
-        super(name, env);
+    public LocalLs(String name) {
+        super(name);
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         try {
-            FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();
-            FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+            FileSystem localfs = session.getFileSystemOrganizer().getLocalFileSystem();
+            FileSystemState lfss = session.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
 
             Path srcPath = cmd.getArgs().length == 0 ? lfss.getWorkingDirectory() : new Path(lfss.getWorkingDirectory(), cmd.getArgs()[0]);
             FileStatus[] files = localfs.listStatus(srcPath);
             for (FileStatus file : files) {
                 if (cmd.hasOption("l")) {
-                    log(env, longFormat(file));
+                    log(session, longFormat(file));
                 }
                 else {
-                    log(env, shortFormat(file));
+                    log(session, shortFormat(file));
                 }
             }
-//            FSUtil.prompt(env);
         }
         catch (IOException e) {
-            log(env, e.getMessage());
+            log(session, e.getMessage());
         }
         return commandReturn;
     }
@@ -64,10 +62,9 @@ public class LocalLs extends HdfsCommand {
 
     @Override
     public Options getOptions() {
-        // TODO Auto-generated method stub
         Options opts = super.getOptions();
         opts.addOption("l", false, "show extended file attributes");
         return opts;
-    }  
+    }
 
 }

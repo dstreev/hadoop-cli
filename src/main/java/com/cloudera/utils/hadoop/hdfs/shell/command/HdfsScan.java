@@ -16,11 +16,9 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
-import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 import org.apache.commons.cli.CommandLine;
@@ -40,24 +38,21 @@ would do an 'ls' operation on each of the sub-directories.
 
  */
 public class HdfsScan extends HdfsCommand {
-    private CliEnvironment env;
 
-    public HdfsScan(String name, CliEnvironment env) {
-        super(name, env);
-
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
-
-        this.completer = completer;
+    public HdfsScan(String name) {
+        super(name);
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
+    @Override
+    public Completer getCompleter() {
+        return new NullCompleter();
+    }
+
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         FileSystem hdfs = null;
         CommandReturn cr = commandReturn;
         try {
-//            hdfs = (FileSystem) env.getValue(Constants.HDFS);
-            FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+            FileSystemState fss = session.getFileSystemOrganizer().getCurrentFileSystemState();
             FileSystem fs = fss.getFileSystem();
             // Run lsp -f path for a list of paths in current directory.
 
@@ -66,33 +61,29 @@ public class HdfsScan extends HdfsCommand {
             if (dir.startsWith("\"") & dir.endsWith("\"")) {
                 dir = dir.substring(1, dir.length()-1);
             }
-            logv(env, "CWD before: " + fss.getWorkingDirectory());
-//            logv(env, "CWD before(env): " + env.getRemoteWorkingDirectory());
-            logv(env, "Requested CWD: " + dir);
+            logv(session, "CWD before: " + fss.getWorkingDirectory());
+            logv(session, "Requested CWD: " + dir);
 
 
             Path newPath = null;
             if (dir.startsWith("/")) {
                 newPath = new Path(fss.getURI(), dir);
             } else {
-//                newPath = new Path(hdfs.getWorkingDirectory(), dir);
                 newPath = new Path(fss.getWorkingDirectory(), dir);
             }
 
             Path qPath = newPath.makeQualified(hdfs);
-            logv(env, "" + newPath);
+            logv(session, "" + newPath);
             if (hdfs.getFileStatus(qPath).isDir() && hdfs.exists(qPath)) {
                 hdfs.setWorkingDirectory(qPath);
             } else {
-                log(env, "No such directory: " + dir);
+                log(session, "No such directory: " + dir);
             }
 
         } catch (IOException e) {
             cr.setCode(CODE_CMD_ERROR);
             cr.getErr().print(e.getMessage());
-//            cr = new CommandReturn(CODE_CMD_ERROR, e.getMessage());
         } finally {
-//            FSUtil.prompt(env);
         }
         return cr;
     }

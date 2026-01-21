@@ -18,8 +18,8 @@ package com.cloudera.utils.hadoop.shell.commands;
 
 import java.util.Properties;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +39,9 @@ public class Env extends AbstractCommand {
         return "Review current 'env' variables";
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         if (cmd.hasOption("l") || cmd.getOptions().length == 0) {
-            Properties props = env.getProperties();
+            Properties props = session.getProperties();
             log.debug("Local Properties:");
             for (Object key : props.keySet()) {
                 log.debug("\t{}={}", key, props.get(key));
@@ -56,12 +56,12 @@ public class Env extends AbstractCommand {
             String input = cmd.getOptionValue("s");
             String inputParts[] = input.split("=");
             if (inputParts.length == 2) {
-                env.getProperties().setProperty(inputParts[0], inputParts[1]);
+                session.getProperties().setProperty(inputParts[0], inputParts[1]);
             }
         }
         if (cmd.hasOption("u")) {
             String input = cmd.getOptionValue("u");
-            env.getProperties().remove(input);
+            session.getProperties().remove(input);
         }
 
         return commandReturn;
@@ -70,8 +70,6 @@ public class Env extends AbstractCommand {
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();
-//        opts.addOption("s", "system", false, "list system properties.");
-//        opts.addOption("l", "local", false, "list local properties.");
 
         Option setOption = new Option("s", "set", true,
                 "set and environment var is the form of var=value");
