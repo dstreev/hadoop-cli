@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.shell.command;
 
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 
@@ -98,22 +98,18 @@ public abstract class AbstractCommand implements Command{
         return getName() + " [Options ...] [Args ...]";
     }
     
-    protected static void logv(CliEnvironment env, String log){
-        if(env.isVerbose()){
+    protected static void logv(CliSession session, String log) {
+        if (session.isVerbose()) {
             System.out.println(log);
         }
     }
-//
-    protected static void log(CliEnvironment env, String log){
+
+    protected static void log(CliSession session, String log) {
         System.out.println(log);
     }
-//
-//    protected static void loge(CliEnvironment env, String log){
-//        System.err.println(log);
-//    }
-//
-    protected static void logd(CliEnvironment env, String log){
-        if(env.isDebug()){
+
+    protected static void logd(CliSession session, String log) {
+        if (session.isDebug()) {
             System.out.println(log);
         }
     }
@@ -123,30 +119,20 @@ public abstract class AbstractCommand implements Command{
     }
     
     @Override
-    public CommandReturn execute(CliEnvironment env, CommandLine cmd, CommandReturn cr) {
+    public CommandReturn execute(CliSession session, CommandLine cmd, CommandReturn cr) {
         CommandReturn lclCr = cr;
         if (lclCr == null) {
             lclCr = new CommandReturn(CommandReturn.GOOD);
         }
-//            PrintStream orig = System.out;
-//            System.setOut(new PrintStream(lclCr.getBufferedOutputStream()));
-
-            try {
-
-                lclCr = implementation(env, cmd, lclCr);
-
-//                System.out.flush();
-            } catch (Throwable t) {
-                log.error("Error in Command: {}", getName(), t);
-//                t.printStackTrace();
-            } finally {
-                // Revert Buffered Output
-//                System.setOut(orig);
-            }
+        try {
+            lclCr = implementation(session, cmd, lclCr);
+        } catch (Throwable t) {
+            log.error("Error in Command: {}", getName(), t);
+        }
         return lclCr;
     }
 
     @Override
-    public abstract CommandReturn implementation(CliEnvironment env, CommandLine cmdr, CommandReturn commandReturn);
+    public abstract CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn);
 
 }
