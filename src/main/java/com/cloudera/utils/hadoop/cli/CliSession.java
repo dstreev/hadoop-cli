@@ -310,7 +310,7 @@ public class CliSession {
      */
     public static class CliSessionBuilder {
         private Configuration configuration;
-        private SessionCredentials credentials = new DefaultCredentials();
+        private SessionCredentials credentials = null;
         private CommandRegistry commandRegistry;
         private boolean verbose = false;
         private boolean debug = false;
