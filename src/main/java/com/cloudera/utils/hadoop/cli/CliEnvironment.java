@@ -190,8 +190,24 @@ public class CliEnvironment {
     // Session Management Methods
     // ============================================
 
+    /**
+     * Create a session with default configuration loaded from environment.
+     * If session already exists, returns existing session.
+     */
+    public CliSession createSession(String name) throws IOException {
+        // Check for existing session first
+        CliSession existing = sessions.get(name);
+        if (existing != null) {
+            log.debug("Returning existing session: {}", name);
+            return existing;
+        }
+
+        Configuration config = loadDefaultConfiguration();
+        return createSession(name, config, null);
+    }
+
     public CliSession createSession(String name, Configuration config) throws IOException {
-        return createSession(name, config, new DefaultCredentials());
+        return createSession(name, config, null);
     }
 
     public CliSession createSession(String name, Configuration config, SessionCredentials credentials) throws
