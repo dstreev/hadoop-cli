@@ -16,7 +16,6 @@
 
 package com.cloudera.utils.hadoop.cli;
 
-import com.cloudera.utils.hadoop.cli.session.DefaultCredentials;
 import com.cloudera.utils.hadoop.cli.session.SessionCredentials;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
@@ -97,48 +96,28 @@ public class CliEnvironment {
     public synchronized void init() {
         if (!isDisabled() && !isInitialized()) {
             try {
-                log.info("Initializing Hadoop Configuration");
-                // Get a value that over rides the default, if nothing then use default.
-                String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
+                log.info("Initializing CliEnvironment");
 
-                org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration(true);
-                this.defaultHadoopConfig = config;
+                // Load and cache default configuration
+                this.defaultHadoopConfig = loadDefaultConfiguration();
 
-                File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
-                for (String file : HADOOP_CONF_FILES) {
-                    File f = new File(hadoopConfDir, file);
-                    if (f.exists()) {
-                        config.addResource(new org.apache.hadoop.fs.Path(f.getAbsolutePath()));
-                    }
-                }
-
-                // hadoop.security.authentication
-                if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
-                    UserGroupInformation.setConfiguration(config);
+                // Set up Kerberos user property if applicable
+                String authMode = defaultHadoopConfig.get("hadoop.security.authentication", "simple");
+                if ("kerberos".equalsIgnoreCase(authMode)) {
+                    UserGroupInformation.setConfiguration(defaultHadoopConfig);
                     getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
                 }
 
-                getProperties().stringPropertyNames().forEach(k -> {
-                    config.set(k, getProperties().getProperty(k));
-                });
-
-                org.apache.hadoop.fs.FileSystem hdfs = null;
-                try {
-                    hdfs = org.apache.hadoop.fs.FileSystem.get(config);
-                } catch (Throwable t) {
-                    log.error("Error connecting to HDFS: {}", t.getMessage());
-                }
-
                 // Create default session
-                createSession(defaultSessionName, defaultHadoopConfig, new DefaultCredentials());
+                createSession(defaultSessionName, defaultHadoopConfig, null);
 
                 setInitialized(Boolean.TRUE);
+                log.info("CliEnvironment initialized successfully");
 
             } catch (IOException e) {
-                log.error(e.getMessage());
+                log.error("Failed to initialize CliEnvironment: {}", e.getMessage());
             }
         }
-
     }
 
     /**
