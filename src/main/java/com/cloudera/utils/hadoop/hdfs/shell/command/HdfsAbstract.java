@@ -16,51 +16,40 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
 public abstract class HdfsAbstract extends AbstractCommand {
 
-    protected CliEnvironment env;
-    
-    protected PathBuilder pathBuilder;
     protected PathDirectives pathDirectives;
 
     public HdfsAbstract(String name) {
         super(name);
     }
 
-    public HdfsAbstract(String name, CliEnvironment env, Direction directionContext ) {
+    public HdfsAbstract(String name, Direction directionContext) {
         super(name);
         pathDirectives = new PathDirectives(directionContext);
-        pathBuilder = new PathBuilder(env, pathDirectives);
-        this.env = env;
     }
 
-    public HdfsAbstract(String name, CliEnvironment env, Direction directionContext, int directives ) {
+    public HdfsAbstract(String name, Direction directionContext, int directives) {
         super(name);
-        this.env = env;
         pathDirectives = new PathDirectives(directionContext, directives);
-        pathBuilder = new PathBuilder(env, pathDirectives);
     }
 
-    public HdfsAbstract(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
+    public HdfsAbstract(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
         super(name);
-        this.env = env;
         pathDirectives = new PathDirectives(directionContext, directives, directivesBefore, directivesOptional);
-        pathBuilder = new PathBuilder(env, pathDirectives);
     }
 
-    public HdfsAbstract(String name, CliEnvironment env) {
-        super(name);
-        this.env = env;
-        this.pathBuilder = new PathBuilder(env);
-    }
-
-    public CliEnvironment getEnv() {
-        return env;
+    protected PathBuilder getPathBuilder(CliSession session) {
+        if (pathDirectives != null) {
+            return new PathBuilder(session, pathDirectives);
+        } else {
+            return new PathBuilder(session);
+        }
     }
 
     @Override
