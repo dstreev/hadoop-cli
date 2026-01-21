@@ -235,6 +235,17 @@ public class CliEnvironment {
         return sessions.get(name);
     }
 
+    /**
+     * Get existing session by name, or create with defaults if not found.
+     */
+    public CliSession getOrCreateSession(String name) throws IOException {
+        CliSession session = sessions.get(name);
+        if (session == null) {
+            session = createSession(name);
+        }
+        return session;
+    }
+
     public CliSession getDefaultSession() {
         return sessions.get(defaultSessionName);
     }
