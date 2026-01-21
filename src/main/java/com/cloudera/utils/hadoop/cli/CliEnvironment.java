@@ -32,7 +32,10 @@ import org.apache.hadoop.fs.CliFsShell;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -138,6 +141,51 @@ public class CliEnvironment {
 
     }
 
+    /**
+     * Load Hadoop configuration from environment with fallback.
+     * Priority: HADOOP_CONF_DIR env → /etc/hadoop/conf → Hadoop defaults
+     */
+    private Configuration loadDefaultConfiguration() {
+        Configuration config = new Configuration(true);
+
+        String hadoopConfDir = System.getenv(HADOOP_CONF_DIR);
+
+        if (hadoopConfDir != null) {
+            File confDir = new File(hadoopConfDir).getAbsoluteFile();
+            if (confDir.exists() && confDir.isDirectory()) {
+                log.info("Loading Hadoop configuration from HADOOP_CONF_DIR: {}", hadoopConfDir);
+                loadConfigFilesFromDir(config, confDir);
+            } else {
+                log.warn("HADOOP_CONF_DIR set to '{}' but directory does not exist. Using Hadoop defaults.", hadoopConfDir);
+            }
+        } else {
+            File defaultConfDir = new File("/etc/hadoop/conf").getAbsoluteFile();
+            if (defaultConfDir.exists() && defaultConfDir.isDirectory()) {
+                log.info("Loading Hadoop configuration from /etc/hadoop/conf");
+                loadConfigFilesFromDir(config, defaultConfDir);
+            } else {
+                log.info("No Hadoop configuration directory found. Using Hadoop defaults.");
+            }
+        }
+
+        // Apply any properties set on CliEnvironment
+        getProperties().stringPropertyNames().forEach(k -> {
+            config.set(k, getProperties().getProperty(k));
+        });
+
+        return config;
+    }
+
+    private void loadConfigFilesFromDir(Configuration config, File confDir) {
+        for (String file : HADOOP_CONF_FILES) {
+            File f = new File(confDir, file);
+            if (f.exists()) {
+                log.debug("Adding configuration resource: {}", f.getAbsolutePath());
+                config.addResource(new org.apache.hadoop.fs.Path(f.getAbsolutePath()));
+            }
+        }
+    }
+
     // ============================================
     // Session Management Methods
     // ============================================
@@ -146,17 +194,23 @@ public class CliEnvironment {
         return createSession(name, config, new DefaultCredentials());
     }
 
-    public CliSession createSession(String name, Configuration config, SessionCredentials credentials) throws IOException {
+    public CliSession createSession(String name, Configuration config, SessionCredentials credentials) throws
+            IOException {
         // Attempt to lookup a session by name before creating one.
+        CliSession existingSession = sessions.get(name);
+        if (existingSession != null) {
+            return existingSession;
+        }
+
         CliSession session = CliSession.builder()
-            .withConfiguration(config)
-            .withCredentials(credentials)
-            .withCommandRegistry(registry)
-            .withVerbose(verbose)
-            .withDebug(debug)
-            .withSilent(silent)
-            .withProperties(properties)
-            .build();
+                .withConfiguration(config)
+                .withCredentials(credentials)
+                .withCommandRegistry(registry)
+                .withVerbose(verbose)
+                .withDebug(debug)
+                .withSilent(silent)
+                .withProperties(properties)
+                .build();
         sessions.put(name, session);
         return session;
     }
@@ -363,7 +417,7 @@ public class CliEnvironment {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(setFile));
                 String line = null;
-                int[] status = {0,0};
+                int[] status = {0, 0};
 
                 log.info(ANSI_RESET + "[" + ANSI_GREEN + " success " + ANSI_RESET + "/" + ANSI_RED +
                         " failures " + ANSI_RESET + "] <last command>");
@@ -380,7 +434,7 @@ public class CliEnvironment {
                         CommandReturn cr = processInput(line2);
                         if (!cr.isError()) {
                             status[0] += 1;
-                            if ( cr.getReturn() != null) {
+                            if (cr.getReturn() != null) {
                                 log.info(ANSI_GREEN + cr.getReturn() + ANSI_RESET);
                                 log.info("");
                             }
@@ -396,9 +450,9 @@ public class CliEnvironment {
                         sb.append(ANSI_RESET + "[" + ANSI_GREEN + Integer.toString(status[0]) + ANSI_RESET + "/" + ANSI_RED +
                                 Integer.toString(status[1]) + ANSI_RESET + "] ");
                         if (!cr.isError()) {
-                            sb.append(ANSI_RESET + "<" + ANSI_GREEN + line2 +  ANSI_RESET + ">");
+                            sb.append(ANSI_RESET + "<" + ANSI_GREEN + line2 + ANSI_RESET + ">");
                         } else {
-                            sb.append("<" + ANSI_RED + line2 +  ANSI_RED + ">\n");
+                            sb.append("<" + ANSI_RED + line2 + ANSI_RED + ">\n");
                         }
                         log.info(sb.toString());
                     }
