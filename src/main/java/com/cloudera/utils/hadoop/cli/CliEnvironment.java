@@ -82,9 +82,14 @@ public class CliEnvironment {
 
     // Session management
     private Map<String, CliSession> sessions = new ConcurrentHashMap<>();
-    private CommandRegistry defaultRegistry = new CommandRegistry();
     private String defaultSessionName = "default";
     private String currentSessionName = "default";
+
+    private CommandRegistry registry = new CommandRegistry();
+
+    public CliEnvironment(CommandRegistry registry) {
+        this.registry = registry;
+    }
 
     public synchronized void init() {
         if (!isDisabled() && !isInitialized()) {
@@ -142,10 +147,11 @@ public class CliEnvironment {
     }
 
     public CliSession createSession(String name, Configuration config, SessionCredentials credentials) throws IOException {
+        // Attempt to lookup a session by name before creating one.
         CliSession session = CliSession.builder()
             .withConfiguration(config)
             .withCredentials(credentials)
-            .withCommandRegistry(defaultRegistry)
+            .withCommandRegistry(registry)
             .withVerbose(verbose)
             .withDebug(debug)
             .withSilent(silent)
@@ -184,7 +190,7 @@ public class CliEnvironment {
     }
 
     public CommandRegistry getDefaultRegistry() {
-        return defaultRegistry;
+        return registry;
     }
 
     // ============================================
@@ -199,8 +205,8 @@ public class CliEnvironment {
         return getCurrentSession().getFileSystemOrganizer();
     }
 
-    public void addCommand(Command cmd) {
-        defaultRegistry.register(cmd);
+    public void register(Command cmd) {
+        registry.register(cmd);
     }
 
     public String getPrompt() {
@@ -214,11 +220,11 @@ public class CliEnvironment {
     }
 
     public Command getCommand(String name) {
-        return defaultRegistry.getCommand(name);
+        return registry.getCommand(name);
     }
 
     public Set<String> commandList() {
-        return defaultRegistry.commandList();
+        return registry.commandList();
     }
 
     public Object getValue(String key) {

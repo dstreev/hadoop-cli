@@ -17,10 +17,13 @@
 package com.cloudera.utils.hadoop.cli;
 
 import com.cloudera.utils.hadoop.shell.command.Command;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+@Component
 
 /**
  * Registry for CLI commands. Extracted from CliEnvironment to allow
