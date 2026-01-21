@@ -82,7 +82,7 @@ public class Shell {
 
         // Attempt to change to the default home directory.
         cliEnvironment.processInput("cd "
-                + cliEnvironment.getFileSystemOrganizer().getDefaultFileSystemState().getHomeDir(cliEnvironment));
+                + cliEnvironment.getFileSystemOrganizer().getDefaultFileSystemState().getHomeDir(cliEnvironment.getCurrentSession()));
 
         acceptCommands(reader, cliEnvironment);
 

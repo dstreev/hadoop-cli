@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsConnect;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.hadoop.fs.FileSystem;
@@ -37,9 +37,9 @@ public class FileSystemState {
     private Path workingDirectory = null;
     private Date lastAccessed = null;
 
-    public String getHomeDir(CliEnvironment cliEnvironment) {
+    public String getHomeDir(CliSession session) {
         StringBuilder sb = new StringBuilder();
-        String userName = cliEnvironment.getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
+        String userName = session.getProperties().getProperty(HdfsConnect.CURRENT_USER_PROP, System.getProperty("user.name"));
         if (fileSystem instanceof DistributedFileSystem) {
             String DISTRIBUTED_USER_HOME_BASE = "/user";
             return DISTRIBUTED_USER_HOME_BASE + "/" + userName;

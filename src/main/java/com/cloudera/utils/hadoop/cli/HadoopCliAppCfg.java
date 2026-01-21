@@ -231,57 +231,55 @@ public class HadoopCliAppCfg {
         return args -> {
 //            setBannerResource("/hadoop_banner_0.txt");
 
-            cliEnvironment.addCommand(new HdfsCd("cd", cliEnvironment));
-
-            cliEnvironment.addCommand(new HdfsCd("cd", cliEnvironment));
+            cliEnvironment.addCommand(new HdfsCd("cd"));
             cliEnvironment.addCommand(new HdfsPwd("pwd"));
 
             // remote local
-            cliEnvironment.addCommand(new HdfsCommand("get", cliEnvironment, Direction.REMOTE_LOCAL));
-            cliEnvironment.addCommand(new HdfsCommand("copyFromLocal", cliEnvironment, Direction.LOCAL_REMOTE));
+            cliEnvironment.addCommand(new HdfsCommand("get", Direction.REMOTE_LOCAL));
+            cliEnvironment.addCommand(new HdfsCommand("copyFromLocal", Direction.LOCAL_REMOTE));
             // local remote
-            cliEnvironment.addCommand(new HdfsCommand("put", cliEnvironment, Direction.LOCAL_REMOTE));
-            cliEnvironment.addCommand(new HdfsCommand("copyToLocal", cliEnvironment, Direction.REMOTE_LOCAL));
+            cliEnvironment.addCommand(new HdfsCommand("put", Direction.LOCAL_REMOTE));
+            cliEnvironment.addCommand(new HdfsCommand("copyToLocal", Direction.REMOTE_LOCAL));
             // src dest
-            cliEnvironment.addCommand(new HdfsCommand("cp", cliEnvironment, Direction.REMOTE_REMOTE));
+            cliEnvironment.addCommand(new HdfsCommand("cp", Direction.REMOTE_REMOTE));
 
             // amend to context path, if present
-            cliEnvironment.addCommand(new HdfsCommand("chown", cliEnvironment, Direction.NONE, 1));
-            cliEnvironment.addCommand(new HdfsCommand("chmod", cliEnvironment, Direction.NONE, 1));
-            cliEnvironment.addCommand(new HdfsCommand("chgrp", cliEnvironment, Direction.NONE, 1));
+            cliEnvironment.addCommand(new HdfsCommand("chown", Direction.NONE, 1));
+            cliEnvironment.addCommand(new HdfsCommand("chmod", Direction.NONE, 1));
+            cliEnvironment.addCommand(new HdfsCommand("chgrp", Direction.NONE, 1));
 
-            cliEnvironment.addCommand(new HdfsAllowSnapshot("allowSnapshot", cliEnvironment, Direction.NONE, 1, false, true));
-            cliEnvironment.addCommand(new HdfsDisallowSnapshot("disallowSnapshot", cliEnvironment, Direction.NONE, 1, false, true));
-            cliEnvironment.addCommand(new HdfsLsSnapshottableDir("lsSnapshottableDir", cliEnvironment, Direction.NONE, 1, false, true));
+            cliEnvironment.addCommand(new HdfsAllowSnapshot("allowSnapshot", Direction.NONE, 1, false, true));
+            cliEnvironment.addCommand(new HdfsDisallowSnapshot("disallowSnapshot", Direction.NONE, 1, false, true));
+            cliEnvironment.addCommand(new HdfsLsSnapshottableDir("lsSnapshottableDir", Direction.NONE, 1, false, true));
 
-            cliEnvironment.addCommand(new HdfsCommand("createSnapshot", cliEnvironment));
-            cliEnvironment.addCommand(new HdfsCommand("deleteSnapshot", cliEnvironment));
-            cliEnvironment.addCommand(new HdfsCommand("renameSnapshot", cliEnvironment));
-            cliEnvironment.addCommand(new SnapshotDiff("snapshotDiff", cliEnvironment));
+            cliEnvironment.addCommand(new HdfsCommand("createSnapshot"));
+            cliEnvironment.addCommand(new HdfsCommand("deleteSnapshot"));
+            cliEnvironment.addCommand(new HdfsCommand("renameSnapshot"));
+            cliEnvironment.addCommand(new SnapshotDiff("snapshotDiff"));
 
-            cliEnvironment.addCommand(new HdfsCommand("du", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("df", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("dus", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("ls", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("lsr", cliEnvironment, Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("du", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("df", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("dus", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("ls", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("lsr", Direction.NONE));
 //        env.addCommand(new HdfsCommand("find", env, Direction.NONE, 1, false));
 
-            cliEnvironment.addCommand(new HdfsCommand("mkdir", cliEnvironment, Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("mkdir", Direction.NONE));
 
-            cliEnvironment.addCommand(new HdfsCommand("count", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("stat", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("tail", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("head", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("touchz", cliEnvironment, Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("count", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("stat", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("tail", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("head", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("touchz", Direction.NONE));
 
-            cliEnvironment.addCommand(new HdfsCommand("rm", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("rmdir", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("mv", cliEnvironment, Direction.REMOTE_REMOTE));
-            cliEnvironment.addCommand(new HdfsCommand("cat", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("test", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("text", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("touchz", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new HdfsCommand("checksum", cliEnvironment, Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("rm", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("rmdir", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("mv", Direction.REMOTE_REMOTE));
+            cliEnvironment.addCommand(new HdfsCommand("cat", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("test", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("text", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("touchz", Direction.NONE));
+            cliEnvironment.addCommand(new HdfsCommand("checksum", Direction.NONE));
 
 //        addCommand(new HdfsScan("scan", cliEnvironment));
 
@@ -296,37 +294,37 @@ public class HadoopCliAppCfg {
 
             cliEnvironment.addCommand(new Env("env"));
             cliEnvironment.addCommand(new HdfsConnect("connect"));
-            cliEnvironment.addCommand(new Help("help", cliEnvironment));
+            cliEnvironment.addCommand(new Help("help"));
             cliEnvironment.addCommand(new HistoryCmd("history"));
 
             // HDFS Tools
-            cliEnvironment.addCommand(new HdfsLsPlus("lsp", cliEnvironment, Direction.NONE));
+            cliEnvironment.addCommand(new HdfsLsPlus("lsp", Direction.NONE));
 //        addCommand(new HdfsNNStats("nnstat", cliEnvironment, Direction.NONE));
 
-            cliEnvironment.addCommand(new HdfsSource("source", cliEnvironment));
+            cliEnvironment.addCommand(new HdfsSource("source"));
 
             // MapReduce Tools
             // TODO: Add back once the field mappings are completed.
 //        addCommand(new JhsStats("jhsstat", cliEnvironment, Direction.NONE));
 
             // Yarn Tools
-            cliEnvironment.addCommand(new ContainerStatsCommand("cstat", cliEnvironment, Direction.NONE));
-            cliEnvironment.addCommand(new SchedulerStatsCommand("sstat", cliEnvironment, Direction.NONE));
+            cliEnvironment.addCommand(new ContainerStatsCommand("cstat", Direction.NONE));
+            cliEnvironment.addCommand(new SchedulerStatsCommand("sstat", Direction.NONE));
 
             cliEnvironment.addCommand(new Exit("exit"));
-            cliEnvironment.addCommand(new LocalLs("lls", cliEnvironment));
+            cliEnvironment.addCommand(new LocalLs("lls"));
             cliEnvironment.addCommand(new LocalPwd("lpwd"));
-            cliEnvironment.addCommand(new LocalCd("lcd", cliEnvironment));
+            cliEnvironment.addCommand(new LocalCd("lcd"));
 
-            cliEnvironment.addCommand(new LocalHead("lhead", cliEnvironment));
-            cliEnvironment.addCommand(new LocalCat("lcat", cliEnvironment));
-            cliEnvironment.addCommand(new LocalMkdir("lmkdir", cliEnvironment));
-            cliEnvironment.addCommand(new LocalRm("lrm", cliEnvironment));
+            cliEnvironment.addCommand(new LocalHead("lhead"));
+            cliEnvironment.addCommand(new LocalCat("lcat"));
+            cliEnvironment.addCommand(new LocalMkdir("lmkdir"));
+            cliEnvironment.addCommand(new LocalRm("lrm"));
 
-            cliEnvironment.addCommand(new Use("use", cliEnvironment));
-            cliEnvironment.addCommand(new com.cloudera.utils.hadoop.hdfs.shell.command.List("list", cliEnvironment));
-            cliEnvironment.addCommand(new com.cloudera.utils.hadoop.hdfs.shell.command.List("nss", cliEnvironment));
-            cliEnvironment.addCommand(new List("namespaces", cliEnvironment));
+            cliEnvironment.addCommand(new Use("use"));
+            cliEnvironment.addCommand(new com.cloudera.utils.hadoop.hdfs.shell.command.List("list"));
+            cliEnvironment.addCommand(new com.cloudera.utils.hadoop.hdfs.shell.command.List("nss"));
+            cliEnvironment.addCommand(new List("namespaces"));
         };
     }
 

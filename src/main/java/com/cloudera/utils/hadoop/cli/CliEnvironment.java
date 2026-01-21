@@ -16,6 +16,8 @@
 
 package com.cloudera.utils.hadoop.cli;
 
+import com.cloudera.utils.hadoop.cli.session.DefaultCredentials;
+import com.cloudera.utils.hadoop.cli.session.SessionCredentials;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.Command;
@@ -33,6 +35,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,9 +69,9 @@ public class CliEnvironment {
     private boolean initialized = Boolean.FALSE;
     private String template = null;
     private String templateDelimiter = ",";
-//    private FileSystemOrganizer fileSystemOrganizer = null;
 
-    private Configuration hadoopConfig = null;
+    // Default Hadoop configuration used to create sessions
+    private Configuration defaultHadoopConfig = null;
 
     private ConsoleReader consoleReader = null;
 
@@ -77,19 +80,11 @@ public class CliEnvironment {
     private Map<String, Command> commands = new TreeMap<String, Command>();
     private CommandLineParser parser = new PosixParser();
 
-    private ThreadLocal<CliSession> sessionContext = new ThreadLocal<CliSession>();
-
-    private CliSession getSessionContext() {
-        CliSession context = sessionContext.get();
-        if (context == null) {
-            log.debug("Creation Session Context");
-            CliSession cliSession = new CliSession();
-            cliSession.init(getHadoopConfig());
-            sessionContext.set(cliSession);
-            return cliSession;
-        }
-        return context;
-    }
+    // Session management
+    private Map<String, CliSession> sessions = new ConcurrentHashMap<>();
+    private CommandRegistry defaultRegistry = new CommandRegistry();
+    private String defaultSessionName = "default";
+    private String currentSessionName = "default";
 
     public synchronized void init() {
         if (!isDisabled() && !isInitialized()) {
@@ -99,7 +94,7 @@ public class CliEnvironment {
                 String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
 
                 org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration(true);
-                setHadoopConfig(config);
+                this.defaultHadoopConfig = config;
 
                 File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
                 for (String file : HADOOP_CONF_FILES) {
@@ -108,9 +103,6 @@ public class CliEnvironment {
                         config.addResource(new org.apache.hadoop.fs.Path(f.getAbsolutePath()));
                     }
                 }
-                // disable s3a fs cache
-//                config.set("fs.s3a.impl.disable.cache", "true");
-//                config.set("fs.s3a.bucket.probe","0");
 
                 // hadoop.security.authentication
                 if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
@@ -122,15 +114,16 @@ public class CliEnvironment {
                     config.set(k, getProperties().getProperty(k));
                 });
 
-//                this.fileSystemOrganizer = fileSystemOrganizer;
-//                    fileSystemOrganizer.init(config);
-
                 org.apache.hadoop.fs.FileSystem hdfs = null;
                 try {
                     hdfs = org.apache.hadoop.fs.FileSystem.get(config);
                 } catch (Throwable t) {
                     log.error("Error connecting to HDFS: {}", t.getMessage());
                 }
+
+                // Create default session
+                createSession(defaultSessionName, defaultHadoopConfig, new DefaultCredentials());
+
                 setInitialized(Boolean.TRUE);
 
             } catch (IOException e) {
@@ -140,34 +133,92 @@ public class CliEnvironment {
 
     }
 
+    // ============================================
+    // Session Management Methods
+    // ============================================
+
+    public CliSession createSession(String name, Configuration config) throws IOException {
+        return createSession(name, config, new DefaultCredentials());
+    }
+
+    public CliSession createSession(String name, Configuration config, SessionCredentials credentials) throws IOException {
+        CliSession session = CliSession.builder()
+            .withConfiguration(config)
+            .withCredentials(credentials)
+            .withCommandRegistry(defaultRegistry)
+            .withVerbose(verbose)
+            .withDebug(debug)
+            .withSilent(silent)
+            .withProperties(properties)
+            .build();
+        sessions.put(name, session);
+        return session;
+    }
+
+    public CliSession getSession(String name) {
+        return sessions.get(name);
+    }
+
+    public CliSession getDefaultSession() {
+        return sessions.get(defaultSessionName);
+    }
+
+    public CliSession getCurrentSession() {
+        return sessions.get(currentSessionName);
+    }
+
+    public void setCurrentSession(String name) {
+        if (sessions.containsKey(name)) {
+            this.currentSessionName = name;
+        }
+    }
+
+    public void removeSession(String name) {
+        if (!name.equals(defaultSessionName)) {
+            sessions.remove(name);
+        }
+    }
+
+    public Set<String> listSessions() {
+        return sessions.keySet();
+    }
+
+    public CommandRegistry getDefaultRegistry() {
+        return defaultRegistry;
+    }
+
+    // ============================================
+    // Backward Compatibility Methods (delegate to current session)
+    // ============================================
+
     public CliFsShell getShell() {
-        log.debug("Getting Shell");
-        CliSession context = getSessionContext();
-        return context.getShell();
+        return getCurrentSession().getShell();
     }
 
     public FileSystemOrganizer getFileSystemOrganizer() {
-        log.debug("Getting FileSystemOrganizer");
-        CliSession context = getSessionContext();
-        log.trace("Current FileSystem {}: ", context.getFileSystemOrganizer().getCurrentFileSystemState().getFileSystem().getUri());
-        log.trace("Current FileSystem Working Directory: {}", context.getFileSystemOrganizer().getCurrentFileSystemState().getWorkingDirectory());
-        return context.getFileSystemOrganizer();
+        return getCurrentSession().getFileSystemOrganizer();
     }
 
     public void addCommand(Command cmd) {
-        this.commands.put(cmd.getName(), cmd);
+        defaultRegistry.register(cmd);
     }
 
     public String getPrompt() {
-        return getSessionContext().getFileSystemOrganizer().getPrompt();
+        CliSession session = getCurrentSession();
+        return session != null ? session.getPrompt() : defaultPrompt;
+    }
+
+    public Configuration getHadoopConfig() {
+        CliSession session = getCurrentSession();
+        return session != null ? session.getHadoopConfig() : defaultHadoopConfig;
     }
 
     public Command getCommand(String name) {
-        return this.commands.get(name);
+        return defaultRegistry.getCommand(name);
     }
 
     public Set<String> commandList() {
-        return this.commands.keySet();
+        return defaultRegistry.commandList();
     }
 
     public Object getValue(String key) {
@@ -246,7 +297,7 @@ public class CliEnvironment {
             CommandLine cl = parse(command, cmdArgs);
             if (cl != null) {
                 try {
-                    cr = command.execute(this, cl, cr);
+                    cr = command.execute(getCurrentSession(), cl, cr);
                 } catch (Throwable e) {
                     log.error("Command failed with error: {}", e.getMessage());
                     // TODO: Does this need to go to the screen?
@@ -263,57 +314,10 @@ public class CliEnvironment {
     }
 
     public CommandReturn processInput(String line) throws DisabledException {
-        // Check for Pipelining.
-        // Pipelining are used to string commands together.
-        // https://en.wikipedia.org/wiki/Pipeline_%28Unix%29
-
-        // Substitute Variables
-        // Add space to end in order to help env-var discovery
-        String adjustVarLine = substituteVariables(line + " ");
-
-        /*
-        This pipelining works a bit different in the sense the downstream function does
-        NOT take a stream.  So we need to iterate through the previous functions output
-        and repeatively call the next function in the pipeline.
-
-        At this time, the pipeline only support 1 redirect.
-         */
-        String splitRegEx = "\\|(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)";
-        String[] cmds = adjustVarLine.split(splitRegEx);
-        if (cmds.length > 2) {
-            CommandReturn crLength = new CommandReturn(CommandReturn.BAD);
-            crLength.getErr().print("Only support single depth pipeline at this time.");
-            return crLength;
+        if (disabled) {
+            throw new DisabledException("CLI Environment is disabled.");
         }
-        CommandReturn previousCR = null;
-        for (String command : cmds) {
-            if (previousCR == null) {
-                // First time thru
-                previousCR = processCommand(command, null);
-            } else {
-                BufferedReader bufferedReader = new BufferedReader(new StringReader(previousCR.getReturn()));
-                CommandReturn innerCR = new CommandReturn(CommandReturn.GOOD);
-                while (true) {
-                    try {
-                        if ((adjustVarLine = bufferedReader.readLine()) == null) break;
-                    } catch (IOException e) {
-//                        e.printStackTrace();
-                        break;
-                    }
-                    // Check line for spaces.  If it has them, quote it.
-                    String adjustedLine = null;
-                    if (adjustVarLine.contains(" ")) {
-                        adjustedLine = "\"" + adjustVarLine + "\"";
-                    } else {
-                        adjustedLine = adjustVarLine;
-                    }
-                    String pipedCommand = command.trim() + " " + adjustedLine;
-                    innerCR = processCommand(pipedCommand, innerCR);
-                }
-                previousCR = innerCR;
-            }
-        }
-        return previousCR;
+        return getCurrentSession().processInput(line);
     }
 
     public void runFile(String inSet, String template, String delimiter) throws DisabledException {
