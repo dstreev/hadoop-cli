@@ -73,20 +73,39 @@ public class CliSession {
     }
 
     public void init() throws IOException {
-        this.ugi = credentials.getUGI();
+        String authMode = hadoopConfig.get("hadoop.security.authentication", "simple");
+        boolean kerberosEnabled = "kerberos".equalsIgnoreCase(authMode);
 
-        try {
-            ugi.doAs((PrivilegedExceptionAction<Void>) () -> {
-                this.shell = new CliFsShell(hadoopConfig);
-                this.shell.init();
-                this.fileSystemOrganizer = new FileSystemOrganizer();
-                this.fileSystemOrganizer.init(hadoopConfig);
-                return null;
-            });
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException("Initialization interrupted", e);
+        if (kerberosEnabled) {
+            // Kerberos mode - use UGI
+            if (credentials != null) {
+                this.ugi = credentials.getUGI();
+            } else {
+                UserGroupInformation.setConfiguration(hadoopConfig);
+                this.ugi = UserGroupInformation.getLoginUser();
+            }
+
+            try {
+                ugi.doAs((PrivilegedExceptionAction<Void>) () -> {
+                    initializeShellAndFileSystem();
+                    return null;
+                });
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IOException("Initialization interrupted", e);
+            }
+        } else {
+            // Simple auth - no UGI wrapping
+            this.ugi = null;
+            initializeShellAndFileSystem();
         }
+    }
+
+    private void initializeShellAndFileSystem() throws IOException {
+        this.shell = new CliFsShell(hadoopConfig);
+        this.shell.init();
+        this.fileSystemOrganizer = new FileSystemOrganizer();
+        this.fileSystemOrganizer.init(hadoopConfig);
     }
 
     public CliFsShell getShell() {
@@ -152,14 +171,20 @@ public class CliSession {
     }
 
     public CommandReturn processCommand(String line, CommandReturn commandReturn) throws DisabledException {
-        try {
-            return ugi.doAs((PrivilegedExceptionAction<CommandReturn>) () ->
-                processCommandInternal(line, commandReturn));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new DisabledException("Command interrupted");
-        } catch (IOException e) {
-            throw new DisabledException("IO error: " + e.getMessage());
+        if (ugi != null) {
+            // Kerberos mode - wrap in UGI
+            try {
+                return ugi.doAs((PrivilegedExceptionAction<CommandReturn>) () ->
+                    processCommandInternal(line, commandReturn));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new DisabledException("Command interrupted");
+            } catch (IOException e) {
+                throw new DisabledException("IO error: " + e.getMessage());
+            }
+        } else {
+            // Simple auth - direct call
+            return processCommandInternal(line, commandReturn);
         }
     }
 
