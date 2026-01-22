@@ -18,8 +18,8 @@ package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import java.io.IOException;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
@@ -36,27 +36,26 @@ public class LocalMkdir extends HdfsCommand {
 
     public static final int LINE_COUNT = 10;
 
-    public LocalMkdir(String name, CliEnvironment env) {
-        super(name, env);
+    public LocalMkdir(String name) {
+        super(name);
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
-        FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
+        FileSystemState lfss = session.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
         FileSystem lfs = lfss.getFileSystem();
 
-        AbstractCommand.logv(env, "CWD: " + lfss.getWorkingDirectory());
-//        logv(env, "CWD(env): " + fss.getWorkingDirectory());
+        AbstractCommand.logv(session, "CWD: " + lfss.getWorkingDirectory());
 
         if (cmd.getArgs().length == 1) {
             Path path = new Path(lfss.getWorkingDirectory(), cmd.getArgs()[0]);
 
             try {
-                AbstractCommand.logv(env, "Create directory: " + path);
+                AbstractCommand.logv(session, "Create directory: " + path);
                 lfs.mkdirs(path);
 
             }
             catch (IOException e) {
-                AbstractCommand.log(env, "Error creating directory '" + cmd.getArgs()[0]
+                AbstractCommand.log(session, "Error creating directory '" + cmd.getArgs()[0]
                                 + "': " + e.getMessage());
             }
         }

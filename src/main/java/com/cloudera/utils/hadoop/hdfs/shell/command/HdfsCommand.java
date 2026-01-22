@@ -16,20 +16,17 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.fs.CliFsShell;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
@@ -39,7 +36,7 @@ import java.util.Arrays;
 public class HdfsCommand extends HdfsAbstract {
 
     public HdfsCommand(String name) {
-        this(name, null, Direction.NONE);
+        this(name, Direction.NONE);
     }
 
     @Override
@@ -47,50 +44,34 @@ public class HdfsCommand extends HdfsAbstract {
         return "Native `hdfs` command";
     }
 
-    public HdfsCommand(String name, CliEnvironment env, Direction directionContext ) {
-        super(name, env, directionContext);
+    public HdfsCommand(String name, Direction directionContext) {
+        super(name, directionContext);
     }
 
-    public HdfsCommand(String name, CliEnvironment env, Direction directionContext, int directives ) {
-        super(name,env,directionContext,directives);
+    public HdfsCommand(String name, Direction directionContext, int directives) {
+        super(name, directionContext, directives);
     }
 
-    public HdfsCommand(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
-        super(name,env,directionContext,directives,directivesBefore,directivesOptional);
-    }
-
-    public HdfsCommand(String name, CliEnvironment env) {
-        super(name,env);
+    public HdfsCommand(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+        super(name, directionContext, directives, directivesBefore, directivesOptional);
     }
 
     @Override
     public Completer getCompleter() {
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
-
-        return completer;
+        return new NullCompleter();
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn cr) {
-//        Configuration conf = (Configuration)env.getHadoopConfig();
-        CliFsShell shell = env.getShell();//new CliFsShell(conf);
-//        try {
-//            shell.init();
-//        } catch (IOException e) {
-//            log.error("Error initializing shell", e);
-//        }
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn cr) {
+        CliFsShell shell = session.getShell();
 
         // Set the IO streams for the shell.
         shell.setOut(cr.getOut());
         shell.setErr(cr.getErr());
 
-        FileSystemOrganizer fso = env.getFileSystemOrganizer();
+        FileSystemOrganizer fso = session.getFileSystemOrganizer();
 
         FileSystemState currentFileSystemState = fso.getCurrentFileSystemState();
 
-//        conf.setQuietMode(false);
-//        shell.setConf(conf);
         int res = CODE_SUCCESS;
         String[] argv = null;
 
@@ -103,6 +84,8 @@ public class HdfsCommand extends HdfsAbstract {
 
         String leftPath = null;
         String rightPath = null;
+
+        PathBuilder pathBuilder = getPathBuilder(session);
 
         if (pathDirectives != null) {
             switch (pathDirectives.getDirection()) {
@@ -203,16 +186,7 @@ public class HdfsCommand extends HdfsAbstract {
             cr.setPath(leftPath);
             res = ToolRunner.run(shell, argv);
             if (res != 0) {
-//                StringBuilder sb = new StringBuilder();
-//                for (String arg: argv) {
-//                    sb.append("\t");
-//                    sb.append(arg);
-//                }
                 cr.setCode(res);
-//                cr.getErr().print(sb.toString());
-//                cr.setDetails(sb.toString());//
-                //  cr = new CommandReturn(res, sb.toString());
-//                this.loge(env, sb.toString());
             }
         } catch (Exception e) {
             log.error("Error running command: {}", e.getMessage(), e);

@@ -17,7 +17,7 @@
 
 package com.cloudera.utils.hadoop;
 
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.util.HdfsWriter;
 import com.cloudera.utils.hadoop.util.RecordConverter;
@@ -80,20 +80,16 @@ public abstract class AbstractStats extends HdfsAbstract {
         super(name);
     }
 
-    public AbstractStats(String name, CliEnvironment env, Direction directionContext) {
-        super(name, env, directionContext);
+    public AbstractStats(String name, Direction directionContext) {
+        super(name, directionContext);
     }
 
-    public AbstractStats(String name, CliEnvironment env, Direction directionContext, int directives) {
-        super(name, env, directionContext, directives);
+    public AbstractStats(String name, Direction directionContext, int directives) {
+        super(name, directionContext, directives);
     }
 
-    public AbstractStats(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
-        super(name, env, directionContext, directives, directivesBefore, directivesOptional);
-    }
-
-    public AbstractStats(String name, CliEnvironment env) {
-        super(name, env);
+    public AbstractStats(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+        super(name, directionContext, directives, directivesBefore, directivesOptional);
     }
 
     public String getProtocol() {
@@ -139,8 +135,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         list.addAll(inRecords);
     }
 
-    public CommandReturn processOptions(CliEnvironment cliEnvironment, CommandLine cmd, CommandReturn cr) {
-//        CommandReturn scr = processOptions(environment, cmd, cr);
+    public CommandReturn processOptions(CliSession session, CommandLine cmd, CommandReturn cr) {
 
         if (cmd.hasOption("help")) {
             getHelp();
@@ -150,7 +145,7 @@ public abstract class AbstractStats extends HdfsAbstract {
         }
 
         // Get the Filesystem
-        configuration = env.getHadoopConfig();
+        configuration = session.getHadoopConfig();
 
         if (cmd.hasOption("ssl")) {
             ssl = Boolean.TRUE;
@@ -160,10 +155,7 @@ public abstract class AbstractStats extends HdfsAbstract {
 
         try {
 
-            fs = (DistributedFileSystem) env.getFileSystemOrganizer().getDefaultFileSystemState().getFileSystem();
-
-//            Option[] cmdOpts = cmd.getOptions();
-//            String[] cmdArgs = cmd.getArgs();
+            fs = (DistributedFileSystem) session.getFileSystemOrganizer().getDefaultFileSystemState().getFileSystem();
 
             if (cmd.hasOption("fileFormat")) {
                 dfFile = new SimpleDateFormat(cmd.getOptionValue("fileFormat"));
@@ -202,8 +194,8 @@ public abstract class AbstractStats extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn implementation(CliEnvironment cliEnvironment, CommandLine cmd, CommandReturn cr) {
-        processOptions(cliEnvironment, cmd, cr);
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn cr) {
+        processOptions(session, cmd, cr);
         try {
 
             clearCache();
@@ -294,16 +286,12 @@ public abstract class AbstractStats extends HdfsAbstract {
                 "Record Delimiter (Cntrl-A is default).");
         delimiterOption.setRequired(false);
         opts.addOption(delimiterOption);
-//        formatGroup.addOption(delimiterOption);
 
         // TODO: Need to implement.
         Option rawOption = new Option("raw", "raw", false,
                 "Raw Record Output");
         rawOption.setRequired(false);
         opts.addOption(rawOption);
-//        formatGroup.addOption(rawOption);
-
-//        opts.addOptionGroup(formatGroup);
 
         Option headerOption = new Option("hdr", "header", false, "Print Record Header");
         headerOption.setRequired(false);
@@ -333,7 +321,6 @@ public abstract class AbstractStats extends HdfsAbstract {
         } else {
             rmAddress = getProtocol() + rmAddress;
         }
-//        System.out.println("Checking Resource Manager Endpoint: " + rmAddress);
         return rmAddress;
     }
 
@@ -360,7 +347,6 @@ public abstract class AbstractStats extends HdfsAbstract {
         String[] rmIds = configuration.get("yarn.resourcemanager.ha.rm-ids").split(",");
         // Get the Host and Port Address using the first id.
         // Is SSL?
-//        System.out.println("RM Ids: " + rmIds[0]);
         // Look at the first RM's Info and check for Active.
         String rmAddress = getInternalRMAddress(rmIds[0]);
         if (!getRMState(rmAddress).equals("ACTIVE")) {

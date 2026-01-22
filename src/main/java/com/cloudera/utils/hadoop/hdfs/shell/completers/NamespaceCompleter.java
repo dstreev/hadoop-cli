@@ -16,21 +16,22 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.completers;
 
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import jline.console.completer.Completer;
 import org.apache.hadoop.fs.FileStatus;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class NamespaceCompleter implements Completer {
-    private final CliEnvironment env;
+    private final Supplier<CliSession> sessionSupplier;
 
-    public NamespaceCompleter(CliEnvironment env) {
-        this.env = env;
+    public NamespaceCompleter(Supplier<CliSession> sessionSupplier) {
+        this.sessionSupplier = sessionSupplier;
     }
 
-    protected void logv(String log) {
-        if (env.isVerbose()) {
+    protected void logv(CliSession session, String log) {
+        if (session.isVerbose()) {
             System.out.println(log);
         }
     }
@@ -39,8 +40,8 @@ public class NamespaceCompleter implements Completer {
         System.err.println(log);
     }
 
-    protected void logd(String log) {
-        if (env.isDebug()) {
+    protected void logd(CliSession session, String log) {
+        if (session.isDebug()) {
             System.out.println(log);
         }
     }
@@ -49,6 +50,8 @@ public class NamespaceCompleter implements Completer {
     // Remember...  the completers don't work in the IDE (IntelliJ)
     public int complete(String buffer, final int cursor,
                         final List<CharSequence> candidates) {
+        CliSession session = sessionSupplier.get();
+        if (session == null) return 0;
 
         // Remove directives from buffer.
 //        String checkBuffer = buffer;

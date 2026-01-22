@@ -170,7 +170,12 @@ public class CommandReturn {
     }
 
     public String getReturn() {
-        String outString = new String(this.baosOut.toByteArray());
+        String outString = null;
+        if (isError()) {
+            outString = new String(this.baosErr.toByteArray());
+        } else {
+            outString = new String(this.baosOut.toByteArray());
+        }
         if ((outString != null && outString.length() > 0) || records.size() > 0) {
             StringBuilder sb = new StringBuilder();
             sb.append(outString);

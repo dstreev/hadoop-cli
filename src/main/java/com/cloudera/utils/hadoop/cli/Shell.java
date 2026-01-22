@@ -16,6 +16,7 @@
 
 package com.cloudera.utils.hadoop.cli;
 
+import com.cloudera.utils.hadoop.cli.session.CommandRegistry;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.jcabi.manifests.Manifests;
 import jline.console.ConsoleReader;
@@ -45,6 +46,8 @@ import static com.cloudera.utils.hadoop.cli.CliEnvironment.*;
 public class Shell {
 
     private String bannerResource = "/hadoop_banner_0.txt";
+    private CliEnvironment cliEnvironment;
+    private CommandRegistry commandRegistry;
 
     protected static void screen(String log) {
          System.out.println(log);
@@ -54,9 +57,14 @@ public class Shell {
             System.err.println(log);
     }
 
-    public void startShell(CliEnvironment cliEnvironment) throws Exception, DisabledException {
+    public Shell(CliEnvironment cliEnvironment, CommandRegistry commandRegistry) {
+        this.cliEnvironment = cliEnvironment;
+        this.commandRegistry = commandRegistry;
+    }
+
+    public void startShell() throws Exception, DisabledException {
                 // banner
-        if (!cliEnvironment.isSilent()) {
+//        if (!cliEnvironment.isSilent()) {
             InputStream is = this.getClass().getResourceAsStream(getBannerResource());
             if (is != null) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -66,25 +74,25 @@ public class Shell {
                     screen(substituteVariablesFromManifest(line));
                 }
             }
-        }
+//        }
 
 
         ConsoleReader reader = new ConsoleReader();
-        cliEnvironment.setConsoleReader(reader);
+//        cliEnvironment.setConsoleReader(reader);
 
-//                initCompleters(reader, env);
-        reader.addCompleter(initCompleters(cliEnvironment));
+        Completer completer = initCompleters();
+        reader.addCompleter(completer);
 
         // add history support
         reader.setHistory(initHistory());
 
         AnsiConsole.systemInstall();
-
+        CliSession cliSession = cliEnvironment.createSession("cli");
         // Attempt to change to the default home directory.
-        cliEnvironment.processInput("cd "
-                + cliEnvironment.getFileSystemOrganizer().getDefaultFileSystemState().getHomeDir(cliEnvironment));
+        cliSession.processInput("cd "
+                + cliSession.getFileSystemOrganizer().getDefaultFileSystemState().getHomeDir(cliSession));
 
-        acceptCommands(reader, cliEnvironment);
+        acceptCommands(reader, cliSession);
 
     }
 
@@ -111,11 +119,11 @@ public class Shell {
         return buffer.toString();
     }
 
-    private void acceptCommands(ConsoleReader reader, CliEnvironment cliEnvironment) throws IOException, DisabledException {
+    private void acceptCommands(ConsoleReader reader, CliSession cliSession) throws IOException, DisabledException {
         String line;
-        while ((line = reader.readLine(cliEnvironment.getPrompt() + " ")) != null) {
+        while ((line = reader.readLine(cliSession.getPrompt() + " ")) != null) {
             if (!line.trim().isEmpty()) {
-                CommandReturn cr = cliEnvironment.processInput(line);
+                CommandReturn cr = cliSession.processInput(line);
                 if (!cr.isError()) {
                     if (cr.getReturn() != null) {
                         if (!cr.getStyles().isEmpty()) {
@@ -135,11 +143,11 @@ public class Shell {
         }
     }
 
-    private Completer initCompleters(CliEnvironment env) {
+    private Completer initCompleters() {
 
         // create completers
         ArrayList<Completer> completers = new ArrayList<Completer>();
-        for (String cmdName : env.commandList()) {
+        for (String cmdName : commandRegistry.commandList()) {
             // command name
             StringsCompleter sc = new StringsCompleter(cmdName);
 
@@ -147,7 +155,7 @@ public class Shell {
             // add a completer for the command name
             cmdCompleters.add(sc);
             // add the completer for the command
-            cmdCompleters.add(env.getCommand(cmdName).getCompleter());
+            cmdCompleters.add(commandRegistry.getCommand(cmdName).getCompleter());
             // add a terminator for the command
             // cmdCompleters.add(new NullCompleter());
 

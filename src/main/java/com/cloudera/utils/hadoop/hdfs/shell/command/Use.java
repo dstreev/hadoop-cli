@@ -16,24 +16,21 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
 import org.apache.commons.cli.CommandLine;
 
-import java.nio.file.FileSystem;
 import java.util.Iterator;
 import java.util.Set;
 
 public class Use extends HdfsAbstract {
 
-    public Use(String name, CliEnvironment cliEnvironment) {
-        super(name, cliEnvironment);
-
+    public Use(String name) {
+        super(name);
         // TODO: Setup completer for 'use'
-
     }
 
     @Override
@@ -41,10 +38,10 @@ public class Use extends HdfsAbstract {
         return "Change current 'namespace'.  Use 'list' to review options.";
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         String namespace = cmd.getArgs().length == 0 ? "" : cmd.getArgs()[0];
         CommandReturn cr = new CommandReturn(0);
-        FileSystemOrganizer fso = env.getFileSystemOrganizer();
+        FileSystemOrganizer fso = session.getFileSystemOrganizer();
         if (namespace.equalsIgnoreCase("default")) {
             // reset to default namespace.
             namespace = fso.getDefaultFileSystemState().getNamespace();
@@ -61,12 +58,6 @@ public class Use extends HdfsAbstract {
         FileSystemState fss = fso.getFileSystemState(namespace);
         if (fss != null) {
             fso.setCurrentFileSystemState(fss);
-            // Was hoping this would help completion on 'non' defaultFS.  It didn't.
-            /*
-            if (fss.getProtocol().startsWith("hdfs://") || fss.getProtocol().startsWith("ofs://")) {
-                env.getConfig().set("fs.defaultFS", fss.getURI());
-            }
-            */
             cr.setCode(0);
         } else {
             cr.setCode(-1);
@@ -89,8 +80,6 @@ public class Use extends HdfsAbstract {
             cr.setError("Namespace '" + namespace + "' not found. Available options: " +
                     ANSIStyle.style(sb.toString(), ANSIStyle.BOLD, ANSIStyle.UNDERSCORE, ANSIStyle.FG_BLUE));
         }
-
-//            FSUtil.prompt(env);
 
         return cr;
     }

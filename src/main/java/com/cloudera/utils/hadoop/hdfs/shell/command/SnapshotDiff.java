@@ -16,11 +16,9 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
-import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 import org.apache.commons.cli.CommandLine;
@@ -34,15 +32,13 @@ public class SnapshotDiff extends HdfsAbstract {
     /**
      * Construct a SnapshotDiff object.
      */
-    public SnapshotDiff(String name, CliEnvironment env) {
+    public SnapshotDiff(String name) {
         super(name);
-        this.env = env;
-        // Completer
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
+    }
 
-        this.completer = completer;
+    @Override
+    public Completer getCompleter() {
+        return new NullCompleter();
     }
 
     private static String getSnapshotName(String name) {
@@ -64,17 +60,17 @@ public class SnapshotDiff extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmdr, CommandReturn cr) {
+    public CommandReturn implementation(CliSession session, CommandLine cmdr, CommandReturn cr) {
         String fromSnapshot, toSnapshot = null;
         Path snapshotRoot = null;
 
         try {
-            if (env.getFileSystemOrganizer().isCurrentLocal()) {
+            if (session.getFileSystemOrganizer().isCurrentLocal()) {
                 // Can't do this on local file system.
                 cr.setCode(CODE_CMD_ERROR);
                 cr.setError("SnapshotDiff can only be used in DistributedFileSystem");
             } else {
-                FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+                FileSystemState fss = session.getFileSystemOrganizer().getCurrentFileSystemState();
                 DistributedFileSystem dfs = (DistributedFileSystem) fss.getFileSystem();
 
                 if (cmdr.getArgs().length == 2) {
@@ -101,7 +97,7 @@ public class SnapshotDiff extends HdfsAbstract {
 
                     Path newWorking = null;
                     if (dir.startsWith("~")) {
-                        dir = fss.getHomeDir(env) + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
+                        dir = fss.getHomeDir(session) + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
                         snapshotRoot = new Path(fss.getURI(), dir);
                     } else if (dir.startsWith("/")) {
                         snapshotRoot = new Path(fss.getURI(), dir);
@@ -126,7 +122,6 @@ public class SnapshotDiff extends HdfsAbstract {
             cr.getErr().print(throwable.getMessage());
             throwable.printStackTrace();
         } finally {
-//            FSUtil.prompt(env);
         }
         return cr;
 

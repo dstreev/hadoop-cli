@@ -17,13 +17,11 @@
 package com.cloudera.utils.hadoop.hdfs.util;
 
 import com.cloudera.utils.hadoop.hdfs.shell.command.PathBuilder;
-import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsAbstract;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
-import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 import lombok.extern.slf4j.Slf4j;
@@ -155,29 +153,21 @@ public class HdfsLsPlus extends HdfsAbstract {
         return "List PLUS service for 'hdfs://' namespaces";
     }
 
-    public HdfsLsPlus(String name, CliEnvironment env, Direction directionContext) {
-        super(name, env, directionContext);
+    public HdfsLsPlus(String name, Direction directionContext) {
+        super(name, directionContext);
     }
 
-    public HdfsLsPlus(String name, CliEnvironment env, Direction directionContext, int directives) {
-        super(name, env, directionContext, directives);
+    public HdfsLsPlus(String name, Direction directionContext, int directives) {
+        super(name, directionContext, directives);
     }
 
-    public HdfsLsPlus(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
-        super(name, env, directionContext, directives, directivesBefore, directivesOptional);
-    }
-
-    public HdfsLsPlus(String name, CliEnvironment env) {
-        super(name, env);
+    public HdfsLsPlus(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+        super(name, directionContext, directives, directivesBefore, directivesOptional);
     }
 
     @Override
     public Completer getCompleter() {
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
-
-        return completer;
+        return new NullCompleter();
     }
 
     public boolean isRecursive() {
@@ -362,7 +352,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                 return null;
             }
 
-            logd(env, "L:" + level);
+            // Debug logging disabled - session not available in this context
 
             for (PRINT_OPTION option : print_options) {
                 in = true;
@@ -658,9 +648,7 @@ public class HdfsLsPlus extends HdfsAbstract {
 
         if (maxDepth == -1 || currentDepth <= (maxDepth + 1)) {
 
-            if (env.isDebug()) {
-                logd(getEnv(), "L:" + currentDepth + " - " + path.stat.getPath().toUri().getPath());
-            }
+            log.debug("L:{} - {}", currentDepth, path.stat.getPath().toUri().getPath());
 
             try {
                 if (doesMatch(path) && checkVisible(path.toString())) {
@@ -721,7 +709,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                 postItem(j);
             }
         } else {
-            logv(env, "Max Depth of: " + maxDepth + " Reached.  Sub-folder will not be traversed beyond this depth. Increase of set to -1 for unlimited depth");
+            log.info("Max Depth of: {} Reached.  Sub-folder will not be traversed beyond this depth. Increase of set to -1 for unlimited depth", maxDepth);
             rtn = false;
         }
         return rtn;
@@ -784,7 +772,7 @@ public class HdfsLsPlus extends HdfsAbstract {
             }
             if (adjustedFilter == null)
                 adjustedFilter = filter;
-            logv(env, "Adjusted Filter: " + adjustedFilter);
+            log.info("Adjusted Filter: {}", adjustedFilter);
             setPattern(Pattern.compile(adjustedFilter));
         } else {
             setPattern(null);
@@ -900,12 +888,12 @@ public class HdfsLsPlus extends HdfsAbstract {
     }
 
     @Override
-    public CommandReturn implementation(CliEnvironment cliEnvironment, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         // reset counter.
         processPosition = 0;
-        logv(cliEnvironment, "Beginning 'lsp' collection.");
+        log.info("Beginning 'lsp' collection.");
         CommandReturn cr = commandReturn;
-        FileSystemOrganizer fso = cliEnvironment.getFileSystemOrganizer();
+        FileSystemOrganizer fso = session.getFileSystemOrganizer();
         try {
             FileSystemState fss = fso.getCurrentFileSystemState();
             // Check connect protocol
@@ -918,7 +906,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                 setTestFound(false);
 
                 // Get the Filesystem
-                Configuration configuration = cliEnvironment.getHadoopConfig();
+                Configuration configuration = session.getHadoopConfig();
 
                 FileSystem fs = fss.getFileSystem();//environment.getDistributedFileSystem();//getValue(Constants.HDFS);
 
@@ -1010,7 +998,7 @@ public class HdfsLsPlus extends HdfsAbstract {
                     }
                 }
 
-                logv(cliEnvironment, "'lsp' complete.");
+                log.info("'lsp' complete.");
 
                 if (isTest()) {
                     if (!isTestFound()) {

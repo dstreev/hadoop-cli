@@ -16,8 +16,8 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,17 +31,15 @@ public class HdfsPwd extends HdfsCommand {
         super(name);
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
-//        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         log.debug("HdfsPwd: {}", cmd);
-        FileSystemState fss = env.getFileSystemOrganizer().getCurrentFileSystemState();
+        FileSystemState fss = session.getFileSystemOrganizer().getCurrentFileSystemState();
         String wd = fss.getWorkingDirectory().toString();
-//        String wd = hdfs.getWorkingDirectory().toString();
         if (!cmd.hasOption("l")) {
-            log(env, wd);
+            log(session, wd);
         }
         else {
-            log(env, fss.getURI() + wd);
+            log(session, fss.getURI() + wd);
         }
         return commandReturn;
     }

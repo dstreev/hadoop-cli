@@ -16,12 +16,9 @@
 
 package com.cloudera.utils.hadoop.shell.commands;
 
-import java.util.ListIterator;
-
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
-import jline.console.history.History.Entry;
 
 import org.apache.commons.cli.CommandLine;
 
@@ -37,19 +34,10 @@ public class HistoryCmd extends AbstractCommand {
     }
 
     @Override
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
-        if (env.getConsoleReader() != null) {
-            jline.console.history.History history = env.getConsoleReader().getHistory();
-            ListIterator<Entry> it = history.entries();
-            while (it.hasNext()) {
-                Entry entry = it.next();
-                System.out.println(entry.value());
-            }
-        } else {
-            commandReturn.setCode(-1);
-            commandReturn.getErr().print("No console reader defined.  Not available in 'api' mode");
-//            return CommandReturn.BAD;
-        }
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
+        // History is now managed externally - this command is kept for compatibility
+        commandReturn.setCode(-1);
+        commandReturn.getErr().print("History command is not available in the current session mode");
         return commandReturn;
     }
 

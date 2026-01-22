@@ -18,7 +18,7 @@ package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 
 public class PathBuilder {
 
@@ -40,16 +40,16 @@ public class PathBuilder {
 
 
     }
-    private final CliEnvironment env;
+    private final CliSession session;
     private final PathDirectives directives;
 
-    public PathBuilder(CliEnvironment env, PathDirectives directives) {
-        this.env = env;
+    public PathBuilder(CliSession session, PathDirectives directives) {
+        this.session = session;
         this.directives = directives;
     }
 
-    public PathBuilder(CliEnvironment env) {
-        this.env = env;
+    public PathBuilder(CliSession session) {
+        this.session = session;
         this.directives = new PathDirectives();
     }
 
@@ -95,7 +95,7 @@ public class PathBuilder {
 
 //        FileSystem localfs = (FileSystem)env.getValue(Constants.LOCAL_FS);
 //        FileSystem hdfs = (FileSystem) env.getValue(Constants.HDFS);
-        FileSystemOrganizer fso = env.getFileSystemOrganizer();
+        FileSystemOrganizer fso = session.getFileSystemOrganizer();
         FileSystemState lfss = fso.getFileSystemState(Constants.LOCAL_FS);
         FileSystemState fss = fso.getCurrentFileSystemState();
 

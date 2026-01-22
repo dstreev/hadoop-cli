@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import jline.console.completer.Completer;
@@ -44,83 +44,8 @@ public class HdfsConnect extends AbstractCommand {
         return "Connect to HDFS";
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
-    // Moved to Environment Bean.
-        //        try {
-//            if (env.getConfig() == null) {
-//                // Get a value that over rides the default, if nothing then use default.
-//                String hadoopConfDirProp = System.getenv().getOrDefault(HADOOP_CONF_DIR, "/etc/hadoop/conf");
-////                System.out.println("Hadoop Conf: " + hadoopConfDirProp);
-//                // Set a default
-//                if (hadoopConfDirProp == null)
-//                    hadoopConfDirProp = "/etc/hadoop/conf";
-//
-//                Configuration config = new Configuration(true);
-//
-//                File hadoopConfDir = new File(hadoopConfDirProp).getAbsoluteFile();
-//                for (String file : HADOOP_CONF_FILES) {
-//                    File f = new File(hadoopConfDir, file);
-//                    if (f.exists()) {
-//                        config.addResource(new Path(f.getAbsolutePath()));
-//                    }
-//                }
-//                // disable s3a fs cache
-////                config.set("fs.s3a.impl.disable.cache", "true");
-////                config.set("fs.s3a.bucket.probe","0");
-//
-//                // hadoop.security.authentication
-//                if (config.get("hadoop.security.authentication", "simple").equalsIgnoreCase("kerberos")) {
-//                    UserGroupInformation.setConfiguration(config);
-//                    env.getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
-////                log(env, UserGroupInformation.getCurrentUser().getUserName());
-////                log(env, UserGroupInformation.getCurrentUser().getShortUserName());
-//                }
-//
-//                Enumeration e = env.getProperties().propertyNames();
-//
-//                while (e.hasMoreElements()) {
-//                    String key = (String) e.nextElement();
-//                    String value = env.getProperties().getProperty(key);
-//                    config.set(key, value);
-//                }
-//
-//                FileSystem hdfs = null;
-//                try {
-//                    hdfs = FileSystem.get(config);
-//                } catch (Throwable t) {
-//                    t.printStackTrace();
-//                }
-//
-////            env.setValue(Constants.CFG, config);
-//                env.setConfig(config);
-//                FileSystemOrganizer fso = env.getFileSystemOrganizer();
-//
-//
-////                FileSystemState fss = env.getCurrentFileSystemState();
-////                fss.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
-//
-//                // set working dir to root
-////            hdfs.setWorkingDirectory(hdfs.makeQualified(new Path("/")));
-//
-////                env.setRemoteWorkingDirectory(hdfs.makeQualified(new Path("/")));
-//
-////                FileSystem local = FileSystem.getLocal(new Configuration());
-////                env.setLocalFileSystem(local);
-//
-////                env.getProperties().setProperty(Constants.HDFS_URL, hdfs.getUri().toString());
-//
-////                FSUtil.prompt(env);
-//
-////            if (!env.isSilent())
-////                logv(env, "Connecting to default FS: " + hdfs.getUri());
-////
-////                logv(env, "HDFS CWD: " + hdfs.getWorkingDirectory());
-////                logv(env, "HDFS CWD(env): " + env.getRemoteWorkingDirectory());
-////                logv(env, "Local CWD: " + local.getWorkingDirectory());
-//            }
-//        } catch (IOException e) {
-//            log(env, e.getMessage());
-//        }
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
+        // Connection is now handled by CliSession initialization
         return commandReturn;
     }
 

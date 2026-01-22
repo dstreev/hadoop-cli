@@ -16,7 +16,8 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
+import com.cloudera.utils.hadoop.cli.CliSession;
+import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import org.apache.commons.cli.CommandLine;
@@ -29,31 +30,25 @@ import org.apache.hadoop.fs.Path;
  */
 
 public class LocalRm extends HdfsCommand {
-    private boolean local = false;
 
-    public LocalRm(String name, CliEnvironment env) {
-        super(name, env);
+    public LocalRm(String name) {
+        super(name);
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         CommandReturn cr = commandReturn;
         try {
-//            FileSystem hdfs = this.local ? (FileSystem) env.getValue(Constants.LOCAL_FS)
-//                            : (FileSystem) env.getValue(Constants.HDFS);
-            // TODO: Need to review this.  Looks like it's working partially on Remote FS and NOT Local.
-            FileSystem lfs = getEnv().getFileSystemOrganizer().getLocalFileSystem();
+            FileSystemState lfss = session.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+            FileSystem lfs = session.getFileSystemOrganizer().getLocalFileSystem();
             String remoteFile = cmd.getArgs()[0];
 
-            logv(env, "HDFS file: " + remoteFile);
-//            Path hdfsPath = new Path(hdfs.getWorkingDirectory(), remoteFile);
-            Path hdfsPath = null;//new Path(env.getRemoteWorkingDirectory(), remoteFile);
-            logv(env, "Remote path: " + hdfsPath);
+            logv(session, "Local file: " + remoteFile);
+            Path localPath = new Path(lfss.getWorkingDirectory(), remoteFile);
+            logv(session, "Local path: " + localPath);
 
             boolean recursive = cmd.hasOption("r");
-            logv(env, "Deleting recursively...");
-            lfs.delete(hdfsPath, recursive);
-
-//            FSUtil.prompt(env);
+            logv(session, "Deleting recursively...");
+            lfs.delete(localPath, recursive);
 
         }
         catch (Throwable e) {

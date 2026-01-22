@@ -18,8 +18,8 @@ package com.cloudera.utils.hadoop.hdfs.shell.command;
 
 import java.io.IOException;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
@@ -29,21 +29,20 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 public class LocalCd extends HdfsCommand {
-//    private Environment env;
 
-    public LocalCd(String name, CliEnvironment env) {
-        super(name,env);
+    public LocalCd(String name) {
+        super(name);
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         try {
 
-            FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
-            FileSystem localfs = env.getFileSystemOrganizer().getLocalFileSystem();//(FileSystem) env.getValue(Constants.LOCAL_FS);
+            FileSystemState lfss = session.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+            FileSystem localfs = session.getFileSystemOrganizer().getLocalFileSystem();
             String dir = cmd.getArgs().length == 0 ? System
                             .getProperty("user.home") : cmd.getArgs()[0];
-            AbstractCommand.logv(env, "Change Dir to: " + dir);
-            AbstractCommand.logv(env, "CWD: " + lfss.getWorkingDirectory());
+            AbstractCommand.logv(session, "Change Dir to: " + dir);
+            AbstractCommand.logv(session, "CWD: " + lfss.getWorkingDirectory());
 
             Path newPath = null;
 
@@ -58,18 +57,17 @@ public class LocalCd extends HdfsCommand {
 
             FileStatus fstat = lfss.getFileSystem().getFileStatus(newPath);
             if (localfs.exists(newPath)) {
-                AbstractCommand.logv(env, "exists");
+                AbstractCommand.logv(session, "exists");
                 if (fstat.isDirectory()) {
                     lfss.setWorkingDirectory(newPath);
                 } else {
-                    AbstractCommand.logv(env, "Is not a directory: " + dir);
+                    AbstractCommand.logv(session, "Is not a directory: " + dir);
                 }
             }
 
-//            FSUtil.prompt(env);
         }
         catch (IOException e) {
-            AbstractCommand.log(env, e.getMessage());
+            AbstractCommand.log(session, e.getMessage());
             commandReturn.setCode(AbstractCommand.CODE_LOCAL_FS_ISSUE);
             commandReturn.getErr().print(e.getMessage());
         }

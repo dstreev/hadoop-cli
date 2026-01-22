@@ -16,13 +16,11 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.hdfs.shell.completers.FileSystemNameCompleter;
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
-import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 import lombok.extern.slf4j.Slf4j;
@@ -34,33 +32,31 @@ import org.apache.hadoop.fs.Path;
 @Slf4j
 public class HdfsCd extends AbstractCommand {
 
-    public HdfsCd(String name, CliEnvironment env) {
+    public HdfsCd(String name) {
         super(name);
-        // Completer
-        FileSystemNameCompleter fsc = new FileSystemNameCompleter(env);
-        NullCompleter nullCompleter = new NullCompleter();
-        Completer completer = new AggregateCompleter(fsc, nullCompleter);
-
-        this.completer = completer;
-
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn cr) {
+    @Override
+    public Completer getCompleter() {
+        return new NullCompleter();
+    }
+
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn cr) {
         try {
             log.debug("HdfsCd: {}", cmd);
-            FileSystemOrganizer fso = env.getFileSystemOrganizer();
+            FileSystemOrganizer fso = session.getFileSystemOrganizer();
             if (fso.isCurrentLocal()) {
                 FileSystemState lfss = fso.getFileSystemState(Constants.LOCAL_FS);
-                FileSystem localfs = fso.getLocalFileSystem();//(FileSystem) env.getValue(Constants.LOCAL_FS);
+                FileSystem localfs = fso.getLocalFileSystem();
                 String dir = cmd.getArgs().length == 0 ? System
                         .getProperty("user.home") : cmd.getArgs()[0];
-                logv(env, "Change Dir to: " + dir);
-                logv(env, "CWD: " + lfss.getWorkingDirectory());
+                logv(session, "Change Dir to: " + dir);
+                logv(session, "CWD: " + lfss.getWorkingDirectory());
 
                 Path newPath = null;
 
                 if (dir.startsWith("~/")) {
-                    dir = lfss.getHomeDir(env) + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
+                    dir = lfss.getHomeDir(session) + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
                     newPath = new Path(dir);
                 } else if (dir.startsWith("/")) {
                     newPath = new Path(dir);
@@ -70,15 +66,13 @@ public class HdfsCd extends AbstractCommand {
 
                 FileStatus fstat = lfss.getFileSystem().getFileStatus(newPath);
                 if (localfs.exists(newPath)) {
-                    logv(env, "exists");
+                    logv(session, "exists");
                     if (fstat.isDirectory()) {
                         lfss.setWorkingDirectory(newPath);
                     } else {
-                        logv(env, "Is not a directory: " + dir);
+                        logv(session, "Is not a directory: " + dir);
                     }
                 }
-
-//                FSUtil.prompt(env);
 
             } else {
                 FileSystemState fss = fso.getCurrentFileSystemState();
@@ -92,7 +86,7 @@ public class HdfsCd extends AbstractCommand {
                 Path newPath = null;
                 Path newWorking = null;
                 if (dir.startsWith("~")) {
-                    dir = fss.getHomeDir(env) + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
+                    dir = fss.getHomeDir(session) + (dir.substring(1).length() > 1 ? dir.substring(1) : "");
                     newPath = new Path(fss.getURI(), dir);
                 } else if (dir.startsWith("/")) {
                     newPath = new Path(fss.getURI(), dir);
@@ -101,15 +95,15 @@ public class HdfsCd extends AbstractCommand {
                     newPath = new Path(fss.getURI(), newWorking);
                 }
 
-                logv(env, "" + newPath);
+                logv(session, "" + newPath);
                 if (fss.equals(fso.getDefaultFileSystemState())) {
                     FileStatus fstat = fss.getFileSystem().getFileStatus(newPath);
                     if (fs.exists(newPath)) {
-                        logv(env, "exists");
+                        logv(session, "exists");
                         if (fstat.isDirectory()) {
                             fss.setWorkingDirectory(newPath);
                         } else {
-                            logv(env, "Is not a directory: " + dir);
+                            logv(session, "Is not a directory: " + dir);
                         }
                     }
                 } else {

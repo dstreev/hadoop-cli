@@ -16,9 +16,9 @@
 
 package com.cloudera.utils.hadoop.hdfs.util;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
 import com.cloudera.utils.hadoop.hdfs.shell.command.HdfsAbstract;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -41,24 +41,20 @@ public class HdfsRepair extends HdfsAbstract {
         return "HDFS Repair - Not Implemented Yet.";
     }
 
-    public HdfsRepair(String name, CliEnvironment env, Direction directionContext ) {
-        super(name, env, directionContext);
+    public HdfsRepair(String name, Direction directionContext) {
+        super(name, directionContext);
     }
 
-    public HdfsRepair(String name, CliEnvironment env, Direction directionContext, int directives ) {
-        super(name,env,directionContext,directives);
+    public HdfsRepair(String name, Direction directionContext, int directives) {
+        super(name, directionContext, directives);
     }
 
-    public HdfsRepair(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional ) {
-        super(name,env,directionContext,directives,directivesBefore,directivesOptional);
-    }
-
-    public HdfsRepair(String name, CliEnvironment env) {
-        super(name,env);
+    public HdfsRepair(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+        super(name, directionContext, directives, directivesBefore, directivesOptional);
     }
 
     @Override
-    public CommandReturn implementation(CliEnvironment cliEnvironment, CommandLine commandLine, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine commandLine, CommandReturn commandReturn) {
         System.out.println("Not implemented yet... :( ");
         /*
 
@@ -77,7 +73,6 @@ public class HdfsRepair extends HdfsAbstract {
         commandReturn.setCode(-1);
         commandReturn.getErr().print("Repair not yet implemented");
         return commandReturn;
-//         return new CommandReturn(-1, "repair not implemented yet");
     }
 
     @Override

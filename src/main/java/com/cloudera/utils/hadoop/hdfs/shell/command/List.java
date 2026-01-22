@@ -16,12 +16,13 @@
 
 package com.cloudera.utils.hadoop.hdfs.shell.command;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 import com.cloudera.utils.hadoop.shell.format.ANSIStyle;
 import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 
@@ -30,9 +31,8 @@ import java.util.Set;
 @Slf4j
 public class List extends HdfsAbstract {
 
-    public List(String name, CliEnvironment cliEnvironment) {
-        super(name, cliEnvironment);
-
+    public List(String name) {
+        super(name);
         // TODO: Setup Completer for "LIST"
     }
 
@@ -41,9 +41,9 @@ public class List extends HdfsAbstract {
         return "List available 'Namespaces'";
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
         log.debug("List Namespaces");
-        FileSystemOrganizer fso = env.getFileSystemOrganizer();
+        FileSystemOrganizer fso = session.getFileSystemOrganizer();
         CommandReturn cr = new CommandReturn(0);
 
         StringBuilder sb = new StringBuilder();
@@ -75,7 +75,7 @@ public class List extends HdfsAbstract {
 
     @Override
     public Completer getCompleter() {
-        return this.completer;
+        return new NullCompleter();
     }
 
 

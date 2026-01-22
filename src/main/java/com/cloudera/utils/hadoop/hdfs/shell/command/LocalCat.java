@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.cloudera.utils.hadoop.cli.CliSession;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,20 +37,19 @@ import org.apache.hadoop.fs.Path;
 
 @Slf4j
 public class LocalCat extends HdfsCommand {
-    
+
     public static final int LINE_COUNT = 10;
-    
-    public LocalCat(String name, CliEnvironment env) {
-        super(name, env);
+
+    public LocalCat(String name) {
+        super(name);
     }
 
-    public CommandReturn implementation(CliEnvironment env, CommandLine cmd, CommandReturn commandReturn) {
+    public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn commandReturn) {
 
-        FileSystemState lfss = env.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
+        FileSystemState lfss = session.getFileSystemOrganizer().getFileSystemState(Constants.LOCAL_FS);
         FileSystem lfs = lfss.getFileSystem();
 
         if(cmd.getArgs().length == 1){
-//            Path path = new Path(hdfs.getWorkingDirectory(), cmd.getArgs()[0]);
             Path path = new Path(lfss.getWorkingDirectory(), cmd.getArgs()[0]);
             BufferedReader reader = null;
             try {
@@ -59,11 +58,11 @@ public class LocalCat extends HdfsCommand {
                 reader = new BufferedReader(isr);
                 String line = null;
                 for(int i = 0; (line = reader.readLine()) != null;i++ ){
-                    log(env, line);
+                    log(session, line);
                 }
             }
             catch (IOException e) {
-                log(env, "Error reading file '" + cmd.getArgs()[0] + "': " + e.getMessage());
+                log(session, "Error reading file '" + cmd.getArgs()[0] + "': " + e.getMessage());
             } finally{
                 try {
                     if(reader != null){
@@ -75,21 +74,14 @@ public class LocalCat extends HdfsCommand {
                 }
             }
         } else{
-//            usage();
         }
-//        FSUtil.prompt(env);
         return commandReturn;
     }
-    
+
     @Override
     public Options getOptions() {
         Options opts = super.getOptions();
         return opts;
     }
-    
-//    @Override
-//    public Completer getCompleter() {
-//        return new FileSystemNameCompleter(this.env, this.local);
-//    }
 
 }

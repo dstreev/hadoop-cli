@@ -18,7 +18,6 @@ package com.cloudera.utils.hadoop.yarn;
 
 import com.cloudera.utils.hadoop.AbstractStats;
 import com.cloudera.utils.hadoop.hdfs.shell.command.Direction;
-import com.cloudera.utils.hadoop.cli.CliEnvironment;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
@@ -37,33 +36,34 @@ import java.util.Map;
 public class ContainerStatsCommand extends AbstractStats {
 
     private ContainerStats containerStats = null;
+
+    public ContainerStatsCommand(String name) {
+        super(name);
+    }
+
     @Override
     public String getDescription() {
         return "Collect Container Stats from the YARN REST API";
     }
 
-    public ContainerStatsCommand(String name, CliEnvironment env, Direction directionContext) {
-        super(name, env, directionContext);
-//        appStats = new ContainerStatsImpl(env.getConfig());
+    public ContainerStatsCommand(String name, Direction directionContext) {
+        super(name, directionContext);
     }
 
-    public ContainerStatsCommand(String name, CliEnvironment env, Direction directionContext, int directives) {
-        super(name, env, directionContext, directives);
+    public ContainerStatsCommand(String name, Direction directionContext, int directives) {
+        super(name, directionContext, directives);
     }
 
-    public ContainerStatsCommand(String name, CliEnvironment env, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
-        super(name, env, directionContext, directives, directivesBefore, directivesOptional);
-    }
-
-    public ContainerStatsCommand(String name, CliEnvironment env) {
-        super(name, env);
+    public ContainerStatsCommand(String name, Direction directionContext, int directives, boolean directivesBefore, boolean directivesOptional) {
+        super(name, directionContext, directives, directivesBefore, directivesOptional);
     }
 
     protected ContainerStats getContainerStats() {
         if (containerStats == null)
-            containerStats = new ContainerStats(env.getHadoopConfig());
+            containerStats = new ContainerStats(configuration);
         return containerStats;
     }
+
     @Override
     public void process(CommandLine cmdln) {
         getContainerStats().process(cmdln);
