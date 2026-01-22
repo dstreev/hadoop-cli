@@ -16,6 +16,7 @@
 
 package com.cloudera.utils.hadoop.cli;
 
+import com.cloudera.utils.hadoop.cli.session.CommandRegistry;
 import com.cloudera.utils.hadoop.cli.session.SessionCredentials;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
@@ -28,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CliFsShell;
-import org.apache.hadoop.security.UserGroupInformation;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -93,32 +93,32 @@ public class CliEnvironment {
         this.registry = registry;
     }
 
-    public synchronized void init() {
-        if (!isDisabled() && !isInitialized()) {
-            try {
-                log.info("Initializing CliEnvironment");
-
-                // Load and cache default configuration
-                this.defaultHadoopConfig = loadDefaultConfiguration();
-
-                // Set up Kerberos user property if applicable
-                String authMode = defaultHadoopConfig.get("hadoop.security.authentication", "simple");
-                if ("kerberos".equalsIgnoreCase(authMode)) {
-                    UserGroupInformation.setConfiguration(defaultHadoopConfig);
-                    getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
-                }
-
-                // Create default session
-                createSession(defaultSessionName, defaultHadoopConfig, null);
-
-                setInitialized(Boolean.TRUE);
-                log.info("CliEnvironment initialized successfully");
-
-            } catch (IOException e) {
-                log.error("Failed to initialize CliEnvironment: {}", e.getMessage());
-            }
-        }
-    }
+//    public synchronized void init() {
+//        if (!isDisabled() && !isInitialized()) {
+//            try {
+//                log.info("Initializing CliEnvironment");
+//
+//                // Load and cache default configuration
+//                this.defaultHadoopConfig = loadDefaultConfiguration();
+//
+//                // Set up Kerberos user property if applicable
+//                String authMode = defaultHadoopConfig.get("hadoop.security.authentication", "simple");
+//                if ("kerberos".equalsIgnoreCase(authMode)) {
+//                    UserGroupInformation.setConfiguration(defaultHadoopConfig);
+//                    getProperties().setProperty(CURRENT_USER_PROP, UserGroupInformation.getCurrentUser().getShortUserName());
+//                }
+//
+//                // Create default session
+//                createSession(defaultSessionName, defaultHadoopConfig, null);
+//
+//                setInitialized(Boolean.TRUE);
+//                log.info("CliEnvironment initialized successfully");
+//
+//            } catch (IOException e) {
+//                log.error("Failed to initialize CliEnvironment: {}", e.getMessage());
+//            }
+//        }
+//    }
 
     /**
      * Load Hadoop configuration from environment with fallback.

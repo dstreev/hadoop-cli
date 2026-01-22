@@ -16,6 +16,7 @@
 
 package com.cloudera.utils.hadoop.cli;
 
+import com.cloudera.utils.hadoop.cli.session.CommandRegistry;
 import com.cloudera.utils.hadoop.hdfs.shell.command.*;
 import com.cloudera.utils.hadoop.hdfs.util.HdfsLsPlus;
 import com.cloudera.utils.hadoop.hdfs.util.HdfsSource;
@@ -209,19 +210,19 @@ public class HadoopCliAppCfg {
         };
     }
 
-    @Bean
-    @Order(10)
-    CommandLineRunner initHadoopConfiguration(CliEnvironment cliEnvironment) {
-        return args -> {
-            // TODO: Need to see if this attempts a connection to HDFS.
-            if (!cliEnvironment.isInitialized()) {
-                cliEnvironment.init();
-            }
-        };
-    }
+//    @Bean
+//    @Order(10)
+//    CommandLineRunner initHadoopConfiguration(CliEnvironment cliEnvironment) {
+//        return args -> {
+//            // TODO: Need to see if this attempts a connection to HDFS.
+//            if (!cliEnvironment.isInitialized()) {
+//                cliEnvironment.init();
+//            }
+//        };
+//    }
 
-    @Bean
-    @Order(5)
+//    @Bean
+//    @Order(5)
     CommandLineRunner initCommands(CommandRegistry commandRegistry) {
         return args -> {
 //            setBannerResource("/hadoop_banner_0.txt");
@@ -325,16 +326,16 @@ public class HadoopCliAppCfg {
 
     @Bean
     @Order(100)
-    CommandLineRunner runInteractiveShell(CliEnvironment cliEnvironment, Shell shell) {
+    CommandLineRunner runInteractiveShell(Shell shell) {
         return args -> {
-            if (!cliEnvironment.isApiMode()) {
+//            if (!cliEnvironment.isApiMode()) {
                 log.info("Launching Interactive Shell");
                 try {
-                    shell.startShell(cliEnvironment);
+                    shell.startShell();
                 } catch (DisabledException e) {
                     throw new RuntimeException(e);
                 }
-            }
+//            }
         };
     }
 

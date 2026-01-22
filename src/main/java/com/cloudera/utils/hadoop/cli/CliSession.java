@@ -16,7 +16,7 @@
 
 package com.cloudera.utils.hadoop.cli;
 
-import com.cloudera.utils.hadoop.cli.session.DefaultCredentials;
+import com.cloudera.utils.hadoop.cli.session.CommandRegistry;
 import com.cloudera.utils.hadoop.cli.session.SessionCredentials;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;

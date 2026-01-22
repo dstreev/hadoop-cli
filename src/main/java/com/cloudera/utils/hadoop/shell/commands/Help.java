@@ -17,7 +17,7 @@
 package com.cloudera.utils.hadoop.shell.commands;
 
 import com.cloudera.utils.hadoop.cli.CliSession;
-import com.cloudera.utils.hadoop.cli.CommandRegistry;
+import com.cloudera.utils.hadoop.cli.session.CommandRegistry;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
 import com.cloudera.utils.hadoop.shell.command.Command;
 import com.cloudera.utils.hadoop.shell.command.CommandReturn;
