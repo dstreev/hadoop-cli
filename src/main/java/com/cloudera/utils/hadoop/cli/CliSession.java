@@ -78,10 +78,11 @@ public class CliSession {
 
         if (kerberosEnabled) {
             // Kerberos mode - use UGI
+            // Always set configuration first so UGI knows about Kerberos settings
+            UserGroupInformation.setConfiguration(hadoopConfig);
             if (credentials != null) {
                 this.ugi = credentials.getUGI();
             } else {
-                UserGroupInformation.setConfiguration(hadoopConfig);
                 this.ugi = UserGroupInformation.getLoginUser();
             }
 
@@ -174,8 +175,29 @@ public class CliSession {
         if (ugi != null) {
             // Kerberos mode - wrap in UGI
             try {
-                return ugi.doAs((PrivilegedExceptionAction<CommandReturn>) () ->
-                    processCommandInternal(line, commandReturn));
+                // We need to test the command and retry if the CommandReturn is false and
+                // the reason is: Client cannot authenticate via:[TOKEN, KERBEROS].
+                // This accounts for the first time warm-up of the kerberos ticket.
+                int attempts = 0;
+                CommandReturn check = null;
+                while (attempts < 7) {
+                    attempts++;
+                    check = ugi.doAs((PrivilegedExceptionAction<CommandReturn>) () ->
+                            processCommandInternal(line, commandReturn));
+                    if (check.isError() && check.getReturn().contains("Client cannot authenticate via:[TOKEN, KERBEROS]")) {
+                        // Refresh credentials before retry to force re-authentication
+                        log.warn("Kerberos auth failed on attempt {}, refreshing credentials and retrying...", attempts);
+                        if (credentials != null) {
+                            credentials.refresh();
+                        } else {
+                            ugi.checkTGTAndReloginFromKeytab();
+                        }
+                        Thread.sleep(2000);
+                    } else {
+                        return check;
+                    }
+                }
+                return check;
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new DisabledException("Command interrupted");
