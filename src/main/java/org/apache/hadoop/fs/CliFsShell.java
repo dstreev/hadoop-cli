@@ -71,7 +71,12 @@ public class CliFsShell extends FsShell {
     @Override
     public void init() {
         getConf().setQuietMode(true);
-        UserGroupInformation.setConfiguration(getConf());
+        // NOTE: Removed UserGroupInformation.setConfiguration() call here.
+        // This method is called from CliSession.initializeShellAndFileSystem() which runs
+        // inside a UGI.doAs() context. The global Kerberos state is already initialized
+        // by KerberosGlobalState.ensureInitialized() in CliSession.init().
+        // Calling setConfiguration() per-session would pollute global state and break
+        // isolation between multiple sessions with different Kerberos credentials.
         if (commandFactory == null) {
             commandFactory = new CliCommandFactory(getConf());
             ((CliCommandFactory)commandFactory).out = out;

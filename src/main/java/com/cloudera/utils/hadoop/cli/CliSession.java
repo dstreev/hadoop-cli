@@ -17,6 +17,7 @@
 package com.cloudera.utils.hadoop.cli;
 
 import com.cloudera.utils.hadoop.cli.session.CommandRegistry;
+import com.cloudera.utils.hadoop.cli.session.KerberosGlobalState;
 import com.cloudera.utils.hadoop.cli.session.SessionCredentials;
 import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
 import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
@@ -78,12 +79,20 @@ public class CliSession {
 
         if (kerberosEnabled) {
             // Kerberos mode - use UGI
-            // Always set configuration first so UGI knows about Kerberos settings
-            UserGroupInformation.setConfiguration(hadoopConfig);
+            // Initialize global Kerberos state ONCE (idempotent) - required for loginUserFromKeytabAndReturnUGI()
+            // This does NOT call setConfiguration() per-session, avoiding global state pollution
+            KerberosGlobalState.ensureInitialized();
+
             if (credentials != null) {
+                // Use isolated UGI from credentials (e.g., KeytabCredentials uses loginUserFromKeytabAndReturnUGI)
+                // This creates an ISOLATED UGI that doesn't modify global state
                 this.ugi = credentials.getUGI();
+                log.debug("Using isolated UGI from credentials: {}", ugi.getUserName());
             } else {
+                // No credentials provided - fall back to current login user
+                // This requires global config to be set, but KerberosGlobalState handles that
                 this.ugi = UserGroupInformation.getLoginUser();
+                log.debug("Using current login user UGI: {}", ugi.getUserName());
             }
 
             try {
@@ -197,7 +206,10 @@ public class CliSession {
                         return check;
                     }
                 }
-                return check;
+                // All retry attempts exhausted - credentials unavailable or invalid
+                log.error("Authentication failed after {} attempts. No valid credentials available.", attempts);
+                throw new DisabledException("Authentication failed: Unable to authenticate after " + attempts +
+                        " attempts. Please verify Kerberos credentials are available and valid.");
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new DisabledException("Command interrupted");
