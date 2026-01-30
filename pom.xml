@@ -20,7 +20,7 @@
 
     <groupId>com.cloudera.utils.hadoop</groupId>
     <artifactId>hcfs-cli</artifactId>
-    <version>5.0.2.0</version>
+    <version>5.0.3.0</version>
     <packaging>jar</packaging>
 
 

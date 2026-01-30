@@ -45,6 +45,10 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 @Configuration
+@ConditionalOnProperty(
+        name = "hadoop-cli.api.enabled",
+        havingValue = "false",
+        matchIfMissing = true)
 @Slf4j
 @Getter
 @Setter
