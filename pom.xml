@@ -59,7 +59,7 @@
         <!-- Support  Libs-->
         <lombok.version>1.18.38</lombok.version>
 
-        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
         <commons-io.version>2.18.0</commons-io.version>
         <commons-cli.version>1.9.0</commons-cli.version>
         <commons-pool2.version>2.12.1</commons-pool2.version>
