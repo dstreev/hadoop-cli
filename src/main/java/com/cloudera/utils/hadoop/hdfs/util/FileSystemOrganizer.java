@@ -79,7 +79,7 @@ public class FileSystemOrganizer {
     public void init(Configuration config) {
         setConfig(config);
         try {
-            distributedFileSystem = FileSystem.get(config);
+            distributedFileSystem = FileSystem.newInstance(config);
             localFileSystem = FileSystem.getLocal(config);
             String defaultFS = config.get("fs.defaultFS");
             String configuredNameservices = config.get("dfs.nameservices");
