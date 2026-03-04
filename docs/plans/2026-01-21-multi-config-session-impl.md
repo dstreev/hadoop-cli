@@ -41,7 +41,7 @@ Run: `mkdir -p src/main/java/com/cloudera/utils/hadoop/cli/session`
  *  limitations under the License.
  */
 
-package com.cloudera.utils.hadoop.cli.session;
+package com.cloudera.utils.hcfs.cli.session;
 
 import org.apache.hadoop.security.UserGroupInformation;
 
@@ -74,7 +74,7 @@ public interface SessionCredentials {
  *  ...
  */
 
-package com.cloudera.utils.hadoop.cli.session;
+package com.cloudera.utils.hcfs.cli.session;
 
 import org.apache.hadoop.security.UserGroupInformation;
 
@@ -107,7 +107,7 @@ public class DefaultCredentials implements SessionCredentials {
  *  ...
  */
 
-package com.cloudera.utils.hadoop.cli.session;
+package com.cloudera.utils.hcfs.cli.session;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -157,7 +157,7 @@ public class KeytabCredentials implements SessionCredentials {
  *  ...
  */
 
-package com.cloudera.utils.hadoop.cli.session;
+package com.cloudera.utils.hcfs.cli.session;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -230,9 +230,9 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
  *  ...
  */
 
-package com.cloudera.utils.hadoop.cli;
+package com.cloudera.utils.hcfs.cli;
 
-import com.cloudera.utils.hadoop.shell.command.Command;
+import com.cloudera.utils.hcfs.shell.command.Command;
 
 import java.util.Map;
 import java.util.Set;
@@ -292,9 +292,9 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 Change the execute and implementation method signatures from `CliEnvironment` to `CliSession`:
 
 ```java
-package com.cloudera.utils.hadoop.shell.command;
+package com.cloudera.utils.hcfs.shell.command;
 
-import com.cloudera.utils.hadoop.cli.CliSession;
+import com.cloudera.utils.hcfs.cli.CliSession;
 import jline.console.completer.Completer;
 
 import org.apache.commons.cli.CommandLine;
@@ -305,13 +305,17 @@ import java.io.PrintStream;
 public interface Command {
 
     String getDescription();
+
     String getHelpHeader();
+
     String getHelpFooter();
+
     String getUsage();
 
     String getName();
 
     void setErr(PrintStream err);
+
     void setOut(PrintStream out);
 
     CommandReturn execute(CliSession session, CommandLine cmd, CommandReturn commandReturn);
@@ -374,15 +378,15 @@ Replace the existing CliSession with the expanded version that includes:
  *  limitations under the License.
  */
 
-package com.cloudera.utils.hadoop.cli;
+package com.cloudera.utils.hcfs.cli;
 
-import com.cloudera.utils.hadoop.cli.session.CommandRegistry;
-import com.cloudera.utils.hadoop.cli.session.DefaultCredentials;
-import com.cloudera.utils.hadoop.cli.session.SessionCredentials;
-import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
-import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
-import com.cloudera.utils.hadoop.shell.command.Command;
-import com.cloudera.utils.hadoop.shell.command.CommandReturn;
+import com.cloudera.utils.hcfs.cli.session.CommandRegistry;
+import com.cloudera.utils.hcfs.cli.session.DefaultCredentials;
+import com.cloudera.utils.hcfs.cli.session.SessionCredentials;
+import com.cloudera.utils.hcfs.hdfs.util.FileSystemOrganizer;
+import com.cloudera.utils.hcfs.shell.command.AbstractCommand;
+import com.cloudera.utils.hcfs.shell.command.Command;
+import com.cloudera.utils.hcfs.shell.command.CommandReturn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -776,9 +780,9 @@ Change all references from `CliEnvironment` to `CliSession`:
  * ...
  */
 
-package com.cloudera.utils.hadoop.shell.command;
+package com.cloudera.utils.hcfs.shell.command;
 
-import com.cloudera.utils.hadoop.cli.CliSession;
+import com.cloudera.utils.hcfs.cli.CliSession;
 import jline.console.completer.Completer;
 import jline.console.completer.NullCompleter;
 
@@ -789,7 +793,7 @@ import org.apache.commons.cli.Options;
 import java.io.PrintStream;
 
 @Slf4j
-public abstract class AbstractCommand implements Command{
+public abstract class AbstractCommand implements Command {
     public static final int CODE_BAD_DATE = -321;
     public static final int CODE_SUCCESS = 0;
     public static final int CODE_LOCAL_FS_ISSUE = -123;
@@ -807,7 +811,7 @@ public abstract class AbstractCommand implements Command{
 
     protected Completer completer = new NullCompleter();
 
-    public AbstractCommand(String name){
+    public AbstractCommand(String name) {
         this.name = name;
     }
 
@@ -845,22 +849,22 @@ public abstract class AbstractCommand implements Command{
     protected void processCommandLine(CommandLine commandLine) {
     }
 
-    public String getUsage(){
+    public String getUsage() {
         return getName() + " [Options ...] [Args ...]";
     }
 
-    protected static void logv(CliSession session, String log){
-        if(session.isVerbose()){
+    protected static void logv(CliSession session, String log) {
+        if (session.isVerbose()) {
             System.out.println(log);
         }
     }
 
-    protected static void log(CliSession session, String log){
+    protected static void log(CliSession session, String log) {
         System.out.println(log);
     }
 
-    protected static void logd(CliSession session, String log){
-        if(session.isDebug()){
+    protected static void logd(CliSession session, String log) {
+        if (session.isDebug()) {
             System.out.println(log);
         }
     }
@@ -911,11 +915,11 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 **Step 1: Update PathBuilder to use CliSession**
 
 ```java
-package com.cloudera.utils.hadoop.hdfs.shell.command;
+package com.cloudera.utils.hcfs.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
-import com.cloudera.utils.hadoop.hdfs.util.FileSystemState;
-import com.cloudera.utils.hadoop.cli.CliSession;
+import com.cloudera.utils.hcfs.hdfs.util.FileSystemOrganizer;
+import com.cloudera.utils.hcfs.hdfs.util.FileSystemState;
+import com.cloudera.utils.hcfs.cli.CliSession;
 
 public class PathBuilder {
     // ... SupportedProtocol enum stays the same ...
@@ -950,10 +954,10 @@ public class PathBuilder {
 Remove the `env` field, update constructors, and create PathBuilder at execution time:
 
 ```java
-package com.cloudera.utils.hadoop.hdfs.shell.command;
+package com.cloudera.utils.hcfs.hdfs.shell.command;
 
-import com.cloudera.utils.hadoop.cli.CliSession;
-import com.cloudera.utils.hadoop.shell.command.AbstractCommand;
+import com.cloudera.utils.hcfs.cli.CliSession;
+import com.cloudera.utils.hcfs.shell.command.AbstractCommand;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
@@ -1057,28 +1061,30 @@ For each file, the pattern is:
 
 ```java
 // Change imports
-import com.cloudera.utils.hadoop.cli.CliSession;
+
+import com.cloudera.utils.hcfs.cli.CliSession;
 
 // Update constructors - remove CliEnvironment parameter
+
 public HdfsCommand(String name, Direction directionContext) {
     super(name, directionContext);
 }
 
-// Update implementation signature
-public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn cr) {
-    CliFsShell shell = session.getShell();
-    // ...
-    FileSystemOrganizer fso = session.getFileSystemOrganizer();
-    PathBuilder pathBuilder = getPathBuilder(session);
-    // ... rest uses pathBuilder and session instead of env
-}
+        // Update implementation signature
+        public CommandReturn implementation(CliSession session, CommandLine cmd, CommandReturn cr) {
+            CliFsShell shell = session.getShell();
+            // ...
+            FileSystemOrganizer fso = session.getFileSystemOrganizer();
+            PathBuilder pathBuilder = getPathBuilder(session);
+            // ... rest uses pathBuilder and session instead of env
+        }
 
-// Update getCompleter to not use env field
-@Override
-public Completer getCompleter() {
-    // Completers need redesign - return NullCompleter for now
-    return new NullCompleter();
-}
+        // Update getCompleter to not use env field
+        @Override
+        public Completer getCompleter() {
+            // Completers need redesign - return NullCompleter for now
+            return new NullCompleter();
+        }
 ```
 
 **Step 1-22: Update each command file following the pattern above**
@@ -1123,9 +1129,9 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 The completer needs access to a session. For now, we can make it accept a session supplier or defer initialization:
 
 ```java
-package com.cloudera.utils.hadoop.hdfs.shell.completers;
+package com.cloudera.utils.hcfs.hdfs.shell.completers;
 
-import com.cloudera.utils.hadoop.cli.CliSession;
+import com.cloudera.utils.hcfs.cli.CliSession;
 // ... rest of imports
 
 public class FileSystemNameCompleter implements Completer {
@@ -1176,14 +1182,14 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 CliEnvironment becomes a factory and registry for sessions:
 
 ```java
-package com.cloudera.utils.hadoop.cli;
+package com.cloudera.utils.hcfs.cli;
 
-import com.cloudera.utils.hadoop.cli.session.CommandRegistry;
-import com.cloudera.utils.hadoop.cli.session.DefaultCredentials;
-import com.cloudera.utils.hadoop.cli.session.SessionCredentials;
-import com.cloudera.utils.hadoop.hdfs.util.FileSystemOrganizer;
-import com.cloudera.utils.hadoop.shell.command.Command;
-import com.cloudera.utils.hadoop.shell.command.CommandReturn;
+import com.cloudera.utils.hcfs.cli.session.CommandRegistry;
+import com.cloudera.utils.hcfs.cli.session.DefaultCredentials;
+import com.cloudera.utils.hcfs.cli.session.SessionCredentials;
+import com.cloudera.utils.hcfs.hdfs.util.FileSystemOrganizer;
+import com.cloudera.utils.hcfs.shell.command.Command;
+import com.cloudera.utils.hcfs.shell.command.CommandReturn;
 import jline.console.ConsoleReader;
 import lombok.Getter;
 import lombok.Setter;
@@ -1199,7 +1205,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.cloudera.utils.hadoop.hdfs.shell.command.HdfsConnect.*;
+import static com.cloudera.utils.hcfs.hdfs.shell.command.HdfsConnect.*;
 
 @Component
 @Slf4j

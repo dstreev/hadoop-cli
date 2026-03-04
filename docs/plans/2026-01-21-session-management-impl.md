@@ -414,8 +414,9 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 **Step 1: Remove unused DefaultCredentials import**
 
 Remove line 19:
+
 ```java
-import com.cloudera.utils.hadoop.cli.session.DefaultCredentials;
+
 ```
 
 **Step 2: Compile to verify**
