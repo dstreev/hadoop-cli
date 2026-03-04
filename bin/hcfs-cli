@@ -62,7 +62,7 @@ fi
 
 PRG_ARGS=
 CMD_CP=
-APP_MAIN_CLASS="com.cloudera.utils.hadoop.HadoopCliApp"
+APP_MAIN_CLASS="com.cloudera.utils.hcfs.HCFSCliApp"
 
 #!/bin/bash
 
