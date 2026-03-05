@@ -20,7 +20,7 @@
 
     <groupId>com.cloudera.utils.hadoop</groupId>
     <artifactId>hcfs-browser</artifactId>
-    <version>5.0.4.0</version>
+    <version>5.0.4.1</version>
     <packaging>jar</packaging>
 
 
@@ -50,16 +50,16 @@
         <maven.assembly.version>3.3.0</maven.assembly.version>
 
         <!-- Spring -->
-        <springboot.version>3.4.4</springboot.version>
-        <spring-framework.version>6.2.5</spring-framework.version>
-        <logback-core.version>1.5.18</logback-core.version>
-        <logback-classic.version>1.5.18</logback-classic.version>
+        <springboot.version>3.4.13</springboot.version>
+        <spring-framework.version>6.2.15</spring-framework.version>
+        <logback-core.version>1.5.25</logback-core.version>
+        <logback-classic.version>1.5.25</logback-classic.version>
         <janino.version>3.1.12</janino.version>
 
         <!-- Support  Libs-->
         <lombok.version>1.18.38</lombok.version>
 
-        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
         <commons-io.version>2.18.0</commons-io.version>
         <commons-cli.version>1.9.0</commons-cli.version>
         <commons-pool2.version>2.12.1</commons-pool2.version>
@@ -68,15 +68,27 @@
         <jcabi.manifests.version>1.1</jcabi.manifests.version>
         <jackson.version>2.18.3</jackson.version>
         <snakeyaml.version>2.4</snakeyaml.version>
+        <avro.version>1.11.5</avro.version>
 
         <cdp.scope>compile</cdp.scope>
         <!--        <cdp.version>7.3.1.0-197</cdp.version>-->
-        <hadoop.version>3.4.1</hadoop.version>
+        <hadoop.version>3.4.2</hadoop.version>
         <ozone.version>1.4.1</ozone.version>
 
         <gateway-shell.version>1.0.0</gateway-shell.version>
         <jline.version>2.5</jline.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Override transitive Avro from hadoop-common to fix CVE-2025-33042 -->
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>

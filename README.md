@@ -1,59 +1,30 @@
-## HADOOP-CLI
+## HCFS Browser
 
-HADOOP-CLI is an interactive command line shell that makes interacting with the Hadoop Distribted Filesystem (HDFS)
-simpler and more intuitive than the standard command-line tools that come with Hadoop. If you're familiar with OS X, Linux, or even Windows terminal/console-based applications, then you are likely familiar with features such as tab completion, command history, and ANSI formatting.
-
-### Binary Package
-
-NOTE: The prebuilt binary was compiled against HDFS 3.1, but is backwardly compatible with HDFS 2.6.x and HDFS 2.7.x (HDP 2.5.x, HDP 2.6.x)
-
-### Don't Build, Download the LATEST binary here!!!
-[![Download the LATEST Binary](./images/download.png)](https://github.com/dstreev/hadoop-cli/releases)
-
-On the edgenode:
-- Expand the tarball `tar zxvf hadoop-cli-dist.tar.gz`.
-  > This produces a child `hadoop-cli-install` directory.
-- Two options for installation:
-  - As the root user (or `sudo`), run `hadoop-cli-install/setup.sh`. This will install the `hadoopcli` packages in `/usr/local/hadoop-cli` and create symlinks for the executables in `/usr/local/bin`.  At this point, `hadoopcli` should be available to all user and in the default path.
-  - As the local user, run `hadoop-cli-install/setup.sh`.  This will install the `hadoop-cli` packages in `$HOME/.hadoop-cli` and create symlink in `$HOME/bin`.  Ensure `$HOME/bin` is in the users path and run `hadoopcli`.
-
-*DO NOT RUN `hadoopcli` from the installation directory.*
-
-If you install both options, your environment PATH will determine which one is run.  Make note of this because an upgrade may not be reachable.
-
-Try it out on a host with default configs (if kerberized, get a ticket first):
-
-    hadoopcli
-
-To use an alternate HADOOP_CONF_DIR:
-
-    hadoopcli --config /var/hadoop/dev-cfg
+HCFS Browser is an interactive command line shell that makes interacting with the Hadoop Compatible File System (HCFS) simpler and more intuitive than the standard command-line tools that come with Hadoop. If you're familiar with OS X, Linux, or even Windows terminal/console-based applications, then you are likely familiar with features such as tab completion, command history, and ANSI formatting.
 
 ### Default or Alt JDK Usage
 
-The startup script `hadoopcli` will use `$JAVA_HOME` if defined.  When it is not available, the default `java` implementation will be used.
+The startup script `hcfs-browser` will use `$JAVA_HOME` if defined. When it is not available, the default `java` implementation will be used.
 
-JDK's below 1.8.0_100 are not recommended for Kerberos environments and may have issues connecting to secure clusters.  Those JDK's require additional `unlimited jce` configurations.
+JDK 17 or above is recommended. JDK's below 1.8.0_100 are not recommended for Kerberos environments and may have issues connecting to secure clusters.
 
-If kerberos connections aren't working, use a more recent JDK by setting the `$JAVA_HOME` variable.
+If Kerberos connections aren't working, use a more recent JDK by setting the `$JAVA_HOME` variable.
 
 ### AUX_LIBS - CLASSPATH Additions
 
-The directory `$HOME/.hadoop-cli/aux_libs` will be scanned for 'jar' files. Each 'jar' will be added the java classpath of the application.  Add any required libaries here.
+The directory `$HOME/.hcfs-browser/aux_libs` will be scanned for 'jar' files. Each 'jar' will be added to the Java classpath of the application. Add any required libraries here.
 
-The application contains all the necesasry `hdfs` classes already.  You will need to add to the `aux_libs` directory the following:
+The application contains all the necessary `hdfs` classes already. You will need to add to the `aux_libs` directory the following:
 - AWS S3 Drivers (appropriate versions)
     - `hadoop-aws.jar`
     - `aws-java-sdk-bundle.jar`
-
-### [Release Notes](./release_notes.md)
 
 ### Core Functions
 
 ### CLI Help
 
 ```
-usage: hadoopcli
+usage: hcfs-browser
  -api,--api                       API mode
  -d,--debug                       Debug Commands
  -e,--execute <arg>               Execute Command
@@ -72,18 +43,18 @@ usage: hadoopcli
 
 ### File System Command Basics
 
-The HadoopCli maintains a context to the local filesystem AND the target HDFS filesystem, once connected.  A 'path' context for HDFS is also managed and is treated as the 'current' working HDFS directory.
+HCFS Browser maintains a context to the local filesystem AND the target HDFS filesystem, once connected. A 'path' context for HDFS is also managed and is treated as the 'current' working HDFS directory.
 
-CLI commands against will consider the 'working' directory, unless the path element to the command starts with a '/'.
+CLI commands will consider the 'working' directory, unless the path element to the command starts with a '/'.
 
-For example, notice how commands can be issued *without* a path element (unlike standard `hdfs dfs` commands).  The current HDFS working directory is assumed.
+For example, notice how commands can be issued *without* a path element (unlike standard `hdfs dfs` commands). The current HDFS working directory is assumed.
 
-Path *Completion* is also available (via tab, just like `bash`) and consider the path working directory as a reference.
+Path *Completion* is also available (via tab, just like `bash`) and considers the working directory as a reference.
 
 ```
 Connected: hdfs://HOME90
 REMOTE: hdfs://HOME90/user/dstreev		LOCAL: file:/home/dstreev
-hdfs-cli:$ ls
+hcfs-browser:$ ls
 Found 17 items
 drwx------   - dstreev hadoop          0 2019-05-15 02:00 /user/dstreev/.Trash
 drwxr-xr-x   - dstreev hadoop          0 2019-05-06 09:34 /user/dstreev/.hiveJars
@@ -103,24 +74,24 @@ drwxr-xr-x   - dstreev hadoop          0 2019-05-14 16:52 /user/dstreev/test
 drwxr-xr-x   - dstreev hadoop          0 2019-04-03 21:50 /user/dstreev/test_ext
 drwxr-x---   - dstreev hadoop          0 2019-05-08 08:30 /user/dstreev/testme
 REMOTE: hdfs://HOME90/user/dstreev		LOCAL: file:/home/dstreev
-hdfs-cli:$ cd datasets
+hcfs-browser:$ cd datasets
 REMOTE: hdfs://HOME90/user/dstreev/datasets		LOCAL: file:/home/dstreev
-hdfs-cli:$ ls
+hcfs-browser:$ ls
 Found 2 items
 drwxr-xr-x   - dstreev hadoop          0 2019-01-31 14:17 /user/dstreev/datasets/external
 drwxr-xr-x   - hive    hadoop          0 2019-03-18 06:09 /user/dstreev/datasets/internal.db
 REMOTE: hdfs://HOME90/user/dstreev/datasets		LOCAL: file:/home/dstreev
-hdfs-cli:$
+hcfs-browser:$
 ```
 
 ### Variable Support
 
-Commandline input is processed for variables matching. IE: ${VARNAME} or $VARNAME.  Use the 'env' command for a list of variables available.  Additional variables can be added two ways:
+Commandline input is processed for variable matching. IE: ${VARNAME} or $VARNAME. Use the `env` command for a list of variables available. Additional variables can be added two ways:
 
 - By a `java` properties file, which is referenced for input by `-ef`
 - Using the `env -s` (set) command to add them dynamically within the session.
 
-Default behavior of the startup script will look for `${HOME}/.hadoop-cli/env-var.props` and load this automatically, if it exists.  If you have a common set of variable you wish to persist between session, add them to this file.
+Default behavior of the startup script will look for `${HOME}/.hcfs-browser/env-var.props` and load this automatically, if it exists. If you have a common set of variables you wish to persist between sessions, add them to this file.
 
 Example: `env-var.props`
 ```
@@ -130,7 +101,7 @@ HMW=/warehouse/tablespace/managed/hive
 
 ### Scripting Support
 
-Being able to maintain an HDFS context/session across multiple commands saves a huge amount of time because we don't need to suffer the overhead of starting the jvm and getting an HDFS session established.
+Being able to maintain an HDFS context/session across multiple commands saves a huge amount of time because we don't need to suffer the overhead of starting the JVM and getting an HDFS session established.
 
 If you have 'more' than a few commands to run against HDFS, packaging those commands up and processing them at the same time can be a big deal.
 
@@ -138,7 +109,7 @@ There are 3 ways to do this.
 
 ##### 'init' startup option `-i <file>`
 
-Create a text file with the commands you want to run.  One command per line.  And include that at startup.
+Create a text file with the commands you want to run. One command per line. And include that at startup.
 
 Create init.txt
 
@@ -148,10 +119,10 @@ count -h /user/dstreev
 du -h /hdp
 ```
 
-Then initialize a 'hadoopcli' session with it:
+Then initialize a session with it:
 
 ```
-hadoopcli -i init.txt
+hcfs-browser -i init.txt
 ```
 
 ##### 'execute' option `-e <command>`
@@ -160,7 +131,7 @@ Exactly the same as the 'init' option that will 'exit' after completion.
 
 ##### 'stdin' option `-stdin`
 
-Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the same way it processes the 'run' option.
+Make HCFS Browser part of your bash pipeline. It will process 'stdin' the same way it processes the 'run' option.
 
 ### Command Reference
 
@@ -175,7 +146,7 @@ Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the
 #### Remote (HDFS) Commands
 
 | Command | Description |
-|---|:-----| 
+|---|:-----|
 | cd | change current working directory |
 | copyFromLocal |   |
 | copyToLocal |   |
@@ -189,7 +160,7 @@ Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the
 | head | print first few lines of a file |
 | mkdir | create directories |
 | count | Count the number of directories, files and bytes under the paths that match the specified file pattern. |
-| stat |  Print statistics about the file/directory at <path> in the specified format. |
+| stat |  Print statistics about the file/directory at \<path\> in the specified format. |
 | tail |  Displays last kilobyte of the file to stdout. |
 | test |  Validate Path |
 | text | Takes a source file and outputs the file in text format. |
@@ -213,40 +184,19 @@ Make 'hadoopcli' part of your bash pipeline.  Hadoopcli will process 'stdin' the
 
 #### Tools and Utilities
 
-* [lsp](./lsp.md) - *ls plus*.  Includes Block information and locations.
+* [lsp](./lsp.md) - *ls plus*. Includes Block information and locations.
 * [nnstats](./nnstats.md) - Namenode Stats
 
-### Building
-
-This project requires the artifacts from https://github.com/dstreev/stemshell , which is a forked enhancement that has added support for processing command line parameters and deals with quoted variables.
-
-Since we're now doing more in the interface and writing results to hdfs, we need to build binary compatible packages.  The default `mvn` profile is for Apache Hadoop 3.1.  There is a profile for Apache Hadoop 2.6 and 2.7.
-
-```
-# For 3.1
-mvn -DskipTests clean install package
-```
-
-```
-# For 2.7
-mvn -DskipTests clean install -P 2.7
-```
-
-```
-# For 2.6
-mvn -DskipTests clean install -P 2.6
-```
-
 ### Basic Usage
-HADOOP-CLI works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem,
-then manage local/remote files and transfers.
 
-To start HADOOP-CLI, run the following command (after running setup as described above):
+HCFS Browser works much like a command-line ftp client: You first establish a connection to a remote HDFS filesystem, then manage local/remote files and transfers.
+
+To use an alternate HADOOP_CONF_DIR:
 
 ```
-hadoopcli
+hcfs-browser --config /var/hadoop/dev-cfg
 ```
-		
+
 ### Command Documentation
 
 Help for any command can be obtained by executing the `help` command:
@@ -255,11 +205,9 @@ Help for any command can be obtained by executing the `help` command:
 help pwd
 ```
 
-Note that currently, documentation may be limited.
-
 #### Local vs. Remote Commands
-When working within a HADOOP-CLI session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l`
-character to the name to denote "local".
+
+When working within an HCFS Browser session, you manage both local (on your computer) and remote (HDFS) files. By convention, commands that apply to both local and remote filesystems are differentiated by prepending an `l` character to the name to denote "local".
 
 For example:
 
@@ -267,51 +215,46 @@ For example:
 
 `ls` lists remote files in the remote current working directory.
 
-Every HADOOP-CLI session keeps track of both the local and remote current working directories.
+Every HCFS Browser session keeps track of both the local and remote current working directories.
 
-### Support for External Configurations (core-site.xml,hdfs-site.xml)
+### Support for External Configurations (core-site.xml, hdfs-site.xml)
 
-By default, hdfs-cli will use `/etc/hadoop/conf` as the default location to search for
-`core-site.xml` and `hdfs-site.xml`.  If you want to use an alternate, use the `--config`
-option when starting up hdfs-cli.
+By default, HCFS Browser will use the `--config` option to specify the location of `core-site.xml` and `hdfs-site.xml`.
 
-The `--config` option takes 1 parameter, a local directory.  This directory should contain hdfs-site.xml and core-site.xml files.  When used, you'll automatically be connected to hdfs and changed to you're hdfs home directory.
+The `--config` option takes 1 parameter, a local directory. This directory should contain hdfs-site.xml and core-site.xml files. When used, you'll automatically be connected to HDFS and changed to your HDFS home directory.
 
 Example Connection parameters.
 
 ``` bash
 # Use the hadoop files in the input directory to configure and connect to HDFS.
-hadoopcli --config ../mydir
+hcfs-browser --config ../mydir
 ```
 
-This can be used in conjunction with the 'Startup' Init option below to run a set of commands automatically after the connection is made.  The 'connect' option should NOT be used in the initialization script.
+This can be used in conjunction with the 'Startup' Init option below to run a set of commands automatically after the connection is made. The 'connect' option should NOT be used in the initialization script.
 
 ### Startup Initialization Option
 
-Using the option '-i <filename>' when launching the CLI, it will run all the commands in the file.
+Using the option `-i <filename>` when launching the CLI, it will run all the commands in the file.
 
-The file needs to be location in the $HOME/.hadoop-cli directory.  For example:
+The file needs to be located in the `$HOME/.hcfs-browser` directory. For example:
 
 ``` bash
-# If you're using the helper shell script
-hadoopcli -i test
-	
-# If you're using the java command
-java -jar hadoop-cli-full-bin.jar -i test
+hcfs-browser -i test
 ```
 
-Will initialize the session with the command(s) in $HOME/.hadoop-cli/test. One command per line.
+Will initialize the session with the command(s) in `$HOME/.hcfs-browser/test`. One command per line.
 
-The contents could be any set of valid commands that you would use in the cli. For example:
+The contents could be any set of valid commands that you would use in the CLI. For example:
 
 ```
 cd user/dstreev
 ```
 
+### Building
 
-### Job History Stats
-	
-Delivered - Docs to come
+```
+mvn -DskipTests clean install package
+```
 
 ### Scheduler Stats
 
@@ -340,7 +283,7 @@ usage: sstat
 
 ### Container Stats
 
-Collect Container Stats for the YARN REST API.
+Collect Container Stats from the YARN REST API.
 
 ```
 usage: cstat
@@ -362,11 +305,3 @@ usage: cstat
  -ssl,--ssl               https connection
  -v,--verbose             show verbose output
 ```
-	
-### Road Map
-
-See [Issues](./ISSUES)	
-
-
-
-
