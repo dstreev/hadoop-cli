@@ -128,6 +128,8 @@ public abstract class AbstractCommand implements Command{
             lclCr = implementation(session, cmd, lclCr);
         } catch (Throwable t) {
             log.error("Error in Command: {}", getName(), t);
+            lclCr.setCode(CommandReturn.BAD);
+            lclCr.setError(t.getMessage());
         }
         return lclCr;
     }

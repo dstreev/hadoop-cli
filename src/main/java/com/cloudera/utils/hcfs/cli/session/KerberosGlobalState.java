@@ -24,7 +24,7 @@ import org.apache.hadoop.security.UserGroupInformation;
  * Manages global Kerberos state initialization for UserGroupInformation.
  *
  * <p>This class ensures that {@link UserGroupInformation#setConfiguration} is called
- * exactly ONCE to enable Kerberos authentication globally. This is required because
+ * to enable Kerberos authentication globally. This is required because
  * {@link UserGroupInformation#loginUserFromKeytabAndReturnUGI} checks
  * {@link UserGroupInformation#isSecurityEnabled()} which depends on the global configuration.
  *
@@ -33,8 +33,13 @@ import org.apache.hadoop.security.UserGroupInformation;
  *   <li>{@code setConfiguration()} modifies GLOBAL JVM state</li>
  *   <li>Multiple sessions calling it with different configs will interfere</li>
  *   <li>But Kerberos must be enabled globally for keytab authentication to work</li>
- *   <li>Solution: Initialize once, then use isolated UGIs per session</li>
+ *   <li>Solution: Check actual UGI state, initialize only when needed, use isolated UGIs per session</li>
  * </ul>
+ *
+ * <p><b>Recovery behavior:</b> Unlike the previous "initialize-once" approach, this class
+ * checks {@link UserGroupInformation#isSecurityEnabled()} (the actual state) rather than
+ * a static flag. If something resets UGI state (e.g., another component, plugin reinstall,
+ * classloader recycling), the next call will detect the reset and re-initialize.
  *
  * <p><b>Usage pattern:</b>
  * <pre>{@code
@@ -49,7 +54,6 @@ import org.apache.hadoop.security.UserGroupInformation;
 @Slf4j
 public final class KerberosGlobalState {
 
-    private static volatile boolean initialized = false;
     private static final Object lock = new Object();
 
     private KerberosGlobalState() {
@@ -58,48 +62,53 @@ public final class KerberosGlobalState {
 
     /**
      * Ensures that Kerberos is enabled in the global UserGroupInformation configuration.
-     * This method is idempotent - safe to call multiple times from multiple threads.
+     * This method is idempotent and self-healing — safe to call multiple times from
+     * multiple threads.
      *
-     * <p>Only the FIRST call will actually call {@code setConfiguration()}. Subsequent
-     * calls will return immediately without modifying global state.
+     * <p>Checks {@link UserGroupInformation#isSecurityEnabled()} to determine if
+     * initialization is needed. This means:
+     * <ul>
+     *   <li>If UGI is already configured for Kerberos, this is a no-op (fast path)</li>
+     *   <li>If something reset UGI state, this will re-initialize it</li>
+     *   <li>Plugin reinstalls (new classloader) get a fresh UGI that needs initialization</li>
+     * </ul>
      */
     public static void ensureInitialized() {
-        if (initialized) {
+        if (UserGroupInformation.isSecurityEnabled()) {
             return;
         }
 
         synchronized (lock) {
-            if (initialized) {
+            if (UserGroupInformation.isSecurityEnabled()) {
                 return;
             }
 
             Configuration kerberosConfig = new Configuration(false);
             kerberosConfig.set("hadoop.security.authentication", "kerberos");
 
-            log.info("Initializing global Kerberos configuration for UserGroupInformation (one-time)");
+            log.info("Initializing global Kerberos configuration for UserGroupInformation");
             UserGroupInformation.setConfiguration(kerberosConfig);
-            initialized = true;
         }
     }
 
     /**
      * Ensures Kerberos is initialized using the provided configuration.
-     * This variant allows setting additional Kerberos-related properties.
+     * This variant allows setting additional Kerberos-related properties
+     * (e.g., auth_to_local rules) on the first initialization.
      *
-     * <p>Note: Only the FIRST call will take effect. If you need specific
-     * configuration values, call this method early in application startup.
+     * <p>If UGI is already configured for Kerberos, this is a no-op.
+     * Only use this when you need specific configuration values beyond
+     * the minimal {@code hadoop.security.authentication=kerberos}.
      *
      * @param config the Configuration to use for Kerberos initialization
      */
     public static void ensureInitialized(Configuration config) {
-        if (initialized) {
-            log.debug("Kerberos already initialized, ignoring additional configuration");
+        if (UserGroupInformation.isSecurityEnabled()) {
             return;
         }
 
         synchronized (lock) {
-            if (initialized) {
-                log.debug("Kerberos already initialized, ignoring additional configuration");
+            if (UserGroupInformation.isSecurityEnabled()) {
                 return;
             }
 
@@ -109,29 +118,17 @@ public final class KerberosGlobalState {
                 return;
             }
 
-            log.info("Initializing global Kerberos configuration from provided Configuration (one-time)");
+            log.info("Initializing global Kerberos configuration from provided Configuration");
             UserGroupInformation.setConfiguration(config);
-            initialized = true;
         }
     }
 
     /**
-     * Checks if global Kerberos state has been initialized.
+     * Checks if global Kerberos state is currently active.
      *
-     * @return true if {@link #ensureInitialized()} has been called successfully
+     * @return true if Kerberos authentication is currently enabled in UGI
      */
     public static boolean isInitialized() {
-        return initialized;
-    }
-
-    /**
-     * Resets the initialization state. This should only be used in tests.
-     * In production, Kerberos state should be initialized once and never reset.
-     */
-    public static void resetForTesting() {
-        synchronized (lock) {
-            initialized = false;
-            log.warn("Kerberos global state reset - this should only be used in tests!");
-        }
+        return UserGroupInformation.isSecurityEnabled();
     }
 }
